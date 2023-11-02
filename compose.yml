@@ -1,0 +1,402 @@
+x-default-logging: &logging
+  driver: "json-file"
+  options:
+    max-size: "5m"
+    max-file: "2"
+
+x-default-healthcheck: &healthcheck
+  test: ["CMD-SHELL", "curl --fail --silent --head --max-time 5 https://www.google.com > /dev/null || exit 1"]
+  interval: 1m30s
+  timeout: 10s
+  retries: 3
+
+x-default-system: &system
+  cgroup_parent: MacOS
+  stop_signal: SIGINT
+  restart: unless-stopped
+  read_only: true
+  stdin_open: true
+  init: true
+  tty: true
+  security_opt:
+    - no-new-privileges:true
+    - seccomp:unconfined
+    - apparmor:unconfined
+    - label:disable
+  dns:
+    - 8.8.8.8
+    - 8.8.4.4
+    - 149.112.112.9
+    - 9.9.9.9
+    - 208.67.222.222
+    - 208.67.220.220
+  dns_search:
+    - dns.google
+    - dns.quad9.net
+    - dns.umbrella.com
+    - dns.opendns.com
+    - resolver1.opendns.com
+    - resolver2.opendns.com
+
+services:
+  exporter:
+    container_name: exporter
+    image: prom/node-exporter:latest
+    logging: *logging
+    domainname: local
+    hostname: exporter
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.100
+    ports:
+      - target: 9100
+        published: 9100
+        protocol: tcp
+        mode: host
+
+  proxy:
+    container_name: proxy
+    image: nginx:latest
+    volumes:
+      - type: volume
+        source: fluentd
+        target: /var/log/nginx
+    configs:
+      - source: config.nginx
+        target: /etc/nginx/nginx.conf
+    domainname: local
+    hostname: proxy
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.1
+        priority: 100
+    mac_address: 52:42:00:1c:e9:04
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack_main}"
+    <<: *system
+    image: localstack/localstack:latest
+    healthcheck: *healthcheck
+    environment:
+      - DEBUG=1
+      - PERSISTENCE=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - SERVICES=${SERVICES- }
+      - LAMBDA_EXECUTOR=${LAMBDA_EXECUTOR-}
+      - LOCALSTACK_API_KEY=${LOCALSTACK_API_KEY-}
+      - DEFAULT_REGION=ap-northeast-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=ap-northeast-1
+      - DATA_DIR=/tmp/localstack/data
+      - DISABLE_CORS_CHECKS=1
+    volumes:
+      - type: bind
+        source: .localstack
+        target: /docker-entrypoint-initaws.d
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: volume
+        source: localstack
+        target: /tmp/localstack
+    logging: *logging
+    domainname: local
+    hostname: localstack
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.2
+        priority: 100
+    mac_address: 52:42:00:5b:80:0b
+    ports:
+      - target: 80
+        published: 10080
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 10443
+        protocol: tcp
+        mode: host
+      - target: 53
+        published: 53
+        protocol: udp
+        mode: host
+      - target: 53
+        published: 53
+        protocol: tcp
+        mode: host
+      - target: 4566
+        published: 4566
+        protocol: tcp
+        mode: host
+      - "4510-4559:4510-4559"
+
+  prometheus:
+    container_name: prometheus
+    <<: *system
+    image: prom/prometheus:latest
+    healthcheck: *healthcheck
+    volumes:
+      - type: volume
+        source: prometheus
+        target: /prometheus
+    configs:
+      - source: prometheus
+        target: /etc/prometheus/prometheus.yaml
+        uid: "103"
+        gid: "103"
+        mode: 0440
+      - source: alert
+        target: /etc/prometheus/alert.rules
+        uid: "103"
+        gid: "103"
+        mode: 0440
+    command: >
+      --config.file=/etc/prometheus/prometheus.yaml
+    logging: *logging
+    domainname: local
+    hostname: prometheus
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.3
+        priority: 100
+    mac_address: 52:42:00:19:d5:30
+    ports:
+      - target: 9090
+        published: 9090
+        protocol: tcp
+        mode: host
+
+  loki:
+    container_name: loki
+    <<: *system
+    image: grafana/loki:latest
+    healthcheck: *healthcheck
+    configs:
+      - source: loki
+        target: /etc/loki/local-config.yaml
+        uid: "103"
+        gid: "103"
+        mode: 0440
+    command: >
+      -config.file=/etc/loki/local-config.yaml
+    logging: *logging
+    domainname: local
+    hostname: grafana
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.5
+        priority: 100
+    mac_address: 52:42:00:3c:4e:80
+    ports:
+      - target: 3100
+        published: 3100
+        protocol: tcp
+        mode: host
+
+  alertmanager:
+    container_name: alertmanager
+    <<: *system
+    image: prom/alertmanager:latest
+    healthcheck: *healthcheck
+    volumes:
+      - type: volume
+        source: grafana
+        target: /opt/bitnami/grafana/data
+    configs:
+      - source: alertmanager
+        target: /etc/alertmanager/config.yaml
+        uid: "103"
+        gid: "103"
+        mode: 0440
+    command: >
+      --config.file=/etc/alertmanager/config.yaml
+    logging: *logging
+    domainname: local
+    hostname: alertmanager
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.6
+        priority: 100
+    mac_address: 52:42:00:73:4c:c7
+    ports:
+      - target: 9093
+        published: 9093
+        protocol: tcp
+        mode: host
+
+  fluentd:
+    container_name: fluentd
+    <<: *system
+    image: fluentd:latest
+    healthcheck: *healthcheck
+    environment:
+      FLUENT_CONF: /fluentd/etc/fluent.conf
+    volumes:
+      - type: bind
+        source: .config/docker/fluentd/plugins
+        target: /fluentd/plugins
+      - type: volume
+        source: fluentd
+        target: /var/log
+    configs:
+      - source: fluentd
+        target: /fluentd/etc/fluentd.conf
+        uid: "103"
+        gid: "103"
+        mode: 0440
+    command: >
+      gem install fluent-plugin-elasticsearch --no-document
+    logging: *logging
+    domainname: local
+    hostname: fluentd
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.7
+        priority: 100
+    mac_address: 52:42:00:42:af:5d
+    ports:
+      - target: 24224
+        published: 24224
+        protocol: tcp
+        mode: host
+      - target: 24224
+        published: 24224
+        protocol: udp
+        mode: host
+
+  elasticsearch:
+    container_name: elasticsearch
+    <<: *system
+    image: elasticsearch:latest
+    healthcheck: *healthcheck
+    environment:
+      discovery.type: single-node
+    logging: *logging
+    domainname: local
+    hostname: elasticsearch
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.5
+        priority: 100
+    mac_address: 52:42:00:3c:4e:80
+    ports:
+      - target: 9200
+        published: 9200
+        protocol: tcp
+        mode: host
+
+  grafana:
+    container_name: grafana
+    <<: *system
+    image: grafana/grafana:latest
+    healthcheck: *healthcheck
+    env_file:
+      - .config/docker/grafana/grafana.env
+    volumes:
+      - type: volume
+        source: grafana
+        target: /var/lib/grafana
+    configs:
+      - source: elasticsearch
+        target: /etc/grafana/provisioning/datasources/elasticsearch.yaml
+        uid: "103"
+        gid: "103"
+        mode: 0440
+    logging: *logging
+    domainname: local
+    hostname: grafana
+    ipc: host
+    networks:
+      private:
+        ipv4_address: 172.28.127.4
+        priority: 100
+    mac_address: 52:42:00:21:ec:51
+    ports:
+      - target: 3000
+        published: 3000
+        protocol: tcp
+        mode: host
+
+networks:
+  public:
+    name: vm.Network.public
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/8
+          ip_range: 10.0.0.0/16
+          gateway: 10.0.0.1
+  private:
+    name: vm.Network.private
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+          ip_range: 172.28.0.0/24
+          gateway: 172.28.0.1
+          aux_addresses:
+            app: 172.28.127.109
+    enable_ipv6: false
+
+volumes:
+  localstack:
+    name: localstack_data
+    driver: local
+  prometheus:
+    name: prometheus_modules
+    driver: local
+  grafana:
+    name: grafana_modules
+    driver: local
+  fluentd:
+    name: fluentd_logs
+    driver: local
+
+configs:
+  nginx:
+    name: config.nginx
+    file: .config/docker/nginx/nginx.conf
+  loki:
+    name: config.loki
+    file: .config/docker/loki/config.yaml
+  prometheus:
+    name: config.prometheus
+    file: .config/docker/prometheus/prometheus.yaml
+  alert:
+    name: alert.rules
+    file: .config/docker/prometheus/alert.rules
+  alertmanager:
+    name: config.alertmanager
+    file: .config/docker/alertmanager/config.yaml
+  fluentd:
+    name: config.fluentd
+    file: .config/docker/fluentd/fluentd.conf
+  elasticsearch:
+    name: config.elasticsearch
+    file: .config/docker/elasticsearch/elasticsearch.yml
