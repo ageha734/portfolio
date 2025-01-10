@@ -1,9 +1,11 @@
-module.exports = {
-  content: ["./app/**/*.{js,ts,jsx,tsx}"],
-  plugins: [require("postcss")],
+import type { Config } from "tailwindcss";
+
+export default {
+  content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      colors: {
+
+      colors:{
         "color-background-light": "#fff",
         "color-background": "#f5f8fa",
         "color-background-dark": "#24292e",
@@ -20,14 +22,22 @@ module.exports = {
       },
 
       fontFamily: {
-        "font-monospace": `ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace`,
-        "font-sans-serif": `sans-serif`,
-        "font-serif": `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"`
+        sans: [
+          "Inter",
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+          "Apple Color Emoji",
+          "Segoe UI Emoji",
+          "Segoe UI Symbol",
+          "Noto Color Emoji",
+        ],
       },
 
       screens: {
         xs: "320px"
       }
-    }
-  }
-};
+    },
+  },
+  plugins: [],
+} satisfies Config;

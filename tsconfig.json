@@ -1,38 +1,41 @@
 {
     "include": [
-        "remix.env.d.ts",
         "**/*.ts",
-        "**/*.tsx"
+        "**/*.tsx",
+        "**/.server/**/*.ts",
+        "**/.server/**/*.tsx",
+        "**/.client/**/*.ts",
+        "**/.client/**/*.tsx"
     ],
     "compilerOptions": {
-        "alwaysStrict": true,
         "lib": [
             "DOM",
             "DOM.Iterable",
-            "ES2019"
+            "ES2022"
+        ],
+        "types": [
+            "@remix-run/cloudflare",
+            "vite/client",
+            "@cloudflare/workers-types/2023-07-01"
         ],
         "isolatedModules": true,
         "esModuleInterop": true,
         "jsx": "react-jsx",
-        "module": "esnext",
-        "moduleResolution": "node",
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
         "resolveJsonModule": true,
-        "target": "ES2019",
+        "target": "ES2022",
         "strict": true,
-        "strictPropertyInitialization": true,
+        "allowJs": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
         "baseUrl": ".",
         "paths": {
             "~/*": [
                 "./app/*"
             ]
         },
-        "types": [
-            "@remix-run/cloudflare",
-            "vite/client",
-            "@cloudflare/workers-types/2023-07-01"
-        ],
-        "noEmit": true,
-        "forceConsistentCasingInFileNames": true,
-        "allowJs": true
+        // Vite takes care of building everything, not tsc.
+        "noEmit": true
     }
 }
