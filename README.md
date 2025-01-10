@@ -6,16 +6,12 @@ This repo is rebuild and re-skin of my [NextJS][nextjs] portfolio from 2021. Bot
 
 That being said I am really excited to see what the future holds for Remix. Its one of those `full circle` moments where in our industry and beautifully orchestrated by Remix. More to come in a blog post, it deserves it.
 
-- [Current Portfolio](https://mattscholta.com) build with [Remix][remix]
-- [2021 Portfolio](https://2021.mattscholta.com) build with [NextJS][nextjs]
-
 **Technology:**
 
 - [Remix][remix]
 - [React](https://reactjs.org)
 - [TailwindCSS](https://tailwindcss.com)
 - [GraphCMS][graphcms]
-- [Vercel][vercel]
 
 ## Setup
 
@@ -26,18 +22,15 @@ Currently the API calls are made to an external service, [GraphCMS][graphcms]. N
 cp .env.example .env
 
 # Install Yarn or use NPM
-npm install --global yarn
+proto use
 
 # 📦 Install dependencies
-yarn install
+bun install
 
 # 🏎️💨 Start building
-yarn dev
+bun dev
 ```
 
 <!-- Links -->
 
 [graphcms]: https://graphcms.com "GraphCMS"
-[nextjs]: https://nextjs.org "NextJS"
-[remix]: https://remix.run "Remix"
-[vercel]: https://vercel.com "Vercel"
