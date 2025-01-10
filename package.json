@@ -8,6 +8,7 @@
   "scripts": {
     "build": "remix build",
     "dev": "remix dev",
+    "start": "wrangler pages dev build/client",
     "postinstall": "remix setup node",
     "vitest": "NODE_ENV=test TZ=UTC vitest",
     "vitest:coverage": "NODE_ENV=test TZ=UTC vitest run --coverage",
@@ -16,12 +17,10 @@
   "dependencies": {
     "@fireworks-js/react": "2.10.8",
     "@graphcms/rich-text-react-renderer": "0.6.2",
-    "@remix-run/node": "2.15.2",
+    "@remix-run/cloudflare": "2.15.2",
+    "@remix-run/cloudflare-pages": "2.15.2",
     "@remix-run/react": "2.15.2",
     "@remix-run/server-runtime": "2.15.2",
-    "@remix-run/vercel": "1.19.3",
-    "@vercel/analytics": "1.4.1",
-    "@vercel/remix": "2.15.2",
     "classnames": "2.5.1",
     "date-fns": "4.1.0",
     "dotenv": "16.4.7",
@@ -33,9 +32,9 @@
     "reading-time": "1.5.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "4.20250109.0",
     "@remix-run/dev": "2.15.2",
     "@remix-run/eslint-config": "2.15.2",
-    "@remix-run/serve": "2.15.2",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.1.0",
     "@testing-library/user-event": "14.5.2",
@@ -58,6 +57,8 @@
     "tailwindcss": "3.4.17",
     "typescript": "5.7.3",
     "vite": "6.0.7",
-    "vitest": "2.1.8"
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "2.1.8",
+    "wrangler": "3.101.0"
   }
 }
