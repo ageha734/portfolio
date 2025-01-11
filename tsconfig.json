@@ -22,9 +22,12 @@
         "esModuleInterop": true,
         "jsx": "react-jsx",
         "module": "ESNext",
-        "moduleResolution": "Bundler",
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "verbatimModuleSyntax": true,
         "resolveJsonModule": true,
         "target": "ES2022",
+        "moduleDetection": "force",
         "strict": true,
         "allowJs": true,
         "skipLibCheck": true,
@@ -35,7 +38,9 @@
                 "./app/*"
             ]
         },
-        // Vite takes care of building everything, not tsc.
-        "noEmit": true
+        "noEmit": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedParameters": false,
+        "noPropertyAccessFromIndexSignature": false
     }
 }

@@ -7,14 +7,14 @@ import { BASE_URL } from "~/config/settings.server";
  * @description Generate a robots.txt for SEO purposes
  */
 export const loader: LoaderFunction = () => {
-  const robotText = `
+    const robotText = `
 User-agent: *
 Disallow: /api
 Sitemap: ${BASE_URL}/sitemap.xml
 `;
 
-  return new Response(robotText, {
-    headers: { "Content-Type": "text/plain" },
-    status: 200,
-  });
+    return new Response(robotText, {
+        headers: { "Content-Type": "text/plain" },
+        status: 200,
+    });
 };

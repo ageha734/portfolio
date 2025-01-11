@@ -1,8 +1,8 @@
 import { SITE_DESCRIPTION, SITE_TITLE } from "~/config/constants";
 
 export interface UseWebShareAPI {
-  isAvailable: boolean;
-  onShare: (url: string) => void;
+    isAvailable: boolean;
+    onShare: (url: string) => void;
 }
 
 /**
@@ -13,31 +13,31 @@ export interface UseWebShareAPI {
  * where available.
  */
 export const useWebShareAPI = (): UseWebShareAPI => {
-  // Setup
-  const isAvailable = typeof window !== "undefined" && !!navigator.share;
+    // Setup
+    const isAvailable = typeof window !== "undefined" && !!navigator.share;
 
-  const data: ShareData = {
-    text: SITE_DESCRIPTION,
-    title: `Join me on ${SITE_TITLE}`
-  };
+    const data: ShareData = {
+        text: SITE_DESCRIPTION,
+        title: `Join me on ${SITE_TITLE}`,
+    };
 
-  // Handlers
-  const onShare = (url: string) => {
-    if (!isAvailable) return;
+    // Handlers
+    const onShare = (url: string) => {
+        if (!isAvailable) return;
 
-    navigator
-      .share({ ...data, url })
-      .then(() => {
-        if (!window.gtag) return;
-        window.gtag("event", "share", { method: "Web Share" });
-      })
-      .catch((error) => {
-        console.error("Web Share error", error);
-      });
-  };
+        navigator
+            .share({ ...data, url })
+            .then(() => {
+                if (!window.gtag) return;
+                window.gtag("event", "share", { method: "Web Share" });
+            })
+            .catch((error) => {
+                console.error("Web Share error", error);
+            });
+    };
 
-  return {
-    isAvailable,
-    onShare
-  };
+    return {
+        isAvailable,
+        onShare,
+    };
 };

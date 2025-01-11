@@ -5,44 +5,44 @@
  * clipboard functionality and a fallback for older browsers.
  */
 export const fallbackCopyToClipboard = (text: string) => {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
 
-  // Avoid scrolling to bottom
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
 
-  document.body.appendChild(textArea);
+    document.body.appendChild(textArea);
 
-  textArea.focus();
-  textArea.select();
+    textArea.focus();
+    textArea.select();
 
-  try {
-    const successful = document.execCommand("copy");
-    const msg = successful ? "successful" : "unsuccessful";
-    console.log("Fallback: Copying text command was " + msg);
-  } catch (err) {
-    console.error("Fallback: Oops, unable to copy", err);
-  }
+    try {
+        const successful = document.execCommand("copy");
+        const msg = successful ? "successful" : "unsuccessful";
+        console.log("Fallback: Copying text command was " + msg);
+    } catch (err) {
+        console.error("Fallback: Oops, unable to copy", err);
+    }
 
-  document.body.removeChild(textArea);
+    document.body.removeChild(textArea);
 };
 
 export const copyTextToClipboard = (text: string) => {
-  console.log(`📋 copy text to Clipboard`, text);
+    console.log(`📋 copy text to Clipboard`, text);
 
-  if (!navigator.clipboard) {
-    fallbackCopyToClipboard(text);
-    return;
-  }
-
-  navigator.clipboard.writeText(text).then(
-    function () {
-      console.log("Copied to clipboard ✅");
-    },
-    function (err) {
-      console.error("Could not copy text:", err);
+    if (!navigator.clipboard) {
+        fallbackCopyToClipboard(text);
+        return;
     }
-  );
+
+    navigator.clipboard.writeText(text).then(
+        function () {
+            console.log("Copied to clipboard ✅");
+        },
+        function (err) {
+            console.error("Could not copy text:", err);
+        },
+    );
 };

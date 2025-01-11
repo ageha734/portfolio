@@ -12,40 +12,40 @@ import { SITE_UPDATED } from "~/config/constants";
  * @description Generate a sitemap.xml for SEO purposes
  */
 export const loader: LoaderFunction = async (args) => {
-  const data = await fetchFromGraphCMS(getSitemap);
-  const res = await data.json();
-  const routes = ["/blog", "/portfolio", "/resume", "/uses"];
+    const data = await fetchFromGraphCMS(getSitemap);
+    const res = await data.json();
+    const routes = ["/blog", "/portfolio", "/resume", "/uses"];
 
-  const { portfolios, posts } = res.data;
+    const { portfolios, posts } = res.data;
 
-  const links = routes.map(
-    (path: string) => `  <url>
+    const links = routes.map(
+        (path: string) => `  <url>
     <changefreq>monthly</changefreq>
     <loc>${BASE_URL}${path}</loc>
     <lastmod>${SITE_UPDATED.toISOString()}</lastmod>
     <priority>1.0</priority>
-  </url>`
-  );
+  </url>`,
+    );
 
-  const blog = posts.map(
-    (p: Post) => `  <url>
+    const blog = posts.map(
+        (p: Post) => `  <url>
     <changefreq>monthly</changefreq>
     <loc>${BASE_URL}/blog/${p.slug}</loc>
     <lastmod>${new Date(p.date).toISOString()}</lastmod>
     <priority>0.8</priority>
-  </url>`
-  );
+  </url>`,
+    );
 
-  const portfolio = portfolios.map(
-    (p: Portfolio) => `  <url>
+    const portfolio = portfolios.map(
+        (p: Portfolio) => `  <url>
     <changefreq>monthly</changefreq>
     <loc>${BASE_URL}/portfolio/${p.slug}</loc>
     <lastmod>${new Date(p.date).toISOString()}</lastmod>
     <priority>0.9</priority>
-  </url>`
-  );
+  </url>`,
+    );
 
-  const content = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    const content = `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <url>
     <changefreq>monthly</changefreq>
     <loc>${BASE_URL}</loc>
@@ -57,12 +57,12 @@ export const loader: LoaderFunction = async (args) => {
   ${blog.join("\n")}
 </urlset>`;
 
-  return new Response(content, {
-    headers: {
-      "Content-Type": "application/xml",
-      "xml-version": "1.0",
-      encoding: "UTF-8",
-    },
-    status: 200,
-  });
+    return new Response(content, {
+        headers: {
+            "Content-Type": "application/xml",
+            "xml-version": "1.0",
+            encoding: "UTF-8",
+        },
+        status: 200,
+    });
 };

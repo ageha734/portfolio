@@ -1,7 +1,7 @@
 import classnames from "classnames";
 
 export interface SandboxSidebarProps {
-  className?: string;
+    className?: string;
 }
 
 /**
@@ -9,23 +9,23 @@ export interface SandboxSidebarProps {
  * @description TODO: Add a description
  */
 export const SandboxSidebar = (props: SandboxSidebarProps) => {
-  const { className } = props;
+    const { className } = props;
 
-  // Hooks
+    // Hooks
 
-  // Setup
+    // Setup
 
-  // Handlers
+    // Handlers
 
-  // Markup
+    // Markup
 
-  // Life Cycle
+    // Life Cycle
 
-  // 🔌 Short Circuits
+    // 🔌 Short Circuits
 
-  return (
-    <div className={classnames("p-4", className)}>
-      <h2>🔗 Sandbox Sidebar</h2>
-    </div>
-  );
+    return (
+        <div className={classnames("p-4", className)}>
+            <h2>🔗 Sandbox Sidebar</h2>
+        </div>
+    );
 };

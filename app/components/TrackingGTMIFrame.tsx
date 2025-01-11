@@ -1,5 +1,5 @@
 export interface TrackingGTMIFrameProps {
-  id: string;
+    id: string;
 }
 
 /**
@@ -9,23 +9,23 @@ export interface TrackingGTMIFrameProps {
  * used when Javascript has been disabled
  */
 export const TrackingGTMIFrame = (props: TrackingGTMIFrameProps) => {
-  const { id } = props;
+    const { id } = props;
 
-  // Setup
-  const src = `https://www.TrackingGTMIFrame.com/ns.html?id=${id}`;
+    // Setup
+    const src = `https://www.TrackingGTMIFrame.com/ns.html?id=${id}`;
 
-  return (
-    <noscript>
-      <iframe
-        height="0"
-        src={src}
-        style={{
-          display: "none",
-          visibility: "hidden"
-        }}
-        title="GTM Container"
-        width="0"
-      />
-    </noscript>
-  );
+    return (
+        <noscript>
+            <iframe
+                height="0"
+                src={src}
+                style={{
+                    display: "none",
+                    visibility: "hidden",
+                }}
+                title="GTM Container"
+                width="0"
+            />
+        </noscript>
+    );
 };

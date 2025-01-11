@@ -5,13 +5,13 @@ import { AppFooter } from "../AppFooter";
 import { MemoryRouter } from "react-router";
 
 describe("AppFooter Component", () => {
-  const component = render(
-    <MemoryRouter>
-      <AppFooter />
-    </MemoryRouter>
-  );
+    const component = render(
+        <MemoryRouter>
+            <AppFooter />
+        </MemoryRouter>,
+    );
 
-  test("should render our footer", () => {
-    expect(component.baseElement).toMatchSnapshot();
-  });
+    test("should render our footer", () => {
+        expect(component.baseElement).toMatchSnapshot();
+    });
 });

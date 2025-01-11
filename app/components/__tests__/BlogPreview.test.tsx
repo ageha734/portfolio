@@ -7,38 +7,38 @@ import type { BlogPreviewProps } from "../BlogPreview";
 import { MemoryRouter } from "react-router";
 
 describe("BlogPreview Component", () => {
-  let props: BlogPreviewProps;
-  let component: RenderResult;
+    let props: BlogPreviewProps;
+    let component: RenderResult;
 
-  const createWrapper = () => {
-    component = render(
-      <MemoryRouter>
-        <BlogPreview {...props} />
-      </MemoryRouter>
-    );
-  };
-
-  beforeEach(() => {
-    props = {
-      content: "<p>Hello World</p>",
-      date: "2020-01-01",
-      image: "https://example.com/image.jpg",
-      slug: "hello-world",
-      title: "Hello World"
+    const createWrapper = () => {
+        component = render(
+            <MemoryRouter>
+                <BlogPreview {...props} />
+            </MemoryRouter>,
+        );
     };
 
-    createWrapper();
-  });
+    beforeEach(() => {
+        props = {
+            content: "<p>Hello World</p>",
+            date: "2020-01-01",
+            image: "https://example.com/image.jpg",
+            slug: "hello-world",
+            title: "Hello World",
+        };
 
-  test("should render our BlogPreview", () => {
-    expect(component.baseElement).toMatchSnapshot();
+        createWrapper();
+    });
 
-    const elDate = component.getByText("01/01/2020"); // props.post.date
-    const elHeading = component.getByText(props.title);
-    const elImages = component.getAllByAltText(props.title ?? "_no_alt_");
+    test("should render our BlogPreview", () => {
+        expect(component.baseElement).toMatchSnapshot();
 
-    expect(elDate).toBeInTheDocument();
-    expect(elHeading).toBeInTheDocument();
-    expect(elImages[0]).toBeInTheDocument();
-  });
+        const elDate = component.getByText("01/01/2020"); // props.post.date
+        const elHeading = component.getByText(props.title);
+        const elImages = component.getAllByAltText(props.title ?? "_no_alt_");
+
+        expect(elDate).toBeInTheDocument();
+        expect(elHeading).toBeInTheDocument();
+        expect(elImages[0]).toBeInTheDocument();
+    });
 });

@@ -6,31 +6,31 @@ import { AppUserCard } from "../AppUserCard";
 import type { AppUserCardProps } from "../AppUserCard";
 
 describe("AppUserCard Component", () => {
-  let props: AppUserCardProps;
-  let component: RenderResult;
+    let props: AppUserCardProps;
+    let component: RenderResult;
 
-  const createWrapper = () => {
-    component = render(<AppUserCard {...props} />);
-  };
-
-  beforeEach(() => {
-    props = {
-      alt: "Image Alt text, because we should do better!",
-      className: "user-card-classname",
-      copy: "lorem ipsum dolor sit amet",
-      image: "https://via.placeholder.com/150"
+    const createWrapper = () => {
+        component = render(<AppUserCard {...props} />);
     };
 
-    createWrapper();
-  });
+    beforeEach(() => {
+        props = {
+            alt: "Image Alt text, because we should do better!",
+            className: "user-card-classname",
+            copy: "lorem ipsum dolor sit amet",
+            image: "https://via.placeholder.com/150",
+        };
 
-  test("should render our AppUserCard", () => {
-    expect(component.baseElement).toMatchSnapshot();
+        createWrapper();
+    });
 
-    const elCopy = component.getByText(props.copy);
-    const elImages = component.getAllByAltText(props.alt ?? "_no_alt_");
+    test("should render our AppUserCard", () => {
+        expect(component.baseElement).toMatchSnapshot();
 
-    expect(elCopy).toBeInTheDocument();
-    expect(elImages[0]).toBeInTheDocument();
-  });
+        const elCopy = component.getByText(props.copy);
+        const elImages = component.getAllByAltText(props.alt ?? "_no_alt_");
+
+        expect(elCopy).toBeInTheDocument();
+        expect(elImages[0]).toBeInTheDocument();
+    });
 });

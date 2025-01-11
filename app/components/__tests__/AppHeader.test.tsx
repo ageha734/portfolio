@@ -5,13 +5,13 @@ import { render } from "@testing-library/react";
 import { AppHeader } from "../AppHeader";
 
 describe("AppHeader Component", () => {
-  const component = render(
-    <MemoryRouter>
-      <AppHeader />
-    </MemoryRouter>
-  );
+    const component = render(
+        <MemoryRouter>
+            <AppHeader />
+        </MemoryRouter>,
+    );
 
-  test("should render our footer", () => {
-    expect(component.baseElement).toMatchSnapshot();
-  });
+    test("should render our footer", () => {
+        expect(component.baseElement).toMatchSnapshot();
+    });
 });

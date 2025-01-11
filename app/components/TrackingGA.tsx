@@ -1,5 +1,5 @@
 export interface TrackingGAProps {
-  id: string;
+    id: string;
 }
 
 /**
@@ -9,16 +9,16 @@ export interface TrackingGAProps {
  * responsible for loading GTM which loads our Tags and Pixels
  */
 export const TrackingGA = (props: TrackingGAProps) => {
-  const { id } = props;
+    const { id } = props;
 
-  // Setup
-  const src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
-  const __html = `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${id}');`;
+    // Setup
+    const src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+    const __html = `window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${id}');`;
 
-  return (
-    <>
-      <script async={true} defer={true} src={src} type="text/javascript" />
-      <script dangerouslySetInnerHTML={{ __html }} type="text/javascript" />
-    </>
-  );
+    return (
+        <>
+            <script async={true} defer={true} src={src} type="text/javascript" />
+            <script dangerouslySetInnerHTML={{ __html }} type="text/javascript" />
+        </>
+    );
 };

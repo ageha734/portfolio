@@ -4,18 +4,18 @@ import { render } from "@testing-library/react";
 import { AppSocialLink } from "../AppSocialLink";
 
 describe("AppSocialLink Component", () => {
-  const component = render(
-    <AppSocialLink
-      data={{
-        icon: "/path/to/facebook.svg",
-        title: "Facebook",
-        url: "https://facebook.com"
-      }}
-    />
-  );
+    const component = render(
+        <AppSocialLink
+            data={{
+                icon: "/path/to/facebook.svg",
+                title: "Facebook",
+                url: "https://facebook.com",
+            }}
+        />,
+    );
 
-  test("renders the facebook icon and link", () => {
-    expect(component.baseElement).toMatchInlineSnapshot(`
+    test("renders the facebook icon and link", () => {
+        expect(component.baseElement).toMatchInlineSnapshot(`
       <body>
         <div>
           <a
@@ -35,5 +35,5 @@ describe("AppSocialLink Component", () => {
         </div>
       </body>
     `);
-  });
+    });
 });
