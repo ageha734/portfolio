@@ -1,25 +1,23 @@
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import type { DataFunctionArgs, LinksFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { DataFunctionArgs, LinksFunction } from "@remix-run/cloudflare";
+import { json } from "@remix-run/cloudflare";
 
 import { AppFooter } from "~/components/AppFooter";
-import { BASE_URL } from "~/config/settings.server";
+import { BASE_URL } from "~/config/settings";
 import { AppHeader } from "~/components/AppHeader";
 import { AppHeaderMobile } from "~/components/AppHeaderMobile";
 import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/config/constants";
 import { useIntro } from "~/hooks/useIntro";
 import { usePageTracking } from "~/hooks/usePageTracking";
 
-import styles from "~/styles/index.css";
-import tailwind from "~/tailwind.css";
+import styles from "~/styles/index.css?url";
+import tailwind from "~/styles/tailwind.css?url";
 
-export const links: LinksFunction = () => {
-    return [
-        { rel: "stylesheet", href: tailwind },
-        { rel: "stylesheet", href: styles },
-    ];
-};
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: styles },
+  { rel: "stylesheet", href: tailwind },
+];
 
 export const loader = async (args: DataFunctionArgs) => {
     const { request } = args;

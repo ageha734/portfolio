@@ -1,4 +1,4 @@
-import { GRAPHCMS_TOKEN, GRAPHCMS_URL } from "~/config/settings.server";
+import { GRAPHCMS_TOKEN, GRAPHCMS_URL } from "~/config/settings";
 
 /**
  * @name fetchFromGraphCMS

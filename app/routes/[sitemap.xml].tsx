@@ -1,7 +1,7 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/cloudflare";
 import type { Portfolio } from "~/routes/api.portfolio";
 import type { Post } from "~/routes/api.blog";
-import { BASE_URL } from "~/config/settings.server";
+import { BASE_URL } from "~/config/settings";
 import { fetchFromGraphCMS } from "~/utils/graphcms";
 import { getSitemap } from "~/queries/getSitemap";
 import { SITE_UPDATED } from "~/config/constants";

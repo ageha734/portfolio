@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useLocation } from "@remix-run/react";
 
-import { BASE_URL } from "~/config/settings.server";
+import { BASE_URL } from "~/config/settings";
 
 export const usePageTracking = () => {
     const { pathname } = useLocation();

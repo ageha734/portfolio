@@ -1,4 +1,4 @@
-import { MetaDescriptor } from "@remix-run/node";
+import { MetaDescriptor } from "@remix-run/cloudflare";
 import { SITE_AUTHOR, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "./config/constants";
 
 export interface MetaDataOptions {

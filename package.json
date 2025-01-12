@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
+    "build:css": "tailwindcss --output ./app/styles/tailwind.css --minify",
     "deploy": "wrangler pages deploy ./build/client",
     "dev": "remix vite:dev",
     "start": "wrangler pages dev ./build/client",
@@ -43,7 +44,6 @@
     "@biomejs/biome": "1.9.4",
     "@cloudflare/workers-types": "4.20250109.0",
     "@remix-run/dev": "2.15.2",
-    "@remix-run/eslint-config": "2.15.2",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.1.0",
     "@testing-library/user-event": "14.5.2",

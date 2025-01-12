@@ -23,6 +23,6 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     exclude: ["build", "node_modules", "public", ".templates/**"],
-    setupFiles: "./test/setup.ts"
+    setupFiles: "./test/setup.test.ts"
   }
 });

@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/cloudflare";
 import type { LoaderData } from "~/routes/api.blog.$slug";
 import { AppHero } from "~/components/AppHero";
 import { AppWysiwyg } from "~/components/AppWysiwyg";

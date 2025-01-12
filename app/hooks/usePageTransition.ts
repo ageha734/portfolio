@@ -1,5 +1,5 @@
 import { useNavigate } from "@remix-run/react";
-import { BASE_URL } from "~/config/settings.server";
+import { BASE_URL } from "~/config/settings";
 
 export const usePageTransition = () => {
     // Hooks

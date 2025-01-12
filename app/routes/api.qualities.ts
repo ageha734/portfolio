@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/cloudflare";
 
 const qualities = [
     "A problem solver 🧩",

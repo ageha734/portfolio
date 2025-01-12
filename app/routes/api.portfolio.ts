@@ -1,7 +1,7 @@
 import { fetchFromGraphCMS } from "~/utils/graphcms";
 import { getPortfolios } from "~/queries/getPortfolios";
-import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/cloudflare";
+import type { LoaderFunction } from "@remix-run/cloudflare";
 
 export interface Portfolio {
     company: string;
