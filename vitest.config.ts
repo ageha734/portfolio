@@ -1,28 +1,26 @@
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 import { defineConfig } from "vitest/config";
+import tsconfigPaths from "vite-tsconfig-paths";
 
-/**
- * @external https://vitejs.dev/config/
- */
 export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "~": resolve(__dirname, "./app")
-    }
-  },
-
-  test: {
-    coverage: {
-      all: true,
-      exclude: ["node_modules", "public/build/**/*"],
-      include: [],
-      reporter: ["text", "json", "html"]
+    plugins: [react(), tsconfigPaths()],
+    resolve: {
+        alias: {
+            "~": resolve(__dirname, "./app"),
+        },
     },
-    globals: true,
-    environment: "jsdom",
-    exclude: ["build", "node_modules", "public", ".templates/**"],
-    setupFiles: "./test/setup.test.ts"
-  }
+
+    test: {
+        coverage: {
+            all: true,
+            exclude: ["node_modules", "public/build/**/*"],
+            include: [],
+            reporter: ["text", "json", "html"],
+        },
+        globals: true,
+        environment: "jsdom",
+        include: ["./app/**/*.test.{ts,tsx}"],
+        setupFiles: ["./tests/setup/setup-test-env.ts"],
+    },
 });

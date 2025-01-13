@@ -11,12 +11,17 @@ import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/conf
 import { useIntro } from "~/hooks/useIntro";
 import { usePageTracking } from "~/hooks/usePageTracking";
 
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
+
 import styles from "~/styles/index.css?url";
+import font from "~/styles/fonts.css?url";
 import tailwind from "~/styles/tailwind.css?url";
 
 export const links: LinksFunction = () => [
-  { rel: "stylesheet", href: styles },
-  { rel: "stylesheet", href: tailwind },
+    { rel: "stylesheet", href: styles },
+    { rel: "stylesheet", href: font },
+    { rel: "stylesheet", href: tailwind },
 ];
 
 export const loader = async (args: DataFunctionArgs) => {
@@ -33,6 +38,7 @@ export const loader = async (args: DataFunctionArgs) => {
 
 export const meta: MetaFunction = (args) => {
     return [
+        { charset: "utf-8" },
         {
             title: SITE_TITLE,
         },
@@ -40,6 +46,7 @@ export const meta: MetaFunction = (args) => {
             name: "description",
             content: args.data.description,
         },
+        { viewport: "width=device-width,initial-scale=1" },
         {
             name: "image",
             content: `${SITE_URL}${SITE_SHARE_IMAGE}`,
@@ -78,14 +85,16 @@ export default function App() {
                 <link href={favicon} rel="mask-icon" type="image/svg+xml" />
                 <link href={manifest} rel="manifest" />
 
-                <Links />
                 <Meta />
+                <Links />
             </head>
             <body>
                 <AppHeader />
                 <AppHeaderMobile />
                 <main>
-                    <Outlet />
+                    <I18nextProvider i18n={i18n}>
+                        <Outlet />
+                    </I18nextProvider>
                 </main>
                 <AppFooter />
 
