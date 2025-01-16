@@ -1,13 +1,32 @@
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import type { LinksFunction } from "@remix-run/cloudflare";
+import { createCookieSessionStorage, json } from "@remix-run/cloudflare";
+import {
+    Links,
+    LiveReload,
+    Meta,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+    useFetcher,
+    useLoaderData,
+    useNavigation,
+    useRouteError,
+} from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
-import type { DataFunctionArgs, LinksFunction } from "@remix-run/cloudflare";
-import { json } from "@remix-run/cloudflare";
 
+import { useEffect } from "react";
 import { AppFooter } from "~/components/AppFooter";
-import { BASE_URL } from "~/config/settings";
 import { AppHeader } from "~/components/AppHeader";
 import { AppHeaderMobile } from "~/components/AppHeaderMobile";
+import { Progress } from "~/components/progress";
+import { ThemeProvider, themeStyles } from "~/components/theme-provider";
+import { VisuallyHidden } from "~/components/visually-hidden";
+
+import { Error } from "~/layouts/error";
+import { Navbar } from "~/layouts/navbar";
+
 import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/config/constants";
+import { BASE_URL } from "~/config/settings";
 import { useIntro } from "~/hooks/useIntro";
 import { usePageTracking } from "~/hooks/usePageTracking";
 
@@ -15,38 +34,78 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 
 import styles from "~/styles/index.css?url";
-import font from "~/styles/fonts.css?url";
 import tailwind from "~/styles/tailwind.css?url";
 
 export const links: LinksFunction = () => [
+    { rel: "manifest", href: "/manifest.json" },
+    { rel: "icon", href: "/favicon.ico" },
+    { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+    { rel: "shortcut_icon", href: "/shortcut.png", type: "image/png", sizes: "64x64" },
+    { rel: "apple-touch-icon", href: "/icon-256.png", sizes: "256x256" },
+    { rel: "author", href: "/humans.txt", type: "text/plain" },
     { rel: "stylesheet", href: styles },
-    { rel: "stylesheet", href: font },
     { rel: "stylesheet", href: tailwind },
 ];
 
-export const loader = async (args: DataFunctionArgs) => {
-    const { request } = args;
+export const loader = async ({ request, context }) => {
+    const { url } = request;
+    const { pathname } = new URL(url);
+    const pathnameSliced = pathname.endsWith("/") ? pathname.slice(0, -1) : url;
+    const canonicalUrl = `${BASE_URL}${pathnameSliced}`;
 
-    const baseUrl = BASE_URL;
-    const canonical = request.url;
-    const header = request.headers.get("cookie");
-    // const cookie = (await cookieTheme.parse(header)) ?? {};
-    // const { theme = "light" } = cookie;
+    const { getSession, commitSession } = createCookieSessionStorage({
+        cookie: {
+            name: "__session",
+            httpOnly: true,
+            maxAge: 604_800,
+            path: "/",
+            sameSite: "lax",
+            secrets: [context.cloudflare.env.SESSION_SECRET || " "],
+            secure: true,
+        },
+    });
 
-    return json({ baseUrl, canonical });
+    const session = await getSession(request.headers.get("Cookie"));
+    const theme = session.get("theme") || "dark";
+
+    return json(
+        { canonicalUrl, theme },
+        {
+            headers: {
+                "Set-Cookie": await commitSession(session),
+            },
+        },
+    );
 };
 
 export const meta: MetaFunction = (args) => {
     return [
-        { charset: "utf-8" },
+        {
+            charset: "utf-8",
+        },
+        {
+            tagName: "meta",
+            name: "viewport",
+            content: "width=device-width,initial-scale=1",
+        },
+        {
+            tagName: "meta",
+            name: "theme-color",
+            content: args.data.theme === "dark" ? "#111" : "#F2F2F2",
+        },
+        {
+            tagName: "meta",
+            name: "color-scheme",
+            content: args.data.theme === "light" ? "light dark" : "dark light",
+        },
         {
             title: SITE_TITLE,
         },
         {
+            tagName: "meta",
             name: "description",
             content: args.data.description,
         },
-        { viewport: "width=device-width,initial-scale=1" },
         {
             name: "image",
             content: `${SITE_URL}${SITE_SHARE_IMAGE}`,
@@ -56,20 +115,27 @@ export const meta: MetaFunction = (args) => {
             rel: "canonical",
             href: args.data.canonical,
         },
-        // ...getMetaData({
-        //   canonical: args.data?.canonical,
-        // })
     ];
 };
 
 export default function App() {
-    // Hooks
-    const data = useLoaderData<typeof loader>();
+    const fetcher = useFetcher();
+    const { state } = useNavigation();
 
-    // Setup
-    const { canonical } = data;
-    const favicon = "/images/svg/logo.svg";
-    const manifest = "/manifest.json";
+    if (fetcher.formData?.has("theme")) {
+        theme = fetcher.formData.get("theme");
+    }
+
+    function toggleTheme(newTheme) {
+        fetcher.submit(
+            { theme: newTheme ? newTheme : theme === "dark" ? "light" : "dark" },
+            { action: "/api/set-theme", method: "post" },
+        );
+    }
+
+    useEffect(() => {
+        console.info(`${config.ascii}\n`, `Taking a peek huh? Check out the source code: ${config.repo}\n\n`);
+    }, []);
 
     // Life Cycle
     useIntro();
@@ -78,30 +144,53 @@ export default function App() {
     return (
         <html lang="en">
             <head>
-                <link href={canonical} rel="canonical" />
-                <link href={favicon} rel="apple-touch-icon" sizes="48x48" />
-                <link href={favicon} rel="favicon" />
-                <link href={favicon} rel="icon" type="image/svg+xml" />
-                <link href={favicon} rel="mask-icon" type="image/svg+xml" />
-                <link href={manifest} rel="manifest" />
-
+                <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
                 <Meta />
                 <Links />
             </head>
-            <body>
-                <AppHeader />
-                <AppHeaderMobile />
-                <main>
+            <body data-theme={theme}>
+                <ThemeProvider theme={theme} toggleTheme={toggleTheme}>
                     <I18nextProvider i18n={i18n}>
-                        <Outlet />
+                        <Progress />
+                        <VisuallyHidden showOnFocus as="a" className={styles.skip} href="#main-content">
+                            Skip to main content
+                        </VisuallyHidden>
+                        <Navbar />
+                        <AppHeader />
+                        <AppHeaderMobile />
+                        <main
+                            id="main-content"
+                            className={styles.container}
+                            tabIndex={-1}
+                            data-loading={state === "loading"}
+                        >
+                            <Outlet />
+                        </main>
+                        <AppFooter />
                     </I18nextProvider>
-                </main>
-                <AppFooter />
-
-                {/* Remix */}
+                </ThemeProvider>
                 <ScrollRestoration />
                 <Scripts />
                 <LiveReload />
+            </body>
+        </html>
+    );
+}
+
+export function ErrorBoundary() {
+    const error = useRouteError();
+
+    return (
+        <html lang="en">
+            <head>
+                <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
+                <Meta />
+                <Links />
+            </head>
+            <body data-theme={theme}>
+                <Error error={error} />
+                <ScrollRestoration />
+                <Scripts />
             </body>
         </html>
     );
