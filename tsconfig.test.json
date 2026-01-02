@@ -1,0 +1,26 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "./tsconfig.app.json",
+    "compilerOptions": {
+        "types": [
+            "@remix-run/cloudflare",
+            "vite/client",
+            "@cloudflare/workers-types/2023-07-01",
+            "vitest/globals",
+            "@testing-library/jest-dom",
+            "node"
+        ]
+    },
+    "include": [
+        "env.d.ts",
+        "tests/**/*.ts",
+        "tests/**/*.tsx",
+        "app/**/*.test.ts",
+        "app/**/*.test.tsx"
+    ],
+    "exclude": [
+        "node_modules",
+        "build",
+        "docs"
+    ]
+}

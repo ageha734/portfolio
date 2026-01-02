@@ -21,13 +21,17 @@ export default defineConfig({
     },
     plugins: [
         mdx({
-            rehypePlugins: [[rehypeImgSize, { dir: "public" }], rehypeSlug, rehypePrism],
-            remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+            rehypePlugins: [
+                [rehypeImgSize, { dir: "public" }],
+                rehypeSlug,
+                rehypePrism,
+            ] as any,
+            remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] as any,
             providerImportSource: "@mdx-js/react",
         }),
         remixCloudflareDevProxy(),
         remix({
-            ignoredRouteFiles: ["**/.*", "**/*.test.{js,jsx,ts,tsx}"],
+            ignoredRouteFiles: ["**/.*", "**/*.test.{ts,tsx}"],
             future: {
                 v3_fetcherPersist: true,
                 v3_relativeSplatPath: true,

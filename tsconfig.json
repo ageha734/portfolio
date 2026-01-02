@@ -1,32 +1,12 @@
 {
-    "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "files": [],
+    "references": [
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.node.json" },
+        { "path": "./tsconfig.test.json" }
+    ],
     "ts-node": {
         "swc": true
-    },
-    "compilerOptions": {
-        "lib": ["DOM", "DOM.Iterable", "ES2022"],
-        "types": ["@remix-run/cloudflare", "vite/client", "@cloudflare/workers-types/2023-07-01"],
-        "isolatedModules": true,
-        "esModuleInterop": true,
-        "jsx": "react-jsx",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "allowImportingTsExtensions": true,
-        "verbatimModuleSyntax": true,
-        "resolveJsonModule": true,
-        "target": "ES2022",
-        "moduleDetection": "force",
-        "strict": true,
-        "allowJs": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "baseUrl": ".",
-        "paths": {
-            "~/*": ["./app/*"]
-        },
-        "noEmit": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUnusedParameters": false,
-        "noPropertyAccessFromIndexSignature": false
     }
 }

@@ -1,0 +1,22 @@
+[install]
+dev = true
+peer = true
+optional = true
+frozenLockfile = false
+saveTextLockfile = true
+linker = "hoisted"
+
+[install.cache]
+dir = ".cache/bun"
+disable = false
+disableManifest = false
+
+[install.lockfile]
+save = true
+print = "yarn"
+
+[install.security]
+scanner = "@acme/bun-security-scanner"
+
+[runtime]
+node = true

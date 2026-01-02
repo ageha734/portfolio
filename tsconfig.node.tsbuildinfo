@@ -1,0 +1,1 @@
+{"root":["./env.d.ts","./functions/[[path]].ts","./orval.config.ts","./playwright.config.ts","./playwright.ladle.config.ts","./tailwind.config.ts","./vite.config.ts","./vite.ladle.config.ts","./vitest.config.ts","./codecept.conf.ts"],"version":"5.9.3"}
