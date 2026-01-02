@@ -3,33 +3,46 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
-    title: "Portfolio Documentation",
-    tagline: "Documentation for portfolio project",
-    favicon: "img/favicon.ico",
+    title: "Tech Docs",
+    tagline: "Documentation for tech projects",
+    favicon: "favicon.ico",
+
+    future: {
+        v4: true,
+    },
+
     url: "https://ageha734.github.io",
-    baseUrl: "/portfolio/",
+    baseUrl: "/docs/",
     organizationName: "ageha734",
-    projectName: "portfolio",
+    projectName: "docs",
 
     onBrokenLinks: "throw",
-    onBrokenMarkdownLinks: "warn",
+
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: "warn",
+        },
+    },
 
     i18n: {
         defaultLocale: "ja",
         locales: ["ja"],
     },
 
+    staticDirectories: ["public"],
+
     presets: [
         [
             "classic",
             {
                 docs: {
+                    path: "./docs/prompt",
                     sidebarPath: "./sidebars.ts",
-                    editUrl: "https://github.com/ageha734/portfolio/tree/master/docs/",
+                    editUrl: "https://github.com/ageha734/portfolio-docs/tree/master/docs/",
                 },
                 blog: false,
                 theme: {
-                    customCss: "./src/css/custom.css",
+                    customCss: "./docs/css/custom.css",
                 },
             } satisfies Preset.Options,
         ],
@@ -41,7 +54,7 @@ const config: Config = {
             title: "Portfolio Docs",
             logo: {
                 alt: "Portfolio Logo",
-                src: "img/logo.svg",
+                src: "branding/icons/icon-96.png",
             },
             items: [
                 {
@@ -49,12 +62,7 @@ const config: Config = {
                     sidebarId: "tutorialSidebar",
                     position: "left",
                     label: "Docs",
-                },
-                {
-                    href: "https://github.com/ageha734/portfolio",
-                    label: "GitHub",
-                    position: "right",
-                },
+                }
             ],
         },
         footer: {
@@ -68,16 +76,7 @@ const config: Config = {
                             to: "/prompt/architecture/overview",
                         },
                     ],
-                },
-                {
-                    title: "Community",
-                    items: [
-                        {
-                            label: "GitHub",
-                            href: "https://github.com/ageha734/portfolio",
-                        },
-                    ],
-                },
+                }
             ],
             copyright: `Copyright © ${new Date().getFullYear()} Portfolio Project. Built with Docusaurus.`,
         },

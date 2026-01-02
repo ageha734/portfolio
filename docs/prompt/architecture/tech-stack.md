@@ -76,9 +76,11 @@
 
 ### Component Development
 
-- **Ladle** (v5.1.1): コンポーネント開発環境
-  - ストーリーブック風UI
+- **Storybook** (v8.6.14): コンポーネント開発環境
+  - ストーリーブックUI
   - コンポーネントの分離開発
+  - アクセシビリティテスト統合
+  - インタラクションテスト対応
 
 ## Libraries & Utilities
 
@@ -87,6 +89,15 @@
 - **Framer Motion** (v12.23.26): アニメーションライブラリ
 - **GSAP** (v3.14.2): 高度なアニメーション
 - **Fireworks.js** (v2.10.8): 花火エフェクト
+- **Radix UI**: アクセシブルなUIコンポーネント
+  - `@radix-ui/react-dialog` (v1.1.15)
+  - `@radix-ui/react-dropdown-menu` (v2.1.16)
+  - `@radix-ui/react-navigation-menu` (v1.2.14)
+  - `@radix-ui/react-separator` (v1.1.8)
+  - `@radix-ui/react-slot` (v1.2.4)
+- **Three.js** (v0.182.0): 3Dグラフィックスライブラリ
+  - `three-stdlib` (v2.36.1): 標準ライブラリ拡張
+- **Lucide React** (v0.562.0): アイコンライブラリ
 
 ### Data & Content
 
@@ -101,6 +112,9 @@
 
 - **date-fns** (v4.1.0): 日付処理
 - **classnames** (v2.5.1): クラス名結合
+- **clsx** (v2.1.1): クラス名結合ユーティリティ
+- **tailwind-merge** (v3.4.0): Tailwindクラス名マージ
+- **class-variance-authority** (v0.7.1): バリアント管理
 - **zod** (v4.3.4): スキーマバリデーション
 - **reading-time** (v1.5.0): 読了時間計算
 

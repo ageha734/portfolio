@@ -187,18 +187,3 @@ export const Component = (props: ComponentProps) => {
 // 4. デフォルトエクスポート（必要な場合のみ）
 export default Component;
 ```
-
-### ディレクトリ構造
-
-FSDアーキテクチャに従い、各レイヤーで以下の構造を維持：
-
-```
-feature-name/
-├── ui/
-│   └── ComponentName.tsx
-├── model/
-│   └── types.ts
-├── lib/
-│   └── utils.ts
-└── index.ts
-```

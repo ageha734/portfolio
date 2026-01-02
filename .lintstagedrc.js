@@ -31,5 +31,12 @@ export default {
             `bun run lint:shell:check -- ${files}`,
         ];
     },
-    '**/*.test.{ts,tsx}': ['bun run test:unit:run'],
+    '*.tsp': (filenames) => {
+        const files = filenames.map((f) => `"${f}"`).join(' ');
+        return [
+            `bun run fmt:tsp:fix -- ${files}`,
+            `bun run lint:tsp:fix -- ${files}`,
+        ];
+    },
+    '**/*.test.{ts,tsx}': ['bun run test'],
 };

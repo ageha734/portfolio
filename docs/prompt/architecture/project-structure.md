@@ -1,43 +1,8 @@
 # Project Structure
 
-## ディレクトリ構造
-
-```text
-app/
-├── root.tsx          # ルートコンポーネント
-├── entry.client.tsx  # クライアントエントリーポイント
-├── entry.server.tsx  # サーバーエントリーポイント
-├── routes/           # ページレイヤー（Remixルート）
-├── widgets/          # 大きなUIブロック
-│   ├── footer/       # フッターウィジェット
-│   ├── navbar/       # ナビゲーションバー
-│   ├── hero/         # ヒーローセクション
-│   ├── sections/     # 各種セクション
-│   ├── error/        # エラーページ
-│   ├── post/         # 投稿ウィジェット
-│   ├── project/      # プロジェクトウィジェット
-│   └── sandbox/      # サンドボックスウィジェット
-├── features/         # ユーザー機能
-│   ├── blog-preview/ # ブログプレビュー機能
-│   ├── portfolio-preview/  # ポートフォリオプレビュー機能
-│   ├── share-button/ # シェアボタン機能
-│   └── tracking/     # トラッキング機能
-├── entities/         # ドメインモデル
-│   ├── blog/         # ブログエンティティ
-│   ├── portfolio/    # ポートフォリオエンティティ
-│   └── user/         # ユーザーエンティティ
-└── shared/           # 共通リソース
-    ├── ui/           # UIコンポーネント
-    ├── lib/          # ユーティリティ関数
-    ├── api/          # API関連
-    ├── config/       # 設定ファイル
-    ├── hooks/        # カスタムフック
-    └── types/        # 型定義（廃止予定、entitiesに移行）
-```
-
 ## 各レイヤーの説明
 
-### app/
+### /
 
 アプリケーションのエントリーポイントを配置します。
 
@@ -91,7 +56,7 @@ feature-name/
 ├── model/
 │   └── types.ts
 ├── lib/
-│   └── utils.ts
+│   └── LibraryName.ts
 └── index.ts
 ```
 
@@ -110,7 +75,7 @@ entity-name/
 ├── model/
 │   └── types.ts
 ├── lib/
-│   └── utils.ts
+│   └── LibraryName.ts
 └── index.ts
 ```
 

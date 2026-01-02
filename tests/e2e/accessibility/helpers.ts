@@ -1,4 +1,4 @@
-export type TestContext = "app" | "ladle";
+export type TestContext = "app" | "storybook";
 
 export interface TestConfig {
     name: string;
@@ -20,8 +20,8 @@ export function getTestConfigs(): TestConfig[] {
             url: "/",
         },
         {
-            name: "Ladle (Home)",
-            context: "ladle",
+            name: "Storybook (Home)",
+            context: "storybook",
             url: "/iframe.html?id=pages-home--default",
         },
     ];

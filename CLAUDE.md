@@ -14,14 +14,12 @@ Feature-Sliced Design (FSD) を採用。詳細は [`docs/prompt/architecture/`](
 # 開発サーバー
 bun run dev
 
-# テスト
-bun run test        # ユニットテスト
-bun run e2e         # E2Eテスト
-bun run coverage    # カバレッジ
-
 # コード品質
 bun run fmt:check   # フォーマットチェック
 bun run lint        # リント
+bun run coverage    # カバレッジ
+bun run test        # ユニットテスト
+bun run e2e         # E2Eテスト
 
 # ビルド
 bun run build

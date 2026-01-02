@@ -1,3 +1,7 @@
+/**
+ * Custom CSS for Docusaurus
+ */
+
 :root {
     --ifm-color-primary: #2e8555;
     --ifm-color-primary-dark: #29784c;
@@ -17,6 +21,6 @@
     --ifm-color-primary-darkest: #1a8870;
     --ifm-color-primary-light: #29d5b0;
     --ifm-color-primary-lighter: #32d8b4;
-    --ifm-color-primary-lightest: #4fddc2;
+    --ifm-color-primary-lightest: #4fddbf;
     --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
