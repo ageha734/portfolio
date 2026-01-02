@@ -2,6 +2,7 @@ import type { LoaderFunction } from "@remix-run/cloudflare";
 
 import { fetchFromGraphCMS } from "~/shared/api/graphcms";
 import { getPost } from "~/shared/api/queries/getPost";
+import { slugSchema } from "~/shared/validation";
 
 export interface Post {
     content: {
@@ -31,12 +32,18 @@ type GraphCMSResponse = {
 export const loader: LoaderFunction = async (args) => {
     const { slug } = args.params;
 
-    const data = await fetchFromGraphCMS(getPost, { slug });
+    const slugResult = slugSchema.safeParse(slug);
+    if (!slugResult.success) {
+        throw new Response("Invalid slug parameter", { status: 400 });
+    }
+
+    const validatedSlug = slugResult.data;
+    const data = await fetchFromGraphCMS(getPost, { slug: validatedSlug });
     const jsonData: unknown = await data.json();
     const res: GraphCMSResponse = jsonData as GraphCMSResponse;
 
     if (!res.data.post) {
-        throw new Response(`Post "${slug}" not found`, { status: 404 });
+        throw new Response(`Post "${validatedSlug}" not found`, { status: 404 });
     }
 
     return Response.json(res.data.post as LoaderData);
