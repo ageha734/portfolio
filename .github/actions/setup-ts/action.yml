@@ -1,0 +1,25 @@
+name: 'Setup Bun'
+description: 'Setup Bun and install dependencies'
+inputs:
+    bun-version:
+        description: 'Bun version to use'
+        required: false
+        default: '1.1.43'
+    working-directory:
+        description: 'Working directory for installing dependencies'
+        required: false
+        default: '.'
+runs:
+    using: 'composite'
+    steps:
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.0
+      with:
+          bun-version: ${{ inputs.bun-version }}
+    - name: Clear bun cache
+      shell: bash
+      run: bun cache clean --force
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: bun install
