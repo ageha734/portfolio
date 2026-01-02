@@ -22,7 +22,7 @@ export const Info = () => (
         <div className="mt-4 bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
             <p className="text-sm">
                 ⚠️ このコンポーネントはRemixのhooksに依存しているため、
-                Ladle上での完全な動作確認にはRemixのコンテキストが必要です。
+                Storybook上での完全な動作確認にはRemixのコンテキストが必要です。
             </p>
         </div>
     </div>
