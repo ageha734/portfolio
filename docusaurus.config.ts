@@ -8,7 +8,7 @@ const config: Config = {
     favicon: "favicon.ico",
 
     future: {
-        v4: true,
+        v4: false,
     },
 
     url: "https://ageha734.github.io",
@@ -17,19 +17,14 @@ const config: Config = {
     projectName: "docs",
 
     onBrokenLinks: "throw",
-
-    markdown: {
-        hooks: {
-            onBrokenMarkdownLinks: "warn",
-        },
-    },
+    onBrokenMarkdownLinks: "warn",
 
     i18n: {
         defaultLocale: "ja",
         locales: ["ja"],
     },
 
-    staticDirectories: ["public"],
+    staticDirectories: ["docs/static"],
 
     presets: [
         [
