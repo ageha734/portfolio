@@ -1,3 +1,4 @@
+import React from "react";
 import type { GlobalProvider } from "@ladle/react";
 import "~/styles/tailwind.css";
 

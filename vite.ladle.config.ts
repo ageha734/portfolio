@@ -14,5 +14,10 @@ export default defineConfig(({ mode }) => {
 
     return {
         plugins: [react(), tsconfigPaths()],
+        test: {
+            coverage: {
+                reportsDirectory: "./docs/ladle/coverage",
+            },
+        },
     };
 });

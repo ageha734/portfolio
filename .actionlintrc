@@ -1,0 +1,8 @@
+self-hosted-runner:
+  labels: []
+
+job-name:
+  regex: '^run-[a-z][a-z0-9-_]+$'
+
+action-version:
+  require: true

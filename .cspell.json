@@ -1,0 +1,33 @@
+{
+    "$schema": "https://cspell.org/cspell.schema.json",
+    "version": "0.2",
+    "language": "en",
+    "ignorePaths": [
+        ".cache/**",
+        "node_modules/**",
+        "build/**",
+        "public/build/**",
+        "docs/build/**",
+        "docs/.docusaurus/**",
+        "docs/coverage/**",
+        "docs/playwright/report/**",
+        "tests/mocks/generated/**",
+        "*.log",
+        "*.trace",
+        "**/*.test.{ts,tsx}",
+        "**/*.spec.{ts,tsx}",
+        "**/tests/**",
+        "**/*.config.{ts,js}",
+        "**/entry.{client,server}.tsx",
+        "**/root.tsx"
+    ],
+    "words": [],
+    "dictionaries": [],
+    "dictionaryDefinitions": [],
+    "languageSettings": [
+        {
+            "languageId": "markdown",
+            "words": []
+        }
+    ]
+}

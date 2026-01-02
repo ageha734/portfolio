@@ -1,4 +1,60 @@
+# Dependencies
 **/node_modules
+
+# Version control
 .git
-build
+.gitignore
+.gitattributes
+
+# Build outputs
+build/
+dist/
+public/build/
+docs/build/
+docs/.docusaurus/
+
+# Test reports
+docs/coverage/
+docs/playwright/report/
+
+# Generated files
+tests/mocks/generated/
+
+# Cache
+.cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs and traces
+*.log
 *.trace
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+**/*.test.{ts,tsx}
+**/*.spec.{ts,tsx}
+**/tests/**
+
+# Config files (keep only necessary ones)
+**/*.config.{ts,js}
+!package.json
+!tsconfig.json
+
+# Documentation
+docs/
+README*.md
+*.md
+!package.json
