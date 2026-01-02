@@ -2,7 +2,7 @@ import type { LoaderData } from "~/shared/api/blog";
 import type { MetaFunction } from "@remix-run/react";
 import { Hero } from "~/widgets/hero";
 import { BlogFeatured, BlogPreview, BlogUpcoming } from "~/features/blog-preview";
-import { filterBlogPosts } from "~/entities/blog/lib/blog";
+import { filterBlogPosts } from "~/entities/blog/lib/filter-posts";
 import { SITE_AUTHOR, SITE_TITLE } from "~/shared/config/constants";
 import { useLoaderData } from "@remix-run/react";
 
@@ -45,7 +45,6 @@ export default function Blog() {
                 <div className="grid w-full gap-10 md:grid-cols-2 lg:grid-cols-3">
                     {data.technical.data.map((post) => (
                         <BlogPreview
-                            content={post.content.html}
                             date={post.date}
                             heading="h2"
                             image={post.imageTemp}
@@ -77,7 +76,6 @@ export default function Blog() {
                 <div className="grid w-full gap-10 md:grid-cols-2 lg:grid-cols-3">
                     {data.diy.data.map((post) => (
                         <BlogPreview
-                            content={post.content.html}
                             date={post.date}
                             heading="h2"
                             image={post.imageTemp}

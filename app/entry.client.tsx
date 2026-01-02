@@ -2,7 +2,6 @@ import { RemixBrowser } from "@remix-run/react";
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 import * as Sentry from "@sentry/remix";
-import { inspect } from "@xstate/inspect";
 import {
     SENTRY_DSN,
     SENTRY_ENVIRONMENT,
@@ -13,9 +12,14 @@ import {
 } from "~/shared/config/settings";
 
 if (XSTATE_INSPECTOR_ENABLED) {
-    inspect({
-        iframe: false,
-    });
+    try {
+        const module = await import("@xstate/inspect");
+        module.inspect({
+            iframe: false,
+        });
+    } catch (error) {
+        console.warn("Failed to load XState inspector:", error);
+    }
 }
 
 if (SENTRY_DSN !== "__undefined__") {

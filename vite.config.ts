@@ -6,6 +6,7 @@ import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 declare module "@remix-run/cloudflare" {
@@ -20,6 +21,7 @@ export default defineConfig({
         assetsInlineLimit: 1024,
     },
     plugins: [
+        tailwindcss(),
         mdx({
             rehypePlugins: [
                 [rehypeImgSize, { dir: "public" }],

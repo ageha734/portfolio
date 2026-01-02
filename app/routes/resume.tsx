@@ -1,18 +1,9 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/cloudflare";
+import type { MetaFunction } from "@remix-run/cloudflare";
 import { ShareButton } from "~/features/share-button";
 import { SocialLink } from "~/shared/ui";
 import { SectionEducation, SectionExperience } from "~/widgets/sections";
 import { SITE_AUTHOR, SITE_TITLE, SITE_YEAR } from "~/shared/config/constants";
 import { social } from "~/shared/data/resume";
-import styles from "~/styles/resume.css";
-
-export const links: LinksFunction = () => [
-    {
-        href: styles,
-        media: "print",
-        rel: "stylesheet",
-    },
-];
 
 export const meta: MetaFunction = (args) => {
     return [
