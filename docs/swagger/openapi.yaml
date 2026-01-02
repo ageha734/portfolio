@@ -1,0 +1,200 @@
+
+openapi: 3.0.3
+info:
+    title: GraphCMS API
+    description: |
+        GraphCMS GraphQL API仕様書
+
+        このAPIは、ポートフォリオサイトで使用するGraphCMSのGraphQL APIの仕様を定義しています。
+    version: 1.0.0
+    contact:
+        name: API Support
+        email: info@ageha734.jp
+
+servers:
+    - url: https://api.graphcms.com/v2
+        description: GraphCMS Production API
+    - url: https://api.graphcms.com/v2/staging
+        description: GraphCMS Staging API
+
+paths:
+    /graphql:
+        post:
+            summary: GraphQL Query
+            description: GraphQLエンドポイントへのPOSTリクエスト
+            operationId: graphqlQuery
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/GraphQLRequest"
+            responses:
+                "200":
+                    description: 成功レスポンス
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/GraphQLResponse"
+                "400":
+                    description: バリデーションエラー
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                "401":
+                    description: 認証エラー
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                "404":
+                    description: リソースが見つかりません
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+
+components:
+    schemas:
+        GraphQLRequest:
+            type: object
+            required:
+                - query
+            properties:
+                query:
+                    type: string
+                    description: GraphQLクエリ文字列
+                    example: |
+                        query {
+                            posts(orderBy: date_DESC) {
+                                id
+                                title
+                                slug
+                                date
+                            }
+                        }
+                variables:
+                    type: object
+                    description: クエリ変数
+                    additionalProperties: true
+
+        GraphQLResponse:
+            type: object
+            properties:
+                data:
+                    type: object
+                    description: クエリ結果データ
+                    additionalProperties: true
+                errors:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/GraphQLError"
+
+        GraphQLError:
+            type: object
+            properties:
+                message:
+                    type: string
+                    description: エラーメッセージ
+                locations:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            line:
+                                type: integer
+                            column:
+                                type: integer
+                path:
+                    type: array
+                    items:
+                        type: string
+
+        Error:
+            type: object
+            properties:
+                message:
+                    type: string
+                errors:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/GraphQLError"
+
+        Post:
+            type: object
+            properties:
+                id:
+                    type: string
+                title:
+                    type: string
+                slug:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                description:
+                    type: string
+                content:
+                    type: object
+                    properties:
+                        html:
+                            type: string
+                        raw:
+                            type: object
+                imageTemp:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
+                sticky:
+                    type: boolean
+                intro:
+                    type: string
+
+        Portfolio:
+            type: object
+            properties:
+                id:
+                    type: string
+                title:
+                    type: string
+                slug:
+                    type: string
+                company:
+                    type: string
+                date:
+                    type: string
+                    format: date
+                current:
+                    type: boolean
+                overview:
+                    type: string
+                description:
+                    type: string
+                thumbnailTemp:
+                    type: string
+                images:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            url:
+                                type: string
+
+        Tag:
+            type: object
+            properties:
+                name:
+                    type: string
+
+    securitySchemes:
+        BearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+            description: GraphCMS API Token
+
+security:
+    - BearerAuth: []
