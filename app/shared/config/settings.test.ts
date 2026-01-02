@@ -2,10 +2,18 @@ import { expect, test, describe, vi, beforeEach } from "vitest";
 import {
     BASE_URL,
     GOOGLE_ANALYTICS,
+    GOOGLE_ANALYTICS_ENABLED,
     GOOGLE_TAG_MANAGER,
+    GOOGLE_TAG_MANAGER_ENABLED,
     GRAPHCMS_ADMIN,
     GRAPHCMS_TOKEN,
     GRAPHCMS_URL,
+    XSTATE_INSPECTOR_ENABLED,
+    SENTRY_DSN,
+    SENTRY_ENVIRONMENT,
+    SENTRY_TRACES_SAMPLE_RATE,
+    SENTRY_REPLAY_SAMPLE_RATE,
+    SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE,
 } from "./settings";
 
 describe("settings", () => {
@@ -31,6 +39,14 @@ describe("settings", () => {
         expect(typeof GOOGLE_TAG_MANAGER).toBe("string");
     });
 
+    test("should export GOOGLE_ANALYTICS_ENABLED as boolean", () => {
+        expect(typeof GOOGLE_ANALYTICS_ENABLED).toBe("boolean");
+    });
+
+    test("should export GOOGLE_TAG_MANAGER_ENABLED as boolean", () => {
+        expect(typeof GOOGLE_TAG_MANAGER_ENABLED).toBe("boolean");
+    });
+
     test("should export GRAPHCMS_ADMIN with fallback", () => {
         expect(GRAPHCMS_ADMIN).toBeTruthy();
         expect(typeof GRAPHCMS_ADMIN).toBe("string");
@@ -44,5 +60,37 @@ describe("settings", () => {
     test("should export GRAPHCMS_URL with fallback", () => {
         expect(GRAPHCMS_URL).toBeTruthy();
         expect(typeof GRAPHCMS_URL).toBe("string");
+    });
+
+    test("should export XSTATE_INSPECTOR_ENABLED as boolean", () => {
+        expect(typeof XSTATE_INSPECTOR_ENABLED).toBe("boolean");
+    });
+
+    test("should export SENTRY_DSN with fallback", () => {
+        expect(SENTRY_DSN).toBeTruthy();
+        expect(typeof SENTRY_DSN).toBe("string");
+    });
+
+    test("should export SENTRY_ENVIRONMENT with default value", () => {
+        expect(SENTRY_ENVIRONMENT).toBeTruthy();
+        expect(typeof SENTRY_ENVIRONMENT).toBe("string");
+    });
+
+    test("should export SENTRY_TRACES_SAMPLE_RATE as number", () => {
+        expect(typeof SENTRY_TRACES_SAMPLE_RATE).toBe("number");
+        expect(SENTRY_TRACES_SAMPLE_RATE).toBeGreaterThanOrEqual(0);
+        expect(SENTRY_TRACES_SAMPLE_RATE).toBeLessThanOrEqual(1);
+    });
+
+    test("should export SENTRY_REPLAY_SAMPLE_RATE as number", () => {
+        expect(typeof SENTRY_REPLAY_SAMPLE_RATE).toBe("number");
+        expect(SENTRY_REPLAY_SAMPLE_RATE).toBeGreaterThanOrEqual(0);
+        expect(SENTRY_REPLAY_SAMPLE_RATE).toBeLessThanOrEqual(1);
+    });
+
+    test("should export SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE as number", () => {
+        expect(typeof SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE).toBe("number");
+        expect(SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE).toBeGreaterThanOrEqual(0);
+        expect(SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE).toBeLessThanOrEqual(1);
     });
 });

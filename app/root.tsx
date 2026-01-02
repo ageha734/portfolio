@@ -20,10 +20,18 @@ import { ErrorPage } from "~/widgets/error";
 import type { ErrorProps } from "~/widgets/error";
 
 import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/shared/config/constants";
-import { BASE_URL, GOOGLE_TAG_MANAGER } from "~/shared/config/settings";
+import {
+    BASE_URL,
+    GOOGLE_ANALYTICS,
+    GOOGLE_ANALYTICS_ENABLED,
+    GOOGLE_TAG_MANAGER,
+    GOOGLE_TAG_MANAGER_ENABLED,
+    SENTRY_DSN,
+} from "~/shared/config/settings";
 import { useIntro } from "~/shared/hooks/lib/useIntro";
 import { usePageTracking } from "~/shared/hooks/lib/usePageTracking";
-import { TrackingGTMScript, TrackingGTMIFrame } from "~/features/tracking";
+import { TrackingGA, TrackingGTMScript, TrackingGTMIFrame } from "~/features/tracking";
+import * as Sentry from "@sentry/remix";
 
 import { I18nextProvider } from "react-i18next";
 import i18n from "~/shared/config/i18n";
@@ -134,10 +142,14 @@ export default function App() {
             <head>
                 <Meta />
                 <Links />
-                {GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMScript id={GOOGLE_TAG_MANAGER} />}
+                {GOOGLE_ANALYTICS_ENABLED &&
+                    GOOGLE_ANALYTICS !== "__undefined__" && <TrackingGA id={GOOGLE_ANALYTICS} />}
+                {GOOGLE_TAG_MANAGER_ENABLED &&
+                    GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMScript id={GOOGLE_TAG_MANAGER} />}
             </head>
             <body data-theme={theme} className={theme === "dark" ? "dark" : ""}>
-                {GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMIFrame id={GOOGLE_TAG_MANAGER} />}
+                {GOOGLE_TAG_MANAGER_ENABLED &&
+                    GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMIFrame id={GOOGLE_TAG_MANAGER} />}
                 <I18nextProvider i18n={i18n}>
                     <Navbar />
                     <Header />
@@ -163,6 +175,10 @@ export default function App() {
 
 export function ErrorBoundary() {
     const error = useRouteError();
+
+    if (SENTRY_DSN !== "__undefined__") {
+        Sentry.captureException(error);
+    }
 
     return (
         <html lang="en">

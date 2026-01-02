@@ -1,6 +1,33 @@
 import { RemixBrowser } from "@remix-run/react";
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
+import * as Sentry from "@sentry/remix";
+import { inspect } from "@xstate/inspect";
+import {
+    SENTRY_DSN,
+    SENTRY_ENVIRONMENT,
+    SENTRY_TRACES_SAMPLE_RATE,
+    SENTRY_REPLAY_SAMPLE_RATE,
+    SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE,
+    XSTATE_INSPECTOR_ENABLED,
+} from "~/shared/config/settings";
+
+if (XSTATE_INSPECTOR_ENABLED) {
+    inspect({
+        iframe: false,
+    });
+}
+
+if (SENTRY_DSN !== "__undefined__") {
+    Sentry.init({
+        dsn: SENTRY_DSN,
+        environment: SENTRY_ENVIRONMENT,
+        tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+        replaysSessionSampleRate: SENTRY_REPLAY_SAMPLE_RATE,
+        replaysOnErrorSampleRate: SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE,
+        integrations: [Sentry.replayIntegration()],
+    });
+}
 
 function hydrate() {
     startTransition(() => {
@@ -13,29 +40,16 @@ function hydrate() {
     });
 }
 
-// Kick off the hydration
-if (window.requestIdleCallback) {
-    window.requestIdleCallback(hydrate);
+if (globalThis.requestIdleCallback) {
+    globalThis.requestIdleCallback(hydrate);
 } else {
-    // Safari doesn't support requestIdleCallback
-    // https://caniuse.com/requestidlecallback
-    window.setTimeout(hydrate, 1);
+    globalThis.setTimeout(hydrate, 1);
 }
 
 if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
+    globalThis.addEventListener("load", () => {
         navigator.serviceWorker.register("/worker.js");
     });
-
-    /**
-     * Prevents the default mini-infobar or install dialog from appearing on
-     * mobile, storing the original event so we can use it later in the users
-     * journey.
-     */
-    // window.addEventListener('beforeinstallprompt', (e) => {
-    //   e.preventDefault();
-    //   global.deferredPrompt = e;
-    // });
 } else {
     console.warn("Service workers are not supported in this browser.");
 }

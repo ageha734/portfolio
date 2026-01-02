@@ -8,23 +8,37 @@ import type { AppLoadContext, EntryContext } from "@remix-run/cloudflare";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
+import * as Sentry from "@sentry/remix";
+import {
+    SENTRY_DSN,
+    SENTRY_ENVIRONMENT,
+    SENTRY_TRACES_SAMPLE_RATE,
+} from "~/shared/config/settings";
 
-export default async function handleRequest(
+if (SENTRY_DSN !== "__undefined__") {
+    Sentry.init({
+        dsn: SENTRY_DSN,
+        environment: SENTRY_ENVIRONMENT,
+        tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    });
+}
+
+async function handleRequest(
     request: Request,
     responseStatusCode: number,
     responseHeaders: Headers,
     remixContext: EntryContext,
-    // This is ignored so we can keep it in the template for visibility.  Feel
-    // free to delete this parameter in your app if you're not using it!
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loadContext: AppLoadContext,
 ) {
+    let statusCode = responseStatusCode;
     const body = await renderToReadableStream(<RemixServer context={remixContext} url={request.url} />, {
         signal: request.signal,
         onError(error: unknown) {
-            // Log streaming rendering errors from inside the shell
             console.error(error);
-            responseStatusCode = 500;
+            if (SENTRY_DSN !== "__undefined__") {
+                Sentry.captureException(error);
+            }
+            statusCode = 500;
         },
     });
 
@@ -35,6 +49,8 @@ export default async function handleRequest(
     responseHeaders.set("Content-Type", "text/html");
     return new Response(body, {
         headers: responseHeaders,
-        status: responseStatusCode,
+        status: statusCode,
     });
 }
+
+export default handleRequest;
