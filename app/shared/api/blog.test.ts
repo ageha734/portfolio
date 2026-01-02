@@ -39,7 +39,7 @@ describe("blog api", () => {
             }),
         };
 
-        const { fetchFromGraphCMS } = await import("~/shared/lib/graphcms");
+        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
         (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
 
         const args = {} as LoaderFunctionArgs;
@@ -63,7 +63,7 @@ describe("blog api", () => {
             }),
         };
 
-        const { fetchFromGraphCMS } = await import("~/shared/lib/graphcms");
+        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
         (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
 
         const args = {} as LoaderFunctionArgs;

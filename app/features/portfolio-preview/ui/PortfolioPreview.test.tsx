@@ -2,7 +2,7 @@ import { expect, test, describe, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { PortfolioPreview } from "./PortfolioPreview";
-import type { PortfolioPreviewProps } from "./PortfolioPreview";
+import type { PortfolioPreviewProps } from "../model/types";
 
 describe("PortfolioPreview Component", () => {
     let props: PortfolioPreviewProps;

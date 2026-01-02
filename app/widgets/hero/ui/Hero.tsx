@@ -1,12 +1,5 @@
-import type { ReactElement } from "react";
-import { cn } from "~/shared/lib/cn";
-
-export interface HeroProps {
-    className?: string;
-    copy?: string | ReactElement;
-    highlight: string;
-    tag: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-}
+import { cn } from "~/shared/ui/cn";
+import type { HeroProps } from "../model/types";
 
 export const Hero = (props: HeroProps) => {
     const { className, copy, highlight, tag: Tag = "h2" } = props;

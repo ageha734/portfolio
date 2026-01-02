@@ -1,18 +1,20 @@
-import type { ReactNode, ComponentProps } from "react";
 import { forwardRef, useRef, useEffect, useState } from "react";
-import { Button } from "~/shared/ui/button";
-import { cn } from "~/shared/lib/cn";
+import { Button } from "~/shared/ui/components/Button";
+import { cn } from "~/shared/ui/cn";
+import type {
+    ProjectHeaderProps,
+    ProjectContainerProps,
+    ProjectSectionProps,
+    ProjectBackgroundProps,
+    ProjectImageProps,
+    ProjectSectionContentProps,
+    ProjectSectionHeadingProps,
+    ProjectSectionTextProps,
+    ProjectTextRowProps,
+    ProjectSectionColumnsProps,
+} from "../model/types";
 
 const initDelay = 300;
-
-export interface ProjectHeaderProps {
-    readonly title: string;
-    readonly description: string;
-    readonly linkLabel?: string;
-    readonly url?: string;
-    readonly roles?: readonly string[];
-    readonly className?: string;
-}
 
 export function ProjectHeader({
     title,
@@ -21,7 +23,7 @@ export function ProjectHeader({
     url,
     roles,
     className,
-}: ProjectHeaderProps) {
+}: Readonly<ProjectHeaderProps>) {
     return (
         <section className={cn("relative w-full", className)}>
             <div className="flex flex-col items-center justify-center gap-8 p-12 md:p-20">
@@ -57,23 +59,9 @@ export function ProjectHeader({
     );
 }
 
-export interface ProjectContainerProps extends ComponentProps<"article"> {
-    readonly className?: string;
-}
-
 export const ProjectContainer = ({ className, ...rest }: ProjectContainerProps) => (
     <article className={cn("relative w-full flex flex-col items-center justify-center", className)} {...rest} />
 );
-
-export interface ProjectSectionProps extends ComponentProps<"section"> {
-    readonly className?: string;
-    readonly light?: boolean;
-    readonly padding?: "both" | "top" | "bottom" | "none";
-    readonly fullHeight?: boolean;
-    readonly backgroundOverlayOpacity?: number;
-    readonly backgroundElement?: ReactNode;
-    readonly children: ReactNode;
-}
 
 export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
     (
@@ -122,20 +110,8 @@ export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
 
 ProjectSection.displayName = "ProjectSection";
 
-export interface ProjectBackgroundProps extends ComponentProps<"img"> {
-    readonly opacity?: number;
-    readonly className?: string;
-    readonly src?: string;
-    readonly alt?: string;
-}
-
 export const ProjectBackground = ({ opacity = 0.7, className, src, alt = "", ...rest }: ProjectBackgroundProps) => {
     const imageRef = useRef<HTMLDivElement>(null);
-    const [visible, setVisible] = useState(false);
-
-    useEffect(() => {
-        setVisible(true);
-    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -167,12 +143,6 @@ export const ProjectBackground = ({ opacity = 0.7, className, src, alt = "", ...
     );
 };
 
-export interface ProjectImageProps extends ComponentProps<"img"> {
-    readonly className?: string;
-    readonly alt: string;
-    readonly src?: string;
-}
-
 export const ProjectImage = ({ className, alt, src, ...rest }: ProjectImageProps) => {
     const [visible, setVisible] = useState(false);
 
@@ -198,11 +168,6 @@ export const ProjectImage = ({ className, alt, src, ...rest }: ProjectImageProps
     );
 };
 
-export interface ProjectSectionContentProps extends ComponentProps<"div"> {
-    readonly className?: string;
-    readonly width?: "s" | "m" | "l" | "xl";
-}
-
 const widthClasses = {
     s: "max-w-md",
     m: "max-w-2xl",
@@ -214,37 +179,17 @@ export const ProjectSectionContent = ({ className, width = "l", ...rest }: Proje
     <div className={cn("w-full mx-auto px-4", widthClasses[width], className)} {...rest} />
 );
 
-export interface ProjectSectionHeadingProps extends ComponentProps<"h1"> {
-    readonly className?: string;
-    readonly level?: number;
-    readonly as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-}
-
 export const ProjectSectionHeading = ({ className, level = 3, as: As = "h2", children, ...rest }: ProjectSectionHeadingProps) => (
     <As className={cn("text-3xl md:text-4xl font-serif font-extrabold mb-4", className)} {...rest}>
         {children}
     </As>
 );
 
-export interface ProjectSectionTextProps extends ComponentProps<"p"> {
-    readonly className?: string;
-}
-
 export const ProjectSectionText = ({ className, children, ...rest }: ProjectSectionTextProps) => (
     <p className={cn("text-base md:text-lg text-muted-foreground mb-4", className)} {...rest}>
         {children}
     </p>
 );
-
-export interface ProjectTextRowProps extends ComponentProps<"div"> {
-    readonly center?: boolean;
-    readonly stretch?: boolean;
-    readonly justify?: "center" | "start" | "end" | "space-between";
-    readonly width?: "s" | "m" | "l" | "xl";
-    readonly noMargin?: boolean;
-    readonly className?: string;
-    readonly centerMobile?: boolean;
-}
 
 const justifyClasses = {
     center: "justify-center",
@@ -277,10 +222,6 @@ export const ProjectTextRow = ({
         {...rest}
     />
 );
-
-export interface ProjectSectionColumnsProps extends ProjectSectionContentProps {
-    readonly centered?: boolean;
-}
 
 export const ProjectSectionColumns = ({ className, centered, ...rest }: ProjectSectionColumnsProps) => (
     <ProjectSectionContent className={cn("grid grid-cols-1 md:grid-cols-2 gap-8", centered && "items-center", className)} {...rest} />

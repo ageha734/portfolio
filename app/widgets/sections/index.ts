@@ -9,3 +9,4 @@ export { SectionMisc } from "./ui/SectionMisc";
 export { SectionProficiencies } from "./ui/SectionProficiencies";
 export { SectionSoftware } from "./ui/SectionSoftware";
 export { SectionTechnology } from "./ui/SectionTechnology";
+export type { SectionExperienceDetailProps } from "./model/types";

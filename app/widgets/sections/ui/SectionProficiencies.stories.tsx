@@ -1,5 +1,5 @@
 import { SectionProficiencies } from "./SectionProficiencies";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/sections/SectionProficiencies",

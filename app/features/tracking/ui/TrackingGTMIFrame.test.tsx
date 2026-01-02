@@ -1,7 +1,7 @@
 import { expect, test, describe, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { TrackingGTMIFrame } from "./TrackingGTMIFrame";
-import type { TrackingGTMIFrameProps } from "./TrackingGTMIFrame";
+import type { TrackingGTMIFrameProps } from "../model/types";
 
 describe("TrackingGTMIFrame Component", () => {
     let props: TrackingGTMIFrameProps;

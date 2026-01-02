@@ -1,6 +1,5 @@
 import { ErrorPage } from "./Error";
-import "~/styles/index.css";
-import "./Error.module.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/error/Error",

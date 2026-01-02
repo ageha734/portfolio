@@ -1,4 +1,4 @@
-import { data } from "~/shared/lib/data/companies";
+import { data } from "~/shared/data/companies";
 
 export const SectionCompanies = () => {
     return (

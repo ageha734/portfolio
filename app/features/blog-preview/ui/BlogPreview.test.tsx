@@ -2,7 +2,7 @@ import { expect, test, describe, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { BlogPreview } from "./BlogPreview";
-import type { BlogPreviewProps } from "./BlogPreview";
+import type { BlogPreviewProps } from "../model/types";
 
 describe("BlogPreview Component", () => {
     let props: BlogPreviewProps;

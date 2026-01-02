@@ -1,1 +1,1 @@
-export type { Portfolio } from "./model";
+export type { Portfolio } from "./model/types";

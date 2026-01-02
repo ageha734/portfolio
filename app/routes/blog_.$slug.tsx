@@ -1,7 +1,7 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/cloudflare";
 import type { LoaderData } from "~/routes/api.blog.$slug";
 import { Hero } from "~/widgets/hero";
-import { Wysiwyg } from "~/shared/ui/Wysiwyg";
+import { Wysiwyg } from "~/shared/ui/components/Wysiwyg";
 import { useLoaderData } from "@remix-run/react";
 import stylesLines from "prismjs/plugins/line-numbers/prism-line-numbers.css";
 import stylesTheme from "prismjs/themes/prism-tomorrow.css";

@@ -1,5 +1,6 @@
 import type { ComponentProps } from "react";
-import styles from "./NavToggle.module.css";
+import { Menu, X } from "lucide-react";
+import { cn } from "~/shared/ui/cn";
 
 export interface NavToggleProps extends ComponentProps<"button"> {
     readonly menuOpen: boolean;
@@ -7,41 +8,22 @@ export interface NavToggleProps extends ComponentProps<"button"> {
 
 export const NavToggle = ({ menuOpen, className, ...rest }: NavToggleProps) => {
     return (
-        <button type="button" className={`${styles.toggle} ${className || ""}`} aria-label="Menu" aria-expanded={menuOpen} {...rest}>
-            <div className={styles.inner}>
-                <svg
-                    className={styles.icon}
+        <button
+            type="button"
+            className={cn("relative flex items-center justify-center p-2 transition-colors hover:bg-accent hover:text-accent-foreground", className)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            {...rest}
+        >
+            <div className="relative flex items-center justify-center">
+                <Menu
+                    className={cn("h-6 w-6 transition-opacity absolute", menuOpen ? "opacity-0" : "opacity-100")}
                     data-menu={true}
-                    data-open={menuOpen}
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-                <svg
-                    className={styles.icon}
+                />
+                <X
+                    className={cn("h-6 w-6 transition-opacity absolute", menuOpen ? "opacity-100" : "opacity-0")}
                     data-close={true}
-                    data-open={menuOpen}
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                >
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
+                />
             </div>
         </button>
     );

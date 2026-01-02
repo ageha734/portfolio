@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { NavToggle } from "./NavToggle";
-import "~/styles/index.css";
-import "./NavToggle.module.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/navbar/NavToggle",

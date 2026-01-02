@@ -1,5 +1,5 @@
 import { SectionEducation } from "./SectionEducation";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/sections/SectionEducation",

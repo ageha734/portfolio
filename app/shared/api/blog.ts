@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 
-import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
+import { fetchFromGraphCMS } from "~/shared/api/graphcms";
 import { getPosts } from "~/shared/api/queries/getPosts";
 
 import type { Post, EnumValue } from "~/entities/blog";

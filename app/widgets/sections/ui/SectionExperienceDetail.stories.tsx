@@ -1,6 +1,6 @@
 import { SectionExperienceDetail } from "./SectionExperienceDetail";
 import type { Experience } from "~/entities/user";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/sections/SectionExperienceDetail",

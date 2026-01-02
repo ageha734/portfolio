@@ -1,7 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import { PostMarkdown } from "./PostMarkdown";
-import "~/styles/index.css";
-import "./PostMarkdown.module.css";
+import "~/tailwind.css";
 
 const H1 = PostMarkdown.h1;
 const H2 = PostMarkdown.h2;

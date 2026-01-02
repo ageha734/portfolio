@@ -1,5 +1,5 @@
 import { SectionTechnology } from "./SectionTechnology";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/sections/SectionTechnology",

@@ -1,6 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import { HeaderMobile } from "./HeaderMobile";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/navbar/HeaderMobile",

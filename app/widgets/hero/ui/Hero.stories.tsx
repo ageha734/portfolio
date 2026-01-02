@@ -1,5 +1,5 @@
 import { Hero } from "./Hero";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/hero/Hero",

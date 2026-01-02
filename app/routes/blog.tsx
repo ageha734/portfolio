@@ -2,7 +2,7 @@ import type { LoaderData } from "~/shared/api/blog";
 import type { MetaFunction } from "@remix-run/react";
 import { Hero } from "~/widgets/hero";
 import { BlogFeatured, BlogPreview, BlogUpcoming } from "~/features/blog-preview";
-import { filterBlogPosts } from "~/shared/lib/blog";
+import { filterBlogPosts } from "~/entities/blog/lib/blog";
 import { SITE_AUTHOR, SITE_TITLE } from "~/shared/config/constants";
 import { useLoaderData } from "@remix-run/react";
 

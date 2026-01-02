@@ -1,1 +1,1 @@
-export type { Experience, Social } from "./model";
+export type { Experience, Social } from "./model/types";

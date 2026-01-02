@@ -1,7 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import { Post } from "./Post";
-import "~/styles/index.css";
-import "./Post.module.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/post/Post",

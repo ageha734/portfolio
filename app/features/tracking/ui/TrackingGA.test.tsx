@@ -1,7 +1,7 @@
 import { expect, test, describe, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { TrackingGA } from "./TrackingGA";
-import type { TrackingGAProps } from "./TrackingGA";
+import type { TrackingGAProps } from "../model/types";
 
 describe("TrackingGA Component", () => {
     let props: TrackingGAProps;

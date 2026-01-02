@@ -1,5 +1,5 @@
 import { BlogPreview } from "./BlogPreview";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "features/blog-preview/BlogPreview",

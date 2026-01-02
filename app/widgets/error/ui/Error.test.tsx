@@ -1,7 +1,7 @@
 import { expect, test, describe, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { ErrorPage } from "./error";
+import { ErrorPage } from "./Error";
 
 describe("Error Component", () => {
     beforeEach(() => {

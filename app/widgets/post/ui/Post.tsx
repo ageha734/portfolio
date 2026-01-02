@@ -1,9 +1,10 @@
-import type { ReactNode, MouseEvent } from "react";
+import type { MouseEvent } from "react";
 import { useRef, useState, useEffect } from "react";
 import { Link as RouterLink } from "@remix-run/react";
 import { ChevronDown } from "lucide-react";
 import { Footer } from "~/widgets/footer";
-import { cn } from "~/shared/lib/cn";
+import { cn } from "~/shared/ui/cn";
+import type { PostProps } from "../model/types";
 
 function clamp(value: number, min: number, max: number): number {
     return Math.min(Math.max(value, min), max);
@@ -38,14 +39,6 @@ function useScrollToHash() {
             callback?.();
         }
     };
-}
-
-export interface PostProps {
-    children: ReactNode;
-    title: string;
-    date: string;
-    banner?: string;
-    timecode?: string;
 }
 
 export const Post = ({ children, title, date, banner, timecode }: PostProps) => {

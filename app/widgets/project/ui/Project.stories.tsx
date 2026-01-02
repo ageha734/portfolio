@@ -8,8 +8,7 @@ import {
     ProjectTextRow,
     ProjectSectionColumns,
 } from "./Project";
-import "~/styles/index.css";
-import "./Project.module.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/project/Project",

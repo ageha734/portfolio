@@ -1,10 +1,5 @@
 import { Link } from "@remix-run/react";
-import type { Portfolio } from "~/entities/portfolio";
-
-export interface PortfolioPreviewProps {
-    current: boolean;
-    data: Portfolio;
-}
+import type { PortfolioPreviewProps } from "../model/types";
 
 /**
  * @name PortfolioPreview

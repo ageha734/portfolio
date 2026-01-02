@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "@remix-run/react";
-import { Button } from "~/shared/ui/button";
-import { cn } from "~/shared/lib/cn";
+import { Button } from "~/shared/ui/components/Button";
+import { cn } from "~/shared/ui/cn";
+import type { ErrorProps } from "../model/types";
 import flatlineSkull from "./error-flatline.svg";
 
 const notFoundPoster = "/assets/notfound.jpg";
@@ -13,10 +14,6 @@ interface ErrorData {
     statusText?: string;
     data?: string;
     toString?: () => string;
-}
-
-export interface ErrorProps {
-    readonly error: ErrorData;
 }
 
 interface ErrorMessage {
@@ -144,7 +141,7 @@ function VideoCredit({ flatlined, visible }: VideoCreditProps) {
     );
 }
 
-export function ErrorPage({ error }: ErrorProps) {
+export function ErrorPage({ error }: Readonly<ErrorProps>) {
     const [visible, setVisible] = useState(false);
     const flatlined = !error.status;
 

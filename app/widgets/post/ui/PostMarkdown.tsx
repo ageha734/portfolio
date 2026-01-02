@@ -1,7 +1,7 @@
 import type { ReactNode, ComponentProps } from "react";
 import { Children } from "react";
 import { Link as RouterLink } from "@remix-run/react";
-import { cn } from "~/shared/lib/cn";
+import { cn } from "~/shared/ui/cn";
 
 interface PostHeadingLinkProps {
     id?: string;

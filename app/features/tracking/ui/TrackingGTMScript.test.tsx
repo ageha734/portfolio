@@ -1,7 +1,7 @@
 import { expect, test, describe, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { TrackingGTMScript } from "./TrackingGTMScript";
-import type { TrackingGTMScriptProps } from "./TrackingGTMScript";
+import type { TrackingGTMScriptProps } from "../model/types";
 
 describe("TrackingGTMScript Component", () => {
     let props: TrackingGTMScriptProps;

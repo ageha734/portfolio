@@ -1,8 +1,5 @@
 import classNames from "classnames";
-
-export interface BlogUpcomingProps {
-    className?: string;
-}
+import type { BlogUpcomingProps } from "../model/types";
 
 export const BlogUpcoming = (props: BlogUpcomingProps) => {
     const { className } = props;

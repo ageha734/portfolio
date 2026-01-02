@@ -1,6 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import { SandboxSidebar } from "./SandboxSidebar";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/sandbox/SandboxSidebar",

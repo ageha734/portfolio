@@ -1,20 +1,17 @@
 import type { ComponentProps } from "react";
-import { useId } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import { Button } from "~/shared/ui/button";
-import { cn } from "~/shared/lib/cn";
+import { Button } from "~/shared/ui/components/Button";
+import { cn } from "~/shared/ui/cn";
 
 export interface ThemeToggleProps extends ComponentProps<typeof Button> {
     readonly isMobile?: boolean;
 }
 
 export const ThemeToggle = ({ isMobile, className, ...rest }: ThemeToggleProps) => {
-    const id = useId();
     const fetcher = useFetcher();
     const { theme: initialTheme } = useLoaderData<{ theme: string }>();
     const theme = (fetcher.formData?.get("theme") as string) || initialTheme;
-    const maskId = `${id}theme-toggle-mask`;
 
     const toggleTheme = () => {
         fetcher.submit(

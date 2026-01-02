@@ -1,6 +1,4 @@
-export interface TrackingGAProps {
-    id: string;
-}
+import type { TrackingGAProps } from "../model/types";
 
 /**
  * @name TrackingGA

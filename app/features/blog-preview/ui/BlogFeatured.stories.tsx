@@ -1,6 +1,6 @@
 import { BlogFeatured } from "./BlogFeatured";
 import type { Post } from "~/entities/blog";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "features/blog-preview/BlogFeatured",

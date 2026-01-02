@@ -2,7 +2,7 @@ import { NavLink } from "@remix-run/react";
 import classNames from "classnames";
 import { useState } from "react";
 
-import { Logo } from "~/shared/ui/Logo";
+import { Logo } from "~/shared/ui/components/Logo";
 
 export const HeaderMobile = () => {
     const [closed, setClosed] = useState(true);

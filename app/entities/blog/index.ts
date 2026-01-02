@@ -1,1 +1,1 @@
-export type { BlogData, EnumValue, Post } from "./model";
+export type { BlogData, EnumValue, Post } from "./model/types";

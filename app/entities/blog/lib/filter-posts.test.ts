@@ -1,0 +1,72 @@
+import { expect, test, describe } from "vitest";
+import { filterBlogPosts } from "./filter-posts";
+import type { Post } from "../model/types";
+
+describe("blog", () => {
+    const createMockPost = (overrides: Partial<Post>): Post => ({
+        id: "1",
+        title: "Test Post",
+        slug: "test-post",
+        date: "2023-01-01",
+        content: { html: "<p>Test</p>" },
+        tags: [],
+        sticky: false,
+        imageTemp: "",
+        ...overrides,
+    });
+
+    test("should filter posts by DIY tag", () => {
+        const posts: Post[] = [
+            createMockPost({ tags: ["DIY"], sticky: false }),
+            createMockPost({ tags: ["DIY"], sticky: true }),
+            createMockPost({ tags: ["Technical"], sticky: false }),
+        ];
+
+        const result = filterBlogPosts(posts);
+
+        expect(result.diy.data).toHaveLength(1);
+        expect(result.diy.featured).toHaveLength(1);
+        expect(result.diy.data[0].tags).toContain("DIY");
+        expect(result.diy.featured[0].tags).toContain("DIY");
+    });
+
+    test("should filter posts by Technical tag", () => {
+        const posts: Post[] = [
+            createMockPost({ tags: ["Technical"], sticky: false }),
+            createMockPost({ tags: ["Technical"], sticky: true }),
+            createMockPost({ tags: ["DIY"], sticky: false }),
+        ];
+
+        const result = filterBlogPosts(posts);
+
+        expect(result.technical.data).toHaveLength(1);
+        expect(result.technical.featured).toHaveLength(1);
+        expect(result.technical.data[0].tags).not.toContain("DIY");
+        expect(result.technical.featured[0].tags).not.toContain("DIY");
+    });
+
+    test("should separate sticky and non-sticky posts", () => {
+        const posts: Post[] = [
+            createMockPost({ tags: ["DIY"], sticky: true }),
+            createMockPost({ tags: ["DIY"], sticky: false }),
+            createMockPost({ tags: ["Technical"], sticky: true }),
+            createMockPost({ tags: ["Technical"], sticky: false }),
+        ];
+
+        const result = filterBlogPosts(posts);
+
+        expect(result.diy.featured).toHaveLength(1);
+        expect(result.diy.data).toHaveLength(1);
+        expect(result.technical.featured).toHaveLength(1);
+        expect(result.technical.data).toHaveLength(1);
+    });
+
+    test("should handle empty posts array", () => {
+        const result = filterBlogPosts([]);
+
+        expect(result.diy.data).toHaveLength(0);
+        expect(result.diy.featured).toHaveLength(0);
+        expect(result.technical.data).toHaveLength(0);
+        expect(result.technical.featured).toHaveLength(0);
+    });
+});

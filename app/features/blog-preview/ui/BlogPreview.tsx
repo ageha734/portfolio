@@ -1,14 +1,6 @@
 import { Link } from "@remix-run/react";
 import classnames from "classnames";
-
-export interface BlogPreviewProps {
-    className?: string;
-    date: string;
-    heading?: string;
-    slug: string;
-    title: string;
-    image: string;
-}
+import type { BlogPreviewProps } from "../model/types";
 
 export const BlogPreview = (props: BlogPreviewProps) => {
     const { className, date, heading = "h3", slug, image, title } = props;

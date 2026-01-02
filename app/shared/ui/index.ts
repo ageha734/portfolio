@@ -1,18 +1,18 @@
-export { Logo } from "./Logo";
-export type { LogoProps } from "./Logo";
-export { SocialLink } from "./SocialLink";
-export type { SocialLinkProps } from "./SocialLink";
-export { Tags } from "./Tags";
-export type { TagsProps } from "./Tags";
-export { UserCard } from "./UserCard";
-export type { UserCardProps } from "./UserCard";
-export { Wysiwyg } from "./Wysiwyg";
-export type { WysiwygProps } from "./Wysiwyg";
+export { Logo } from "./components/Logo";
+export type { LogoProps } from "./components/Logo";
+export { SocialLink } from "./components/SocialLink";
+export type { SocialLinkProps } from "./components/SocialLink";
+export { Tags } from "./components/Tags";
+export type { TagsProps } from "./components/Tags";
+export { UserCard } from "./components/UserCard";
+export type { UserCardProps } from "./components/UserCard";
+export { Wysiwyg } from "./components/Wysiwyg";
+export type { WysiwygProps } from "./components/Wysiwyg";
 
 // shadcn/ui components
-export * from "./button";
-export * from "./card";
-export * from "./dropdown-menu";
-export * from "./navigation-menu";
-export * from "./separator";
-export * from "./sheet";
+export * from "./components/Button";
+export * from "./components/Card";
+export * from "./components/DropdownMenu";
+export * from "./components/NavigationMenu";
+export * from "./components/Separator";
+export * from "./components/Sheet";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { fireworks } from "~/shared/lib/esm-modules";
+import { fireworks } from "../lib/esm-modules";
 
 export const SectionFireworks = () => {
     const [Component, setComponent] = React.useState<any>();

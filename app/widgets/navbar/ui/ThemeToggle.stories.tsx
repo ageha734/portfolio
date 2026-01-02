@@ -1,5 +1,4 @@
-import "~/styles/index.css";
-import "./ThemeToggle.module.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/navbar/ThemeToggle",

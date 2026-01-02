@@ -1,10 +1,5 @@
 import { BlogPreview } from "./BlogPreview";
-import type { Post } from "~/entities/blog";
-
-export interface BlogFeaturedProps {
-    className?: string;
-    post: Post;
-}
+import type { BlogFeaturedProps } from "../model/types";
 
 export const BlogFeatured = (props: BlogFeaturedProps) => {
     const { className, post } = props;

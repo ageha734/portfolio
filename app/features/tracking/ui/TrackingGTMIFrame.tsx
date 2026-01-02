@@ -1,6 +1,4 @@
-export interface TrackingGTMIFrameProps {
-    id: string;
-}
+import type { TrackingGTMIFrameProps } from "../model/types";
 
 /**
  * @name TrackingGTMIFrame

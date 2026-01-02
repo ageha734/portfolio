@@ -1,6 +1,6 @@
 import { TrackingGTMScript } from "./TrackingGTMScript";
 import { TrackingGTMIFrame } from "./TrackingGTMIFrame";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "features/tracking/TrackingGTM",

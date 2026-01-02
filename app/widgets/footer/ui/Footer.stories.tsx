@@ -1,6 +1,6 @@
 import { MemoryRouter } from "react-router-dom";
 import { Footer } from "./Footer";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/footer/Footer",

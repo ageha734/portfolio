@@ -21,8 +21,8 @@ import type { ErrorProps } from "~/widgets/error";
 
 import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/shared/config/constants";
 import { BASE_URL, GOOGLE_TAG_MANAGER } from "~/shared/config/settings";
-import { useIntro } from "~/shared/hooks/useIntro";
-import { usePageTracking } from "~/shared/hooks/usePageTracking";
+import { useIntro } from "~/shared/hooks/lib/useIntro";
+import { usePageTracking } from "~/shared/hooks/lib/usePageTracking";
 import { TrackingGTMScript, TrackingGTMIFrame } from "~/features/tracking";
 
 import { I18nextProvider } from "react-i18next";

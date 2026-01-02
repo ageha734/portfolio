@@ -1,9 +1,5 @@
-import type { Experience } from "~/entities/user";
-import { getTimeWorked } from "~/shared/lib/date-time";
-
-export interface SectionExperienceDetailProps {
-    experience: Experience;
-}
+import { getTimeWorked } from "../lib/date-time";
+import type { SectionExperienceDetailProps } from "../model/types";
 
 export const SectionExperienceDetail = (props: SectionExperienceDetailProps) => {
     const { experience } = props;

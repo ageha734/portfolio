@@ -1,6 +1,6 @@
 import { PortfolioPreview } from "./PortfolioPreview";
 import type { Portfolio } from "~/entities/portfolio";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "features/portfolio-preview/PortfolioPreview",

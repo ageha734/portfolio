@@ -2,7 +2,7 @@ import type { LoaderFunction } from "@remix-run/cloudflare";
 import type { Portfolio } from "~/entities/portfolio";
 import type { Post } from "~/entities/blog";
 import { BASE_URL } from "~/shared/config/settings";
-import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
+import { fetchFromGraphCMS } from "~/shared/api/graphcms";
 import { getSitemap } from "~/shared/api/queries/getSitemap";
 import { SITE_UPDATED } from "~/shared/config/constants";
 

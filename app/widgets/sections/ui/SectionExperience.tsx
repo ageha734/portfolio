@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { experience as data } from "~/shared/lib/data/resume";
+import { experience as data } from "~/shared/data/resume";
 import { SectionExperienceDetail } from "./SectionExperienceDetail";
 
 export const SectionExperience = () => {

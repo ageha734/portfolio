@@ -1,6 +1,4 @@
-export interface TrackingGTMScriptProps {
-    id: string;
-}
+import type { TrackingGTMScriptProps } from "../model/types";
 
 /**
  * @name TrackingGTMScript

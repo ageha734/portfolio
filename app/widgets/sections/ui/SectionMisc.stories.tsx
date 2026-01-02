@@ -1,5 +1,5 @@
 import { SectionMisc } from "./SectionMisc";
-import "~/styles/index.css";
+import "~/tailwind.css";
 
 export default {
     title: "widgets/sections/SectionMisc",

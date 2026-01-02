@@ -1,6 +1,6 @@
 import classnames from "classnames";
 import { useRef, useState } from "react";
-import { data } from "~/shared/lib/data/details";
+import { data } from "~/shared/data/details";
 
 /**
  * @name SectionTechnology

@@ -1,13 +1,14 @@
 import type { MouseEvent, ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { Link as RouterLink, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
+import { Link as RouterLink, useLocation } from "@remix-run/react";
 import { Menu } from "lucide-react";
-import { Button } from "~/shared/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "~/shared/ui/sheet";
+import { Button } from "~/shared/ui/components/Button";
+import { Sheet, SheetContent, SheetTrigger } from "~/shared/ui/components/Sheet";
 import { ThemeToggle } from "./ThemeToggle";
-import { navLinks, socialLinks, type NavLink, type SocialLink } from "./NavData";
+import { navLinks, socialLinks } from "../lib/NavData";
+import type { NavLink, SocialLink } from "../model/types";
 import { SITE_AUTHOR } from "~/shared/config/constants";
-import { cn } from "~/shared/lib/cn";
+import { cn } from "~/shared/ui/cn";
 
 function useScrollToHash() {
     return (hash: string, callback?: () => void) => {

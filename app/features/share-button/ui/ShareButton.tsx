@@ -1,4 +1,4 @@
-import { useWebShareAPI } from "~/shared/hooks/useWebShareAPI";
+import { useWebShareAPI } from "~/shared/hooks/lib/useWebShareAPI";
 
 export const ShareButton = () => {
     const { isAvailable, onShare } = useWebShareAPI();

@@ -1,4 +1,4 @@
-import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
+import { fetchFromGraphCMS } from "~/shared/api/graphcms";
 import { getPortfolios } from "~/shared/api/queries/getPortfolios";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 

@@ -1,5 +1,5 @@
-export { useClipboard } from "./useClipboard";
-export { useIntro } from "./useIntro";
-export { usePageTracking } from "./usePageTracking";
-export { usePageTransition } from "./usePageTransition";
-export { useWebShareAPI } from "./useWebShareAPI";
+export { useClipboard } from "./lib/useClipboard";
+export { useIntro } from "./lib/useIntro";
+export { usePageTracking } from "./lib/usePageTracking";
+export { usePageTransition } from "./lib/usePageTransition";
+export { useWebShareAPI } from "./lib/useWebShareAPI";
