@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+
+# Docusaurus build outputs
+.docusaurus/
+build/
+
+# Cache
+.cache/
+.turbo/
+
+# Test reports and coverage
+codecept/report/
+!codecept/report/.gitkeep
+playwright/report/
+!playwright/report/.gitkeep
+vitest/coverage/
+!vitest/coverage/.gitkeep
+ladle/coverage/
+!ladle/coverage/.gitkeep
+ladle/report/
+!ladle/report/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
