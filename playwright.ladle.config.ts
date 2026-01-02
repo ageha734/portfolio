@@ -1,11 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
-import "dotenv/config";
-
-const PORT = process.env.PORT || "3000";
+const LADLE_PORT = process.env.LADLE_PORT || "61000";
 
 export default defineConfig({
-    testDir: "./tests/e2e",
+    testDir: "./tests/e2e/pages",
     timeout: 30 * 1000,
     expect: {
         timeout: 10 * 1000,
@@ -15,11 +13,11 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 1 : undefined,
     reporter: [
-        ["html", { outputFolder: "docs/playwright/report" }],
+        ["html", { outputFolder: "docs/ladle/report" }],
     ],
     use: {
         actionTimeout: 0,
-        baseURL: `http://localhost:${PORT}/`,
+        baseURL: `http://localhost:${LADLE_PORT}`,
         trace: "on-first-retry",
     },
 
@@ -30,22 +28,16 @@ export default defineConfig({
                 ...devices["Desktop Chrome"],
             },
         },
-        {
-            name: "mobile chromium",
-            use: {
-                ...devices["Pixel 7"],
-            },
-        },
     ],
 
     webServer: {
-        command: process.env.CI ? `bun -w run start-remix-production` : `bun run dev`,
-        port: Number(PORT),
+        command: `bun run dev:ui`,
+        port: Number(LADLE_PORT),
         reuseExistingServer: !process.env.CI,
         stdout: "pipe",
         stderr: "pipe",
         env: {
-            PORT,
+            LADLE_PORT,
         },
     },
 });

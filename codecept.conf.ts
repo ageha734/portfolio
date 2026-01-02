@@ -1,3 +1,5 @@
+/// <reference path="./node_modules/codeceptjs/typings/index.d.ts" />
+
 import { setHeadlessWhen, setCommonPlugins } from "@codeceptjs/configure";
 
 setHeadlessWhen(process.env.TEST_HEADLESS);
@@ -6,12 +8,8 @@ setCommonPlugins();
 
 export const config: CodeceptJS.MainConfig = {
     name: "portfolio",
-    gherkin: {
-        features: "./src/test/functional/features/**/*.feature",
-        steps: ["./src/test/steps/common.ts"],
-    },
-    tests: "./*_test.ts",
-    output: "./output/reports",
+    tests: "./tests/e2e/**/*.spec.ts",
+    output: "./docs/codecept/report",
     helpers: {
         Playwright: {
             browser: "chromium",
@@ -19,7 +17,7 @@ export const config: CodeceptJS.MainConfig = {
             show: !process.env.TEST_HEADLESS,
             waitForTimeout: 10000,
             waitForAction: 1000,
-            waitForNavigation: "networkidle0",
+            waitForNavigation: "load",
             ignoreHTTPSErrors: true,
         },
     },
