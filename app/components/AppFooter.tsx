@@ -1,5 +1,5 @@
 import { useLocation } from "@remix-run/react";
-import { SOCIAL_GITHUB, SOCIAL_LINKEDIN, SOCIAL_TWITTER } from "../config/constants";
+import { SOCIAL_GITHUB, SOCIAL_LINKEDIN, SOCIAL_TWITTER } from "~/shared/config/constants";
 
 export const AppFooter = () => {
     // Hooks

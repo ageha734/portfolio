@@ -1,10 +1,10 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import type { Portfolio } from "~/routes/api.portfolio";
-import type { Post } from "~/routes/api.blog";
-import { BASE_URL } from "~/config/settings";
-import { fetchFromGraphCMS } from "~/utils/graphcms";
-import { getSitemap } from "~/queries/getSitemap";
-import { SITE_UPDATED } from "~/config/constants";
+import type { Portfolio } from "~/shared/api/portfolio";
+import type { Post } from "~/shared/api/blog";
+import { BASE_URL } from "~/shared/config/settings";
+import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
+import { getSitemap } from "~/shared/api/queries/getSitemap";
+import { SITE_UPDATED } from "~/shared/config/constants";
 
 /**
  * @method GET

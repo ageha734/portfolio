@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
-import { SITE_YEAR } from "~/config/constants";
-import type { Portfolio } from "~/routes/api.portfolio";
+import { SITE_YEAR } from "~/shared/config/constants";
+import type { Portfolio } from "~/shared/api/portfolio";
 
 export interface PortfolioPreviewProps {
     current: boolean;

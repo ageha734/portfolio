@@ -1,8 +1,8 @@
 import { json } from "@remix-run/cloudflare";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 
-import { fetchFromGraphCMS } from "~/utils/graphcms";
-import { getPost } from "~/queries/getPost";
+import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
+import { getPost } from "~/shared/api/queries/getPost";
 
 export interface Post {
     content: {

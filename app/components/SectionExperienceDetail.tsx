@@ -1,5 +1,5 @@
 import type { Experience } from "~/data/resume";
-import { getTimeWorked } from "~/utils/date-time";
+import { getTimeWorked } from "~/shared/lib/date-time";
 
 export interface SectionExperienceDetailProps {
     experience: Experience;

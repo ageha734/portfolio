@@ -1,4 +1,4 @@
-import { SITE_DESCRIPTION, SITE_TITLE } from "~/config/constants";
+import { SITE_DESCRIPTION, SITE_TITLE } from "~/shared/config/constants";
 
 export interface UseWebShareAPI {
     isAvailable: boolean;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { copyTextToClipboard } from "~/utils/clipboard";
+import { copyTextToClipboard } from "~/shared/lib/clipboard";
 
 /**
  * @name useClipboard

@@ -3,7 +3,7 @@ import { AppHero } from "~/components/AppHero";
 import { SectionHardware } from "~/components/SectionHardware";
 import { SectionMisc } from "~/components/SectionMisc";
 import { SectionSoftware } from "~/components/SectionSoftware";
-import { SITE_TITLE } from "~/config/constants";
+import { SITE_TITLE } from "~/shared/config/constants";
 
 export const meta: MetaFunction = (args) => {
     return [

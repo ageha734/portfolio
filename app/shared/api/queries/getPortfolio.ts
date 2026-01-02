@@ -1,4 +1,4 @@
-import { gql } from "~/utils/graphcms";
+import { gql } from "~/shared/lib/graphcms";
 
 export const getPortfolioBySlug = gql`
   query portfolios($slug: String!) {

@@ -1,8 +1,8 @@
 import { json } from "@remix-run/cloudflare";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 
-import { fetchFromGraphCMS } from "~/utils/graphcms";
-import { getPortfolioBySlug } from "~/queries/getPortfolio";
+import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
+import { getPortfolioBySlug } from "~/shared/api/queries/getPortfolio";
 
 export type LoaderData = {
     company: string;

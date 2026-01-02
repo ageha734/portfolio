@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/react";
 import { AppHero } from "~/components/AppHero";
 import { SandboxSidebar } from "~/components/SandboxSidebar";
-import { SITE_TITLE } from "~/config/constants";
+import { SITE_TITLE } from "~/shared/config/constants";
 
 export const meta: MetaFunction = (args) => {
     return [

@@ -3,7 +3,7 @@ import { AppShareLink } from "~/components/AppShareButton";
 import { AppSocialLink } from "~/components/AppSocialLink";
 import { SectionEducation } from "~/components/SectionEducation";
 import { SectionExperience } from "~/components/SectionExperience";
-import { SITE_AUTHOR, SITE_TITLE, SITE_YEAR } from "~/config/constants";
+import { SITE_AUTHOR, SITE_TITLE, SITE_YEAR } from "~/shared/config/constants";
 import { social } from "~/data/resume";
 import styles from "~/styles/resume.css";
 

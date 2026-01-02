@@ -1,10 +1,10 @@
-import type { LoaderData } from "~/routes/api.portfolio";
+import type { LoaderData } from "~/shared/api/portfolio";
 import type { MetaFunction } from "@remix-run/react";
 import { useLoaderData } from "@remix-run/react";
 import { AppHero } from "~/components/AppHero";
 import { PortfolioPreview } from "~/components/PortfolioPreview";
-import { loader } from "~/routes/api.portfolio";
-import { SITE_AUTHOR, SITE_TITLE } from "~/config/constants";
+import { loader } from "~/shared/api/portfolio";
+import { SITE_AUTHOR, SITE_TITLE } from "~/shared/config/constants";
 
 export { loader };
 

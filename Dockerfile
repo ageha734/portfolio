@@ -1,16 +1,17 @@
 FROM debian:bullseye-slim AS build
 
-# https://github.com/oven-sh/bun/releases
 ARG BUN_VERSION=latest
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update -qq \
     && apt-get install -qq --no-install-recommends \
-      ca-certificates \
-      curl \
-      dirmngr \
-      gpg \
-      gpg-agent \
-      unzip \
+      ca-certificates=20210119 \
+      curl=7.74.0-1.3+deb11u15 \
+      dirmngr=2.2.27-2+deb11u2 \
+      gpg=2.2.27-2+deb11u2 \
+      gpg-agent=2.2.27-2+deb11u2 \
+      unzip=6.0-26+deb11u1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && arch="$(dpkg --print-architecture)" \
@@ -34,12 +35,8 @@ RUN apt-get update -qq \
       --compressed \
       --retry 5 \
       || (echo "error: failed to download: $tag" && exit 1) \
-    && for key in \
-      "F3DCC08A8572C0749B3E18888EAB4D40A7B22B59" \
-    ; do \
-      gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$key" \
-      || gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key" ; \
-    done \
+    && gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "F3DCC08A8572C0749B3E18888EAB4D40A7B22B59" \
+      || gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "F3DCC08A8572C0749B3E18888EAB4D40A7B22B59" \
     && curl "https://github.com/oven-sh/bun/releases/$release/SHASUMS256.txt.asc" \
       -fsSLO \
       --compressed \
@@ -55,20 +52,16 @@ RUN apt-get update -qq \
     && which bun \
     && bun --version
 
-FROM gcr.io/distroless/base-nossl-debian11
+FROM gcr.io/distroless/base-nossl-debian11:nonroot
 
-# Disable the runtime transpiler cache by default inside Docker containers.
-# On ephemeral containers, the cache is not useful
 ARG BUN_RUNTIME_TRANSPILER_CACHE_PATH=0
 ENV BUN_RUNTIME_TRANSPILER_CACHE_PATH=${BUN_RUNTIME_TRANSPILER_CACHE_PATH}
 
-# Ensure `bun install -g` works
 ARG BUN_INSTALL_BIN=/usr/local/bin
 ENV BUN_INSTALL_BIN=${BUN_INSTALL_BIN}
 
 COPY --from=build /usr/local/bin/bun /usr/local/bin/
 
-# Temporarily use the `build`-stage image binaries to create a symlink:
 RUN --mount=type=bind,from=build,source=/usr/bin,target=/usr/bin \
     --mount=type=bind,from=build,source=/bin,target=/bin <<EOF
   ln -s /usr/local/bin/bun /usr/local/bin/bunx

@@ -1,4 +1,4 @@
-import { gql } from "~/utils/graphcms";
+import { gql } from "~/shared/lib/graphcms";
 
 export const getPosts = gql`
   query {

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { SITE_AUTHOR, SITE_EMAIL_ADDRESS, SOCIAL_GITHUB, SOCIAL_LINKEDIN, SOCIAL_TWITTER } from "~/config/constants";
+import { SITE_AUTHOR, SITE_EMAIL_ADDRESS, SOCIAL_GITHUB, SOCIAL_LINKEDIN, SOCIAL_TWITTER } from "~/shared/config/constants";
 
 /**
  *

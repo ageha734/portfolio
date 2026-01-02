@@ -1,38 +1,12 @@
 {
-    "editor.tabSize": 4,
-    "editor.insertSpaces": true,
-    "editor.formatOnSave": true,
-    "editor.formatOnSaveMode": "file",
-    "editor.codeActionsOnSave": {
-        "source.organizeImports.biome": "explicit",
-        "quickfix.biome": "explicit"
+    "[dockerfile]": {
+        "editor.formatOnSave": false
     },
-    "search.quickOpen.includeSymbols": false,
-    "search.seedWithNearestWord": true,
-    "search.smartCase": true,
-    "search.exclude": {
-        "node_modules": true,
-        ".git": true
-    },
-    "search.followSymlinks": false,
-    "search.useIgnoreFiles": true,
-    "git.autoRepositoryDetection": "openEditors",
-    "git.ignoreSubmodules": true,
-    "git.ignoreLimitWarning": true,
     "[javascript]": {
         "editor.defaultFormatter": "biomejs.biome",
         "editor.formatOnSave": true
     },
     "[javascriptreact]": {
-        "editor.defaultFormatter": "biomejs.biome",
-        "editor.formatOnSave": true
-    },
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "[typescript]": {
-        "editor.defaultFormatter": "biomejs.biome",
-        "editor.formatOnSave": true
-    },
-    "[typescriptreact]": {
         "editor.defaultFormatter": "biomejs.biome",
         "editor.formatOnSave": true
     },
@@ -45,30 +19,70 @@
         "editor.formatOnSave": true
     },
     "[markdown]": {
-        "editor.defaultFormatter": "EditorConfig.EditorConfig",
-        "editor.unicodeHighlight.ambiguousCharacters": true,
-        "editor.unicodeHighlight.invisibleCharacters": true,
         "diffEditor.ignoreTrimWhitespace": false,
-        "editor.wordWrap": "on",
+        "editor.defaultFormatter": "EditorConfig.EditorConfig",
         "editor.quickSuggestions": {
             "comments": "off",
-            "strings": "off",
-            "other": "off"
-        }
+            "other": "off",
+            "strings": "off"
+        },
+        "editor.unicodeHighlight.ambiguousCharacters": true,
+        "editor.unicodeHighlight.invisibleCharacters": true,
+        "editor.wordWrap": "on"
     },
     "[toml]": {
         "editor.defaultFormatter": "EditorConfig.EditorConfig"
     },
+    "[typescript]": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSave": true
+    },
     "[yaml]": {
         "editor.defaultFormatter": "EditorConfig.EditorConfig"
     },
-    "[dockerfile]": {
-        "editor.formatOnSave": false
+    "editor.codeActionsOnSave": {
+        "quickfix.biome": "explicit",
+        "source.organizeImports.biome": "explicit"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "file",
+    "editor.insertSpaces": true,
+    "editor.rulers": [
+        120
+    ],
+    "editor.tabSize": 4,
+    "files.associations": {
+        "*.dbclient-js": "javascript",
+        "plyconfig.json": "jsonc"
     },
     "files.exclude": {
-        "**/.git": true,
         "**/.DS_Store": true,
-        "**/Thumbs.db": true
+        "**/.git": true,
+        "**/Thumbs.db": true,
+        "**/node_modules": true
     },
-    "git.detectSubmodules": false
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true,
+    "git.autoRepositoryDetection": "openEditors",
+    "git.detectSubmodules": false,
+    "git.ignoreLimitWarning": true,
+    "git.ignoreSubmodules": true,
+    "search.exclude": {
+        "**/.git": true,
+        "**/node_modules": true
+    },
+    "search.followSymlinks": false,
+    "search.quickOpen.includeSymbols": false,
+    "search.seedWithNearestWord": true,
+    "search.smartCase": true,
+    "search.useIgnoreFiles": true,
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.suggest.autoImports": true,
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "npm.packageManager": "yarn"
 }

@@ -25,8 +25,8 @@ import { VisuallyHidden } from "~/components/visually-hidden";
 import { Error } from "~/layouts/error";
 import { Navbar } from "~/layouts/navbar";
 
-import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/config/constants";
-import { BASE_URL } from "~/config/settings";
+import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/shared/config/constants";
+import { BASE_URL } from "~/shared/config/settings";
 import { useIntro } from "~/hooks/useIntro";
 import { usePageTracking } from "~/hooks/usePageTracking";
 

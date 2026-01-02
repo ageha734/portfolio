@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import { SITE_AUTHOR } from "~/config/constants";
+import { SITE_AUTHOR } from "~/shared/config/constants";
 
 export interface AppUserCardProps {
     alt?: string;

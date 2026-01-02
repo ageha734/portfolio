@@ -2,7 +2,7 @@ import type { MetaFunction } from "@remix-run/react";
 import * as React from "react";
 import { AppHero } from "~/components/AppHero";
 import { getQuote } from "~/routes/api.qualities";
-import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from "~/config/constants";
+import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from "~/shared/config/constants";
 import { SectionCompanies } from "~/components/SectionCompanies";
 import { SectionTechnology } from "~/components/SectionTechnology";
 import { SectionAmbitions } from "~/components/SectionAmbitions";

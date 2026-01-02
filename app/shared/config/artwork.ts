@@ -6,7 +6,7 @@ import {
     SOCIAL_GITHUB,
     SOCIAL_LINKEDIN,
     SOCIAL_TWITTER,
-} from "~/config/constants";
+} from "~/shared/config/constants";
 
 /**
  * @external https://textart.io/art/tag/rocket/1

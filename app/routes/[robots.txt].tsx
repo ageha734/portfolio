@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { BASE_URL } from "~/config/settings";
+import { BASE_URL } from "~/shared/config/settings";
 
 /**
  * @method GET

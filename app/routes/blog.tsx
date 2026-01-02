@@ -1,12 +1,12 @@
-import type { LoaderData } from "~/routes/api.blog";
+import type { LoaderData } from "~/shared/api/blog";
 import type { MetaFunction } from "@remix-run/react";
 import { AppHero } from "~/components/AppHero";
 import { BlogFeatured } from "~/components/BlogFeatured";
 import { BlogPreview } from "~/components/BlogPreview";
 import { BlogUpcoming } from "~/components/BlogUpcoming";
-import { filterBlogPosts } from "~/utils/blog";
-import { loader } from "~/routes/api.blog";
-import { SITE_AUTHOR, SITE_TITLE } from "~/config/constants";
+import { filterBlogPosts } from "~/shared/lib/blog";
+import { loader } from "~/shared/api/blog";
+import { SITE_AUTHOR, SITE_TITLE } from "~/shared/config/constants";
 import { useLoaderData } from "@remix-run/react";
 
 export { loader };
