@@ -13,7 +13,12 @@ export default defineConfig(({ mode }) => {
     process.env = { ...process.env, ...env };
 
     return {
-        plugins: [react(), tsconfigPaths()],
+        plugins: [
+            react(),
+            tsconfigPaths({
+                ignoreConfigErrors: true,
+            }),
+        ],
         test: {
             coverage: {
                 reportsDirectory: "./docs/ladle/coverage",

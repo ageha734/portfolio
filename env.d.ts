@@ -1,4 +1,5 @@
 /// <reference types="@remix-run/cloudflare" />
+/// <reference types="@cloudflare/workers-types/2023-07-01" />
 /// <reference types="vite/client" />
 /// <reference types="codeceptjs" />
 

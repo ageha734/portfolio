@@ -41,6 +41,8 @@ export default defineConfig({
             },
             serverModuleFormat: "cjs",
         }),
-        tsconfigPaths(),
+        tsconfigPaths({
+            ignoreConfigErrors: true,
+        }),
     ],
 });
