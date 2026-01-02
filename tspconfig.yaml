@@ -1,0 +1,10 @@
+emit:
+- '@typespec/openapi3'
+
+linter:
+    extends:
+    - '@typespec/eslint-rules/recommended'
+
+options:
+    '@typespec/openapi3':
+        output-file: './docs/swagger/openapi.yaml'
