@@ -42,7 +42,7 @@
     height: 100%;
     display: flex;
     justify-items: center;
-    padding: theme("spacing.2") theme("spacing.4");
+    padding: 0.5rem 1rem;
     align-items: center;
     font-size: 0.9rem;
     transition: color 140ms ease-out;
@@ -136,16 +136,16 @@
 }
 
 .work-details button {
-    background-color: theme("colors.white");
-    border: 1px solid theme("colors.white");
+    background-color: #fff;
+    border: 1px solid #fff;
     color: var(--color-background-dark);
 }
 
 .work-details button.active,
 .work-details button:hover {
     background-color: var(--color-primary);
-    border-color: theme("colors.white");
-    color: theme("colors.white");
+    border-color: #fff;
+    color: #fff;
 }
 
 .work-preview span {

@@ -74,7 +74,8 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
 };
 
 export const meta: MetaFunction<typeof loader> = (args) => {
-    const data = args.data as { theme?: string; canonicalUrl?: string; description?: string };
+    const data = (args.data as { theme?: string; canonicalUrl?: string; description?: string }) || {};
+    const theme = data.theme || "dark";
     return [
         {
             charset: "utf-8",
@@ -87,12 +88,12 @@ export const meta: MetaFunction<typeof loader> = (args) => {
         {
             tagName: "meta",
             name: "theme-color",
-            content: data.theme === "dark" ? "#111" : "#F2F2F2",
+            content: theme === "dark" ? "#111" : "#F2F2F2",
         },
         {
             tagName: "meta",
             name: "color-scheme",
-            content: data.theme === "light" ? "light dark" : "dark light",
+            content: theme === "light" ? "light dark" : "dark light",
         },
         {
             title: SITE_TITLE,

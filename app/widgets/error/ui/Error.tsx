@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "@remix-run/react";
-import notFoundPoster from "~/assets/notfound.jpg";
-import flatlinePoster from "~/assets/flatline.png";
-import flatlineVideo from "~/assets/flatline.mp4";
 import styles from "./error.module.css";
 import flatlineSkull from "./error-flatline.svg";
+
+const notFoundPoster = "/assets/notfound.jpg";
+const flatlinePoster = "/assets/flatline.png";
+const flatlineVideo = "/assets/flatline.mp4";
 
 interface ErrorData {
     status?: number;

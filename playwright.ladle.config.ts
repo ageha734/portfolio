@@ -4,6 +4,7 @@ const LADLE_PORT = process.env.LADLE_PORT || "61000";
 
 export default defineConfig({
     testDir: "./tests/e2e/pages",
+    outputDir: "./docs/ladle/result",
     timeout: 30 * 1000,
     expect: {
         timeout: 10 * 1000,

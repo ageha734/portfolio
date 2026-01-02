@@ -8,7 +8,7 @@
 @layer components {
     .custom-bg-gradient,
     .light .custom-bg-gradient {
-        @apply bg-gradient-to-tr from-color-primary to-blue-500;
+        @apply bg-gradient-to-tr from-[var(--color-primary)] to-blue-500;
         animation: gradient var(--duration-text) ease infinite;
         background-size: 400% 400%;
     }
@@ -31,7 +31,7 @@
 
     .text-highlight,
     .light .text-highlight {
-        @apply bg-gradient-to-r from-color-primary to-blue-500 bg-clip-text text-transparent;
+        @apply bg-gradient-to-r from-[var(--color-primary)] to-blue-500 bg-clip-text text-transparent;
         animation: gradient var(--duration-text) ease infinite;
         background-size: 400% 400%;
         letter-spacing: -0.05em;
