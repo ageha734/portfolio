@@ -1,15 +1,12 @@
 import type { LoaderData } from "~/shared/api/blog";
 import type { MetaFunction } from "@remix-run/react";
-import { AppHero } from "~/components/AppHero";
-import { BlogFeatured } from "~/components/BlogFeatured";
-import { BlogPreview } from "~/components/BlogPreview";
-import { BlogUpcoming } from "~/components/BlogUpcoming";
+import { Hero } from "~/widgets/hero";
+import { BlogFeatured, BlogPreview, BlogUpcoming } from "~/features/blog-preview";
 import { filterBlogPosts } from "~/shared/lib/blog";
-import { loader } from "~/shared/api/blog";
 import { SITE_AUTHOR, SITE_TITLE } from "~/shared/config/constants";
 import { useLoaderData } from "@remix-run/react";
 
-export { loader };
+export { loader } from "~/shared/api/portfolio";
 
 export const meta: MetaFunction = (args) => {
     return [
@@ -20,24 +17,18 @@ export const meta: MetaFunction = (args) => {
             name: "description",
             content: `A collection of ramblings by ${SITE_AUTHOR}.`,
         },
-
-        // ...getMetaData({
-        //   canonical: args.parentsData?.root?.canonical,
-        // })
     ];
 };
 
-export default function () {
-    // Hooks
+export default function Blog() {
     const { posts, tags: _tags } = useLoaderData<LoaderData>();
 
-    // Setup
     const data = filterBlogPosts(posts);
 
     return (
         <>
             <section className="bg-gradient-dark-- bg-color-background-dark text-color-background">
-                <AppHero
+                <Hero
                     className="mx-auto max-w-6xl py-20 md:py-40"
                     copy="Yes, another blog..."
                     highlight="Developer ramblings"

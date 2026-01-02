@@ -20,11 +20,18 @@ export type LoaderData = {
     title: string;
 };
 
+type GraphCMSResponse = {
+    data: {
+        portfolios: LoaderData[];
+    };
+};
+
 export const loader: LoaderFunction = async (args) => {
     const { slug } = args.params;
 
     const data = await fetchFromGraphCMS(getPortfolioBySlug, { slug: slug });
-    const res = await data.json();
+    const jsonData: unknown = await data.json();
+    const res: GraphCMSResponse = jsonData as GraphCMSResponse;
     const portfolios = res.data.portfolios ?? [];
 
     if (portfolios.length !== 1) {

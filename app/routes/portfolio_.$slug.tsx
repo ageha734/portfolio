@@ -1,37 +1,30 @@
 import type { LoaderData } from "~/routes/api.portfolio.$slug";
-import { AppHero } from "~/components/AppHero";
-import { loader } from "~/routes/api.portfolio.$slug";
+import { Hero } from "~/widgets/hero";
 import { useLoaderData } from "@remix-run/react";
 import type { MetaFunction } from "@remix-run/react";
 
-export { loader };
+export { loader } from "~/routes/api.portfolio.$slug";
 
 export const meta: MetaFunction = (args) => {
-    const image = args.data?.images[0] ? args.data?.images[0]?.url : false;
-
+    const data = args.data as LoaderData | undefined;
     return [
-        // getMetaData({
-        //   canonical: args.parentsData?.root?.canonical,
-        //   image,
-        // })
         {
-            description: args.data?.description,
+            name: "description",
+            content: data?.intro,
         },
-        { title: args.data?.title },
+        { title: data?.title },
     ];
 };
 
-export default function () {
-    // Hooks
+export default function Portfolio_Slug() {
     const data = useLoaderData<LoaderData>();
 
-    // Setup
     const img = data.images[0] ? data.images[0]?.url : false;
 
     return (
         <>
             <div className="m-auto max-w-3xl">
-                <AppHero className="py-20 md:py-40" copy={data.company} highlight={data.title} tag="h1" />
+                <Hero className="py-20 md:py-40" copy={data.company} highlight={data.title} tag="h1" />
             </div>
 
             {img && (

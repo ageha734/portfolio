@@ -10,8 +10,6 @@ export interface HeroProps {
 
 export const Hero = (props: HeroProps) => {
     const { className, copy, highlight, tag: Tag = "h2" } = props;
-
-    // Styles
     const cssComponent = classnames("hero p-4 text-center", className);
 
     return (

@@ -1,5 +1,5 @@
-import type { LinksFunction } from "@remix-run/cloudflare";
-import { createCookieSessionStorage, json } from "@remix-run/cloudflare";
+import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/cloudflare";
+import { createCookieSessionStorage } from "@remix-run/cloudflare";
 import {
     Links,
     LiveReload,
@@ -12,26 +12,21 @@ import {
     useNavigation,
     useRouteError,
 } from "@remix-run/react";
-import type { MetaFunction } from "@remix-run/react";
 
-import { useEffect } from "react";
-import { AppFooter } from "~/components/AppFooter";
-import { AppHeader } from "~/components/AppHeader";
-import { AppHeaderMobile } from "~/components/AppHeaderMobile";
-import { Progress } from "~/components/progress";
-import { ThemeProvider, themeStyles } from "~/components/theme-provider";
-import { VisuallyHidden } from "~/components/visually-hidden";
+import { Footer, FooterMobile } from "~/widgets/footer";
+import { Header, HeaderMobile, Navbar } from "~/widgets/navbar";
 
-import { Error } from "~/layouts/error";
-import { Navbar } from "~/layouts/navbar";
+import { ErrorPage } from "~/widgets/error";
+import type { ErrorProps } from "~/widgets/error";
 
 import { SITE_DESCRIPTION, SITE_SHARE_IMAGE, SITE_TITLE, SITE_URL } from "~/shared/config/constants";
-import { BASE_URL } from "~/shared/config/settings";
-import { useIntro } from "~/hooks/useIntro";
-import { usePageTracking } from "~/hooks/usePageTracking";
+import { BASE_URL, GOOGLE_TAG_MANAGER } from "~/shared/config/settings";
+import { useIntro } from "~/shared/hooks/useIntro";
+import { usePageTracking } from "~/shared/hooks/usePageTracking";
+import { TrackingGTMScript, TrackingGTMIFrame } from "~/features/tracking";
 
 import { I18nextProvider } from "react-i18next";
-import i18n from "./i18n";
+import i18n from "~/shared/config/i18n";
 
 import styles from "~/styles/index.css?url";
 import tailwind from "~/styles/tailwind.css?url";
@@ -47,7 +42,7 @@ export const links: LinksFunction = () => [
     { rel: "stylesheet", href: tailwind },
 ];
 
-export const loader = async ({ request, context }) => {
+export const loader = async ({ request, context }: LoaderFunctionArgs) => {
     const { url } = request;
     const { pathname } = new URL(url);
     const pathnameSliced = pathname.endsWith("/") ? pathname.slice(0, -1) : url;
@@ -60,7 +55,7 @@ export const loader = async ({ request, context }) => {
             maxAge: 604_800,
             path: "/",
             sameSite: "lax",
-            secrets: [context.cloudflare.env.SESSION_SECRET || " "],
+            secrets: [(context as { cloudflare?: { env?: { SESSION_SECRET?: string } } }).cloudflare?.env?.SESSION_SECRET || " "],
             secure: true,
         },
     });
@@ -68,7 +63,7 @@ export const loader = async ({ request, context }) => {
     const session = await getSession(request.headers.get("Cookie"));
     const theme = session.get("theme") || "dark";
 
-    return json(
+    return Response.json(
         { canonicalUrl, theme },
         {
             headers: {
@@ -78,7 +73,8 @@ export const loader = async ({ request, context }) => {
     );
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: MetaFunction<typeof loader> = (args) => {
+    const data = args.data as { theme?: string; canonicalUrl?: string; description?: string };
     return [
         {
             charset: "utf-8",
@@ -91,12 +87,12 @@ export const meta: MetaFunction = (args) => {
         {
             tagName: "meta",
             name: "theme-color",
-            content: args.data.theme === "dark" ? "#111" : "#F2F2F2",
+            content: data.theme === "dark" ? "#111" : "#F2F2F2",
         },
         {
             tagName: "meta",
             name: "color-scheme",
-            content: args.data.theme === "light" ? "light dark" : "dark light",
+            content: data.theme === "light" ? "light dark" : "dark light",
         },
         {
             title: SITE_TITLE,
@@ -104,7 +100,7 @@ export const meta: MetaFunction = (args) => {
         {
             tagName: "meta",
             name: "description",
-            content: args.data.description,
+            content: data.description || SITE_DESCRIPTION,
         },
         {
             name: "image",
@@ -113,7 +109,7 @@ export const meta: MetaFunction = (args) => {
         {
             tagName: "link",
             rel: "canonical",
-            href: args.data.canonical,
+            href: data.canonicalUrl || "",
         },
     ];
 };
@@ -121,54 +117,44 @@ export const meta: MetaFunction = (args) => {
 export default function App() {
     const fetcher = useFetcher();
     const { state } = useNavigation();
+    const { theme: initialTheme } = useLoaderData<{ canonicalUrl: string; theme: string }>();
 
-    if (fetcher.formData?.has("theme")) {
-        theme = fetcher.formData.get("theme");
-    }
+    const theme = (fetcher.formData?.get("theme") as string) || initialTheme;
 
-    function toggleTheme(newTheme) {
+    function toggleTheme(newTheme?: string) {
         fetcher.submit(
-            { theme: newTheme ? newTheme : theme === "dark" ? "light" : "dark" },
+            { theme: newTheme || (theme === "dark" ? "light" : "dark") },
             { action: "/api/set-theme", method: "post" },
         );
     }
 
-    useEffect(() => {
-        console.info(`${config.ascii}\n`, `Taking a peek huh? Check out the source code: ${config.repo}\n\n`);
-    }, []);
-
-    // Life Cycle
     useIntro();
     usePageTracking();
 
     return (
         <html lang="en">
             <head>
-                <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
                 <Meta />
                 <Links />
+                {GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMScript id={GOOGLE_TAG_MANAGER} />}
             </head>
             <body data-theme={theme}>
-                <ThemeProvider theme={theme} toggleTheme={toggleTheme}>
-                    <I18nextProvider i18n={i18n}>
-                        <Progress />
-                        <VisuallyHidden showOnFocus as="a" className={styles.skip} href="#main-content">
-                            Skip to main content
-                        </VisuallyHidden>
-                        <Navbar />
-                        <AppHeader />
-                        <AppHeaderMobile />
-                        <main
-                            id="main-content"
-                            className={styles.container}
-                            tabIndex={-1}
-                            data-loading={state === "loading"}
-                        >
-                            <Outlet />
-                        </main>
-                        <AppFooter />
-                    </I18nextProvider>
-                </ThemeProvider>
+                {GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMIFrame id={GOOGLE_TAG_MANAGER} />}
+                <I18nextProvider i18n={i18n}>
+                    <Navbar />
+                    <Header />
+                    <HeaderMobile />
+                    <main
+                        id="main-content"
+                        className="container"
+                        tabIndex={-1}
+                        data-loading={state === "loading"}
+                    >
+                        <Outlet />
+                    </main>
+                    <Footer />
+                    <FooterMobile />
+                </I18nextProvider>
                 <ScrollRestoration />
                 <Scripts />
                 <LiveReload />
@@ -183,12 +169,11 @@ export function ErrorBoundary() {
     return (
         <html lang="en">
             <head>
-                <style dangerouslySetInnerHTML={{ __html: themeStyles }} />
                 <Meta />
                 <Links />
             </head>
-            <body data-theme={theme}>
-                <Error error={error} />
+            <body data-theme="dark">
+                <ErrorPage error={error as ErrorProps["error"]} />
                 <ScrollRestoration />
                 <Scripts />
             </body>

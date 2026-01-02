@@ -1,15 +1,12 @@
-import { useWebShareAPI } from "~/hooks/useWebShareAPI";
+import { useWebShareAPI } from "~/shared/hooks/useWebShareAPI";
 
 export const ShareButton = () => {
-    // Hooks
     const { isAvailable, onShare } = useWebShareAPI();
 
-    // Handlers
     const onClick = () => {
         onShare("https://mattscholta.com/resume");
     };
 
-    // Short Circuit
     if (!isAvailable) return null;
 
     return (

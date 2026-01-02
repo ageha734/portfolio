@@ -12,7 +12,7 @@ export default defineConfig({
             "~/entities": resolve(__dirname, "./app/entities"),
             "~/features": resolve(__dirname, "./app/features"),
             "~/widgets": resolve(__dirname, "./app/widgets"),
-            "~/pages": resolve(__dirname, "./app/pages"),
+            "~/routes": resolve(__dirname, "./app/routes"),
         },
     },
 

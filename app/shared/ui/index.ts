@@ -1,6 +1,10 @@
 export { Logo } from "./Logo";
 export type { LogoProps } from "./Logo";
+export { SocialLink } from "./SocialLink";
+export type { SocialLinkProps } from "./SocialLink";
 export { Tags } from "./Tags";
 export type { TagsProps } from "./Tags";
 export { UserCard } from "./UserCard";
 export type { UserCardProps } from "./UserCard";
+export { Wysiwyg } from "./Wysiwyg";
+export type { WysiwygProps } from "./Wysiwyg";

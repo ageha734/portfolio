@@ -1,10 +1,9 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/cloudflare";
-import { AppShareLink } from "~/components/AppShareButton";
-import { AppSocialLink } from "~/components/AppSocialLink";
-import { SectionEducation } from "~/components/SectionEducation";
-import { SectionExperience } from "~/components/SectionExperience";
+import { ShareButton } from "~/features/share-button";
+import { SocialLink } from "~/shared/ui";
+import { SectionEducation, SectionExperience } from "~/widgets/sections";
 import { SITE_AUTHOR, SITE_TITLE, SITE_YEAR } from "~/shared/config/constants";
-import { social } from "~/data/resume";
+import { social } from "~/shared/lib/data/resume";
 import styles from "~/styles/resume.css";
 
 export const links: LinksFunction = () => [
@@ -25,13 +24,9 @@ export const meta: MetaFunction = (args) => {
             content: `The online resume of ${SITE_AUTHOR}, a Software Engineer located in San Diego, California.`,
         },
     ];
-
-    // ...getMetaData({
-    //   canonical: args.parentsData?.root?.canonical,
-    // })
 };
 
-export default function () {
+export default function Resume() {
     return (
         <div className="m-auto max-w-5xl py-10 md:py-20">
             <div className="flex flex-col gap-20 px-4 md:flex-row md:px-0">
@@ -48,7 +43,7 @@ export default function () {
                             />
                             <div className="flex flex-shrink-0 flex-col gap-2 p-4">
                                 {social.map((data) => (
-                                    <AppSocialLink data={data} key={data.title} />
+                                    <SocialLink data={data} key={data.title} />
                                 ))}
                             </div>
                         </div>
@@ -60,7 +55,7 @@ export default function () {
                             >
                                 Download Resume
                             </a>
-                            <AppShareLink />
+                            <ShareButton />
                         </div>
                     </div>
                 </aside>

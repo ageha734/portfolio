@@ -1,6 +1,5 @@
 import { Link } from "@remix-run/react";
-import { SITE_YEAR } from "~/shared/config/constants";
-import type { Portfolio } from "~/shared/types";
+import type { Portfolio } from "~/entities/portfolio";
 
 export interface PortfolioPreviewProps {
     current: boolean;
@@ -15,10 +14,8 @@ export interface PortfolioPreviewProps {
 export const PortfolioPreview = (props: PortfolioPreviewProps) => {
     const { current = false, data } = props;
 
-    // Setup
     const date = new Date(data.date);
 
-    // Markup
     const _renderImage = () => (
         <div className="w-full">
             <img
@@ -33,8 +30,6 @@ export const PortfolioPreview = (props: PortfolioPreviewProps) => {
 
     return (
         <Link className="work-preview text-color-copy" prefetch="intent" to={`/portfolio/${data.slug}`}>
-            {/* {data.images[0] && renderImage()} */}
-
             <h3 className="m-0 font-font-serif text-xl font-bold">{data.title}</h3>
             <div className="mt-1 mb-6 flex items-baseline gap-2 font-medium text-color-copy-dark">
                 {!current && <span>{new Date(date).getFullYear()}</span>}

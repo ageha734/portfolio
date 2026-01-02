@@ -13,7 +13,7 @@ import {
  * @description Adding a personal touch never hurt anyone right, and some
  * shameless self-promotion isn't all that bad either.
  */
-const artwork = `
+const artwork = String.raw`
 <!--
 
   ${MESSAGE_HIRE_CONOSLE}

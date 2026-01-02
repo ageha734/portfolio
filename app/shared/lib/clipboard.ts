@@ -3,12 +3,13 @@
  * @external https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
  * @description Some code taken from StackOverflow which provides modern
  * clipboard functionality and a fallback for older browsers.
+ * Note: Uses deprecated execCommand API, but needed as fallback for older browsers
+ * that don't support navigator.clipboard API.
  */
 export const fallbackCopyToClipboard = (text: string) => {
     const textArea = document.createElement("textarea");
     textArea.value = text;
 
-    // Avoid scrolling to bottom
     textArea.style.top = "0";
     textArea.style.left = "0";
     textArea.style.position = "fixed";
@@ -19,6 +20,7 @@ export const fallbackCopyToClipboard = (text: string) => {
     textArea.select();
 
     try {
+        // NOSONAR: typescript:S1874 - execCommand is deprecated but needed as fallback for older browsers
         const successful = document.execCommand("copy");
         const msg = successful ? "successful" : "unsuccessful";
         console.log("Fallback: Copying text command was " + msg);
@@ -26,7 +28,7 @@ export const fallbackCopyToClipboard = (text: string) => {
         console.error("Fallback: Oops, unable to copy", err);
     }
 
-    document.body.removeChild(textArea);
+    textArea.remove();
 };
 
 export const copyTextToClipboard = (text: string) => {

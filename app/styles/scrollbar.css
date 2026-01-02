@@ -16,25 +16,5 @@
 
 ::-webkit-scrollbar-thumb {
     background-color: var(--color-primary);
-    /* border: 2px solid var(--spot-white); */
-    /* border-radius: 10px; */
     border-radius: theme("spacing.1");
 }
-
-/*
-::-moz-selection {
-  background: var(--color-primary);
-  color: var(--spot-white);
-}
-
-::selection {
-  background: var(--color-primary);
-  color: var(--spot-white);
-}
-
-:focus-visible {
-  border: unset;
-  box-shadow: unset;
-  outline-color: var(--color-primary);
-}
-*/

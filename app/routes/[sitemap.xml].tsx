@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import type { Portfolio } from "~/shared/api/portfolio";
-import type { Post } from "~/shared/api/blog";
+import type { Portfolio } from "~/entities/portfolio";
+import type { Post } from "~/entities/blog";
 import { BASE_URL } from "~/shared/config/settings";
 import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
 import { getSitemap } from "~/shared/api/queries/getSitemap";
@@ -11,9 +11,17 @@ import { SITE_UPDATED } from "~/shared/config/constants";
  * @name /sitemap.xml
  * @description Generate a sitemap.xml for SEO purposes
  */
+type SitemapResponse = {
+    data: {
+        portfolios: Portfolio[];
+        posts: Post[];
+    };
+};
+
 export const loader: LoaderFunction = async (args) => {
     const data = await fetchFromGraphCMS(getSitemap);
-    const res = await data.json();
+    const jsonData: unknown = await data.json();
+    const res: SitemapResponse = jsonData as SitemapResponse;
     const routes = ["/blog", "/portfolio", "/resume", "/uses"];
 
     const { portfolios, posts } = res.data;

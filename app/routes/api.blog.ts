@@ -1,4 +1,3 @@
-import { json } from "@remix-run/cloudflare";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 
 import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
@@ -18,11 +17,17 @@ export interface Post {
 }
 
 export interface EnumValue {
-    // deprecationReason?: string;
-    // description?: string;
-    // isDeprecated: boolean;
     name: string;
 }
+
+type GraphCMSResponse = {
+    data: {
+        posts: Post[];
+        __type: {
+            enumValues: EnumValue[];
+        };
+    };
+};
 
 export type LoaderData = {
     posts: Post[];
@@ -30,20 +35,17 @@ export type LoaderData = {
 };
 
 export const loader: LoaderFunction = async () => {
-    try {
-        const data = await fetchFromGraphCMS(getPosts);
-        const res = await data.json();
+    const data = await fetchFromGraphCMS(getPosts);
+    const jsonData: unknown = await data.json();
+    const res: GraphCMSResponse = jsonData as GraphCMSResponse;
 
-        const posts = res.data.posts ?? [];
-        const tagsData: EnumValue[] = res.data.__type.enumValues ?? [];
-        const tags = tagsData.map((tag: EnumValue) => tag.name).sort();
+    const posts = res.data.posts ?? [];
+    const tagsData: EnumValue[] = res.data.__type.enumValues ?? [];
+    const tags = tagsData.map((tag: EnumValue) => tag.name).sort((a, b) => a.localeCompare(b));
 
-        if (!posts.length) {
-            throw new Response(`Blog posts not found`, { status: 404 });
-        }
-
-        return json({ posts, tags });
-    } catch (error) {
-        throw error;
+    if (!posts.length) {
+        throw new Response(`Blog posts not found`, { status: 404 });
     }
+
+    return Response.json({ posts, tags } as LoaderData);
 };

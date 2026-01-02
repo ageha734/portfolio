@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/react";
-import { AppHero } from "~/components/AppHero";
-import { SandboxSidebar } from "~/components/SandboxSidebar";
+import { Hero } from "~/widgets/hero";
+import { SandboxSidebar } from "~/widgets/sandbox";
 import { SITE_TITLE } from "~/shared/config/constants";
 
 export const meta: MetaFunction = (args) => {
@@ -12,16 +12,13 @@ export const meta: MetaFunction = (args) => {
             name: "description",
             content: `A Sandbox for Remix-Run and various web experiments.`,
         },
-        // ...getMetaData({
-        //   canonical: args.parentsData?.root?.canonical,
-        // })
     ];
 };
 
-export default () => {
+export default function Sandbox() {
     return (
         <section className="bg-gradient-dark-- bg-color-background-dark text-color-background">
-            <AppHero
+            <Hero
                 className="mx-auto max-w-6xl py-20 md:py-40"
                 copy="Developer sandbox 🏖️"
                 highlight="A place to explore"

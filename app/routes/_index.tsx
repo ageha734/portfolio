@@ -1,15 +1,12 @@
 import type { MetaFunction } from "@remix-run/react";
 import * as React from "react";
-import { AppHero } from "~/components/AppHero";
+import { Hero } from "~/widgets/hero";
 import { getQuote } from "~/routes/api.qualities";
 import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from "~/shared/config/constants";
-import { SectionCompanies } from "~/components/SectionCompanies";
-import { SectionTechnology } from "~/components/SectionTechnology";
-import { SectionAmbitions } from "~/components/SectionAmbitions";
-// import { SectionFireworks } from "~/components/SectionFireworks";
-// import { getMetaData } from "~/metadata";
+import { SectionAmbitions, SectionCompanies, SectionTechnology } from "~/widgets/sections";
 
 export const meta: MetaFunction = (args) => {
+    const data = args.data as { canonical?: string } | undefined;
     return [
         {
             title: `${SITE_TITLE}`,
@@ -21,50 +18,44 @@ export const meta: MetaFunction = (args) => {
         {
             tagName: "link",
             rel: "canonical",
-            href: args.data?.canonical,
+            href: data?.canonical,
         },
-
-        // {
-        //   name: "canonical",
-        //   content: args.data?.canonical
-        // }
-        // ...getMetaData({
-        //   canonical: args.parentsData?.root?.canonical,
-        // })
     ];
 };
 
-export default function () {
+export default function Index() {
     // Hooks
     const [heading, setHeading] = React.useState("A Software Engineer");
 
-    // Handlers
-    const onClick = async () => {
-        const data = await getQuote(heading);
+    const onClick = () => {
+        const data = getQuote(heading);
         setHeading(data);
     };
 
     return (
         <>
             <div className="relative">
-                {/* <SectionFireworks /> */}
                 <section className="relative z-0 m-auto flex max-w-6xl flex-col-reverse items-center justify-center gap-4 py-20 md:flex-row md:py-40">
-                    <AppHero
+                    <Hero
                         className="py-10 md:py-20 md:text-right"
                         copy={<span className="whitespace-nowrap">{heading}</span>}
                         highlight={SITE_AUTHOR}
                         tag="h1"
                     />
                     <div>
-                        <img
-                            alt={SITE_AUTHOR}
+                        <button
                             className="custom-bg-gradient aspect-square max-h-32 cursor-pointer overflow-hidden rounded-full p-1 transition-transform hover:scale-110 active:rotate-6 md:max-h-40"
-                            height="auto"
-                            loading="eager"
                             onClick={onClick}
-                            src="/images/assets/matt-scaled.webp"
-                            width="auto"
-                        />
+                            type="button"
+                        >
+                            <img
+                                alt={SITE_AUTHOR}
+                                height="auto"
+                                loading="eager"
+                                src="/images/assets/matt-scaled.webp"
+                                width="auto"
+                            />
+                        </button>
                     </div>
                 </section>
             </div>

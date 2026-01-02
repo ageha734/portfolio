@@ -1,4 +1,3 @@
-import { json } from "@remix-run/cloudflare";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 
 import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
@@ -23,15 +22,22 @@ export interface Post {
 
 export type LoaderData = Post;
 
+type GraphCMSResponse = {
+    data: {
+        post: Post | null;
+    };
+};
+
 export const loader: LoaderFunction = async (args) => {
     const { slug } = args.params;
 
     const data = await fetchFromGraphCMS(getPost, { slug });
-    const res = await data.json();
+    const jsonData: unknown = await data.json();
+    const res: GraphCMSResponse = jsonData as GraphCMSResponse;
 
     if (!res.data.post) {
         throw new Response(`Post "${slug}" not found`, { status: 404 });
     }
 
-    return json(res.data.post);
+    return Response.json(res.data.post as LoaderData);
 };

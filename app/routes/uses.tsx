@@ -1,8 +1,6 @@
 import type { MetaFunction } from "@remix-run/react";
-import { AppHero } from "~/components/AppHero";
-import { SectionHardware } from "~/components/SectionHardware";
-import { SectionMisc } from "~/components/SectionMisc";
-import { SectionSoftware } from "~/components/SectionSoftware";
+import { Hero } from "~/widgets/hero";
+import { SectionHardware, SectionMisc, SectionSoftware } from "~/widgets/sections";
 import { SITE_TITLE } from "~/shared/config/constants";
 
 export const meta: MetaFunction = (args) => {
@@ -14,17 +12,14 @@ export const meta: MetaFunction = (args) => {
             name: "description",
             content: `Check out uses.tech for a list of more /uses pages!`,
         },
-        // ...getMetaData({
-        //   canonical: args.parentsData?.root?.canonical,
-        // })
     ];
 };
 
-export default function () {
+export default function Uses() {
     return (
         <>
             <section className="bg-color-background-dark text-color-background">
-                <AppHero className="py-20 md:py-40" copy="If you're curious" highlight="What I'm using" tag="h1" />
+                <Hero className="py-20 md:py-40" copy="If you're curious" highlight="What I'm using" tag="h1" />
             </section>
             <SectionHardware />
             <div className="border-0 border-t border-solid border-t-color-border bg-color-background-light">

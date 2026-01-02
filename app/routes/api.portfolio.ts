@@ -1,6 +1,5 @@
 import { fetchFromGraphCMS } from "~/shared/lib/graphcms";
 import { getPortfolios } from "~/shared/api/queries/getPortfolios";
-import { json } from "@remix-run/cloudflare";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 
 export interface Portfolio {
@@ -16,14 +15,21 @@ export interface Portfolio {
 
 export type LoaderData = Portfolio[];
 
+type GraphCMSResponse = {
+    data: {
+        portfolios: Portfolio[];
+    };
+};
+
 export const loader: LoaderFunction = async (args) => {
     const data = await fetchFromGraphCMS(getPortfolios);
-    const res = await data.json();
+    const jsonData: unknown = await data.json();
+    const res: GraphCMSResponse = jsonData as GraphCMSResponse;
     const items = res.data.portfolios ?? [];
 
     if (!items.length) {
         throw new Response(`Portfolio items not found`, { status: 404 });
     }
 
-    return json(items);
+    return Response.json(items as LoaderData);
 };

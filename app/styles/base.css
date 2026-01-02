@@ -1,20 +1,12 @@
-/**
- * The "base" style sheet is used to customize our generic HTML tags a bit
- */
 html {
     background-color: var(--color-background-light);
     min-width: 320px;
-
-    /* scroll-behavior: smooth; */
 }
 
 body {
     background-color: var(--color-background);
     color: var(--color-copy);
     font-family: var(--font-sans-serif);
-}
-
-body {
     position: relative;
 }
 
@@ -44,7 +36,7 @@ blockquote {
     text-align: center;
 }
 
-@screen md {
+@media (min-width: 768px) {
     blockquote {
         margin: 4rem 4rem;
     }

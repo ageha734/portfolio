@@ -1,12 +1,9 @@
 import { Link } from "@remix-run/react";
 import classnames from "classnames";
-import type { Post } from "~/shared/types";
 
 export interface BlogPreviewProps {
     className?: string;
-    content?: string;
     date: string;
-    featured?: boolean;
     heading?: string;
     slug: string;
     title: string;
@@ -16,7 +13,6 @@ export interface BlogPreviewProps {
 export const BlogPreview = (props: BlogPreviewProps) => {
     const { className, date, heading = "h3", slug, image, title } = props;
 
-    // Setup
     const Heading = heading as any;
     const created = new Date(date);
     const dateString = created.toLocaleDateString("en-US", {
@@ -33,12 +29,17 @@ export const BlogPreview = (props: BlogPreviewProps) => {
             prefetch="intent"
             to={`/blog/${slug}`}
         >
-            {/* TODO: Add a nice CSS transition here */}
-            <img alt={title} height="auto" loading="lazy" src={image} width="auto" />
+            <img
+                alt={title}
+                className="transition-transform duration-300 ease-in-out hover:scale-105"
+                height="auto"
+                loading="lazy"
+                src={image}
+                width="auto"
+            />
 
             <Heading className="mt-4 mb-2 text-2xl">{title}</Heading>
             <div className="font-font-monospace text-sm">{dateString}</div>
-            {/* <div dangerouslySetInnerHTML={{ __html: content }} /> */}
         </Link>
     );
 };

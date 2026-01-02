@@ -2,17 +2,11 @@ import { useLocation } from "@remix-run/react";
 import { SOCIAL_GITHUB, SOCIAL_LINKEDIN, SOCIAL_TWITTER } from "~/shared/config/constants";
 
 export const Footer = () => {
-    // Hooks
     const { pathname } = useLocation();
-
-    // Setup
     const isResume = pathname.startsWith("/resume");
-
-    // 🔌 Short Circuit
     if (isResume) return null;
-
     return (
-        <footer className="mt-10 justify-center gap-2 text-center text-sm print:hidden md:mt-20">
+        <footer className="mt-10 hidden justify-center gap-2 text-center text-sm print:hidden md:mt-20 md:block">
             <div className="m-auto flex justify-center gap-4">
                 <a className="p-2" href={SOCIAL_LINKEDIN} target="_blank" rel="noreferrer">
                     <img
@@ -49,8 +43,7 @@ export const Footer = () => {
                 Built with <span className="text-color-primary--">&hearts;</span> in{" "}
                 <a href="https://www.google.com/search?q=san+diego+weather" rel="noreferrer" target="_blank">
                     San Diego
-                </a>
-                , CA.
+                </a>, CA.
             </p>
         </footer>
     );

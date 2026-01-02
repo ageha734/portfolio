@@ -25,7 +25,7 @@
             "~/entities/*": ["./app/entities/*"],
             "~/features/*": ["./app/features/*"],
             "~/widgets/*": ["./app/widgets/*"],
-            "~/pages/*": ["./app/pages/*"]
+            "~/routes/*": ["./app/routes/*"]
         }
     }
 }

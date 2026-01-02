@@ -52,6 +52,7 @@ Temporary Items
 ### Remix ###
 node_modules
 /.cache
+/.wrangler
 /build
 /public/build
 .env

@@ -1,13 +1,11 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/cloudflare";
 import type { LoaderData } from "~/routes/api.blog.$slug";
-import { AppHero } from "~/components/AppHero";
-import { AppWysiwyg } from "~/components/AppWysiwyg";
-import { loader } from "~/routes/api.blog.$slug";
+import { Hero } from "~/widgets/hero";
+import { Wysiwyg } from "~/shared/ui/Wysiwyg";
 import { useLoaderData } from "@remix-run/react";
 import stylesLines from "prismjs/plugins/line-numbers/prism-line-numbers.css";
 import stylesTheme from "prismjs/themes/prism-tomorrow.css";
 import "prismjs/plugins/line-numbers/prism-line-numbers";
-// import { getMetaData } from "~/metadata";
 
 export const links: LinksFunction = () => {
     return [
@@ -16,35 +14,29 @@ export const links: LinksFunction = () => {
     ];
 };
 
-export { loader };
+export { loader } from "~/routes/api.blog.$slug";
 
 export const meta: MetaFunction = (args) => {
-    console.log(` 💬 ~ args.data`, args);
-
+    const data = args.data as LoaderData | undefined;
     return [
         {
-            title: args.data?.title || "Blog | Post not found!",
-            // ...getMetaData({
-            //   canonical: args.parentsData?.root?.canonical,
-            // })
+            title: data?.title || "Blog | Post not found!",
         },
         {
             name: "description",
-            content: args.data?.description,
+            content: data?.intro,
         },
         {
             tagName: "link",
             rel: "canonical",
-            href: args.data?.canonical,
+            href: data?.images?.url,
         },
     ];
 };
 
-export default function () {
-    // Hooks
+export default function Blog_Slug() {
     const data = useLoaderData<LoaderData>();
 
-    // Setup
     const created = new Date(data.date);
     const date = created.toLocaleDateString("en-US", {
         day: "numeric",
@@ -57,7 +49,7 @@ export default function () {
     return (
         <>
             <section className="mx-auto max-w-6xl">
-                <AppHero className="py-20 md:py-40" copy={date} highlight={data.title} tag="h1" />
+                <Hero className="py-20 md:py-40" copy={date} highlight={data.title} tag="h1" />
             </section>
 
             <img
@@ -79,7 +71,7 @@ export default function () {
                     </div>
 
                     {/* Content */}
-                    <AppWysiwyg content={data.content.raw} />
+                    <Wysiwyg content={data.content.raw} />
                 </div>
             </section>
         </>

@@ -1,9 +1,4 @@
-import type { Post } from "~/shared/api/blog";
-
-export interface BlogData {
-    data: Post[];
-    featured: Post[];
-}
+import type { Post, BlogData } from "~/entities/blog";
 
 /**
  * @name filterBlogPosts
