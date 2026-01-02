@@ -6,6 +6,23 @@
 
 ## 🚀 技術スタック
 
+```text
+gh-pages/
+├── docs/              # 最新のdocsデプロイ(https://ageha734.github.io/docs/)
+├── design-system      # 最新のdesign-systemデプロイ(https://ageha734.github.io/design-system/)
+├── openapi            # 最新のopenapiデプロイ(https://ageha734.github.io/openapi/)
+└── reports/           # 最新のテスト結果デプロイ
+    ├── e2e/           # 最新のplaywrightデプロイ
+    │   ├── ...        # テスト結果のレポート(https://ageha734.github.io/reports/e2e/) → 一番最新のテスト結果
+    │   └── {uuid}/    # テスト結果のUUID(https://ageha734.github.io/reports/e2e/{uuid}/) →　履歴機能
+    ├── coverage/      # 最新のvitestデプロイ
+    │   ├── ...        # テスト結果のレポート(https://ageha734.github.io/reports/coverage/) → 一番最新のテスト結果
+    │   └── {uuid}/    # テスト結果のUUID(https://ageha734.github.io/reports/coverage/{uuid}/) →　履歴機能
+    └── lighthouse/    # 最新のlighthouseデプロイ
+        ├── ...        # テスト結果のレポート(https://ageha734.github.io/reports/lighthouse/) → 一番最新のテスト結果
+        └── {uuid}/    # テスト結果のUUID(https://ageha734.github.io/reports/lighthouse/{uuid}/) →　履歴機能
+```
+
 ### Core
 
 - **[Remix](https://remix.run)** - Full stack web framework
@@ -13,6 +30,8 @@
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
 - **[Cloudflare Pages](https://pages.cloudflare.com/)** - Hosting platform
 - **[TailwindCSS](https://tailwindcss.com)** - Utility-first CSS framework
+- **[GraphCMS](https://graphcms.com/)** - Headless CMS
+- **[Bun](https://bun.sh/)** - JavaScript runtime and package manager
 
 ### Development Tools
 
@@ -20,228 +39,29 @@
 - **[Vitest](https://vitest.dev/)** - Unit testing framework
 - **[Playwright](https://playwright.dev/)** - E2E testing framework
 - **[Biome](https://biomejs.dev/)** - Linter and formatter
-- **[Ladle](https://ladle.dev/)** - Component development environment
+- **[Storybook](https://storybook.js.org/)** - Component development environment
+- **[Wrangler](https://developers.cloudflare.com/workers/wrangler/)** - Cloudflare Workers CLI
+- **[TypeSpec](https://typespec.io/)** - API specification language
 
 ### Documentation
 
 - **[Docusaurus](https://docusaurus.io/)** - Documentation site generator
-
-## 📋 前提条件
-
-- Node.js 20.11.0以上
-- Bun 1.1.43以上
-
-## 🛠️ セットアップ
-
-```bash
-# リポジトリのクローン
-git clone https://github.com/ageha734/portfolio.git
-cd portfolio
-
-# 依存関係のインストール
-bun install
-
-# 環境変数の設定
-cp .example.env .env
-# .envファイルを編集して必要な環境変数を設定
-```
-
-### 環境変数
-
-`.env`ファイルに以下の環境変数を設定してください：
-
-```env
-BASE_URL="https://www.your-website.com"
-GOOGLE_ANALYTICS="G-########"
-GOOGLE_TAG_MANAGER="GTM-######"
-GRAPHCMS_ADMIN="https://management-next.graphcms.com/graphql"
-GRAPHCMS_TOKEN="xxxxxxxxxxxx.xxxxxxxxxxxx.xxxxxxxxxxxx"
-GRAPHCMS_URL="https://xxxxxx.graphcms.com/v2/xxxxxxxxxxxx/master"
-PORT=3000
-ENVIRONMENT=development
-```
-
-## 🏃 開発
-
-### 開発サーバーの起動
-
-```bash
-# Remix開発サーバー（ポート5170）
-bun run dev:remix
-
-# Ladle UI（コンポーネント開発環境）
-bun run dev:ui
-
-# 両方同時に起動
-bun run dev
-```
-
-### ビルド
-
-```bash
-# プロダクションビルド
-bun run build
-
-# CSSのみビルド
-bun run build:css
-```
-
-### コード品質
-
-```bash
-# フォーマットチェック
-bun run fmt
-
-# フォーマット自動修正
-bun run fmt:fix
-
-# リントチェック
-bun run lint
-
-# リント自動修正
-bun run lint:fix
-
-# 型チェック
-bun run typecheck
-```
-
-## 🧪 テスト
-
-### ユニットテスト
-
-```bash
-# ウォッチモードで実行
-bun run test:unit
-
-# 1回実行
-bun run test:unit:run
-
-# カバレッジ付き実行
-bun run test:unit:coverage
-```
-
-### E2Eテスト
-
-```bash
-# UIモードで実行
-bun run test:e2e
-
-# CI用実行
-bun run test:e2e:run
-
-# ブラウザインストール
-bun run test:e2e:install
-```
-
-### すべてのテスト
-
-```bash
-# ユニットテストとE2Eテストを並列実行
-bun run test
-
-# CI用（順次実行）
-bun run test:ci
-```
-
-## 📚 ドキュメント
-
-```bash
-# ドキュメント開発サーバー起動
-bun run docs:dev
-
-# ドキュメントビルド
-bun run docs:build
-
-# ビルド済みドキュメントのサーバー起動
-bun run docs:serve
-```
-
-## 🚢 デプロイ
+- **[Swagger](https://swagger.io/)** - API documentation
 
 ### Cloudflare Pages
 
-RemixアプリはCloudflare Pagesに自動デプロイされます。
+以下のコンテンツがCloudflare Pagesにデプロイされます
 
-```bash
-# 手動デプロイ（Remix）
-bun run deploy:remix
-
-# 手動デプロイ（Ladle）
-bun run deploy:ui
-```
+- **Remix**: アプリケーション (`https://portfolio.pages.dev`)
 
 ### GitHub Pages
 
-以下のコンテンツがGitHub Pagesにデプロイされます：
+以下のコンテンツがGitHub Pagesにデプロイされます
 
-- **Ladle**: コンポーネント開発環境
+- **Storybook**: コンポーネント開発環境
 - **Docusaurus**: ドキュメントサイト
-- **テストレポート**: ユニットテストとE2Eテストの結果
-
-## 📁 プロジェクト構造
-
-```
-app/
-├── app/              # アプリケーションエントリーポイント
-├── pages/            # ページレイヤー
-├── widgets/          # 大きなUIブロック
-├── features/         # ユーザー機能
-├── entities/         # ドメインモデル
-└── shared/           # 共通リソース
-    ├── ui/           # UIコンポーネント
-    ├── lib/          # ユーティリティ
-    ├── api/          # API関連
-    ├── config/       # 設定
-    └── types/        # 型定義
-
-docs/                 # Docusaurusドキュメント
-tests/                # テストファイル
-  ├── e2e/           # E2Eテスト
-  └── setup/         # テストセットアップ
-```
-
-詳細は[アーキテクチャドキュメント](docs/docs/architecture/overview.md)を参照してください。
-
-## 🔧 その他のコマンド
-
-```bash
-# Lighthouse CI実行
-bun run lighthouse
-
-# Cloudflare Workers型生成
-bun run typegen
-
-# プロダクションサーバー起動
-bun run start
-```
-
-## 📝 コミット規約
-
-このプロジェクトは[Conventional Commits](https://www.conventionalcommits.org/)形式を使用しています。
-
-```
-<type>(<scope>): <subject>
-
-<body>
-
-<footer>
-```
-
-**タイプ:**
-- `feat`: 新機能
-- `fix`: バグ修正
-- `docs`: ドキュメント
-- `style`: フォーマット
-- `refactor`: リファクタリング
-- `test`: テスト
-- `chore`: その他
-
-## 📄 ライセンス
-
-Private
-
-## 🔗 リンク
-
-- [Portfolio Site](https://ageha734.jp)
-- [Documentation](https://ageha734.github.io/portfolio/)
-- [Component Library](https://ageha734.github.io/portfolio/ladle/)
+- **Swagger**: APIドキュメント
+- **テストレポート**
+  - **Playwright**: E2Eテストレポート
+  - **Vitest**: カバレッジレポート
+  - **Lighthouse**: パフォーマンスレポート

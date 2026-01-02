@@ -1,0 +1,326 @@
+name: "[CD] Deploy"
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "docs/**"
+      - "app/**"
+      - ".storybook/**"
+      - "vite.config.ts"
+      - "docs/swagger/**"
+      - ".github/workflows/deploy.yml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "docs/**"
+      - ".github/workflows/deploy.yml"
+  workflow_run:
+    workflows: ["[CI] Validation and Checks"]
+    types:
+      - completed
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages-deploy"
+  cancel-in-progress: false
+jobs:
+  detect-changes:
+    if: github.event_name != 'workflow_run'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      docs: ${{ steps.filter.outputs.docs }}
+      storybook: ${{ steps.filter.outputs.storybook }}
+      swagger: ${{ steps.filter.outputs.swagger }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Detect changes
+        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+        id: filter
+        with:
+          token: ${{ github.token }}
+          filters: |
+            docs:
+              - 'docs/**'
+            storybook:
+              - 'app/**'
+              - '.storybook/**'
+              - 'vite.config.ts'
+            swagger:
+              - 'docs/swagger/**'
+
+  run-deploy-docs:
+    needs: [detect-changes]
+    if: |
+      (github.event_name != 'workflow_run' && (needs.detect-changes.outputs.docs == 'true' || github.event_name == 'workflow_dispatch')) ||
+      (github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+      - name: Setup Bun
+        uses: ./.github/actions/setup-ts
+        with:
+          working-directory: "."
+      - name: Install docs dependencies
+        uses: ./.github/actions/setup-ts
+        with:
+          working-directory: "docs"
+      - name: Build Docusaurus
+        run: |
+          cd docs
+          bun run build
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.0
+        with:
+          path: docs/build
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.0
+
+  run-deploy-storybook:
+    needs: [detect-changes]
+    if: github.event_name != 'workflow_run' && needs.detect-changes.outputs.storybook == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: github-pages-storybook
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-ts
+      - name: Build Storybook
+        run: bun run build:ui
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.0
+        with:
+          path: build/ui
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.0
+
+  deploy-swagger:
+    needs: [detect-changes]
+    if: |
+      (github.event_name != 'workflow_run' && (needs.detect-changes.outputs.swagger == 'true' || github.event_name == 'workflow_dispatch')) ||
+      (github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment:
+      name: github-pages-swagger
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          persist-credentials: false
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.0
+        with:
+          path: docs/swagger
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.0
+
+  deploy-test-results:
+    if: |
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      !startsWith(github.event.workflow_run.head_branch, 'copilot/')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment:
+      name: github-pages-test-results
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Generate UUID
+        id: uuid
+        run: |
+          UUID="${{ github.run_id }}-${{ github.run_number }}"
+          echo "uuid=${UUID}" >> $GITHUB_OUTPUT
+          echo "Generated UUID: ${UUID}"
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          ref: gh-pages
+          path: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download CI artifacts
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: vitest-coverage
+          path: artifacts/coverage
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          repository: ${{ github.repository }}
+          continue-on-error: true
+
+      - name: Download Playwright artifact
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: playwright-report
+          path: artifacts/e2e
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          repository: ${{ github.repository }}
+          continue-on-error: true
+
+      - name: Download Lighthouse artifact
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: lighthouse-report
+          path: artifacts/lighthouse
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          repository: ${{ github.repository }}
+          continue-on-error: true
+
+      - name: Prepare reports directory
+        run: |
+          mkdir -p reports/{e2e,coverage,lighthouse}
+
+      - name: Copy latest reports
+        run: |
+          if [ -d "artifacts/e2e" ] && [ "$(ls -A artifacts/e2e)" ]; then
+            cp -r artifacts/e2e/* reports/e2e/ || true
+          fi
+          if [ -d "artifacts/coverage" ] && [ "$(ls -A artifacts/coverage)" ]; then
+            cp -r artifacts/coverage/* reports/coverage/ || true
+          fi
+          if [ -d "artifacts/lighthouse" ] && [ "$(ls -A artifacts/lighthouse)" ]; then
+            cp -r artifacts/lighthouse/* reports/lighthouse/ || true
+          fi
+
+      - name: Save history with UUID
+        run: |
+          UUID="${{ steps.uuid.outputs.uuid }}"
+
+          # Create metadata
+          cat > metadata.json << EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "workflow": "${{ github.workflow }}",
+            "commit_sha": "${{ github.event.workflow_run.head_sha }}",
+            "branch": "${{ github.event.workflow_run.head_branch }}",
+            "event": "${{ github.event_name }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+
+          # Save e2e history
+          if [ -d "artifacts/e2e" ] && [ "$(ls -A artifacts/e2e)" ]; then
+            mkdir -p reports/e2e/${UUID}
+            cp -r artifacts/e2e/* reports/e2e/${UUID}/ || true
+            cat > reports/e2e/${UUID}/metadata.json << EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "workflow": "${{ github.workflow }}",
+            "commit_sha": "${{ github.event.workflow_run.head_sha }}",
+            "branch": "${{ github.event.workflow_run.head_branch }}",
+            "event": "${{ github.event_name }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "report_type": "e2e"
+          }
+          EOF
+          fi
+
+          # Save coverage history
+          if [ -d "artifacts/coverage" ] && [ "$(ls -A artifacts/coverage)" ]; then
+            mkdir -p reports/coverage/${UUID}
+            cp -r artifacts/coverage/* reports/coverage/${UUID}/ || true
+            cat > reports/coverage/${UUID}/metadata.json << EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "workflow": "${{ github.workflow }}",
+            "commit_sha": "${{ github.event.workflow_run.head_sha }}",
+            "branch": "${{ github.event.workflow_run.head_branch }}",
+            "event": "${{ github.event_name }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "report_type": "coverage"
+          }
+          EOF
+          fi
+
+          # Save lighthouse history
+          if [ -d "artifacts/lighthouse" ] && [ "$(ls -A artifacts/lighthouse)" ]; then
+            mkdir -p reports/lighthouse/${UUID}
+            cp -r artifacts/lighthouse/* reports/lighthouse/${UUID}/ || true
+            cat > reports/lighthouse/${UUID}/metadata.json << EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "run_number": "${{ github.run_number }}",
+            "workflow": "${{ github.workflow }}",
+            "commit_sha": "${{ github.event.workflow_run.head_sha }}",
+            "branch": "${{ github.event.workflow_run.head_branch }}",
+            "event": "${{ github.event_name }}",
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "report_type": "lighthouse"
+          }
+          EOF
+          fi
+
+      - name: Commit to gh-pages
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Copy reports to gh-pages
+          mkdir -p reports
+          cp -r ../reports/* reports/ || true
+
+          git add reports/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Deploy test results: ${{ steps.uuid.outputs.uuid }}"
+            git push origin gh-pages
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.0
+        with:
+          path: reports
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.0
