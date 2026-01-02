@@ -12,7 +12,7 @@ self.addEventListener("fetch", (event) => {
 
     // If the request is for the favicons, fonts, or the built files (which are hashed in the name)
     if (
-        url.pathname.startsWith("/favicons/") ||
+        url.pathname.startsWith("/icons/") ||
         url.pathname.startsWith("/fonts/") ||
         url.pathname.startsWith("/build/")
     ) {

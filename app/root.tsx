@@ -33,9 +33,8 @@ import tailwind from "~/tailwind.css?url";
 export const links: LinksFunction = () => [
     { rel: "manifest", href: "/manifest.json" },
     { rel: "icon", href: "/favicon.ico" },
-    { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-    { rel: "shortcut_icon", href: "/shortcut.png", type: "image/png", sizes: "64x64" },
-    { rel: "apple-touch-icon", href: "/icon-256.png", sizes: "256x256" },
+    { rel: "shortcut_icon", href: "/icons/64.png", type: "image/png", sizes: "64x64" },
+    { rel: "apple-touch-icon", href: "/icons/256.png", sizes: "256x256" },
     { rel: "author", href: "/humans.txt", type: "text/plain" },
     { rel: "stylesheet", href: tailwind },
 ];
