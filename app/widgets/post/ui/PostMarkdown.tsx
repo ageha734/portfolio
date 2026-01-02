@@ -1,7 +1,7 @@
 import type { ReactNode, ComponentProps } from "react";
 import { Children } from "react";
 import { Link as RouterLink } from "@remix-run/react";
-import styles from "./PostMarkdown.module.css";
+import { cn } from "~/shared/lib/cn";
 
 interface PostHeadingLinkProps {
     id?: string;
@@ -9,7 +9,7 @@ interface PostHeadingLinkProps {
 
 const PostHeadingLink = ({ id }: PostHeadingLinkProps) => {
     return (
-        <RouterLink className={styles.headingLink} to={`#${id}`} aria-label="Link to heading">
+        <RouterLink className="absolute -left-6 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground" to={`#${id}`} aria-label="Link to heading">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M7.33333 10.6667H4C2.89543 10.6667 2 9.77124 2 8.66667V4C2 2.89543 2.89543 2 4 2H8.66667C9.77124 2 10.6667 2.89543 10.6667 4V7.33333M8.66667 5.33333H14M14 5.33333V10M14 10H9.33333M9.33333 14H14M14 14V9.33333"
@@ -29,28 +29,28 @@ interface PostHeadingProps extends ComponentProps<"h1"> {
 }
 
 const PostH1 = ({ children, id, className, ...rest }: PostHeadingProps) => (
-    <h1 className={`${styles.heading} ${className || ""}`} id={id} {...rest}>
+    <h1 className={cn("relative group mb-4 mt-8 text-2xl font-serif font-extrabold", className)} id={id} {...rest}>
         <PostHeadingLink id={id} />
         {children}
     </h1>
 );
 
 const PostH2 = ({ children, id, className, ...rest }: PostHeadingProps) => (
-    <h2 className={`${styles.heading} ${className || ""}`} id={id} {...rest}>
+    <h2 className={cn("relative group mb-4 mt-8 text-xl font-serif font-extrabold", className)} id={id} {...rest}>
         <PostHeadingLink id={id} />
         {children}
     </h2>
 );
 
 const PostH3 = ({ children, id, className, ...rest }: PostHeadingProps) => (
-    <h3 className={`${styles.heading} ${className || ""}`} id={id} {...rest}>
+    <h3 className={cn("relative group mb-4 mt-8 text-lg font-serif font-extrabold", className)} id={id} {...rest}>
         <PostHeadingLink id={id} />
         {children}
     </h3>
 );
 
 const PostH4 = ({ children, id, className, ...rest }: PostHeadingProps) => (
-    <h4 className={`${styles.heading} ${className || ""}`} id={id} {...rest}>
+    <h4 className={cn("relative group mb-4 mt-8 text-base font-serif font-extrabold", className)} id={id} {...rest}>
         <PostHeadingLink id={id} />
         {children}
     </h4>
@@ -69,7 +69,7 @@ const PostParagraph = ({ children, className, ...rest }: PostParagraphProps) => 
     }
 
     return (
-        <p className={`${styles.paragraph} ${className || ""}`} {...rest}>
+        <p className={cn("mb-4 leading-relaxed", className)} {...rest}>
             {children}
         </p>
     );
@@ -78,11 +78,11 @@ const PostParagraph = ({ children, className, ...rest }: PostParagraphProps) => 
 const PostLink = (props: ComponentProps<"a">) => <RouterLink to={props.href || ""} {...props} />;
 
 const PostUl = (props: ComponentProps<"ul">) => {
-    return <ul className={`${styles.list} ${props.className || ""}`} {...props} />;
+    return <ul className={cn("mb-4 pl-8 list-disc", props.className)} {...props} />;
 };
 
 const PostOl = (props: ComponentProps<"ol">) => {
-    return <ol className={`${styles.list} ${props.className || ""}`} {...props} />;
+    return <ol className={cn("mb-4 pl-8 list-decimal", props.className)} {...props} />;
 };
 
 interface PostLiProps extends ComponentProps<"li"> {
@@ -98,7 +98,7 @@ interface PostCodeProps extends ComponentProps<"code"> {
 }
 
 const PostCode = ({ children, className, ...rest }: PostCodeProps) => (
-    <code className={`${styles.code} ${className || ""}`} {...rest}>
+    <code className={cn("bg-muted px-1.5 py-0.5 rounded text-sm font-mono", className)} {...rest}>
         {children}
     </code>
 );
@@ -109,8 +109,8 @@ interface PostPreProps extends ComponentProps<"pre"> {
 
 const PostPre = ({ children, className, ...rest }: PostPreProps) => {
     return (
-        <div className={styles.pre}>
-            <pre className={className} {...rest}>
+        <div className="my-4 overflow-auto rounded-lg bg-muted p-4">
+            <pre className={cn("text-sm font-mono", className)} {...rest}>
                 {children}
             </pre>
         </div>
@@ -118,15 +118,15 @@ const PostPre = ({ children, className, ...rest }: PostPreProps) => {
 };
 
 const PostBlockquote = (props: ComponentProps<"blockquote">) => {
-    return <blockquote className={styles.blockquote} {...props} />;
+    return <blockquote className="my-8 border-l-4 border-primary pl-4 italic text-muted-foreground" {...props} />;
 };
 
 const PostHr = (props: ComponentProps<"hr">) => {
-    return <hr className={styles.hr} {...props} />;
+    return <hr className="my-8 border-t border-border" {...props} />;
 };
 
 const PostStrong = (props: ComponentProps<"strong">) => {
-    return <strong className={styles.strong} {...props} />;
+    return <strong className="font-semibold" {...props} />;
 };
 
 interface PostImageProps {
@@ -139,7 +139,7 @@ interface PostImageProps {
 const PostImage = ({ src, alt, width, height, ...rest }: PostImageProps & ComponentProps<"img">) => {
     return (
         <img
-            className={styles.image}
+            className="mb-4 w-full h-auto rounded-lg"
             src={src}
             loading="lazy"
             alt={alt}
@@ -156,8 +156,8 @@ interface EmbedProps {
 
 const Embed = ({ src }: EmbedProps) => {
     return (
-        <div className={styles.embed}>
-            <iframe src={src} loading="lazy" title="Embed" />
+        <div className="my-8 aspect-video w-full overflow-hidden rounded-lg">
+            <iframe src={src} loading="lazy" title="Embed" className="h-full w-full" />
         </div>
     );
 };

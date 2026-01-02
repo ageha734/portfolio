@@ -1,9 +1,11 @@
 import type { ComponentProps } from "react";
 import { useId } from "react";
+import { Moon, Sun } from "lucide-react";
 import { useFetcher, useLoaderData } from "@remix-run/react";
-import styles from "./ThemeToggle.module.css";
+import { Button } from "~/shared/ui/button";
+import { cn } from "~/shared/lib/cn";
 
-export interface ThemeToggleProps extends ComponentProps<"button"> {
+export interface ThemeToggleProps extends ComponentProps<typeof Button> {
     readonly isMobile?: boolean;
 }
 
@@ -22,27 +24,18 @@ export const ThemeToggle = ({ isMobile, className, ...rest }: ThemeToggleProps) 
     };
 
     return (
-        <button
+        <Button
             type="button"
-            className={`${styles.toggle} ${className || ""}`}
-            data-mobile={isMobile}
+            variant="ghost"
+            size="icon"
+            className={cn("relative", className)}
             aria-label="Toggle theme"
             onClick={toggleTheme}
             {...rest}
         >
-            <svg aria-hidden className={styles.svg} width="38" height="38" viewBox="0 0 38 38">
-                <defs>
-                    <mask id={maskId}>
-                        <circle className={styles.circle} data-mask={true} cx="19" cy="19" r="13" />
-                        <circle className={styles.mask} cx="25" cy="14" r="9" />
-                    </mask>
-                </defs>
-                <path
-                    className={styles.path}
-                    d="M19 3v7M19 35v-7M32.856 11l-6.062 3.5M5.144 27l6.062-3.5M5.144 11l6.062 3.5M32.856 27l-6.062-3.5"
-                />
-                <circle className={styles.circle} mask={`url(#${maskId})`} cx="19" cy="19" r="12" />
-            </svg>
-        </button>
+            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+        </Button>
     );
 };

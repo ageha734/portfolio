@@ -28,8 +28,7 @@ import { TrackingGTMScript, TrackingGTMIFrame } from "~/features/tracking";
 import { I18nextProvider } from "react-i18next";
 import i18n from "~/shared/config/i18n";
 
-import styles from "~/styles/index.css?url";
-import tailwind from "~/styles/tailwind.css?url";
+import tailwind from "~/tailwind.css?url";
 
 export const links: LinksFunction = () => [
     { rel: "manifest", href: "/manifest.json" },
@@ -38,7 +37,6 @@ export const links: LinksFunction = () => [
     { rel: "shortcut_icon", href: "/shortcut.png", type: "image/png", sizes: "64x64" },
     { rel: "apple-touch-icon", href: "/icon-256.png", sizes: "256x256" },
     { rel: "author", href: "/humans.txt", type: "text/plain" },
-    { rel: "stylesheet", href: styles },
     { rel: "stylesheet", href: tailwind },
 ];
 
@@ -139,7 +137,7 @@ export default function App() {
                 <Links />
                 {GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMScript id={GOOGLE_TAG_MANAGER} />}
             </head>
-            <body data-theme={theme}>
+            <body data-theme={theme} className={theme === "dark" ? "dark" : ""}>
                 {GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMIFrame id={GOOGLE_TAG_MANAGER} />}
                 <I18nextProvider i18n={i18n}>
                     <Navbar />
@@ -173,7 +171,7 @@ export function ErrorBoundary() {
                 <Meta />
                 <Links />
             </head>
-            <body data-theme="dark">
+            <body data-theme="dark" className="dark">
                 <ErrorPage error={error as ErrorProps["error"]} />
                 <ScrollRestoration />
                 <Scripts />

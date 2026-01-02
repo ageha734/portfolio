@@ -8,30 +8,30 @@ export const Footer = () => {
     return (
         <footer className="mt-10 hidden justify-center gap-2 text-center text-sm print:hidden md:mt-20 md:block">
             <div className="m-auto flex justify-center gap-4">
-                <a className="p-2" href={SOCIAL_LINKEDIN} target="_blank" rel="noreferrer">
+                <a className="p-2 transition-opacity hover:opacity-70" href={SOCIAL_LINKEDIN} target="_blank" rel="noreferrer">
                     <img
                         alt="Follow me on LinkedIn"
-                        className="footer-social"
+                        className="h-4 w-4"
                         height={16}
                         loading="lazy"
                         src="/images/svg/linkedin-dark.svg"
                         width={16}
                     />
                 </a>
-                <a className="p-2" href={SOCIAL_GITHUB} target="_blank" rel="noreferrer">
+                <a className="p-2 transition-opacity hover:opacity-70" href={SOCIAL_GITHUB} target="_blank" rel="noreferrer">
                     <img
                         alt="Follow me on GitHub"
-                        className="footer-social"
+                        className="h-4 w-4"
                         height={16}
                         loading="lazy"
                         src="/images/svg/github-dark.svg"
                         width={16}
                     />
                 </a>
-                <a className="p-2" href={SOCIAL_TWITTER} target="_blank" rel="noreferrer">
+                <a className="p-2 transition-opacity hover:opacity-70" href={SOCIAL_TWITTER} target="_blank" rel="noreferrer">
                     <img
                         alt="Follow me on Twitter"
-                        className="footer-social"
+                        className="h-4 w-4"
                         height={16}
                         loading="lazy"
                         src="/images/svg/twitter-dark.svg"
@@ -39,9 +39,9 @@ export const Footer = () => {
                     />
                 </a>
             </div>
-            <p className="font-font-monospace">
-                Built with <span className="text-color-primary--">&hearts;</span> in{" "}
-                <a href="https://www.google.com/search?q=san+diego+weather" rel="noreferrer" target="_blank">
+            <p className="font-mono">
+                Built with <span className="text-primary">&hearts;</span> in{" "}
+                <a href="https://www.google.com/search?q=san+diego+weather" rel="noreferrer" target="_blank" className="text-primary hover:underline">
                     San Diego
                 </a>, CA.
             </p>

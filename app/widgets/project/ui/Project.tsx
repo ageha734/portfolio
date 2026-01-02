@@ -1,34 +1,9 @@
-import type { ReactNode, ComponentProps, CSSProperties } from "react";
+import type { ReactNode, ComponentProps } from "react";
 import { forwardRef, useRef, useEffect, useState } from "react";
-import classnames from "classnames";
-import styles from "./project.module.css";
+import { Button } from "~/shared/ui/button";
+import { cn } from "~/shared/lib/cn";
 
 const initDelay = 300;
-const DEFAULT_DURATION_MS = 300;
-
-function classes(...args: (string | undefined | null | false)[]): string {
-    return classnames(...args);
-}
-
-function cssProps(props: Record<string, number | string>): CSSProperties {
-    return Object.fromEntries(
-        Object.entries(props).map(([key, value]) => [
-            key
-                .split("")
-                .map((char) => (char >= "A" && char <= "Z" ? `-${char.toLowerCase()}` : char))
-                .join(""),
-            value,
-        ]),
-    ) as CSSProperties;
-}
-
-function msToNum(value: string | number): number {
-    return typeof value === "string" ? Number.parseFloat(value) : value;
-}
-
-function numToMs(value: number): string {
-    return `${value}ms`;
-}
 
 export interface ProjectHeaderProps {
     readonly title: string;
@@ -48,23 +23,28 @@ export function ProjectHeader({
     className,
 }: ProjectHeaderProps) {
     return (
-        <section className={classes(styles.header, className)}>
-            <div className={styles.headerContent} style={cssProps({ initDelay: numToMs(initDelay) })}>
-                <div className={styles.details}>
-                    <h1 className={styles.title}>{title}</h1>
-                    <p className={styles.description}>{description}</p>
+        <section className={cn("relative w-full", className)}>
+            <div className="flex flex-col items-center justify-center gap-8 p-12 md:p-20">
+                <div className="flex flex-col gap-4">
+                    <h1 className="text-4xl md:text-6xl font-serif font-extrabold">{title}</h1>
+                    <p className="text-lg text-muted-foreground">{description}</p>
                     {!!url && (
-                        <a className={styles.linkButton} href={url}>
-                            {linkLabel}
-                        </a>
+                        <Button asChild className="w-fit mt-4">
+                            <a href={url} target="_blank" rel="noopener noreferrer">
+                                {linkLabel}
+                            </a>
+                        </Button>
                     )}
                 </div>
                 {!!roles?.length && (
-                    <ul className={styles.meta}>
+                    <ul className="flex flex-wrap gap-4 mt-8">
                         {roles.map((role, index) => (
                             <li
-                                className={styles.metaItem}
-                                style={cssProps({ delay: numToMs(initDelay + 300 + index * 140) })}
+                                className="px-4 py-2 bg-muted rounded-md text-sm animate-in fade-in slide-in-from-bottom-4"
+                                style={{
+                                    animationDelay: `${initDelay + 300 + index * 140}ms`,
+                                    animationFillMode: "forwards",
+                                }}
                                 key={role}
                             >
                                 <span>{role}</span>
@@ -82,7 +62,7 @@ export interface ProjectContainerProps extends ComponentProps<"article"> {
 }
 
 export const ProjectContainer = ({ className, ...rest }: ProjectContainerProps) => (
-    <article className={classes(styles.project, className)} {...rest} />
+    <article className={cn("relative w-full flex flex-col items-center justify-center", className)} {...rest} />
 );
 
 export interface ProjectSectionProps extends ComponentProps<"section"> {
@@ -108,24 +88,36 @@ export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
             ...rest
         },
         ref
-    ) => (
-        <section
-            className={classes(styles.section, className)}
-            data-light={light}
-            data-full-height={fullHeight}
-            ref={ref}
-            {...rest}
-        >
-            {!!backgroundElement && (
-                <div className={styles.sectionBackground} style={cssProps({ opacity: backgroundOverlayOpacity })}>
-                    {backgroundElement}
+    ) => {
+        const paddingClasses = {
+            both: "py-12 md:py-20 lg:py-24",
+            top: "pt-12 md:pt-20 lg:pt-24",
+            bottom: "pb-12 md:pb-20 lg:pb-24",
+            none: "",
+        };
+
+        return (
+            <section
+                className={cn(
+                    "w-full relative grid",
+                    fullHeight && "min-h-screen",
+                    light && "bg-muted",
+                    className,
+                )}
+                ref={ref}
+                {...rest}
+            >
+                {!!backgroundElement && (
+                    <div className="grid-area-[1/1] opacity-[var(--opacity)]" style={{ "--opacity": backgroundOverlayOpacity } as React.CSSProperties}>
+                        {backgroundElement}
+                    </div>
+                )}
+                <div className={cn("grid-area-[1/1] flex flex-col items-center justify-center relative", paddingClasses[padding])}>
+                    {children}
                 </div>
-            )}
-            <div className={styles.sectionInner} data-padding={padding}>
-                {children}
-            </div>
-        </section>
-    )
+            </section>
+        );
+    }
 );
 
 ProjectSection.displayName = "ProjectSection";
@@ -140,7 +132,6 @@ export interface ProjectBackgroundProps extends ComponentProps<"img"> {
 export const ProjectBackground = ({ opacity = 0.7, className, src, alt = "", ...rest }: ProjectBackgroundProps) => {
     const imageRef = useRef<HTMLDivElement>(null);
     const [visible, setVisible] = useState(false);
-    const nodeRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setVisible(true);
@@ -148,7 +139,7 @@ export const ProjectBackground = ({ opacity = 0.7, className, src, alt = "", ...
 
     useEffect(() => {
         const handleScroll = () => {
-        if (!imageRef.current) return;
+            if (!imageRef.current) return;
             const scrollY = window.scrollY;
             const offset = scrollY * 0.6;
             imageRef.current.style.setProperty("--offset", `${offset}px`);
@@ -159,12 +150,20 @@ export const ProjectBackground = ({ opacity = 0.7, className, src, alt = "", ...
     }, []);
 
     return (
-        <div className={classes(styles.backgroundImage, className)} data-visible={visible ? "true" : "false"} ref={nodeRef}>
-                    <div className={styles.backgroundImageElement} ref={imageRef}>
-                {src && <img src={src} alt={alt} role="presentation" style={{ objectFit: "cover", width: "100%", height: "100%" }} {...rest} />}
-                    </div>
-                    <div className={styles.backgroundScrim} style={cssProps({ opacity })} />
-                </div>
+        <div className={cn("absolute inset-0 overflow-hidden", className)}>
+            <div className="absolute inset-0 translate-y-[var(--offset,0px)]" ref={imageRef}>
+                {src && (
+                    <img
+                        src={src}
+                        alt={alt}
+                        role="presentation"
+                        className="object-cover w-full h-full"
+                        {...rest}
+                    />
+                )}
+            </div>
+            <div className="absolute inset-0 bg-black/70" style={{ opacity }} />
+        </div>
     );
 };
 
@@ -183,10 +182,20 @@ export const ProjectImage = ({ className, alt, src, ...rest }: ProjectImageProps
     }, []);
 
     return (
-    <div className={classes(styles.image, className)}>
-            {src && <img src={src} alt={alt} data-visible={visible ? "true" : "false"} {...rest} />}
-    </div>
-);
+        <div className={cn("w-full", className)}>
+            {src && (
+                <img
+                    src={src}
+                    alt={alt}
+                    className={cn(
+                        "w-full h-auto transition-opacity duration-300",
+                        visible ? "opacity-100" : "opacity-0",
+                    )}
+                    {...rest}
+                />
+            )}
+        </div>
+    );
 };
 
 export interface ProjectSectionContentProps extends ComponentProps<"div"> {
@@ -194,8 +203,15 @@ export interface ProjectSectionContentProps extends ComponentProps<"div"> {
     readonly width?: "s" | "m" | "l" | "xl";
 }
 
+const widthClasses = {
+    s: "max-w-md",
+    m: "max-w-2xl",
+    l: "max-w-4xl",
+    xl: "max-w-6xl",
+};
+
 export const ProjectSectionContent = ({ className, width = "l", ...rest }: ProjectSectionContentProps) => (
-    <div className={classes(styles.sectionContent, className)} data-width={width} {...rest} />
+    <div className={cn("w-full mx-auto px-4", widthClasses[width], className)} {...rest} />
 );
 
 export interface ProjectSectionHeadingProps extends ComponentProps<"h1"> {
@@ -205,7 +221,7 @@ export interface ProjectSectionHeadingProps extends ComponentProps<"h1"> {
 }
 
 export const ProjectSectionHeading = ({ className, level = 3, as: As = "h2", children, ...rest }: ProjectSectionHeadingProps) => (
-    <As className={classes(styles.sectionHeading, className)} {...rest}>
+    <As className={cn("text-3xl md:text-4xl font-serif font-extrabold mb-4", className)} {...rest}>
         {children}
     </As>
 );
@@ -215,7 +231,7 @@ export interface ProjectSectionTextProps extends ComponentProps<"p"> {
 }
 
 export const ProjectSectionText = ({ className, children, ...rest }: ProjectSectionTextProps) => (
-    <p className={classes(styles.sectionText, className)} {...rest}>
+    <p className={cn("text-base md:text-lg text-muted-foreground mb-4", className)} {...rest}>
         {children}
     </p>
 );
@@ -230,6 +246,13 @@ export interface ProjectTextRowProps extends ComponentProps<"div"> {
     readonly centerMobile?: boolean;
 }
 
+const justifyClasses = {
+    center: "justify-center",
+    start: "justify-start",
+    end: "justify-end",
+    "space-between": "justify-between",
+};
+
 export const ProjectTextRow = ({
     center,
     stretch,
@@ -241,13 +264,16 @@ export const ProjectTextRow = ({
     ...rest
 }: ProjectTextRowProps) => (
     <div
-        className={classes(styles.textRow, className)}
-        data-center={center}
-        data-stretch={stretch}
-        data-center-mobile={centerMobile}
-        data-no-margin={noMargin}
-        data-width={width}
-        data-justify={justify}
+        className={cn(
+            "flex flex-col md:flex-row gap-4",
+            justifyClasses[justify],
+            center && "items-center",
+            stretch && "items-stretch",
+            centerMobile && "md:items-center",
+            !noMargin && "mb-8",
+            widthClasses[width],
+            className,
+        )}
         {...rest}
     />
 );
@@ -257,5 +283,5 @@ export interface ProjectSectionColumnsProps extends ProjectSectionContentProps {
 }
 
 export const ProjectSectionColumns = ({ className, centered, ...rest }: ProjectSectionColumnsProps) => (
-    <ProjectSectionContent className={classes(styles.sectionColumns, className)} data-centered={centered} {...rest} />
+    <ProjectSectionContent className={cn("grid grid-cols-1 md:grid-cols-2 gap-8", centered && "items-center", className)} {...rest} />
 );

@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 222.2 84% 4.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 222.2 84% 4.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 222.2 84% 4.9%;
+        --primary: 0 72.2% 50.6%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 210 40% 96.1%;
+        --secondary-foreground: 222.2 47.4% 11.2%;
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+        --accent: 210 40% 96.1%;
+        --accent-foreground: 222.2 47.4% 11.2%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 214.3 31.8% 91.4%;
+        --input: 214.3 31.8% 91.4%;
+        --ring: 0 72.2% 50.6%;
+        --radius: 0.5rem;
+
+        /* Custom variables from variables.css */
+        --header-height: 3.5rem;
+        --footer-height: 4rem;
+    }
+
+    .dark {
+        --background: 222.2 84% 4.9%;
+        --foreground: 210 40% 98%;
+        --card: 222.2 84% 4.9%;
+        --card-foreground: 210 40% 98%;
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 0 72.2% 50.6%;
+        --primary-foreground: 210 40% 98%;
+        --secondary: 217.2 32.6% 17.5%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215 20.2% 65.1%;
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+        --border: 217.2 32.6% 17.5%;
+        --input: 217.2 32.6% 17.5%;
+        --ring: 0 72.2% 50.6%;
+    }
+
+    * {
+        @apply border-border;
+        box-sizing: border-box;
+        scrollbar-color: hsl(var(--primary)) hsl(var(--background));
+        scrollbar-width: thin;
+    }
+
+    ::-webkit-scrollbar {
+        cursor: pointer;
+        height: 0.5rem;
+        width: 0.5rem;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: hsl(var(--background));
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: hsl(var(--primary));
+        border-radius: 0.25rem;
+    }
+
+    html {
+        @apply bg-background;
+        min-width: 320px;
+    }
+
+    @media (prefers-reduced-motion) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+
+    body {
+        @apply bg-background text-foreground font-sans;
+        position: relative;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-serif font-extrabold;
+    }
+
+    a {
+        @apply text-primary;
+    }
+
+    blockquote {
+        @apply box-content font-serif text-2xl font-extrabold leading-tight my-16 mx-8 text-center overflow-visible;
+    }
+
+    @media (min-width: 768px) {
+        :root {
+            --header-height: 4rem;
+        }
+
+        blockquote {
+            @apply mx-16;
+        }
+    }
+
+    p {
+        @apply leading-relaxed mb-4;
+    }
+
+    p:last-of-type {
+        @apply mb-0;
+    }
+
+    main {
+        margin-top: var(--header-height);
+        min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    }
+
+    footer {
+        height: var(--footer-height);
+    }
+
+    /* WYSIWYG styles */
+    .wysiwyg h1,
+    .wysiwyg h2,
+    .wysiwyg h3,
+    .wysiwyg h4,
+    .wysiwyg h5,
+    .wysiwyg h6 {
+        @apply text-foreground font-sans font-medium mb-4 mt-8;
+    }
+
+    .wysiwyg h1 {
+        @apply font-serif font-extrabold;
+    }
+
+    .wysiwyg h1,
+    .wysiwyg h2 {
+        @apply text-xl;
+    }
+
+    .wysiwyg h3,
+    .wysiwyg h4 {
+        @apply text-lg;
+    }
+
+    .wysiwyg h5,
+    .wysiwyg h6 {
+        @apply text-base;
+    }
+
+    .wysiwyg p {
+        @apply text-foreground mb-4;
+    }
+
+    .wysiwyg ol,
+    .wysiwyg ul {
+        @apply mb-4 pl-8;
+    }
+
+    .wysiwyg ol li {
+        list-style: decimal;
+    }
+
+    .wysiwyg ul li {
+        list-style: disc;
+    }
+
+    .wysiwyg pre {
+        @apply bg-foreground text-background p-2 my-4 overflow-auto;
+    }
+
+    .wysiwyg img {
+        @apply mb-4;
+    }
+}

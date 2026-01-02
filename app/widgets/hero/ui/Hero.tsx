@@ -1,5 +1,5 @@
-import classnames from "classnames";
 import type { ReactElement } from "react";
+import { cn } from "~/shared/lib/cn";
 
 export interface HeroProps {
     className?: string;
@@ -10,13 +10,14 @@ export interface HeroProps {
 
 export const Hero = (props: HeroProps) => {
     const { className, copy, highlight, tag: Tag = "h2" } = props;
-    const cssComponent = classnames("hero p-4 text-center", className);
 
     return (
-        <div className={cssComponent}>
-            <Tag className="inline-block font-font-serif text-xl font-extrabold md:text-4xl">
-                {copy && <div className="font-font-monospace text-base font-normal md:text-2xl">{copy}</div>}
-                <div className="text-highlight px-3 text-4xl md:text-7xl">{highlight}</div>
+        <div className={cn("p-4 text-center leading-tight", className)}>
+            <Tag className="inline-block font-serif text-xl font-extrabold md:text-4xl">
+                {copy && <div className="font-mono text-base font-normal md:text-2xl">{copy}</div>}
+                <div className="bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent px-3 text-4xl md:text-7xl leading-tight tracking-tight">
+                    {highlight}
+                </div>
             </Tag>
         </div>
     );

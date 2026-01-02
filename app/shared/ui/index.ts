@@ -8,3 +8,11 @@ export { UserCard } from "./UserCard";
 export type { UserCardProps } from "./UserCard";
 export { Wysiwyg } from "./Wysiwyg";
 export type { WysiwygProps } from "./Wysiwyg";
+
+// shadcn/ui components
+export * from "./button";
+export * from "./card";
+export * from "./dropdown-menu";
+export * from "./navigation-menu";
+export * from "./separator";
+export * from "./sheet";

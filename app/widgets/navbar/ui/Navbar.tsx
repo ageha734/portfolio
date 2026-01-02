@@ -1,48 +1,13 @@
-import type { CSSProperties, MouseEvent, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import type { MouseEvent, ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { Link as RouterLink, useFetcher, useLoaderData, useLocation } from "@remix-run/react";
-import { NavToggle } from "./NavToggle";
+import { Menu } from "lucide-react";
+import { Button } from "~/shared/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "~/shared/ui/sheet";
 import { ThemeToggle } from "./ThemeToggle";
 import { navLinks, socialLinks, type NavLink, type SocialLink } from "./NavData";
 import { SITE_AUTHOR } from "~/shared/config/constants";
-import styles from "./Navbar.module.css";
-
-interface Measurement {
-    element: Element;
-    top: number;
-    bottom: number;
-}
-
-function cssProps(props: Record<string, number | string>): CSSProperties {
-    return Object.fromEntries(
-        Object.entries(props).map(([key, value]) => [
-            key
-                .split("")
-                .map((char) => (char >= "A" && char <= "Z" ? `-${char.toLowerCase()}` : char))
-                .join(""),
-            value,
-        ]),
-    ) as CSSProperties;
-}
-
-function msToNum(value: string | number): number {
-    return typeof value === "string" ? Number.parseFloat(value) : value;
-}
-
-function numToMs(value: number): string {
-    return `${value}ms`;
-}
-
-const media = {
-    mobile: 768,
-};
-
-const tokens = {
-    base: {
-        durationL: "500ms",
-        durationS: "200ms",
-    },
-};
+import { cn } from "~/shared/lib/cn";
 
 function useScrollToHash() {
     return (hash: string, callback?: () => void) => {
@@ -52,25 +17,6 @@ function useScrollToHash() {
             callback?.();
         }
     };
-}
-
-function useWindowSize() {
-    const [windowSize, setWindowSize] = useState({ width: 1024, height: 768 });
-
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowSize({
-                width: globalThis.window.innerWidth,
-                height: globalThis.window.innerHeight,
-            });
-        };
-
-        handleResize();
-        globalThis.window.addEventListener("resize", handleResize);
-        return () => globalThis.window.removeEventListener("resize", handleResize);
-    }, []);
-
-    return windowSize;
 }
 
 const Monogram = ({ highlight }: { highlight?: boolean }) => (
@@ -108,15 +54,7 @@ export const Navbar = () => {
     const [current, setCurrent] = useState<string | undefined>();
     const [menuOpen, setMenuOpen] = useState(false);
     const [target, setTarget] = useState<string | null>(null);
-    const [visible, setVisible] = useState(false);
-    const fetcher = useFetcher();
-    const { theme: initialTheme } = useLoaderData<{ canonicalUrl: string; theme: string }>();
-    const theme = (fetcher.formData?.get("theme") as string) || initialTheme;
     const location = useLocation();
-    const windowSize = useWindowSize();
-    const headerRef = useRef<HTMLElement>(null);
-    const mobileNavRef = useRef<HTMLElement>(null);
-    const isMobile = windowSize.width <= media.mobile || windowSize.height <= 696;
     const scrollToHash = useScrollToHash();
 
     useEffect(() => {
@@ -128,84 +66,6 @@ export const Navbar = () => {
         setCurrent(`${location.pathname}${target}`);
         scrollToHash(target, () => setTarget(null));
     }, [location.pathname, scrollToHash, target]);
-
-    useEffect(() => {
-        if (menuOpen) {
-            setVisible(true);
-        } else {
-            const timer = setTimeout(() => setVisible(false), msToNum(tokens.base.durationL));
-            return () => clearTimeout(timer);
-        }
-    }, [menuOpen]);
-
-    useEffect(() => {
-        const navItems = document.querySelectorAll("[data-navbar-item]");
-        const inverseTheme = theme === "dark" ? "light" : "dark";
-        const { innerHeight } = globalThis.window;
-
-        let inverseMeasurements: Measurement[] = [];
-        let navItemMeasurements: Measurement[] = [];
-
-        const isOverlap = (rect1: Measurement, rect2: Measurement, scrollY: number): boolean => {
-            return !(rect1.bottom - scrollY < rect2.top || rect1.top - scrollY > rect2.bottom);
-        };
-
-        const resetNavTheme = () => {
-            for (const measurement of navItemMeasurements) {
-                (measurement.element as HTMLElement).dataset.theme = "";
-            }
-        };
-
-        const handleInversion = () => {
-            const invertedElements = document.querySelectorAll(`[data-theme='${inverseTheme}'][data-invert]`);
-
-            if (!invertedElements) return;
-
-            inverseMeasurements = Array.from(invertedElements).map((item) => ({
-                element: item,
-                top: (item as HTMLElement).offsetTop,
-                bottom: (item as HTMLElement).offsetTop + (item as HTMLElement).offsetHeight,
-            }));
-
-            const { scrollY } = globalThis.window;
-
-            resetNavTheme();
-
-            for (const inverseMeasurement of inverseMeasurements) {
-                if (inverseMeasurement.top - scrollY > innerHeight || inverseMeasurement.bottom - scrollY < 0) {
-                    continue;
-                }
-
-                for (const measurement of navItemMeasurements) {
-                    if (isOverlap(inverseMeasurement, measurement, scrollY)) {
-                        (measurement.element as HTMLElement).dataset.theme = inverseTheme;
-                    } else {
-                        (measurement.element as HTMLElement).dataset.theme = "";
-                    }
-                }
-            }
-        };
-
-        if (theme === "light") {
-            navItemMeasurements = Array.from(navItems).map((item) => {
-                const rect = item.getBoundingClientRect();
-
-                return {
-                    element: item,
-                    top: rect.top,
-                    bottom: rect.bottom,
-                };
-            });
-
-            document.addEventListener("scroll", handleInversion);
-            handleInversion();
-        }
-
-        return () => {
-            document.removeEventListener("scroll", handleInversion);
-            resetNavTheme();
-        };
-    }, [theme, windowSize, location.key]);
 
     const getCurrent = (url = ""): "page" | undefined => {
         const nonTrailing = current?.endsWith("/") ? current?.slice(0, -1) : current;
@@ -229,84 +89,89 @@ export const Navbar = () => {
 
     const handleMobileNavClick = (event: MouseEvent<HTMLAnchorElement>) => {
         handleNavItemClick(event);
-        if (menuOpen) setMenuOpen(false);
+        setMenuOpen(false);
     };
 
     return (
-        <header className={styles.navbar} ref={headerRef}>
+        <header className="fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between border-b bg-background px-4 md:h-16 md:px-6">
             <RouterLink
                 prefetch="intent"
                 to={location.pathname === "/" ? "/#intro" : "/"}
-                data-navbar-item
-                className={styles.logo}
+                className="flex items-center justify-center p-2 text-foreground transition-colors hover:text-primary"
                 aria-label={`${SITE_AUTHOR}, Software Engineer`}
                 onClick={handleMobileNavClick}
             >
                 <Monogram highlight />
             </RouterLink>
-            <NavToggle onClick={() => setMenuOpen(!menuOpen)} menuOpen={menuOpen} />
-            <nav className={styles.nav}>
-                <div className={styles.navList}>
-                    {navLinks.map(({ label, pathname }: NavLink) => (
-                        <RouterLink
-                            prefetch="intent"
-                            to={pathname}
-                            key={label}
-                            data-navbar-item
-                            className={styles.navLink}
-                            aria-current={getCurrent(pathname)}
-                            onClick={handleNavItemClick}
-                        >
-                            {label}
-                        </RouterLink>
-                    ))}
-                </div>
-                <NavbarIcons desktop />
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex md:items-center md:gap-6">
+                {navLinks.map(({ label, pathname }: NavLink) => (
+                    <RouterLink
+                        prefetch="intent"
+                        to={pathname}
+                        key={label}
+                        className={cn(
+                            "px-4 py-2 text-sm font-medium transition-colors hover:text-primary",
+                            getCurrent(pathname) === "page" && "text-primary",
+                        )}
+                        aria-current={getCurrent(pathname)}
+                        onClick={handleNavItemClick}
+                    >
+                        {label}
+                    </RouterLink>
+                ))}
+                <NavbarIcons />
+                <ThemeToggle />
             </nav>
-            {menuOpen && (
-                <nav className={styles.mobileNav} data-visible={visible} ref={mobileNavRef}>
-                    {navLinks.map(({ label, pathname }: NavLink, index: number) => (
-                        <RouterLink
-                            prefetch="intent"
-                            to={pathname}
-                            key={label}
-                            className={styles.mobileNavLink}
-                            data-visible={visible}
-                            aria-current={getCurrent(pathname)}
-                            onClick={handleMobileNavClick}
-                            style={cssProps({
-                                transitionDelay: numToMs(Number(msToNum(tokens.base.durationS)) + index * 50),
-                            })}
-                        >
-                            {label}
-                        </RouterLink>
-                    ))}
-                    <NavbarIcons />
-                    <ThemeToggle isMobile />
-                </nav>
-            )}
-            {!isMobile && <ThemeToggle data-navbar-item />}
+
+            {/* Mobile Navigation */}
+            <div className="flex items-center gap-2 md:hidden">
+                <ThemeToggle />
+                <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+                    <SheetTrigger asChild>
+                        <Button variant="ghost" size="icon" aria-label="Menu">
+                            <Menu className="h-6 w-6" />
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                        <nav className="flex flex-col gap-4">
+                            {navLinks.map(({ label, pathname }: NavLink) => (
+                                <RouterLink
+                                    prefetch="intent"
+                                    to={pathname}
+                                    key={label}
+                                    className={cn(
+                                        "px-4 py-2 text-lg font-medium transition-colors hover:text-primary",
+                                        getCurrent(pathname) === "page" && "text-primary",
+                                    )}
+                                    aria-current={getCurrent(pathname)}
+                                    onClick={handleMobileNavClick}
+                                >
+                                    {label}
+                                </RouterLink>
+                            ))}
+                            <NavbarIcons />
+                        </nav>
+                    </SheetContent>
+                </Sheet>
+            </div>
         </header>
     );
 };
 
-interface NavbarIconsProps {
-    desktop?: boolean;
-}
-
-const NavbarIcons = ({ desktop }: NavbarIconsProps) => (
-    <div className={styles.navIcons}>
+const NavbarIcons = () => (
+    <div className="flex items-center gap-2">
         {socialLinks.map(({ label, url, icon }: SocialLink) => (
             <a
                 key={label}
-                data-navbar-item={desktop || undefined}
-                className={styles.navIconLink}
+                className="flex items-center justify-center p-2 text-muted-foreground transition-colors hover:text-primary"
                 aria-label={label}
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
             >
-                <Icon className={styles.navIcon} icon={icon} />
+                <Icon icon={icon} />
             </a>
         ))}
     </div>
