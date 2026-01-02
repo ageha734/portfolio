@@ -1,167 +1,42 @@
 # プロジェクトアーキテクチャと開発ルール
 
-## アーキテクチャ
+> **詳細なコンテキスト**: [`docs/prompt/`](./docs/prompt/) を参照してください。
 
-### Feature-Sliced Design (FSD)
+## クイックリファレンス
 
-このプロジェクトは、Feature-Sliced Design (FSD) アーキテクチャを採用しています。
+### アーキテクチャ
 
-#### レイヤー構造
+Feature-Sliced Design (FSD) を採用。詳細は [`docs/prompt/architecture/`](./docs/prompt/architecture/) を参照。
 
-```text
-app/
-├── app/              # アプリケーションエントリーポイント
-├── pages/            # ページレイヤー
-├── widgets/          # 大きなUIブロック
-├── features/         # ユーザー機能
-├── entities/         # ドメインモデル
-└── shared/           # 共通リソース
-    ├── ui/           # UIコンポーネント
-    ├── lib/          # ユーティリティ
-    ├── api/          # API関連
-    ├── config/       # 設定
-    └── types/        # 型定義
-```
-
-#### インポートルール
-
-- 上位レイヤーから下位レイヤーへのみインポート可能
-- 同じレイヤー内でのインポートは可能
-- 下位レイヤーから上位レイヤーへのインポートは禁止
-
-**例:**
-
-- ✅ `pages/` → `widgets/`, `features/`, `shared/`
-- ✅ `widgets/` → `features/`, `shared/`
-- ✅ `features/` → `entities/`, `shared/`
-- ❌ `shared/` → `features/`, `widgets/`, `pages/`
-
-## 開発ルール
-
-### コーディング規約
-
-#### フォーマット・リント
-
-- **Biome**を使用してコードのフォーマットとリントを実行
-- コミット前に自動的にフォーマットとリントが実行される（lint-staged）
+### 開発コマンド
 
 ```bash
-# フォーマット
-bun run fmt:check
+# 開発サーバー
+bun run dev
 
-# リント
-bun run lint
+# テスト
+bun run test        # ユニットテスト
+bun run e2e         # E2Eテスト
+bun run coverage    # カバレッジ
+
+# コード品質
+bun run fmt:check   # フォーマットチェック
+bun run lint        # リント
+
+# ビルド
+bun run build
 ```
 
-#### TypeScript
+### 重要なルール
 
-- 厳格モード（strict mode）を有効化
-- 型定義は`shared/types`に集約
-- 型のエクスポートは`shared/types/index.ts`から行う
+- **機能追加時**: 必ずテストコードを記載
+- **機能修正時**: `bun run test` で既存テストが通ることを確認
+- **テストコード変更**: なるべく変更しない（変更が必要な場合は理由を説明し合意を求める）
 
-#### コンポーネント
+## ドキュメント構成
 
-- コンポーネントは機能ごとに`features/`または`widgets/`に配置
-- 再利用可能なUIコンポーネントは`shared/ui/`に配置
-- Propsの型定義はコンポーネントファイル内で定義
-
-### テスト
-
-#### ユニットテスト
-
-- **Vitest**を使用
-- テストファイルは`*.test.ts`または`*.test.tsx`の命名規則
-- カバレッジ95%以上を目標
-- テストレポートは`docs/coverage`に出力
-
-```bash
-# ユニットテスト実行
-bun run test
-
-# カバレッジ付き実行
-bun run coverage
-```
-
-#### E2Eテスト
-
-- **Playwright**を使用
-- テストファイルは`tests/e2e/`に配置
-- テストレポートは`docs/playwright/report`に出力
-
-```bash
-bun run e2e
-```
-
-### Git規約
-
-#### コミットメッセージ
-
-- **Conventional Commits**形式を使用
-- `commitlint`で自動検証
-
-**形式:**
-
-```text
-<type>(<scope>): <subject>
-```
-
-**タイプ:**
-
-- `feat`: 新機能
-- `fix`: バグ修正
-- `revert`: 巻き戻し
-
-#### Git Hooks
-
-- **Lefthook**を使用してGitフックを管理
-- コミット前: lint-staged, commitlint
-- プッシュ前: build
-
-### ドキュメント
-
-- **Docusaurus**を使用してドキュメントサイトを構築
-- ドキュメントは`docs/docs/`に配置
-- アーキテクチャ、開発ガイド、API仕様などを管理
-
-```bash
-# ドキュメント開発サーバー起動
-bun run docs:dev
-
-# ドキュメントビルド
-bun run docs:build
-```
-
-## CI/CD
-
-### GitHub Actions
-
-- **CI**: リント、フォーマット、型チェック、テストを自動実行
-- **デプロイ**:
-  - Remixアプリ: Cloudflare Pages（自動デプロイ）
-  - Ladle: GitHub Pages
-  - Docusaurus: GitHub Pages
-  - テストレポート: GitHub Pages
-
-### デプロイフロー
-
-1. `master`ブランチへのプッシュで自動デプロイ
-2. Cloudflare PagesでRemixアプリをデプロイ
-3. GitHub PagesでLadle、Docusaurus、テストレポートをデプロイ
-
-## パフォーマンス
-
-### Lighthouse CI
-
-- パフォーマンス、アクセシビリティ、ベストプラクティス、SEOを監視
-- 各カテゴリで90点以上を目標
-
-```bash
-# Lighthouse CI実行
-bun run lighthouse
-```
-
-## その他のツール
-
-- **Ladle**: コンポーネント開発環境
-- **MSW**: APIモック
-- **TypeDoc**: TypeScriptドキュメント生成（予定）
+| カテゴリ | パス | 内容 |
+|---------|------|------|
+| **アーキテクチャ** | [`docs/prompt/architecture/`](./docs/prompt/architecture/) | FSD概要、プロジェクト構造、技術スタック |
+| **開発ガイド** | [`docs/prompt/development/`](./docs/prompt/development/) | コーディング規約、テスト、デプロイメント等 |
+| **エージェント** | [`docs/prompt/agent/`](./docs/prompt/agent/) | AI エージェント用プロンプト |

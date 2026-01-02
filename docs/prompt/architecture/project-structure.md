@@ -4,41 +4,145 @@
 
 ```text
 app/
-├── app/              # アプリケーションエントリーポイント
-├── pages/            # ページレイヤー
+├── root.tsx          # ルートコンポーネント
+├── entry.client.tsx  # クライアントエントリーポイント
+├── entry.server.tsx  # サーバーエントリーポイント
+├── routes/           # ページレイヤー（Remixルート）
 ├── widgets/          # 大きなUIブロック
+│   ├── footer/       # フッターウィジェット
+│   ├── navbar/       # ナビゲーションバー
+│   ├── hero/         # ヒーローセクション
+│   ├── sections/     # 各種セクション
+│   ├── error/        # エラーページ
+│   ├── post/         # 投稿ウィジェット
+│   ├── project/      # プロジェクトウィジェット
+│   └── sandbox/      # サンドボックスウィジェット
 ├── features/         # ユーザー機能
+│   ├── blog-preview/ # ブログプレビュー機能
+│   ├── portfolio-preview/  # ポートフォリオプレビュー機能
+│   ├── share-button/ # シェアボタン機能
+│   └── tracking/     # トラッキング機能
 ├── entities/         # ドメインモデル
+│   ├── blog/         # ブログエンティティ
+│   ├── portfolio/    # ポートフォリオエンティティ
+│   └── user/         # ユーザーエンティティ
 └── shared/           # 共通リソース
     ├── ui/           # UIコンポーネント
-    ├── lib/          # ユーティリティ
+    ├── lib/          # ユーティリティ関数
     ├── api/          # API関連
-    ├── config/       # 設定
-    └── types/        # 型定義
+    ├── config/       # 設定ファイル
+    ├── hooks/        # カスタムフック
+    └── types/        # 型定義（廃止予定、entitiesに移行）
 ```
 
 ## 各レイヤーの説明
 
 ### app/
 
-アプリケーションのエントリーポイント（`root.tsx`, `entry.client.tsx`, `entry.server.tsx`）を配置します。
+アプリケーションのエントリーポイントを配置します。
 
-### pages/
+- `root.tsx`: ルートコンポーネント、メタデータ、エラーバウンダリ
+- `entry.client.tsx`: クライアントサイドのエントリーポイント
+- `entry.server.tsx`: サーバーサイドのエントリーポイント
+
+### routes/
 
 各ページ（画面）を構築します。Remixの`routes/`ディレクトリに対応します。
+
+- ファイルベースルーティング
+- `loader`関数でサーバーサイドデータフェッチ
+- `action`関数でフォーム送信処理
+
+例: `routes/blog.$slug.tsx`, `routes/portfolio.$slug.tsx`
 
 ### widgets/
 
 ページ内で使用される自己完結型の大きなUIブロックを管理します。
 
+- 複数のfeaturesやentitiesを組み合わせた複合コンポーネント
+- ページ固有の大きなUIセクション
+- 例: `Footer`, `Navbar`, `Hero`, `Sections`
+
+各ウィジェットは以下の構造を持ちます：
+
+```text
+widget-name/
+├── ui/
+│   └── WidgetName.tsx
+├── model/
+│   └── types.ts
+└── index.ts
+```
+
 ### features/
 
-ユーザー視点で意味のある機能（例：検索、投稿、設定など）を表します。
+ユーザー視点で意味のある機能を表します。
+
+- 特定のユースケースに特化したコンポーネント
+- ビジネスロジックを含む
+- 例: `BlogPreview`, `PortfolioPreview`, `ShareButton`
+
+各フィーチャーは以下の構造を持ちます：
+
+```text
+feature-name/
+├── ui/
+│   └── FeatureName.tsx
+├── model/
+│   └── types.ts
+├── lib/
+│   └── utils.ts
+└── index.ts
+```
 
 ### entities/
 
-アプリケーションのドメインに関わるデータモデル（例：ユーザー、商品など）を管理します。
+アプリケーションのドメインに関わるデータモデルを管理します。
+
+- ビジネスエンティティの型定義
+- エンティティ固有のロジック
+- 例: `Blog`, `Portfolio`, `User`
+
+各エンティティは以下の構造を持ちます：
+
+```text
+entity-name/
+├── model/
+│   └── types.ts
+├── lib/
+│   └── utils.ts
+└── index.ts
+```
 
 ### shared/
 
-全体で再利用可能なUIコンポーネントやユーティリティを配置します。
+全体で再利用可能なリソースを配置します。
+
+- **ui/**: 汎用UIコンポーネント（Button、Inputなど）
+- **lib/**: ユーティリティ関数（日付フォーマット、文字列処理など）
+- **api/**: APIクライアント、GraphQLクエリなど
+- **config/**: 設定ファイル（定数、i18n設定など）
+- **hooks/**: カスタムReactフック
+- **types/**: 共通型定義
+
+## ファイル命名規則
+
+### コンポーネント
+
+- PascalCaseを使用: `BlogPreview.tsx`
+- ファイル名はコンポーネント名と一致
+
+### ユーティリティ
+
+- camelCaseを使用: `formatDate.ts`, `getUserData.ts`
+
+### 型定義
+
+- PascalCaseを使用: `types.ts`内で`BlogPreviewProps`など
+
+### テストファイル
+
+- コンポーネント名に`.test.tsx`を追加: `BlogPreview.test.tsx`
+- スナップショットテスト: `BlogPreview.test.tsx.snap`
+
+詳細なコーディング規約は [`../development/coding-standards.md`](../development/coding-standards.md) を参照してください。
