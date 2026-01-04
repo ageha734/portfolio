@@ -22,8 +22,8 @@ export const NavLink = ({
     className?: string;
     [key: string]: unknown;
 }) => {
-    const location = useRouterLocation();
-    const isActive = location.pathname === to;
+    // Storybookではアクティブ状態の判定を簡略化
+    const isActive = globalThis.window !== undefined && globalThis.window.location.pathname === to;
     const activeClassName = isActive ? "active" : "";
 
     return (
