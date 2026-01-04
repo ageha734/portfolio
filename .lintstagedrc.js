@@ -14,6 +14,7 @@ export default {
             const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
             return existsSync(testFile);
         });
+        const hasTsFiles = filenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
 
         return [
             ...filenames.flatMap((f) => [`bun run fmt:ts:check -- ${f}`, `bun run lint:ts:check -- ${f}`]),
@@ -22,7 +23,7 @@ export default {
                 return `bun run test -- ${testFile}`;
             }),
             ...sourceFilesWithTests.map((f) => `bun run coverage -- ${f}`),
-            "bun run typecheck",
+            ...(hasTsFiles ? ["bun run typecheck"] : []),
         ];
     },
     "*.md": (filenames) =>

@@ -13,6 +13,7 @@ using TypeSpec.OpenAPI;
  */
 @server("https://api.graphcms.com/v2", "GraphCMS Production API")
 @server("https://api.graphcms.com/v2/staging", "GraphCMS Staging API")
+@service
 namespace GraphCMS;
 
 @route("/graphql")

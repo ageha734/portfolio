@@ -17,7 +17,7 @@
     "dev:remix": "remix vite:dev -p 13000",
     "dev:ui": "storybook dev -p 16006",
     "dev:docs": "docusaurus start -p 30001",
-    "dev:tsp": "tsp compile --watch .",
+    "dev:tsp": "tsp compile --watch ./api/graphcms.tsp",
     "build": "bun run generate && bun run typegen && concurrently -n remix,ui,docs -c \"blue,green,yellow\" \"bun run build:remix\" \"bun run build:ui\" \"bun run build:docs\"",
     "build:remix": "remix vite:build",
     "build:ui": "storybook build -o build/ui",
