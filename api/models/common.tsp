@@ -1,17 +1,17 @@
 namespace GraphCMS;
 
 model Asset {
-    url: string;
+  url: string;
 }
 
 model Tag {
-    name: string;
+  name: string;
 }
 
 model EnumValue {
-    name: string;
+  name: string;
 }
 
 model TypeInfo {
-    enumValues?: EnumValue[];
+  enumValues?: EnumValue[];
 }

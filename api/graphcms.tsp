@@ -20,22 +20,22 @@ namespace GraphCMS;
 @summary("GraphQL Query")
 @doc("GraphQLエンドポイントへのPOSTリクエスト")
 op graphqlQuery(
-    @header("Authorization") @doc("GraphCMS API Token") authorization?: string,
-    @body request: GraphQLRequest,
+  @header("Authorization") @doc("GraphCMS API Token") authorization?: string,
+  @body request: GraphQLRequest,
 ):
-    | {
-          @statusCode statusCode: 200;
-          @body body: GraphQLResponse;
-      }
-    | {
-          @statusCode statusCode: 400;
-          @body body: ErrorResponse;
-      }
-    | {
-          @statusCode statusCode: 401;
-          @body body: ErrorResponse;
-      }
-    | {
-          @statusCode statusCode: 404;
-          @body body: ErrorResponse;
-      };
+  | {
+      @statusCode statusCode: 200;
+      @body body: GraphQLResponse;
+    }
+  | {
+      @statusCode statusCode: 400;
+      @body body: ErrorResponse;
+    }
+  | {
+      @statusCode statusCode: 401;
+      @body body: ErrorResponse;
+    }
+  | {
+      @statusCode statusCode: 404;
+      @body body: ErrorResponse;
+    };

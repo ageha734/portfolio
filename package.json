@@ -44,7 +44,7 @@
     "lint:md:fix": "markdownlint-cli2 --fix ${@:-\"docs/prompt/*.md\"}",
     "lint:ts:check": "biome lint ${@:-app/}",
     "lint:ts:fix": "biome lint --write ${@:-app/}",
-    "lint:tsp:check": "tsp compile . --warn-as-error",
+    "lint:tsp:check": "tsp compile ${@:-api/} --warn-as-error",
     "lint:tsp:fix": "tsp compile .",
     "lint:shell:check": "docker run --rm -v $(pwd):/work -w /work -v /work/node_modules koalaman/shellcheck:v0.11.0 ${@:-scripts/*.sh}",
     "lint:actions:check": "concurrently -n lint:actions:static:check,lint:actions:policy:check -c \"blue,green\" \"bun run lint:actions:static:check\" \"bun run lint:actions:policy:check\"",
