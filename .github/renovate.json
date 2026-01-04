@@ -1,0 +1,62 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "schedule": ["before 10am on monday"],
+  "timezone": "Asia/Tokyo",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "matchPackageNames": ["@biomejs/biome", "@playwright/test", "@storybook/*"],
+      "groupName": "development tools",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "matchPackageNames": ["@remix-run/*", "@remix-run/cloudflare", "@remix-run/cloudflare-pages"],
+      "groupName": "remix packages",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "matchPackageNames": ["@radix-ui/*"],
+      "groupName": "radix ui packages",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "matchPackageNames": ["@docusaurus/*"],
+      "groupName": "docusaurus packages",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "matchPackageNames": ["typescript", "@types/*"],
+      "groupName": "typescript packages",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "dev dependencies",
+      "schedule": ["before 10am on monday"]
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "schedule": ["at any time"],
+    "automerge": false
+  },
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "labels": ["dependencies"],
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+  "rebaseWhen": "behind-base-branch"
+}
