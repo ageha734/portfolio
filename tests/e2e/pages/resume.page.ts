@@ -15,9 +15,7 @@ export class ResumePage extends BasePage {
     }
 
     async expectNavigationVisible() {
-        await expect(
-            this.page.getByRole("navigation"),
-        ).toBeVisible();
+        await expect(this.page.getByRole("navigation")).toBeVisible();
     }
 
     async expectNameVisible() {
@@ -31,7 +29,9 @@ export class ResumePage extends BasePage {
     }
 
     async expectSocialLinksVisible() {
-        const socialLinks = this.page.locator("a[href*='github'], a[href*='twitter'], a[href*='linkedin'], a[href*='bluesky']");
+        const socialLinks = this.page.locator(
+            "a[href*='github'], a[href*='twitter'], a[href*='linkedin'], a[href*='bluesky']",
+        );
         const count = await socialLinks.count();
         expect(count).toBeGreaterThan(0);
     }

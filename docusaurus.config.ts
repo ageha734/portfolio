@@ -57,7 +57,7 @@ const config: Config = {
                     sidebarId: "tutorialSidebar",
                     position: "left",
                     label: "Docs",
-                }
+                },
             ],
         },
         footer: {
@@ -71,7 +71,7 @@ const config: Config = {
                             to: "/prompt/architecture/overview",
                         },
                     ],
-                }
+                },
             ],
             copyright: `Copyright © ${new Date().getFullYear()} Portfolio Project. Built with Docusaurus.`,
         },

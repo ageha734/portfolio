@@ -15,9 +15,7 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 1 : undefined,
-    reporter: [
-        ["html", { outputFolder: "docs/playwright/report" }],
-    ],
+    reporter: [["html", { outputFolder: "docs/playwright/report" }]],
     use: {
         actionTimeout: 0,
         baseURL: `http://localhost:${PORT}/`,

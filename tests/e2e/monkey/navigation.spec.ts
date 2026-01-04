@@ -11,7 +11,9 @@ async function attemptFallbackRecovery(page: Page): Promise<boolean> {
         await page.goto("/", { timeout: 5000, waitUntil: "domcontentloaded" });
         return true;
     } catch (fallbackError) {
-        console.error(`Fallback recovery also failed: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`);
+        console.error(
+            `Fallback recovery also failed: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`,
+        );
         return false;
     }
 }

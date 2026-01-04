@@ -17,12 +17,7 @@ const config: KnipConfig = {
         "functions/[[path]].ts",
         "public/worker.js",
     ],
-    project: [
-        "app/**/*.{ts,tsx}",
-        "api/**/*.tsp",
-        "tests/**/*.{ts,tsx}",
-        "docs/**/*.{ts,tsx,js,jsx,mdx}",
-    ],
+    project: ["app/**/*.{ts,tsx}", "api/**/*.tsp", "tests/**/*.{ts,tsx}", "docs/**/*.{ts,tsx,js,jsx,mdx}"],
     ignore: [
         "build/**",
         "docs/vitest/**",
@@ -46,19 +41,9 @@ const config: KnipConfig = {
         "@docusaurus/tsconfig",
         "@docusaurus/types",
     ],
-    ignoreBinaries: [
-        "wrangler",
-        "playwright",
-        "docusaurus",
-        "storybook",
-        "tsp",
-        "orval",
-    ],
+    ignoreBinaries: ["wrangler", "playwright", "docusaurus", "storybook", "tsp", "orval"],
     remix: {
-        entry: [
-            "app/entry.client.tsx",
-            "app/entry.server.tsx",
-        ],
+        entry: ["app/entry.client.tsx", "app/entry.server.tsx"],
         routes: "app/routes",
     },
     storybook: {

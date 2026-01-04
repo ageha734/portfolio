@@ -237,7 +237,7 @@ export const graphcmsHandlers = [
             return HttpResponse.json(response, { status });
         }
 
-        if (query.includes("__type(name: \"Tags\")") && query.includes("portfolios(orderBy: date_DESC)")) {
+        if (query.includes('__type(name: "Tags")') && query.includes("portfolios(orderBy: date_DESC)")) {
             return HttpResponse.json(handleGetSitemap());
         }
 

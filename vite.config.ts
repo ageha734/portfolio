@@ -23,11 +23,7 @@ export default defineConfig({
     plugins: [
         tailwindcss(),
         mdx({
-            rehypePlugins: [
-                [rehypeImgSize, { dir: "public" }],
-                rehypeSlug,
-                rehypePrism,
-            ] as any,
+            rehypePlugins: [[rehypeImgSize, { dir: "public" }], rehypeSlug, rehypePrism] as any,
             remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] as any,
             providerImportSource: "@mdx-js/react",
         }),

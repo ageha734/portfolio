@@ -15,15 +15,11 @@ export class UsesPage extends BasePage {
     }
 
     async expectHeroVisible() {
-        await expect(
-            this.page.getByRole("heading", { level: 1 }),
-        ).toBeVisible();
+        await expect(this.page.getByRole("heading", { level: 1 })).toBeVisible();
     }
 
     async expectNavigationVisible() {
-        await expect(
-            this.page.getByRole("navigation"),
-        ).toBeVisible();
+        await expect(this.page.getByRole("navigation")).toBeVisible();
     }
 
     async expectHardwareSectionVisible() {

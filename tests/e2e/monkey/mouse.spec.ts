@@ -32,7 +32,9 @@ test.describe("Random Mouse Interactions", () => {
                 await page.waitForTimeout(200);
             } catch (error) {
                 errorCount++;
-                console.warn(`Mouse click at (${x}, ${y}) failed: ${error instanceof Error ? error.message : String(error)}`);
+                console.warn(
+                    `Mouse click at (${x}, ${y}) failed: ${error instanceof Error ? error.message : String(error)}`,
+                );
                 await page.waitForTimeout(100);
             }
         }

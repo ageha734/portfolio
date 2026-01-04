@@ -77,9 +77,11 @@ test.describe("Random Interactions", () => {
                             await page.goBack({ timeout: 2000 });
                         }
                     } else {
-                        const canGoForward = await page.evaluate(() => {
-                            return globalThis.history.length > 0 && globalThis.history.state !== null;
-                        }).catch(() => false);
+                        const canGoForward = await page
+                            .evaluate(() => {
+                                return globalThis.history.length > 0 && globalThis.history.state !== null;
+                            })
+                            .catch(() => false);
                         if (canGoForward) {
                             await page.goForward({ timeout: 2000 });
                         }
@@ -106,7 +108,9 @@ test.describe("Random Interactions", () => {
 
         const totalErrors = errorCounts.link + errorCounts.button + errorCounts.input + errorCounts.navigation;
         const errorRate = totalErrors / maxActions;
-        console.log(`Error summary: ${totalErrors} errors out of ${maxActions} actions (${(errorRate * 100).toFixed(1)}%)`);
+        console.log(
+            `Error summary: ${totalErrors} errors out of ${maxActions} actions (${(errorRate * 100).toFixed(1)}%)`,
+        );
         console.log(`  - Link errors: ${errorCounts.link}`);
         console.log(`  - Button errors: ${errorCounts.button}`);
         console.log(`  - Input errors: ${errorCounts.input}`);
