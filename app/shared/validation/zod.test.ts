@@ -45,5 +45,63 @@ describe("Validation Utils", () => {
                 expect(formatted).toHaveProperty("email");
             }
         });
+
+        test("should handle nested field paths", () => {
+            const schema = z.object({
+                user: z.object({
+                    name: z.string().min(1),
+                    age: z.number().min(0),
+                }),
+            });
+
+            const result = schema.safeParse({ user: { name: "", age: -1 } });
+
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                const formatted = formatValidationError(result.error);
+                expect(formatted).toHaveProperty("user.name");
+                expect(formatted).toHaveProperty("user.age");
+            }
+        });
+
+        test("should handle array field paths", () => {
+            const schema = z.object({
+                items: z.array(z.string().min(1)),
+            });
+
+            const result = schema.safeParse({ items: ["", "valid"] });
+
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                const formatted = formatValidationError(result.error);
+                expect(formatted).toHaveProperty("items.0");
+            }
+        });
+
+        test("should handle multiple errors for same field", () => {
+            const schema = z.object({
+                email: z.string().email().min(10),
+            });
+
+            const result = schema.safeParse({ email: "short" });
+
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                const formatted = formatValidationError(result.error);
+                expect(formatted).toHaveProperty("email");
+                expect(Array.isArray(formatted.email)).toBe(true);
+            }
+        });
+
+        test("should handle empty path", () => {
+            const schema = z.string().min(1);
+            const result = schema.safeParse("");
+
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                const formatted = formatValidationError(result.error);
+                expect(typeof formatted).toBe("object");
+            }
+        });
     });
 });

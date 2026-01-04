@@ -70,6 +70,49 @@ describe("graphcms", () => {
 
             expect(result).toBe(mockResponse);
         });
+
+        test("should handle fetch error", async () => {
+            const query = "query { posts { id } }";
+            (globalThis.fetch as any).mockRejectedValue(new Error("Network error"));
+
+            await expect(fetchFromGraphCMS(query)).rejects.toThrow("Network error");
+        });
+
+        test("should handle empty query string", async () => {
+            const query = "";
+            const mockResponse = { json: vi.fn().mockResolvedValue({ data: {} }) };
+            (globalThis.fetch as any).mockResolvedValue(mockResponse);
+
+            await fetchFromGraphCMS(query);
+
+            const callArgs = (globalThis.fetch as any).mock.calls[0];
+            const body = JSON.parse(callArgs[1].body);
+            expect(body.query).toBe("");
+        });
+
+        test("should handle null variables", async () => {
+            const query = "query { posts { id } }";
+            const mockResponse = { json: vi.fn().mockResolvedValue({ data: {} }) };
+            (globalThis.fetch as any).mockResolvedValue(mockResponse);
+
+            await fetchFromGraphCMS(query, null as any);
+
+            const callArgs = (globalThis.fetch as any).mock.calls[0];
+            const body = JSON.parse(callArgs[1].body);
+            expect(body.variables).toBeNull();
+        });
+
+        test("should handle empty variables object", async () => {
+            const query = "query { posts { id } }";
+            const mockResponse = { json: vi.fn().mockResolvedValue({ data: {} }) };
+            (globalThis.fetch as any).mockResolvedValue(mockResponse);
+
+            await fetchFromGraphCMS(query, {});
+
+            const callArgs = (globalThis.fetch as any).mock.calls[0];
+            const body = JSON.parse(callArgs[1].body);
+            expect(body.variables).toEqual({});
+        });
     });
 
     describe("gql", () => {

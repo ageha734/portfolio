@@ -63,4 +63,60 @@ describe("portfolio api", () => {
 
         await expect(loader(args)).rejects.toThrow();
     });
+
+    test("should handle null portfolios data", async () => {
+        const mockResponse = {
+            json: vi.fn().mockResolvedValue({
+                data: {
+                    portfolios: null,
+                },
+            }),
+        };
+
+        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
+        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+
+        const args = {} as LoaderFunctionArgs;
+
+        await expect(loader(args)).rejects.toThrow();
+    });
+
+    test("should handle fetchFromGraphCMS error", async () => {
+        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
+        (fetchFromGraphCMS as any).mockRejectedValue(new Error("Network error"));
+
+        const args = {} as LoaderFunctionArgs;
+
+        await expect(loader(args)).rejects.toThrow("Network error");
+    });
+
+    test("should handle json parsing error", async () => {
+        const mockResponse = {
+            json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
+        };
+
+        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
+        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+
+        const args = {} as LoaderFunctionArgs;
+
+        await expect(loader(args)).rejects.toThrow("Invalid JSON");
+    });
+
+    test("should return empty array when portfolios is undefined", async () => {
+        const mockResponse = {
+            json: vi.fn().mockResolvedValue({
+                data: {
+                    portfolios: undefined,
+                },
+            }),
+        };
+
+        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
+        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+
+        const args = {} as LoaderFunctionArgs;
+
+        await expect(loader(args)).rejects.toThrow();
+    });
 });

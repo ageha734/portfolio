@@ -2,13 +2,14 @@
 /// <reference types="@cloudflare/workers-types/2023-07-01" />
 /// <reference types="vite/client" />
 /// <reference types="codeceptjs" />
+/// <reference path="./worker-configuration.d.ts" />
 
 declare global {
     interface Window {
         gtag?: (
             command: "config" | "event" | "set" | "js",
             targetId: string | Date,
-            config?: Record<string, unknown>
+            config?: Record<string, unknown>,
         ) => void;
         dataLayer?: unknown[];
     }

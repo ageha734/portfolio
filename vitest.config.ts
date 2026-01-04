@@ -1,7 +1,7 @@
-import react from "@vitejs/plugin-react";
 import { resolve } from "node:path";
-import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
     plugins: [react(), tsconfigPaths()],
@@ -13,6 +13,7 @@ export default defineConfig({
             "~/features": resolve(__dirname, "./app/features"),
             "~/widgets": resolve(__dirname, "./app/widgets"),
             "~/routes": resolve(__dirname, "./app/routes"),
+            "@vi": resolve(__dirname, "./tests/vitest"),
         },
     },
 
@@ -29,7 +30,7 @@ export default defineConfig({
                 "**/*.config.{ts,js}",
             ],
             include: ["./app/**/*.{ts,tsx}"],
-            reporter: ["html"],
+            reporter: ["html", "lcov"],
             reportsDirectory: "./docs/vitest/coverage",
             thresholds: {
                 lines: 80,
@@ -41,7 +42,7 @@ export default defineConfig({
         globals: true,
         environment: "jsdom",
         include: ["./app/**/*.test.{ts,tsx}"],
-        setupFiles: ["./tests/setup/setup.ts"],
+        setupFiles: ["./tests/vitest/setup.ts"],
         testTimeout: 10000,
     },
 });

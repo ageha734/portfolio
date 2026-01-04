@@ -1,31 +1,32 @@
 {
-    "$schema": "https://json.schemastore.org/tsconfig",
-    "compilerOptions": {
-        "target": "ES2022",
-        "module": "ESNext",
-        "moduleResolution": "bundler",
-        "moduleDetection": "force",
-        "strict": true,
-        "isolatedModules": true,
-        "esModuleInterop": true,
-        "allowJs": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true,
-        "allowImportingTsExtensions": true,
-        "verbatimModuleSyntax": true,
-        "noEmit": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUnusedParameters": false,
-        "noPropertyAccessFromIndexSignature": false,
-        "baseUrl": ".",
-        "paths": {
-            "~/*": ["./app/*"],
-            "~/shared/*": ["./app/shared/*"],
-            "~/entities/*": ["./app/entities/*"],
-            "~/features/*": ["./app/features/*"],
-            "~/widgets/*": ["./app/widgets/*"],
-            "~/routes/*": ["./app/routes/*"]
-        }
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "strict": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"],
+      "~/shared/*": ["./app/shared/*"],
+      "~/entities/*": ["./app/entities/*"],
+      "~/features/*": ["./app/features/*"],
+      "~/widgets/*": ["./app/widgets/*"],
+      "~/routes/*": ["./app/routes/*"],
+      "@vi/*": ["./tests/vitest/*"]
     }
+  }
 }
