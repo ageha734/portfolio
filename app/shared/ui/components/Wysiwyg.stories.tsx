@@ -1,6 +1,5 @@
 import { Wysiwyg } from "./Wysiwyg";
 import "~/tailwind.css";
-import "~/styles/wysiwyg.css";
 
 export default {
     title: "shared/ui/Wysiwyg",

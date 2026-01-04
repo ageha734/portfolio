@@ -1,12 +1,12 @@
 import rehypePrism from "@mapbox/rehype-prism";
 import mdx from "@mdx-js/rollup";
 import { vitePlugin as remix, cloudflareDevProxyVitePlugin as remixCloudflareDevProxy } from "@remix-run/dev";
+import tailwindcss from "@tailwindcss/vite";
 import rehypeImgSize from "rehype-img-size";
 import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 declare module "@remix-run/cloudflare" {
@@ -14,6 +14,8 @@ declare module "@remix-run/cloudflare" {
         v3_singleFetch: true;
     }
 }
+
+const isStorybook = process.argv.some((arg) => arg.includes("storybook"));
 
 export default defineConfig({
     assetsInclude: ["**/*.glb", "**/*.hdr", "**/*.glsl"],
@@ -27,20 +29,21 @@ export default defineConfig({
             remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] as any,
             providerImportSource: "@mdx-js/react",
         }),
-        remixCloudflareDevProxy(),
-        remix({
-            ignoredRouteFiles: ["**/.*", "**/*.test.{ts,tsx}"],
-            future: {
-                v3_fetcherPersist: true,
-                v3_relativeSplatPath: true,
-                v3_throwAbortReason: true,
-                v3_singleFetch: true,
-                v3_lazyRouteDiscovery: true,
-            },
-            serverModuleFormat: "cjs",
-        }),
+        !isStorybook && remixCloudflareDevProxy(),
+        !isStorybook &&
+            remix({
+                ignoredRouteFiles: ["**/.*", "**/*.test.{ts,tsx}"],
+                future: {
+                    v3_fetcherPersist: true,
+                    v3_relativeSplatPath: true,
+                    v3_throwAbortReason: true,
+                    v3_singleFetch: true,
+                    v3_lazyRouteDiscovery: true,
+                },
+                serverModuleFormat: "cjs",
+            }),
         tsconfigPaths({
             ignoreConfigErrors: true,
         }),
-    ],
+    ].filter(Boolean),
 });

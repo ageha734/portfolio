@@ -1,4 +1,6 @@
 import type { Preview } from "@storybook/react";
+import React, { type ReactNode } from "react";
+import { MemoryRouter } from "react-router";
 import "~/tailwind.css";
 
 const preview: Preview = {
@@ -11,6 +13,13 @@ const preview: Preview = {
             },
         },
     },
+    decorators: [
+        (Story: () => ReactNode) => (
+            <MemoryRouter>
+                <Story />
+            </MemoryRouter>
+        ),
+    ],
 };
 
 export default preview;
