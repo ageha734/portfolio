@@ -1,59 +1,45 @@
 {
-    "$schema": "https://textlint.github.io/schema/textlintrc.json",
-    "rules": {
-        "preset-ja-technical-writing": {
-            "sentence-length": {
-                "max": 130,
-                "skipPatterns": [
-                    "/\\[f:id:[^\\]]+\\]/",
-                    "/\\[https:\\/\\/.*?:embed(:.*?)?\\]/"
-                ]
-            },
-            "max-ten": {
-                "max": 4
-            },
-            "max-kanji-continuous-len": {
-                "max": 11
-            },
-            "arabic-kanji-numbers": false,
-            "ja-no-mixed-period": {
-                "allowPeriodMarks": ["...", "]", "：", ":"],
-                "allowEmojiAtEnd": true
-            },
-            "no-doubled-joshi": {
-                "allow": ["に", "も", "や"],
-                "separatorChars": [
-                    "。",
-                    "?",
-                    "!",
-                    "？",
-                    "！",
-                    "(",
-                    ")",
-                    "（",
-                    "）",
-                    "、"
-                ]
-            },
-            "no-exclamation-question-mark": false,
-            "ja-no-weak-phrase": false,
-            "no-mix-dearu-desumasu": {
-                "preferInList": ""
-            }
-        },
-        "ja-hiragana-daimeishi": true,
-        "ja-hiragana-fukushi": true,
-        "ja-hiragana-hojodoushi": true,
-        "ja-hiragana-keishikimeishi": true,
-        "no-mixed-zenkaku-and-hankaku-alphabet": true,
-        "ja-no-orthographic-variants": true,
-        "@proofdict/proofdict": {
-            "dictURL": "https://azu.github.io/proof-dictionary/"
-        }
+  "$schema": "https://textlint.github.io/schema/textlintrc.json",
+  "rules": {
+    "preset-ja-technical-writing": {
+      "sentence-length": {
+        "max": 130,
+        "skipPatterns": ["/\\[f:id:[^\\]]+\\]/", "/\\[https:\\/\\/.*?:embed(:.*?)?\\]/"]
+      },
+      "max-ten": {
+        "max": 4
+      },
+      "max-kanji-continuous-len": {
+        "max": 11
+      },
+      "arabic-kanji-numbers": false,
+      "ja-no-mixed-period": {
+        "allowPeriodMarks": ["...", "]", "：", ":"],
+        "allowEmojiAtEnd": true
+      },
+      "no-doubled-joshi": {
+        "allow": ["に", "も", "や"],
+        "separatorChars": ["。", "?", "!", "？", "！", "(", ")", "（", "）", "、"]
+      },
+      "no-exclamation-question-mark": false,
+      "ja-no-weak-phrase": false,
+      "no-mix-dearu-desumasu": {
+        "preferInList": ""
+      }
     },
-    "filters": {
-        "allowlist": {
-            "allowlistConfigPaths": ["./.allowlist.yaml"]
-        }
+    "ja-hiragana-daimeishi": true,
+    "ja-hiragana-fukushi": true,
+    "ja-hiragana-hojodoushi": true,
+    "ja-hiragana-keishikimeishi": true,
+    "no-mixed-zenkaku-and-hankaku-alphabet": true,
+    "ja-no-orthographic-variants": true,
+    "@proofdict/proofdict": {
+      "dictURL": "https://azu.github.io/proof-dictionary/"
     }
+  },
+  "filters": {
+    "allowlist": {
+      "allowlistConfigPaths": ["./.allowlist.yaml"]
+    }
+  }
 }
