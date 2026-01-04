@@ -1,24 +1,26 @@
 import { RemixBrowser } from "@remix-run/react";
-import { startTransition, StrictMode } from "react";
-import { hydrateRoot } from "react-dom/client";
 import * as Sentry from "@sentry/remix";
+import { StrictMode, startTransition } from "react";
+import { hydrateRoot } from "react-dom/client";
 import {
     SENTRY_DSN,
     SENTRY_ENVIRONMENT,
-    SENTRY_TRACES_SAMPLE_RATE,
-    SENTRY_REPLAY_SAMPLE_RATE,
     SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE,
+    SENTRY_REPLAY_SAMPLE_RATE,
+    SENTRY_TRACES_SAMPLE_RATE,
     XSTATE_INSPECTOR_ENABLED,
 } from "~/shared/config/settings";
 
-if (XSTATE_INSPECTOR_ENABLED) {
-    try {
-        const module = await import("@xstate/inspect");
-        module.inspect({
-            iframe: false,
-        });
-    } catch (error) {
-        console.warn("Failed to load XState inspector:", error);
+async function initXStateInspector() {
+    if (XSTATE_INSPECTOR_ENABLED) {
+        try {
+            const module = await import("@xstate/inspect");
+            module.inspect({
+                iframe: false,
+            });
+        } catch (error) {
+            console.warn("Failed to load XState inspector:", error);
+        }
     }
 }
 
@@ -43,6 +45,9 @@ function hydrate() {
         );
     });
 }
+
+// XState Inspectorを初期化（非ブロッキング）
+initXStateInspector();
 
 if (globalThis.requestIdleCallback) {
     globalThis.requestIdleCallback(hydrate);

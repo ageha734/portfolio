@@ -1,3 +1,4 @@
+import { resolve } from "node:path";
 import rehypePrism from "@mapbox/rehype-prism";
 import mdx from "@mdx-js/rollup";
 import { vitePlugin as remix, cloudflareDevProxyVitePlugin as remixCloudflareDevProxy } from "@remix-run/dev";
@@ -21,6 +22,18 @@ export default defineConfig({
     assetsInclude: ["**/*.glb", "**/*.hdr", "**/*.glsl"],
     build: {
         assetsInlineLimit: 1024,
+        target: "es2022",
+        rollupOptions: {
+            external: (id) => id === "@xstate/inspect",
+        },
+    },
+    optimizeDeps: {
+        exclude: ["@xstate/inspect"],
+    },
+    resolve: {
+        alias: {
+            "@xstate/inspect": resolve(__dirname, "./app/shared/mocks/xstate-inspect.ts"),
+        },
     },
     plugins: [
         tailwindcss(),
