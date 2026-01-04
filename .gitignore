@@ -50,10 +50,10 @@ Temporary Items
 
 ### Remix ###
 node_modules
-/.cache
-/.wrangler
-/build
-/public/build
+.cache
+.wrangler
+build
+public/build
 .env
 .env.local
 .env.*.local
