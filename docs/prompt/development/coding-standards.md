@@ -5,10 +5,15 @@
 ### Biome設定
 
 - **インデント**: スペース4つ
+
 - **行幅**: 120文字
+
 - **セミコロン**: 必須
+
 - **クォート**: ダブルクォート（JSX含む）
+
 - **末尾カンマ**: あり（JavaScript/TypeScript）
+
 - **アロー関数の括弧**: 常に使用
 
 ### コードスタイル
@@ -34,6 +39,7 @@ const message = "Hello, world!";
 ### コンポーネント
 
 - **PascalCase**を使用
+
 - ファイル名はコンポーネント名と一致させる
 
 ```typescript
@@ -48,6 +54,7 @@ export const BlogPreview = () => {
 ### 変数・関数
 
 - **camelCase**を使用
+
 - 関数は動詞で始める（`handle`, `get`, `set`, `is`, `has`など）
 
 ```typescript
@@ -61,7 +68,8 @@ const hasPermission = false;
 
 ### 定数
 
-- **UPPER_SNAKE_CASE**を使用
+- **UPPER\_SNAKE\_CASE**を使用
+
 - `shared/config/constants.ts`に集約
 
 ```typescript
@@ -73,6 +81,7 @@ export const SOCIAL_GITHUB = "https://github.com/...";
 ### 型・インターフェース
 
 - **PascalCase**を使用
+
 - インターフェースは`Props`サフィックスを付ける
 
 ```typescript

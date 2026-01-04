@@ -1,0 +1,13 @@
+{
+  "settings": {
+    "bullet": "-",
+    "emphasis": "*",
+    "strong": "*",
+    "fence": "`",
+    "fences": true,
+    "listItemIndent": "one",
+    "rule": "-",
+    "ruleSpaces": false
+  },
+  "plugins": ["remark-preset-lint-markdown-style-guide"]
+}
