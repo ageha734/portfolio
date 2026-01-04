@@ -43,4 +43,65 @@ describe("useWebShareAPI", () => {
             }),
         );
     });
+
+    test("should call gtag when share succeeds", async () => {
+        const mockShare = vi.fn().mockResolvedValue(undefined);
+        const mockGtag = vi.fn();
+        Object.defineProperty(navigator, "share", {
+            value: mockShare,
+            writable: true,
+        });
+        (globalThis as unknown as Window).gtag = mockGtag;
+
+        const { result } = renderHook(() => useWebShareAPI());
+
+        await result.current.onShare("https://example.com");
+
+        expect(mockGtag).toHaveBeenCalledWith("event", "share", {
+            method: "Web Share",
+        });
+    });
+
+    test("should not call gtag when gtag is not available", async () => {
+        const mockShare = vi.fn().mockResolvedValue(undefined);
+        Object.defineProperty(navigator, "share", {
+            value: mockShare,
+            writable: true,
+        });
+        (globalThis as unknown as Window).gtag = undefined;
+
+        const { result } = renderHook(() => useWebShareAPI());
+
+        await result.current.onShare("https://example.com");
+
+        expect(mockShare).toHaveBeenCalled();
+    });
+
+    test("should handle share error gracefully", async () => {
+        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const mockShare = vi.fn().mockRejectedValue(new Error("Share failed"));
+        Object.defineProperty(navigator, "share", {
+            value: mockShare,
+            writable: true,
+        });
+
+        const { result } = renderHook(() => useWebShareAPI());
+
+        await result.current.onShare("https://example.com");
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith("Web Share error", expect.any(Error));
+
+        consoleErrorSpy.mockRestore();
+    });
+
+    test("should not call navigator.share when not available", async () => {
+        delete (navigator as any).share;
+
+        const { result } = renderHook(() => useWebShareAPI());
+
+        await result.current.onShare("https://example.com");
+
+        // Should not throw error
+        expect(result.current.isAvailable).toBe(false);
+    });
 });

@@ -69,4 +69,46 @@ describe("blog", () => {
         expect(result.technical.data).toHaveLength(0);
         expect(result.technical.featured).toHaveLength(0);
     });
+
+    test("should handle posts with multiple tags", () => {
+        const posts: Post[] = [
+            createMockPost({ tags: ["DIY", "Technical"], sticky: false }),
+            createMockPost({ tags: ["DIY", "Technical"], sticky: true }),
+        ];
+
+        const result = filterBlogPosts(posts);
+
+        // Posts with DIY tag should go to diy category
+        expect(result.diy.data).toHaveLength(1);
+        expect(result.diy.featured).toHaveLength(1);
+        expect(result.technical.data).toHaveLength(0);
+        expect(result.technical.featured).toHaveLength(0);
+    });
+
+    test("should handle posts with no tags", () => {
+        const posts: Post[] = [createMockPost({ tags: [], sticky: false }), createMockPost({ tags: [], sticky: true })];
+
+        const result = filterBlogPosts(posts);
+
+        // Posts with no tags should go to technical category
+        expect(result.technical.data).toHaveLength(1);
+        expect(result.technical.featured).toHaveLength(1);
+        expect(result.diy.data).toHaveLength(0);
+        expect(result.diy.featured).toHaveLength(0);
+    });
+
+    test("should handle posts with other tags", () => {
+        const posts: Post[] = [
+            createMockPost({ tags: ["Other"], sticky: false }),
+            createMockPost({ tags: ["Other"], sticky: true }),
+        ];
+
+        const result = filterBlogPosts(posts);
+
+        // Posts with other tags should go to technical category
+        expect(result.technical.data).toHaveLength(1);
+        expect(result.technical.featured).toHaveLength(1);
+        expect(result.diy.data).toHaveLength(0);
+        expect(result.diy.featured).toHaveLength(0);
+    });
 });

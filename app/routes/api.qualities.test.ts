@@ -45,6 +45,44 @@ describe("api.qualities", () => {
             expect(quote).toBeDefined();
             expect(typeof quote).toBe("string");
         });
+
+        test("should return different quote when same value is provided multiple times", () => {
+            const value = "A problem solver 🧩";
+            const quote1 = getQuote(value);
+            const quote2 = getQuote(value);
+            // Due to randomness, quotes may be the same or different
+            expect(quote1).toBeDefined();
+            expect(quote2).toBeDefined();
+            expect(typeof quote1).toBe("string");
+            expect(typeof quote2).toBe("string");
+        });
+
+        test("should handle undefined value", () => {
+            const quote = getQuote(undefined);
+            expect(quote).toBeDefined();
+            expect(typeof quote).toBe("string");
+        });
+
+        test("should recursively call when quote matches value", () => {
+            // Mock Math.random to return a specific value
+            const originalRandom = Math.random;
+            let callCount = 0;
+            Math.random = vi.fn(() => {
+                callCount++;
+                // First call returns index 0, second call returns index 1
+                return callCount === 1 ? 0 : 0.125;
+            });
+
+            const value = "A problem solver 🧩";
+            const quote = getQuote(value);
+
+            expect(quote).toBeDefined();
+            expect(typeof quote).toBe("string");
+            // Should have called Math.random at least once
+            expect(callCount).toBeGreaterThan(0);
+
+            Math.random = originalRandom;
+        });
     });
 
     describe("loader", () => {

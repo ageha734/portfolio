@@ -1,5 +1,5 @@
 import { expect, test, describe } from "vitest";
-import { slugSchema, urlSchema } from "./schemas";
+import { slugSchema, urlSchema, emailSchema } from "./schemas";
 
 describe("Validation Schemas", () => {
     describe("slugSchema", () => {
@@ -65,6 +65,47 @@ describe("Validation Schemas", () => {
                 const result = urlSchema.safeParse(url);
                 expect(result.success).toBe(false);
             }
+        });
+    });
+
+    describe("emailSchema", () => {
+        test("should accept valid email addresses", () => {
+            const validEmails = [
+                "test@example.com",
+                "user.name@example.com",
+                "user+tag@example.co.uk",
+                "user123@example-domain.com",
+            ];
+
+            for (const email of validEmails) {
+                const result = emailSchema.safeParse(email);
+                expect(result.success).toBe(true);
+                if (result.success) {
+                    expect(result.data).toBe(email);
+                }
+            }
+        });
+
+        test("should reject invalid email addresses", () => {
+            const invalidEmails = [
+                "",
+                "not-an-email",
+                "@example.com",
+                "user@",
+                "user@example",
+                "user name@example.com",
+                "user@example .com",
+            ];
+
+            for (const email of invalidEmails) {
+                const result = emailSchema.safeParse(email);
+                expect(result.success).toBe(false);
+            }
+        });
+
+        test("should reject empty string", () => {
+            const result = emailSchema.safeParse("");
+            expect(result.success).toBe(false);
         });
     });
 });

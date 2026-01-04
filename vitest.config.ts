@@ -16,6 +16,9 @@ export default defineConfig({
             "@vi": resolve(__dirname, "./tests/vitest"),
         },
     },
+    optimizeDeps: {
+        include: ["@exodus/bytes"],
+    },
 
     test: {
         coverage: {
@@ -44,5 +47,16 @@ export default defineConfig({
         include: ["./app/**/*.test.{ts,tsx}"],
         setupFiles: ["./tests/vitest/setup.ts"],
         testTimeout: 10000,
+        pool: "forks",
+        poolOptions: {
+            forks: {
+                singleFork: true,
+            },
+        },
+        server: {
+            deps: {
+                inline: ["@exodus/bytes", "html-encoding-sniffer", "jsdom"],
+            },
+        },
     },
 });
