@@ -28,7 +28,7 @@
 - ページ固有の大きなUIセクション
 - 例: `Footer`, `Navbar`, `Hero`, `Sections`
 
-各ウィジェットは以下の構造を持ちます：
+各ウィジェットは次の構造を持ちます：
 
 ```text
 widget-name/
@@ -47,7 +47,7 @@ widget-name/
 - ビジネスロジックを含む
 - 例: `BlogPreview`, `PortfolioPreview`, `ShareButton`
 
-各フィーチャーは以下の構造を持ちます：
+各フィーチャーは次の構造を持ちます：
 
 ```text
 feature-name/
@@ -68,7 +68,7 @@ feature-name/
 - エンティティ固有のロジック
 - 例: `Blog`, `Portfolio`, `User`
 
-各エンティティは以下の構造を持ちます：
+各エンティティは次の構造を持ちます：
 
 ```text
 entity-name/

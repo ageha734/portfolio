@@ -55,7 +55,7 @@ export const BlogPreview = () => {
 
 - **camelCase**を使用
 
-- 関数は動詞で始める（`handle`, `get`, `set`, `is`, `has`など）
+- 関数は動詞で始める（`handle`, `get`, `set` / `is`, `has` など）
 
 ```typescript
 // ✅ Good

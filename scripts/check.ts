@@ -18,12 +18,12 @@
  * - bun scripts/check.ts --check-type=coverage file.ts
  */
 
-import { existsSync } from "node:fs";
+import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { $ } from "bun";
+import { $, spawn } from "bun";
 
 type CheckType = "lint" | "fmt" | "test" | "coverage";
-type LintType = "ts" | "tsp" | "md" | "shell" | "actions";
+type LintType = "ts" | "tsp" | "md" | "shell" | "actions" | "textlint";
 
 interface Config {
     checkType: CheckType;
@@ -59,15 +59,26 @@ function parseArgs(): { config: Config; files: string[] } {
 function getDefaultPath(lintType: LintType): string[] {
     switch (lintType) {
         case "tsp":
-            return ["api/*.tsp"];
+            return ["api/"];
         case "md":
-            return ["docs/prompt/*.md"];
-        case "shell":
-            return ["scripts/*.sh"];
+            return ["docs/prompt/"];
+        case "shell": {
+            const scriptsDir = join(process.cwd(), "scripts");
+            try {
+                const files = readdirSync(scriptsDir)
+                    .filter((f) => f.endsWith(".sh"))
+                    .map((f) => `scripts/${f}`);
+                return files.length > 0 ? files : [];
+            } catch {
+                return [];
+            }
+        }
         case "actions":
-            return [".github/**/*.yml"];
+            return [".github/"];
+        case "textlint":
+            return ["docs/prompt/"];
         default:
-            return ["app/**/*.{ts,tsx}"];
+            return ["app/"];
     }
 }
 
@@ -93,6 +104,7 @@ async function checkFileCoverage(sourceFile: string): Promise<void> {
     await $`${vitestPath} run --coverage --coverage.include=${sourceFile} --coverage.threshold.lines=100 --coverage.threshold.functions=100 --coverage.threshold.branches=100 --coverage.threshold.statements=100 ${testFile}`.env(
         {
             NODE_ENV: "test",
+            PATH: process.env.PATH || "",
         },
     );
 }
@@ -105,6 +117,7 @@ async function runTest(files: string[], lintType: LintType): Promise<void> {
     const vitestPath = join(process.cwd(), "node_modules", ".bin", "vitest");
     await $`${vitestPath} run ${files}`.env({
         NODE_ENV: "test",
+        PATH: process.env.PATH || "",
     });
 }
 
@@ -140,6 +153,7 @@ async function runCoverage(files: string[], lintType: LintType): Promise<void> {
 
     await $`${vitestPath} run --coverage`.env({
         NODE_ENV: "test",
+        PATH: process.env.PATH || "",
     });
 }
 
@@ -205,19 +219,65 @@ async function runShellCommand(checkType: CheckType, isFix: boolean, files: stri
         return;
     }
 
-    await $`docker run --rm -v ${process.cwd()}:/work -w /work -v ${process.cwd()}/node_modules:/work/node_modules koalaman/shellcheck:v0.11.0 ${files}`;
+    const relativeFiles = files.map((f) => {
+        const cwd = process.cwd();
+        if (f.startsWith(cwd)) {
+            return f.slice(cwd.length + 1);
+        }
+        return f;
+    });
+
+    await $`docker run --rm -v ${process.cwd()}:/work -w /work -v ${process.cwd()}/node_modules:/work/node_modules koalaman/shellcheck:v0.11.0 ${relativeFiles}`;
+}
+
+async function runTextlintCommand(checkType: CheckType, isFix: boolean, files: string[]): Promise<void> {
+    if (checkType === "fmt") {
+        console.error("Error: textlint does not support formatting. Use --check-type=lint instead.");
+        process.exit(1);
+    }
+
+    const textlintPath = join(process.cwd(), "node_modules", ".bin", "textlint");
+    if (isFix) {
+        await $`${textlintPath} --fix ${files}`;
+    } else {
+        await $`${textlintPath} ${files}`;
+    }
 }
 
 async function runActionsCommand(checkType: CheckType, isFix: boolean, files: string[]): Promise<void> {
     if (checkType === "fmt") {
-        await $`go run github.com/google/yamlfmt/cmd/yamlfmt@v0.20.0 ${isFix ? "" : "-lint"} -gitignore_excludes ${files}`;
+        const args = isFix ? [] : ["-lint"];
+        args.push("-gitignore_excludes", ...files);
+        const proc = spawn(["go", "run", "github.com/google/yamlfmt/cmd/yamlfmt@v0.20.0", ...args], {
+            stdout: "inherit",
+            stderr: "inherit",
+        });
+        await proc.exited;
+        if (proc.exitCode !== 0) {
+            process.exit(proc.exitCode || 1);
+        }
         return;
     }
 
-    const actionlintPath = "go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.9";
-    const ghalintPath = `go run github.com/suzuki-shunsuke/ghalint/cmd/ghalint@v1.5.4 run ${files}`;
+    const actionlintProc = spawn(["go", "run", "github.com/rhysd/actionlint/cmd/actionlint@v1.7.9"], {
+        stdout: "inherit",
+        stderr: "inherit",
+    });
 
-    await Promise.all([$`${actionlintPath}`, $`${ghalintPath}`]);
+    const ghalintArgs = ["go", "run", "github.com/suzuki-shunsuke/ghalint/cmd/ghalint@v1.5.4", "run", ...files];
+    const ghalintProc = spawn(ghalintArgs, {
+        stdout: "inherit",
+        stderr: "inherit",
+    });
+
+    const [actionlintExitCode, ghalintExitCode] = await Promise.all([
+        actionlintProc.exited.then(() => actionlintProc.exitCode),
+        ghalintProc.exited.then(() => ghalintProc.exitCode),
+    ]);
+
+    if (actionlintExitCode !== 0 || ghalintExitCode !== 0) {
+        process.exit(1);
+    }
 }
 
 async function runLintOrFormatCommand(config: Config, files: string[]): Promise<void> {
@@ -240,6 +300,10 @@ async function runLintOrFormatCommand(config: Config, files: string[]): Promise<
         }
         case "actions": {
             await runActionsCommand(checkType, config.isFix, files);
+            break;
+        }
+        case "textlint": {
+            await runTextlintCommand(checkType, config.isFix, files);
             break;
         }
         default: {

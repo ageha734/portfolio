@@ -78,7 +78,9 @@ describe("useWebShareAPI", () => {
     });
 
     test("should handle share error gracefully", async () => {
-        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {
+            // Suppress console.error output during test
+        });
         const mockShare = vi.fn().mockRejectedValue(new Error("Share failed"));
         Object.defineProperty(navigator, "share", {
             value: mockShare,

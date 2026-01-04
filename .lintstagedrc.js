@@ -25,7 +25,12 @@ export default {
             "bun run typecheck",
         ];
     },
-    "*.md": (filenames) => filenames.flatMap((f) => [`bun run fmt:md:check -- ${f}`, `bun run lint:md:check -- ${f}`]),
+    "*.md": (filenames) =>
+        filenames.flatMap((f) => [
+            `bun run fmt:md:check -- ${f}`,
+            `bun run lint:md:check -- ${f}`,
+            `bun run lint:textlint:check -- ${f}`,
+        ]),
     "*.sh": (filenames) =>
         filenames.flatMap((f) => [`bun run fmt:shell:check -- ${f}`, `bun run lint:shell:check -- ${f}`]),
     "*.tsp": (filenames) =>

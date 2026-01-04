@@ -4,8 +4,8 @@
 
 ### 基本的なローダー
 
-- `loader`関数でサーバーサイドでデータを取得
-- `useLoaderData`でクライアント側でデータを使用
+- `loader`関数によりサーバーサイドでデータを取得
+- `useLoaderData`によりクライアント側でデータを使用
 
 ```typescript
 // ✅ Good: routes/blog.$slug.tsx
