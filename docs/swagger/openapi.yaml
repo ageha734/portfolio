@@ -13,9 +13,9 @@ info:
 
 servers:
     - url: https://api.graphcms.com/v2
-        description: GraphCMS Production API
+      description: GraphCMS Production API
     - url: https://api.graphcms.com/v2/staging
-        description: GraphCMS Staging API
+      description: GraphCMS Staging API
 
 paths:
     /graphql:

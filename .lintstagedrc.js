@@ -7,17 +7,18 @@ export default {
     ".github/**/*.yml": (filenames) =>
         filenames.flatMap((f) => [`bun run fmt:actions:check -- ${f}`, `bun run lint:actions:check -- ${f}`]),
     "*.{ts,tsx,js,jsx,json,jsonc}": (filenames) => {
-        const sourceFiles = filenames.filter(
+        const filteredFilenames = filenames.filter((f) => !f.includes("worker-configuration.d.ts"));
+        const sourceFiles = filteredFilenames.filter(
             (f) => !f.endsWith(".test.ts") && !f.endsWith(".test.tsx") && (f.endsWith(".ts") || f.endsWith(".tsx")),
         );
         const sourceFilesWithTests = sourceFiles.filter((f) => {
             const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
             return existsSync(testFile);
         });
-        const hasTsFiles = filenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
+        const hasTsFiles = filteredFilenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
 
         return [
-            ...filenames.flatMap((f) => [`bun run fmt:ts:check -- ${f}`, `bun run lint:ts:check -- ${f}`]),
+            ...filteredFilenames.flatMap((f) => [`bun run fmt:ts:check -- ${f}`, `bun run lint:ts:check -- ${f}`]),
             ...sourceFilesWithTests.map((f) => {
                 const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
                 return `bun run test -- ${testFile}`;
