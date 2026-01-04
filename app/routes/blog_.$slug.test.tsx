@@ -1,7 +1,7 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { createRouterWrapper } from "@vi/render";
-import Blog_Slug, { meta, links } from "./blog_.$slug";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import Blog_Slug, { links, meta } from "./blog_.$slug";
 
 vi.mock("~/routes/api.blog.$slug", () => ({
     loader: vi.fn(),
@@ -45,7 +45,8 @@ describe("blog_.$slug route", () => {
         const wrapper = createRouterWrapper({ route: "/blog/test-post" });
         render(<Blog_Slug />, { wrapper });
 
-        expect(screen.getByText("Test Post")).toBeInTheDocument();
+        const titles = screen.getAllByText("Test Post");
+        expect(titles.length).toBeGreaterThan(0);
     });
 
     test("links function should return stylesheets", () => {

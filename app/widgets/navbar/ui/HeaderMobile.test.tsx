@@ -1,7 +1,36 @@
-import { expect, test, describe } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import { HeaderMobile } from "./HeaderMobile";
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, prefetch, ...props }: { to: string; children: ReactNode; prefetch?: string }) => (
+            <RouterLink to={to} {...props} data-prefetch={prefetch}>
+                {children}
+            </RouterLink>
+        ),
+        NavLink: ({
+            to,
+            children,
+            prefetch,
+            onClick,
+            ...props
+        }: {
+            to: string;
+            children: ReactNode;
+            prefetch?: string;
+            onClick?: () => void;
+        }) => (
+            <RouterLink to={to} {...props} onClick={onClick}>
+                {children}
+            </RouterLink>
+        ),
+    };
+});
 
 describe("HeaderMobile Component", () => {
     test("should render header with logo and toggle button", () => {

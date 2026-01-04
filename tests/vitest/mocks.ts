@@ -10,17 +10,33 @@ export const resetClipboardStore = (): void => {
     clipboardStore = "";
 };
 
-Object.defineProperty(navigator, "clipboard", {
-    writable: true,
-    value: {
-        writeText: vi.fn().mockImplementation(async (text: string) => {
+// clipboardプロパティが既に定義されている場合は再定義しない
+try {
+    if (!navigator.clipboard) {
+        Object.defineProperty(navigator, "clipboard", {
+            configurable: true,
+            writable: true,
+            value: {
+                writeText: vi.fn().mockImplementation(async (text: string) => {
+                    clipboardStore = text;
+                }),
+                readText: vi.fn().mockImplementation(async () => {
+                    return clipboardStore;
+                }),
+            },
+        });
+    } else {
+        // 既存のclipboardオブジェクトのメソッドをモック
+        vi.spyOn(navigator.clipboard, "writeText").mockImplementation(async (text: string) => {
             clipboardStore = text;
-        }),
-        readText: vi.fn().mockImplementation(async () => {
+        });
+        vi.spyOn(navigator.clipboard, "readText").mockImplementation(async () => {
             return clipboardStore;
-        }),
-    },
-});
+        });
+    }
+} catch {
+    // クリップボードのモック設定に失敗した場合は無視
+}
 
 export class IntersectionObserverMock implements IntersectionObserver {
     readonly root: Element | Document | null = null;

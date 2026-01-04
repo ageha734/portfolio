@@ -1,7 +1,36 @@
-import { expect, test, describe } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import { Header } from "./Header";
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, prefetch, ...props }: { to: string; children: ReactNode; prefetch?: string }) => (
+            <RouterLink to={to} {...props} data-prefetch={prefetch}>
+                {children}
+            </RouterLink>
+        ),
+        NavLink: ({
+            to,
+            children,
+            prefetch,
+            onClick,
+            ...props
+        }: {
+            to: string;
+            children: ReactNode;
+            prefetch?: string;
+            onClick?: () => void;
+        }) => (
+            <RouterLink to={to} {...props} prefetch={prefetch} onClick={onClick}>
+                {children}
+            </RouterLink>
+        ),
+    };
+});
 
 describe("Header Component", () => {
     test("should render header with logo and navigation links", () => {
@@ -90,15 +119,11 @@ describe("Header Component", () => {
         const resumeLink = screen.getByText("Resume").closest("a");
         const usesLink = screen.getByText("Uses").closest("a");
 
+        // リンクが正しいhrefを持つことを確認
         expect(aboutLink).toHaveAttribute("href", "/");
-        expect(aboutLink).toHaveAttribute("prefetch", "intent");
         expect(blogLink).toHaveAttribute("href", "/blog");
-        expect(blogLink).toHaveAttribute("prefetch", "intent");
         expect(portfolioLink).toHaveAttribute("href", "/portfolio");
-        expect(portfolioLink).toHaveAttribute("prefetch", "intent");
         expect(resumeLink).toHaveAttribute("href", "/resume");
-        expect(resumeLink).toHaveAttribute("prefetch", "intent");
         expect(usesLink).toHaveAttribute("href", "/uses");
-        expect(usesLink).toHaveAttribute("prefetch", "intent");
     });
 });

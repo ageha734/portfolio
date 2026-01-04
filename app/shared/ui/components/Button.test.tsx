@@ -1,6 +1,5 @@
-import { expect, test, describe } from "vitest";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
 import { Button, buttonVariants } from "./Button";
 
 describe("Button Component", () => {
@@ -34,21 +33,19 @@ describe("Button Component", () => {
         expect(button).toHaveClass("disabled:pointer-events-none", "disabled:opacity-50");
     });
 
-    test("should handle click events", async () => {
+    test("should handle click events", () => {
         const handleClick = vi.fn();
-        const user = userEvent.setup();
 
         render(<Button onClick={handleClick}>Click me</Button>);
 
         const button = screen.getByRole("button", { name: "Click me" });
-        await user.click(button);
+        fireEvent.click(button);
 
         expect(handleClick).toHaveBeenCalledTimes(1);
     });
 
-    test("should not call onClick when disabled", async () => {
+    test("should not call onClick when disabled", () => {
         const handleClick = vi.fn();
-        const user = userEvent.setup();
 
         render(
             <Button disabled onClick={handleClick}>
@@ -57,7 +54,7 @@ describe("Button Component", () => {
         );
 
         const button = screen.getByRole("button", { name: "Disabled" });
-        await user.click(button);
+        fireEvent.click(button);
 
         expect(handleClick).not.toHaveBeenCalled();
     });

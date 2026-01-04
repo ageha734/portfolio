@@ -1,11 +1,15 @@
-import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { SectionFireworks } from "./SectionFireworks";
 
-vi.mock("~/shared/lib/esm-modules", () => ({
+vi.mock("../lib/esm-modules", () => ({
     fireworks: vi.fn(() =>
         Promise.resolve({
-            Fireworks: vi.fn(() => <div data-testid="fireworks">Fireworks Component</div>),
+            Fireworks: ({ style }: { style: React.CSSProperties }) => (
+                <div data-testid="fireworks" style={style}>
+                    Fireworks Component
+                </div>
+            ),
         }),
     ),
 }));

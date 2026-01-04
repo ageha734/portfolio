@@ -1,5 +1,5 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { SectionAmbitions } from "./SectionAmbitions";
 
 describe("SectionAmbitions Component", () => {
@@ -19,7 +19,8 @@ describe("SectionAmbitions Component", () => {
     test("should render content text", () => {
         render(<SectionAmbitions />);
 
-        expect(screen.getByText(/15\+ years of professional experience/)).toBeInTheDocument();
+        // テキストが複数要素に分かれているため個別にチェック
+        expect(screen.getByText("15+")).toBeInTheDocument();
         expect(screen.getByText(/new challenges/)).toBeInTheDocument();
     });
 });

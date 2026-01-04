@@ -1,6 +1,8 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { createRouterWrapper } from "@vi/render";
+import type { ReactNode } from "react";
+import { Link as RouterLink } from "react-router";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import Portfolio, { meta } from "./portfolio";
 
 vi.mock("~/shared/api/portfolio", () => ({
@@ -11,6 +13,11 @@ vi.mock("@remix-run/react", async () => {
     const actual = await vi.importActual("@remix-run/react");
     return {
         ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
         useLoaderData: vi.fn(() => [
             {
                 slug: "test-portfolio",
@@ -20,7 +27,7 @@ vi.mock("@remix-run/react", async () => {
                 date: "2023-01-01",
                 images: [],
                 overview: "Test overview",
-                thumbnailTemp: "",
+                thumbnailTemp: "/test.jpg",
             },
         ]),
     };

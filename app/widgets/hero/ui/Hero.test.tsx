@@ -1,5 +1,5 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { Hero } from "./Hero";
 
 describe("Hero Component", () => {
@@ -45,15 +45,15 @@ describe("Hero Component", () => {
     test("should apply custom className", () => {
         const { container } = render(<Hero className="custom-class" highlight="Test Highlight" tag="h2" />);
 
-        const hero = container.querySelector(".hero");
-        expect(hero).toHaveClass("custom-class");
+        // classNameは最も外側のdivに適用される
+        const heroDiv = container.firstChild as HTMLElement;
+        expect(heroDiv).toHaveClass("custom-class");
     });
 
     test("should have correct structure with copy and highlight", () => {
-        const { container } = render(<Hero copy="Copy Text" highlight="Highlight Text" tag="h2" />);
+        render(<Hero copy="Copy Text" highlight="Highlight Text" tag="h2" />);
 
-        const heading = container.querySelector("h2");
-        expect(heading).toBeInTheDocument();
-        expect(heading?.querySelector(".text-highlight")).toHaveTextContent("Highlight Text");
+        expect(screen.getByText("Copy Text")).toBeInTheDocument();
+        expect(screen.getByText("Highlight Text")).toBeInTheDocument();
     });
 });

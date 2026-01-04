@@ -1,9 +1,35 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { FooterMobile } from "./FooterMobile";
 
+const mockUseLocation = vi.fn();
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+        useLocation: () => mockUseLocation(),
+    };
+});
+
 describe("FooterMobile Component", () => {
+    beforeEach(() => {
+        mockUseLocation.mockReturnValue({
+            pathname: "/",
+            hash: "",
+            key: "test",
+            search: "",
+            state: null,
+        });
+    });
+
     test("should render footer mobile with social links", () => {
         render(
             <MemoryRouter>
@@ -28,6 +54,14 @@ describe("FooterMobile Component", () => {
     });
 
     test("should not render footer mobile on resume page", () => {
+        mockUseLocation.mockReturnValue({
+            pathname: "/resume",
+            hash: "",
+            key: "test",
+            search: "",
+            state: null,
+        });
+
         render(
             <MemoryRouter initialEntries={["/resume"]}>
                 <FooterMobile />

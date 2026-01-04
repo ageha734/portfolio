@@ -1,17 +1,16 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
-import { loader } from "./portfolio";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { Portfolio } from "~/entities/portfolio";
-
-vi.mock("~/shared/lib/graphcms", () => ({
-    fetchFromGraphCMS: vi.fn(),
-}));
+import * as graphcmsModule from "~/shared/api/graphcms";
+import { loader } from "./portfolio";
 
 vi.mock("~/shared/api/queries/getPortfolios", () => ({
     getPortfolios: "query { portfolios { id } }",
 }));
 
 describe("portfolio api", () => {
+    const mockFetchFromGraphCMS = vi.spyOn(graphcmsModule, "fetchFromGraphCMS");
+
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -35,8 +34,7 @@ describe("portfolio api", () => {
             }),
         };
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
 
         const args = {} as LoaderFunctionArgs;
         const result = await loader(args);
@@ -56,8 +54,7 @@ describe("portfolio api", () => {
             }),
         };
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
 
         const args = {} as LoaderFunctionArgs;
 
@@ -73,8 +70,7 @@ describe("portfolio api", () => {
             }),
         };
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
 
         const args = {} as LoaderFunctionArgs;
 
@@ -82,8 +78,7 @@ describe("portfolio api", () => {
     });
 
     test("should handle fetchFromGraphCMS error", async () => {
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockRejectedValue(new Error("Network error"));
+        mockFetchFromGraphCMS.mockRejectedValue(new Error("Network error"));
 
         const args = {} as LoaderFunctionArgs;
 
@@ -95,8 +90,7 @@ describe("portfolio api", () => {
             json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
         };
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
 
         const args = {} as LoaderFunctionArgs;
 
@@ -112,8 +106,7 @@ describe("portfolio api", () => {
             }),
         };
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
 
         const args = {} as LoaderFunctionArgs;
 

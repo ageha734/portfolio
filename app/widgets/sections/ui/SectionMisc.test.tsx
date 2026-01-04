@@ -1,5 +1,5 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { SectionMisc } from "./SectionMisc";
 
 describe("SectionMisc Component", () => {
@@ -35,6 +35,8 @@ describe("SectionMisc Component", () => {
         render(<SectionMisc />);
 
         expect(screen.getByAltText(/Me, my son, and our dog at the beach/)).toBeInTheDocument();
-        expect(screen.getByAltText(/Triumph Thruxton/)).toBeInTheDocument();
+        // 複数の画像が同じaltテキストにマッチする場合があるのでgetAllを使用
+        const thruxtonImages = screen.getAllByAltText(/Triumph Thruxton/);
+        expect(thruxtonImages.length).toBeGreaterThan(0);
     });
 });

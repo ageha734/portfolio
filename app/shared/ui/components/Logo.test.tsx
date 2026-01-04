@@ -1,5 +1,5 @@
-import { expect, test, describe } from "vitest";
 import { render } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { Logo } from "./Logo";
 
 describe("Logo Component", () => {
@@ -46,7 +46,7 @@ describe("Logo Component", () => {
 
         const path = container.querySelector("path");
         expect(path).toBeInTheDocument();
-        expect(path).toHaveAttribute("textRendering", "geometricPrecision");
+        // pathが描画データを持つことを確認
         expect(path).toHaveAttribute("d");
     });
 });

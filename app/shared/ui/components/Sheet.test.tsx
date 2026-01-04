@@ -1,14 +1,14 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import {
     Sheet,
-    SheetTrigger,
-    SheetContent,
-    SheetHeader,
-    SheetFooter,
-    SheetTitle,
-    SheetDescription,
     SheetClose,
+    SheetContent,
+    SheetDescription,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
 } from "./Sheet";
 
 describe("Sheet Component", () => {
@@ -122,12 +122,12 @@ describe("Sheet Component", () => {
         render(
             <Sheet defaultOpen>
                 <SheetContent>
-                    <SheetClose>Close</SheetClose>
+                    <SheetClose>Close Sheet</SheetClose>
                 </SheetContent>
             </Sheet>,
         );
 
-        const closeButton = screen.getByRole("button", { name: "Close" });
+        const closeButton = screen.getByRole("button", { name: "Close Sheet" });
         expect(closeButton).toBeInTheDocument();
     });
 

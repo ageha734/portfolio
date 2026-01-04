@@ -1,5 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { createRouterWrapper } from "@vi/render";
+import type { ReactNode } from "react";
+import { Link as RouterLink } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { filterBlogPosts } from "~/entities/blog/lib/filter-posts";
 import Blog, { meta } from "./blog";
@@ -12,14 +14,28 @@ vi.mock("@remix-run/react", async () => {
     const actual = await vi.importActual("@remix-run/react");
     return {
         ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
         useLoaderData: vi.fn(() => ({
             posts: [
                 {
                     id: "1",
+                    title: "Featured Post",
+                    slug: "featured-post",
+                    date: "2023-01-01",
+                    imageTemp: "/test.jpg",
+                    tags: ["Technical"],
+                    sticky: true,
+                },
+                {
+                    id: "2",
                     title: "Test Post",
                     slug: "test-post",
-                    date: "2023-01-01",
-                    imageTemp: "",
+                    date: "2023-01-02",
+                    imageTemp: "/test2.jpg",
                     tags: ["Technical"],
                     sticky: false,
                 },

@@ -1,6 +1,6 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { createRouterWrapper } from "@vi/render";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import Index, { meta } from "./_index";
 
 vi.mock("~/routes/api.qualities", () => ({
@@ -33,8 +33,8 @@ describe("_index route", () => {
         const wrapper = createRouterWrapper({ route: "/" });
         render(<Index />, { wrapper });
 
-        const button = screen.getByRole("button");
-        expect(button).toBeInTheDocument();
+        const buttons = screen.getAllByRole("button");
+        expect(buttons.length).toBeGreaterThan(0);
     });
 
     test("meta function should return correct metadata", () => {

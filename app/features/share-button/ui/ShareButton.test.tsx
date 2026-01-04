@@ -1,10 +1,11 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { ShareButton } from "./ShareButton";
 
 const mockOnShare = vi.fn();
 
-vi.mock("~/shared/hooks/useWebShareAPI", () => ({
+// 正しいパスでモック
+vi.mock("~/shared/hooks/lib/useWebShareAPI", () => ({
     useWebShareAPI: vi.fn(() => ({
         isAvailable: true,
         onShare: mockOnShare,

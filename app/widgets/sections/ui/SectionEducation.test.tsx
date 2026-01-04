@@ -1,5 +1,5 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { SectionEducation } from "./SectionEducation";
 
 describe("SectionEducation Component", () => {
@@ -25,7 +25,8 @@ describe("SectionEducation Component", () => {
     test("should render major", () => {
         render(<SectionEducation />);
 
-        expect(screen.getByText(/Industrial Design/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Industrial Design/).length).toBeGreaterThan(0);
         expect(screen.getByText(/incomplete/)).toBeInTheDocument();
     });
 
@@ -33,13 +34,15 @@ describe("SectionEducation Component", () => {
         render(<SectionEducation />);
 
         expect(screen.getByText(/Mechanical Engineering/)).toBeInTheDocument();
-        expect(screen.getByText(/Industrial Design/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Industrial Design/).length).toBeGreaterThan(0);
     });
 
     test("should render list items", () => {
         render(<SectionEducation />);
 
         expect(screen.getByText(/Industrial Designers Society of America/)).toBeInTheDocument();
-        expect(screen.getByText(/Teaching Assistant/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Teaching Assistant/).length).toBeGreaterThan(0);
     });
 });

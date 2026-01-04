@@ -1,13 +1,12 @@
-import { expect, test, describe } from "vitest";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import {
     NavigationMenu,
-    NavigationMenuList,
-    NavigationMenuItem,
-    NavigationMenuTrigger,
     NavigationMenuContent,
+    NavigationMenuItem,
     NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
 } from "./NavigationMenu";
 
 describe("NavigationMenu Component", () => {
@@ -58,8 +57,6 @@ describe("NavigationMenu Component", () => {
     });
 
     test("should render NavigationMenuTrigger", async () => {
-        const user = userEvent.setup();
-
         render(
             <NavigationMenu>
                 <NavigationMenuList>
@@ -76,15 +73,14 @@ describe("NavigationMenu Component", () => {
         const trigger = screen.getByRole("button", { name: "Trigger" });
         expect(trigger).toBeInTheDocument();
 
-        await user.click(trigger);
+        fireEvent.click(trigger);
 
-        const content = await screen.findByText("Content");
-        expect(content).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText("Content")).toBeInTheDocument();
+        });
     });
 
     test("should render NavigationMenuContent", async () => {
-        const user = userEvent.setup();
-
         render(
             <NavigationMenu>
                 <NavigationMenuList>
@@ -99,10 +95,11 @@ describe("NavigationMenu Component", () => {
         );
 
         const trigger = screen.getByRole("button", { name: "Open" });
-        await user.click(trigger);
+        fireEvent.click(trigger);
 
-        const content = await screen.findByText("Menu Content");
-        expect(content).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText("Menu Content")).toBeInTheDocument();
+        });
     });
 
     test("should render NavigationMenuLink", () => {

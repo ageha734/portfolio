@@ -55,7 +55,8 @@ export default defineConfig({
         },
         server: {
             deps: {
-                inline: ["@exodus/bytes", "html-encoding-sniffer", "jsdom"],
+                inline: ["@exodus/bytes"],
+                external: ["html-encoding-sniffer"],
             },
         },
     },

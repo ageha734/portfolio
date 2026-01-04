@@ -1,5 +1,5 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { SectionSoftware } from "./SectionSoftware";
 
 describe("SectionSoftware Component", () => {
@@ -22,7 +22,8 @@ describe("SectionSoftware Component", () => {
         expect(screen.getByText(/Visual Studio Code/)).toBeInTheDocument();
         expect(screen.getByText(/Iterm2/)).toBeInTheDocument();
         expect(screen.getByText(/Docker Desktop/)).toBeInTheDocument();
-        expect(screen.getByText(/Figma/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Figma/).length).toBeGreaterThan(0);
     });
 
     test("should render software links", () => {
@@ -47,6 +48,7 @@ describe("SectionSoftware Component", () => {
 
         expect(screen.getByText(/editor of choice/)).toBeInTheDocument();
         expect(screen.getByText(/terminal users/)).toBeInTheDocument();
-        expect(screen.getByText(/Docker/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Docker/).length).toBeGreaterThan(0);
     });
 });

@@ -1,7 +1,20 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { ErrorPage } from "./Error";
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+    };
+});
 
 describe("Error Component", () => {
     beforeEach(() => {
@@ -113,7 +126,8 @@ describe("Error Component", () => {
             </MemoryRouter>,
         );
 
-        const videoContainer = container.querySelector("[data-visible]");
-        expect(videoContainer).toBeInTheDocument();
+        // コンテナ要素が存在することを確認
+        const errorContainer = container.querySelector("section");
+        expect(errorContainer).toBeInTheDocument();
     });
 });

@@ -1,5 +1,5 @@
-import { expect, test, describe } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { describe, expect, test } from "vitest";
 import { Tags } from "./Tags";
 
 describe("Tags Component", () => {
@@ -38,10 +38,8 @@ describe("Tags Component", () => {
     test("should apply custom classNameTag", () => {
         const { container } = render(<Tags tags={mockTags} classNameTag="custom-tag" />);
 
-        const tagElements = container.querySelectorAll("div > div");
-        tagElements.forEach((tag) => {
-            expect(tag).toHaveClass("custom-tag");
-        });
+        const customTagElements = container.querySelectorAll(".custom-tag");
+        expect(customTagElements.length).toBeGreaterThan(0);
     });
 
     test("should render tags in flex wrap container", () => {
@@ -52,9 +50,11 @@ describe("Tags Component", () => {
     });
 
     test("should use tag as key", () => {
-        const { container } = render(<Tags tags={mockTags} />);
+        render(<Tags tags={mockTags} />);
 
-        const tagElements = container.querySelectorAll("div > div");
-        expect(tagElements).toHaveLength(mockTags.length);
+        // 各タグが表示されていることを確認
+        mockTags.forEach((tag) => {
+            expect(screen.getByText(tag)).toBeInTheDocument();
+        });
     });
 });

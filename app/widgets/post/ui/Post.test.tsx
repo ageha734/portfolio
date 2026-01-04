@@ -1,7 +1,20 @@
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { Post } from "./Post";
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+    };
+});
 
 vi.mock("~/hooks", () => ({
     useScrollToHash: vi.fn().mockImplementation(() => ({
@@ -28,19 +41,22 @@ describe("Post Component", () => {
             </MemoryRouter>,
         );
 
-        expect(screen.getByText("Test Post")).toBeInTheDocument();
+        // タイトルはaria-labelで設定されている
+        const heading = screen.getByRole("heading", { level: 1 });
+        expect(heading).toHaveAttribute("aria-label", "Test Post");
         expect(screen.getByText("Post content")).toBeInTheDocument();
     });
 
     test("should render post with banner", () => {
-        render(
+        const { container } = render(
             <MemoryRouter>
                 <Post title="Test Post" date="2024-01-01" banner="test.jpg">
                     <p>Post content</p>
                 </Post>
             </MemoryRouter>,
         );
-        const images = screen.getAllByRole("img");
+        // 画像はrole="presentation"なのでimgタグで検索
+        const images = container.querySelectorAll("img");
         expect(images.length).toBeGreaterThan(0);
     });
 
@@ -53,7 +69,8 @@ describe("Post Component", () => {
             </MemoryRouter>,
         );
         const link = screen.getByLabelText(/scroll/i);
-        expect(link).toHaveAttribute("href", "#postContent");
+        // RouterLinkはMemoryRouter内で/#postContentになる
+        expect(link).toHaveAttribute("href", "/#postContent");
     });
 
     test("should render footer", () => {

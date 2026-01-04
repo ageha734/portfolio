@@ -1,42 +1,25 @@
-import { getClipboardStore, resetClipboardStore } from "@vi/mocks";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { copyTextToClipboard, fallbackCopyToClipboard } from "./clipboard";
 
 describe("clipboard", () => {
-    // eslint-disable-next-line deprecation/deprecation
-    let originalExecCommand: typeof document.execCommand | undefined;
-
-    let logHistory: unknown[][] = [];
-    let errorHistory: unknown[][] = [];
-
     let consoleLogSpy: ReturnType<typeof vi.spyOn>;
     let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+    let mockExecCommand: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
+        consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+        // jsdomではexecCommandが存在しないのでモックを定義
+        mockExecCommand = vi.fn().mockReturnValue(true);
         // eslint-disable-next-line deprecation/deprecation
-        originalExecCommand = document.execCommand;
+        document.execCommand = mockExecCommand;
 
-        logHistory = [];
-        errorHistory = [];
-
-        consoleLogSpy = vi.spyOn(console, "log").mockImplementation((...args) => {
-            logHistory.push(args);
-        });
-        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation((...args) => {
-            errorHistory.push(args);
-        });
-
-        resetClipboardStore();
         document.body.innerHTML = "";
     });
 
     afterEach(() => {
-        if (originalExecCommand !== undefined) {
-            // eslint-disable-next-line deprecation/deprecation
-            document.execCommand = originalExecCommand;
-        }
         vi.restoreAllMocks();
-        resetClipboardStore();
         document.body.innerHTML = "";
     });
 
@@ -64,17 +47,16 @@ describe("clipboard", () => {
             // 要素が生成されていることを確認してからプロパティをチェック
             expect(textArea).toBeDefined();
             expect(textArea.style.position).toBe("fixed");
-            expect(textArea.style.top).toBe("0");
-            expect(textArea.style.left).toBe("0");
+            // スタイルは'0px'として返される
+            expect(textArea.style.top).toBe("0px");
+            expect(textArea.style.left).toBe("0px");
         });
 
         test("should log success message when copy succeeds", () => {
             vi.spyOn(document, "execCommand").mockReturnValue(true);
             fallbackCopyToClipboard("test");
 
-            // Spyの呼び出し確認に加え、実際にログ配列に保存されたか確認することも可能
             expect(consoleLogSpy).toHaveBeenCalledWith("Fallback: Copying text command was successful");
-            expect(logHistory).toContainEqual(["Fallback: Copying text command was successful"]);
         });
 
         test("should log failure message when copy fails", () => {
@@ -91,46 +73,80 @@ describe("clipboard", () => {
 
             fallbackCopyToClipboard("test");
             expect(consoleErrorSpy).toHaveBeenCalledWith("Fallback: Oops, unable to copy", error);
-            expect(errorHistory).toContainEqual(["Fallback: Oops, unable to copy", error]);
         });
     });
 
     describe("copyTextToClipboard", () => {
         test("should use navigator.clipboard when available", async () => {
             const text = "test clipboard text";
+            const writeTextMock = vi.fn().mockResolvedValue(undefined);
 
-            copyTextToClipboard(text);
-            await new Promise((resolve) => setTimeout(resolve, 0));
+            // clipboardをモック
+            const originalClipboard = navigator.clipboard;
+            Object.defineProperty(navigator, "clipboard", {
+                value: { writeText: writeTextMock },
+                configurable: true,
+            });
 
-            expect(navigator.clipboard.writeText).toHaveBeenCalledWith(text);
-            expect(getClipboardStore()).toBe(text);
-            expect(consoleLogSpy).toHaveBeenCalledWith("Copied to clipboard ✅");
+            try {
+                copyTextToClipboard(text);
+                await new Promise((resolve) => setTimeout(resolve, 10));
+
+                expect(writeTextMock).toHaveBeenCalledWith(text);
+                expect(consoleLogSpy).toHaveBeenCalledWith("Copied to clipboard ✅");
+            } finally {
+                Object.defineProperty(navigator, "clipboard", {
+                    value: originalClipboard,
+                    configurable: true,
+                });
+            }
         });
 
         test("should handle navigator.clipboard errors", async () => {
             const error = new Error("Clipboard write failed");
-            vi.spyOn(navigator.clipboard, "writeText").mockRejectedValueOnce(error);
+            const writeTextMock = vi.fn().mockRejectedValue(error);
 
-            copyTextToClipboard("test");
-            await new Promise((resolve) => setTimeout(resolve, 0));
+            const originalClipboard = navigator.clipboard;
+            Object.defineProperty(navigator, "clipboard", {
+                value: { writeText: writeTextMock },
+                configurable: true,
+            });
 
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Could not copy text:", error);
+            try {
+                copyTextToClipboard("test");
+                await new Promise((resolve) => setTimeout(resolve, 10));
+
+                expect(consoleErrorSpy).toHaveBeenCalledWith("Could not copy text:", error);
+            } finally {
+                Object.defineProperty(navigator, "clipboard", {
+                    value: originalClipboard,
+                    configurable: true,
+                });
+            }
         });
 
         test("should fallback to execCommand when navigator.clipboard is not available", () => {
             const text = "test fallback";
             const execCommandSpy = vi.spyOn(document, "execCommand").mockReturnValue(true);
 
+            // clipboardを一時的に無効化
+            const originalClipboard = navigator.clipboard;
             Object.defineProperty(navigator, "clipboard", {
                 value: undefined,
-                writable: true,
                 configurable: true,
             });
 
-            copyTextToClipboard(text);
+            try {
+                copyTextToClipboard(text);
 
-            expect(execCommandSpy).toHaveBeenCalledWith("copy");
-            expect(consoleLogSpy).toHaveBeenCalledWith("Fallback: Copying text command was successful");
+                expect(execCommandSpy).toHaveBeenCalledWith("copy");
+                expect(consoleLogSpy).toHaveBeenCalledWith("Fallback: Copying text command was successful");
+            } finally {
+                Object.defineProperty(navigator, "clipboard", {
+                    value: originalClipboard,
+                    configurable: true,
+                });
+            }
         });
     });
 });

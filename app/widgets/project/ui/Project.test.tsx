@@ -112,7 +112,7 @@ describe("Project Components", () => {
             expect(screen.getByText("Background")).toBeInTheDocument();
         });
 
-        test("should apply light data attribute", () => {
+        test("should apply light class", () => {
             const { container } = render(
                 <ProjectSection light>
                     <div>Content</div>
@@ -120,10 +120,10 @@ describe("Project Components", () => {
             );
 
             const section = container.querySelector("section");
-            expect(section).toHaveAttribute("data-light", "");
+            expect(section).toHaveClass("bg-muted");
         });
 
-        test("should apply fullHeight data attribute", () => {
+        test("should apply fullHeight class", () => {
             const { container } = render(
                 <ProjectSection fullHeight>
                     <div>Content</div>
@@ -131,7 +131,7 @@ describe("Project Components", () => {
             );
 
             const section = container.querySelector("section");
-            expect(section).toHaveAttribute("data-full-height", "");
+            expect(section).toHaveClass("min-h-screen");
         });
     });
 
@@ -139,7 +139,7 @@ describe("Project Components", () => {
         test("should render project background", () => {
             render(<ProjectBackground src="test.jpg" alt="" />);
 
-            const image = screen.getByRole("img");
+            const image = screen.getByRole("presentation");
             expect(image).toBeInTheDocument();
         });
 
@@ -178,11 +178,11 @@ describe("Project Components", () => {
             expect(screen.getByText("Content")).toBeInTheDocument();
         });
 
-        test("should apply width data attribute", () => {
+        test("should apply width class", () => {
             const { container } = render(<ProjectSectionContent width="m" />);
 
             const div = container.querySelector("div");
-            expect(div).toHaveAttribute("data-width", "m");
+            expect(div).toHaveClass("max-w-2xl");
         });
     });
 
@@ -219,18 +219,18 @@ describe("Project Components", () => {
             expect(screen.getByText("Row content")).toBeInTheDocument();
         });
 
-        test("should apply center data attribute", () => {
+        test("should apply center class", () => {
             const { container } = render(<ProjectTextRow center />);
 
             const div = container.querySelector("div");
-            expect(div).toHaveAttribute("data-center", "");
+            expect(div).toHaveClass("items-center");
         });
 
-        test("should apply stretch data attribute", () => {
+        test("should apply stretch class", () => {
             const { container } = render(<ProjectTextRow stretch />);
 
             const div = container.querySelector("div");
-            expect(div).toHaveAttribute("data-stretch", "");
+            expect(div).toHaveClass("items-stretch");
         });
     });
 
@@ -245,11 +245,11 @@ describe("Project Components", () => {
             expect(screen.getByText("Column content")).toBeInTheDocument();
         });
 
-        test("should apply centered data attribute", () => {
+        test("should apply centered class", () => {
             const { container } = render(<ProjectSectionColumns centered />);
 
             const div = container.querySelector("div");
-            expect(div).toHaveAttribute("data-centered", "");
+            expect(div).toHaveClass("items-center");
         });
     });
 });
