@@ -7,8 +7,12 @@ describe("clipboard", () => {
     let mockExecCommand: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
-        consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {
+            // テスト用の空実装
+        });
+        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {
+            // テスト用の空実装
+        });
 
         // jsdomではexecCommandが存在しないのでモックを定義
         mockExecCommand = vi.fn().mockReturnValue(true);
