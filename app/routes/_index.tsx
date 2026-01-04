@@ -1,8 +1,8 @@
 import type { MetaFunction } from "@remix-run/react";
 import * as React from "react";
-import { Hero } from "~/widgets/hero";
 import { getQuote } from "~/routes/api.qualities";
 import { SITE_AUTHOR, SITE_DESCRIPTION, SITE_TITLE } from "~/shared/config/constants";
+import { Hero } from "~/widgets/hero";
 import { SectionAmbitions, SectionCompanies, SectionTechnology } from "~/widgets/sections";
 
 export const meta: MetaFunction = (args) => {
@@ -59,8 +59,8 @@ export default function Index() {
                     </div>
                 </section>
             </div>
-            <section className="border-0 border-b border-t border-solid border-color-border bg-color-background-light px-8 py-20 text-color-background-dark md:px-0">
-                <blockquote className="mx-auto my-20 max-w-4xl text-2xl font-normal md:my-40 md:text-3xl">
+            <section className="border-0 border-color-border border-t border-b border-solid bg-color-background-light px-8 py-20 text-color-background-dark md:px-0">
+                <blockquote className="mx-auto my-20 max-w-4xl font-normal text-2xl md:my-40 md:text-3xl">
                     Passionate about <b>quality code</b> written <b>for humans</b>, unlocking{" "}
                     <b>developer productivity</b>, and creating a delightful <b>user experience</b>.
                 </blockquote>

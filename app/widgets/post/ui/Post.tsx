@@ -74,7 +74,7 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
         <article className="relative grid overflow-x-hidden">
             <section>
                 {banner && placeholder && (
-                    <div className="absolute inset-x-0 top-0 h-[70vh] isolate overflow-hidden" ref={imageRef}>
+                    <div className="absolute inset-x-0 top-0 isolate h-[70vh] overflow-hidden" ref={imageRef}>
                         <div className="absolute inset-0">
                             <img
                                 role="presentation"
@@ -86,7 +86,7 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
                         </div>
                         <div
                             className="absolute inset-0 opacity-0 transition-opacity"
-                            style={{ opacity: `var(--blurOpacity, 0)` }}
+                            style={{ opacity: "var(--blurOpacity, 0)" }}
                         >
                             <img
                                 role="presentation"
@@ -99,9 +99,9 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
                         <div className="absolute inset-0 z-[1] bg-gradient-to-b from-background/70 via-background/90 to-background" />
                     </div>
                 )}
-                <header className="relative grid grid-cols-[1fr_60px_680px_60px_1fr] gap-4 items-center md:grid-cols-[1fr_100px_740px_100px_1fr] lg:grid-cols-[1fr_100px_740px_100px_1fr]">
-                    <div className="h-full w-full relative flex flex-col justify-center gap-8 max-w-[800px] col-start-3 md:col-start-3 pt-20 md:pt-24">
-                        <div className="grid grid-cols-[100px_1fr] gap-4 items-center relative md:gap-4" ref={nodeRef}>
+                <header className="relative grid grid-cols-[1fr_60px_680px_60px_1fr] items-center gap-4 md:grid-cols-[1fr_100px_740px_100px_1fr] lg:grid-cols-[1fr_100px_740px_100px_1fr]">
+                    <div className="relative col-start-3 flex h-full w-full max-w-[800px] flex-col justify-center gap-8 pt-20 md:col-start-3 md:pt-24">
+                        <div className="relative grid grid-cols-[100px_1fr] items-center gap-4 md:gap-4" ref={nodeRef}>
                             <div
                                 className="h-2 bg-primary transition-all duration-300 ease-in-out"
                                 style={{
@@ -117,11 +117,11 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
                                 {dateTime}
                             </p>
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-serif font-extrabold leading-tight" aria-label={title}>
+                        <h1 className="font-extrabold font-serif text-4xl leading-tight md:text-6xl" aria-label={title}>
                             {title.split(" ").map((word, index) => (
                                 <span className="inline-block overflow-hidden" key={`${word}-${index}`}>
                                     <span
-                                        className="inline-block whitespace-pre animate-in slide-in-from-bottom-5 duration-500"
+                                        className="slide-in-from-bottom-5 inline-block animate-in whitespace-pre duration-500"
                                         style={{
                                             animationDelay: `${index * 100 + 100}ms`,
                                             animationFillMode: "forwards",
@@ -136,14 +136,14 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
                         <div className="flex items-center justify-between gap-4">
                             <RouterLink
                                 to="#postContent"
-                                className="relative left-[-1rem] p-4 opacity-0 animate-in fade-in duration-600 delay-1000"
+                                className="fade-in relative left-[-1rem] animate-in p-4 opacity-0 delay-1000 duration-600"
                                 aria-label="Scroll to post content"
                                 onClick={handleScrollIndicatorClick}
                             >
                                 <ChevronDown className="h-6 w-6 stroke-muted-foreground" />
                             </RouterLink>
                             {timecode && (
-                                <div className="text-muted-foreground text-base py-4 grid grid-cols-[60px_1fr] gap-2.5 items-center opacity-0 animate-in fade-in duration-600 delay-1000">
+                                <div className="fade-in grid animate-in grid-cols-[60px_1fr] items-center gap-2.5 py-4 text-base text-muted-foreground opacity-0 delay-1000 duration-600">
                                     <div className="h-0.5 bg-muted-foreground/40" />
                                     <span>{timecode}</span>
                                 </div>
@@ -152,8 +152,12 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
                     </div>
                 </header>
             </section>
-            <section className="flex flex-col pb-8 pt-[calc(60px+2rem)] overflow-hidden md:pt-[calc(100px+2rem)]" id="postContent" tabIndex={-1}>
-                <div className="w-full self-center opacity-0 animate-in fade-in duration-1200 delay-1000 grid grid-cols-[1fr_60px_680px_60px_1fr] md:grid-cols-[1fr_100px_740px_100px_1fr]">
+            <section
+                className="flex flex-col overflow-hidden pt-[calc(60px+2rem)] pb-8 md:pt-[calc(100px+2rem)]"
+                id="postContent"
+                tabIndex={-1}
+            >
+                <div className="fade-in grid w-full animate-in grid-cols-[1fr_60px_680px_60px_1fr] self-center opacity-0 delay-1000 duration-1200 md:grid-cols-[1fr_100px_740px_100px_1fr]">
                     <div className="col-start-3">{children}</div>
                 </div>
             </section>

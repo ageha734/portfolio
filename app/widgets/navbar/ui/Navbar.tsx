@@ -21,14 +21,7 @@ function useScrollToHash() {
 }
 
 const Monogram = ({ highlight }: { highlight?: boolean }) => (
-    <svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-    >
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <rect width="32" height="32" rx="4" fill={highlight ? "currentColor" : "transparent"} />
         <text x="16" y="22" textAnchor="middle" fontSize="20" fill="currentColor">
             MS
@@ -94,7 +87,7 @@ export const Navbar = () => {
     };
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50 flex h-14 items-center justify-between border-b bg-background px-4 md:h-16 md:px-6">
+        <header className="fixed top-0 right-0 left-0 z-50 flex h-14 items-center justify-between border-b bg-background px-4 md:h-16 md:px-6">
             <RouterLink
                 prefetch="intent"
                 to={location.pathname === "/" ? "/#intro" : "/"}
@@ -113,7 +106,7 @@ export const Navbar = () => {
                         to={pathname}
                         key={label}
                         className={cn(
-                            "px-4 py-2 text-sm font-medium transition-colors hover:text-primary",
+                            "px-4 py-2 font-medium text-sm transition-colors hover:text-primary",
                             getCurrent(pathname) === "page" && "text-primary",
                         )}
                         aria-current={getCurrent(pathname)}
@@ -143,7 +136,7 @@ export const Navbar = () => {
                                     to={pathname}
                                     key={label}
                                     className={cn(
-                                        "px-4 py-2 text-lg font-medium transition-colors hover:text-primary",
+                                        "px-4 py-2 font-medium text-lg transition-colors hover:text-primary",
                                         getCurrent(pathname) === "page" && "text-primary",
                                     )}
                                     aria-current={getCurrent(pathname)}

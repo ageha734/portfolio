@@ -23,7 +23,7 @@ export const fallbackCopyToClipboard = (text: string) => {
         // NOSONAR: typescript:S1874 - execCommand is deprecated but needed as fallback for older browsers
         const successful = document.execCommand("copy");
         const msg = successful ? "successful" : "unsuccessful";
-        console.log("Fallback: Copying text command was " + msg);
+        console.log(`Fallback: Copying text command was ${msg}`);
     } catch (err) {
         console.error("Fallback: Oops, unable to copy", err);
     }
@@ -32,7 +32,7 @@ export const fallbackCopyToClipboard = (text: string) => {
 };
 
 export const copyTextToClipboard = (text: string) => {
-    console.log(`📋 copy text to Clipboard`, text);
+    console.log("📋 copy text to Clipboard", text);
 
     if (!navigator.clipboard) {
         fallbackCopyToClipboard(text);

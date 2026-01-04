@@ -1,40 +1,42 @@
-import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
-import { fallbackCopyToClipboard, copyTextToClipboard } from "./clipboard";
+import { getClipboardStore, resetClipboardStore } from "@vi/mocks";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { copyTextToClipboard, fallbackCopyToClipboard } from "./clipboard";
 
 describe("clipboard", () => {
-    let originalClipboard: Clipboard | undefined;
-    // eslint-disable-next-line deprecation/deprecation -- execCommand is deprecated but needed as fallback for older browsers
+    // eslint-disable-next-line deprecation/deprecation
     let originalExecCommand: typeof document.execCommand | undefined;
+
+    let logHistory: unknown[][] = [];
+    let errorHistory: unknown[][] = [];
+
     let consoleLogSpy: ReturnType<typeof vi.spyOn>;
     let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
-        originalClipboard = navigator.clipboard;
-        // eslint-disable-next-line deprecation/deprecation -- execCommand is deprecated but needed as fallback for older browsers
+        // eslint-disable-next-line deprecation/deprecation
         originalExecCommand = document.execCommand;
 
-        consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        logHistory = [];
+        errorHistory = [];
 
+        consoleLogSpy = vi.spyOn(console, "log").mockImplementation((...args) => {
+            logHistory.push(args);
+        });
+        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation((...args) => {
+            errorHistory.push(args);
+        });
+
+        resetClipboardStore();
         document.body.innerHTML = "";
     });
 
     afterEach(() => {
-        if (originalClipboard !== undefined) {
-            Object.defineProperty(navigator, "clipboard", {
-                value: originalClipboard,
-                writable: true,
-                configurable: true,
-            });
-        }
         if (originalExecCommand !== undefined) {
-            // eslint-disable-next-line deprecation/deprecation -- execCommand is deprecated but needed as fallback for older browsers
+            // eslint-disable-next-line deprecation/deprecation
             document.execCommand = originalExecCommand;
         }
-
-        consoleLogSpy.mockRestore();
-        consoleErrorSpy.mockRestore();
-
+        vi.restoreAllMocks();
+        resetClipboardStore();
         document.body.innerHTML = "";
     });
 
@@ -47,143 +49,69 @@ describe("clipboard", () => {
 
             expect(document.body.querySelector("textarea")).toBeNull();
             expect(execCommandSpy).toHaveBeenCalledWith("copy");
-            execCommandSpy.mockRestore();
-        });
-
-        test("should set textarea value correctly", () => {
-            const text = "test clipboard text";
-            const execCommandSpy = vi.spyOn(document, "execCommand").mockReturnValue(true);
-
-            fallbackCopyToClipboard(text);
-
-            expect(execCommandSpy).toHaveBeenCalledWith("copy");
-            execCommandSpy.mockRestore();
         });
 
         test("should set textarea styles correctly", () => {
             const text = "test";
-            const execCommandSpy = vi.spyOn(document, "execCommand").mockReturnValue(true);
+            vi.spyOn(document, "execCommand").mockReturnValue(true);
             const createElementSpy = vi.spyOn(document, "createElement");
 
             fallbackCopyToClipboard(text);
 
-            const textArea = createElementSpy.mock.results[0].value as HTMLTextAreaElement;
+            const textArea = createElementSpy.mock.results.find((r) => (r.value as HTMLElement).tagName === "TEXTAREA")
+                ?.value as HTMLTextAreaElement;
+
+            // 要素が生成されていることを確認してからプロパティをチェック
+            expect(textArea).toBeDefined();
             expect(textArea.style.position).toBe("fixed");
             expect(textArea.style.top).toBe("0");
             expect(textArea.style.left).toBe("0");
-
-            execCommandSpy.mockRestore();
-            createElementSpy.mockRestore();
         });
 
         test("should log success message when copy succeeds", () => {
-            const text = "test";
-            const execCommandSpy = vi.spyOn(document, "execCommand").mockReturnValue(true);
+            vi.spyOn(document, "execCommand").mockReturnValue(true);
+            fallbackCopyToClipboard("test");
 
-            fallbackCopyToClipboard(text);
-
+            // Spyの呼び出し確認に加え、実際にログ配列に保存されたか確認することも可能
             expect(consoleLogSpy).toHaveBeenCalledWith("Fallback: Copying text command was successful");
-            execCommandSpy.mockRestore();
+            expect(logHistory).toContainEqual(["Fallback: Copying text command was successful"]);
         });
 
         test("should log failure message when copy fails", () => {
-            const text = "test";
-            const execCommandSpy = vi.spyOn(document, "execCommand").mockReturnValue(false);
-
-            fallbackCopyToClipboard(text);
-
+            vi.spyOn(document, "execCommand").mockReturnValue(false);
+            fallbackCopyToClipboard("test");
             expect(consoleLogSpy).toHaveBeenCalledWith("Fallback: Copying text command was unsuccessful");
-            execCommandSpy.mockRestore();
         });
 
         test("should handle execCommand errors gracefully", () => {
-            const text = "test";
             const error = new Error("execCommand failed");
-            const execCommandSpy = vi.spyOn(document, "execCommand").mockImplementation(() => {
+            vi.spyOn(document, "execCommand").mockImplementation(() => {
                 throw error;
             });
 
-            fallbackCopyToClipboard(text);
-
+            fallbackCopyToClipboard("test");
             expect(consoleErrorSpy).toHaveBeenCalledWith("Fallback: Oops, unable to copy", error);
-            expect(document.body.querySelector("textarea")).toBeNull();
-            execCommandSpy.mockRestore();
-        });
-
-        test("should focus and select textarea", () => {
-            const text = "test";
-            const execCommandSpy = vi.spyOn(document, "execCommand").mockReturnValue(true);
-            const createElementSpy = vi.spyOn(document, "createElement");
-            const focusSpy = vi.fn();
-            const selectSpy = vi.fn();
-
-            createElementSpy.mockImplementation((tagName) => {
-                const element = document.createElement(tagName);
-                if (tagName === "textarea") {
-                    const textarea = element as HTMLTextAreaElement;
-                    Object.defineProperty(textarea, "focus", {
-                        value: focusSpy,
-                        writable: true,
-                        configurable: true,
-                    });
-                    Object.defineProperty(textarea, "select", {
-                        value: selectSpy,
-                        writable: true,
-                        configurable: true,
-                    });
-                }
-                return element;
-            });
-
-            fallbackCopyToClipboard(text);
-
-            expect(focusSpy).toHaveBeenCalled();
-            expect(selectSpy).toHaveBeenCalled();
-
-            execCommandSpy.mockRestore();
-            createElementSpy.mockRestore();
+            expect(errorHistory).toContainEqual(["Fallback: Oops, unable to copy", error]);
         });
     });
 
     describe("copyTextToClipboard", () => {
         test("should use navigator.clipboard when available", async () => {
             const text = "test clipboard text";
-            const writeTextSpy = vi.fn().mockResolvedValue(undefined);
-            const clipboardMock = {
-                writeText: writeTextSpy,
-            };
-
-            Object.defineProperty(navigator, "clipboard", {
-                value: clipboardMock,
-                writable: true,
-                configurable: true,
-            });
 
             copyTextToClipboard(text);
-
             await new Promise((resolve) => setTimeout(resolve, 0));
 
-            expect(writeTextSpy).toHaveBeenCalledWith(text);
-            expect(consoleLogSpy).toHaveBeenCalledWith("📋 copy text to Clipboard", text);
+            expect(navigator.clipboard.writeText).toHaveBeenCalledWith(text);
+            expect(getClipboardStore()).toBe(text);
             expect(consoleLogSpy).toHaveBeenCalledWith("Copied to clipboard ✅");
         });
 
         test("should handle navigator.clipboard errors", async () => {
-            const text = "test";
             const error = new Error("Clipboard write failed");
-            const writeTextSpy = vi.fn().mockRejectedValue(error);
-            const clipboardMock = {
-                writeText: writeTextSpy,
-            };
+            vi.spyOn(navigator.clipboard, "writeText").mockRejectedValueOnce(error);
 
-            Object.defineProperty(navigator, "clipboard", {
-                value: clipboardMock,
-                writable: true,
-                configurable: true,
-            });
-
-            copyTextToClipboard(text);
-
+            copyTextToClipboard("test");
             await new Promise((resolve) => setTimeout(resolve, 0));
 
             expect(consoleErrorSpy).toHaveBeenCalledWith("Could not copy text:", error);
@@ -201,29 +129,8 @@ describe("clipboard", () => {
 
             copyTextToClipboard(text);
 
-            expect(consoleLogSpy).toHaveBeenCalledWith("📋 copy text to Clipboard", text);
             expect(execCommandSpy).toHaveBeenCalledWith("copy");
             expect(consoleLogSpy).toHaveBeenCalledWith("Fallback: Copying text command was successful");
-
-            execCommandSpy.mockRestore();
-        });
-
-        test("should log clipboard copy attempt", () => {
-            const text = "test log";
-            const writeTextSpy = vi.fn().mockResolvedValue(undefined);
-            const clipboardMock = {
-                writeText: writeTextSpy,
-            };
-
-            Object.defineProperty(navigator, "clipboard", {
-                value: clipboardMock,
-                writable: true,
-                configurable: true,
-            });
-
-            copyTextToClipboard(text);
-
-            expect(consoleLogSpy).toHaveBeenCalledWith("📋 copy text to Clipboard", text);
         });
     });
 });

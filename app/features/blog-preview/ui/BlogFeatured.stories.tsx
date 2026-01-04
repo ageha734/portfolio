@@ -19,12 +19,10 @@ const samplePost: Post = {
 
 export const Default = () => <BlogFeatured post={samplePost} />;
 
-export const WithClassName = () => (
-    <BlogFeatured className="max-w-lg" post={samplePost} />
-);
+export const WithClassName = () => <BlogFeatured className="max-w-lg" post={samplePost} />;
 
 export const MultipleFeatured = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <BlogFeatured post={samplePost} />
         <BlogFeatured
             post={{

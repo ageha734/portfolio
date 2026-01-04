@@ -149,7 +149,7 @@ export const Complete = () => {
                     <SheetTitle>Complete Sheet Example</SheetTitle>
                     <SheetDescription>This is a complete example with all components.</SheetDescription>
                 </SheetHeader>
-                <div className="py-4 space-y-4">
+                <div className="space-y-4 py-4">
                     <p>This is the main content area.</p>
                     <p>You can add any content here.</p>
                 </div>

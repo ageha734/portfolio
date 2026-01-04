@@ -8,21 +8,17 @@ export default {
 
 export const GTMScriptInfo = () => (
     <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">TrackingGTMScript</h2>
+        <h2 className="mb-4 font-bold text-xl">TrackingGTMScript</h2>
         <p className="mb-4 text-color-copy-light">
-            Google Tag Managerのスクリプトを出力するコンポーネントです。
-            &lt;head&gt;タグ内に配置します。
+            Google Tag Managerのスクリプトを出力するコンポーネントです。 &lt;head&gt;タグ内に配置します。
         </p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-sm font-bold mb-2">使用例:</h3>
-            <pre className="text-xs overflow-x-auto">
-                {`<TrackingGTMScript id="GTM-XXXXXXX" />`}
-            </pre>
+        <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
+            <h3 className="mb-2 font-bold text-sm">使用例:</h3>
+            <pre className="overflow-x-auto text-xs">{`<TrackingGTMScript id="GTM-XXXXXXX" />`}</pre>
         </div>
-        <div className="mt-4 bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+        <div className="mt-4 rounded-lg bg-yellow-100 p-4 dark:bg-yellow-900">
             <p className="text-sm">
-                ⚠️ このコンポーネントは&lt;script&gt;タグを出力するため、
-                Ladle上での視覚的な表示はありません。
+                ⚠️ このコンポーネントは&lt;script&gt;タグを出力するため、 Ladle上での視覚的な表示はありません。
             </p>
         </div>
     </div>
@@ -30,18 +26,15 @@ export const GTMScriptInfo = () => (
 
 export const GTMIFrameInfo = () => (
     <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">TrackingGTMIFrame</h2>
+        <h2 className="mb-4 font-bold text-xl">TrackingGTMIFrame</h2>
         <p className="mb-4 text-color-copy-light">
-            Google Tag Managerのnoscript用iframeを出力するコンポーネントです。
-            &lt;body&gt;タグ直後に配置します。
+            Google Tag Managerのnoscript用iframeを出力するコンポーネントです。 &lt;body&gt;タグ直後に配置します。
         </p>
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-sm font-bold mb-2">使用例:</h3>
-            <pre className="text-xs overflow-x-auto">
-                {`<TrackingGTMIFrame id="GTM-XXXXXXX" />`}
-            </pre>
+        <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
+            <h3 className="mb-2 font-bold text-sm">使用例:</h3>
+            <pre className="overflow-x-auto text-xs">{`<TrackingGTMIFrame id="GTM-XXXXXXX" />`}</pre>
         </div>
-        <div className="mt-4 bg-yellow-100 dark:bg-yellow-900 p-4 rounded-lg">
+        <div className="mt-4 rounded-lg bg-yellow-100 p-4 dark:bg-yellow-900">
             <p className="text-sm">
                 ⚠️ このコンポーネントは&lt;noscript&gt;タグ内にiframeを出力するため、
                 Ladle上での視覚的な表示はありません。
@@ -52,23 +45,21 @@ export const GTMIFrameInfo = () => (
 
 export const GTMImplementation = () => (
     <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">GTM実装ガイド</h2>
+        <h2 className="mb-4 font-bold text-xl">GTM実装ガイド</h2>
         <div className="space-y-4">
-            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-                <h3 className="text-sm font-bold mb-2">1. root.tsxでの使用:</h3>
-                <pre className="text-xs overflow-x-auto whitespace-pre-wrap">
-{`// head内
+            <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
+                <h3 className="mb-2 font-bold text-sm">1. root.tsxでの使用:</h3>
+                <pre className="overflow-x-auto whitespace-pre-wrap text-xs">
+                    {`// head内
 <TrackingGTMScript id={GOOGLE_TAG_MANAGER} />
 
 // body直後
 <TrackingGTMIFrame id={GOOGLE_TAG_MANAGER} />`}
                 </pre>
             </div>
-            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-                <h3 className="text-sm font-bold mb-2">2. 環境変数:</h3>
-                <pre className="text-xs overflow-x-auto">
-{`GOOGLE_TAG_MANAGER=GTM-XXXXXXX`}
-                </pre>
+            <div className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800">
+                <h3 className="mb-2 font-bold text-sm">2. 環境変数:</h3>
+                <pre className="overflow-x-auto text-xs">{"GOOGLE_TAG_MANAGER=GTM-XXXXXXX"}</pre>
             </div>
         </div>
     </div>
@@ -76,17 +67,15 @@ export const GTMImplementation = () => (
 
 export const ActualComponents = () => (
     <div className="p-4">
-        <h2 className="text-xl font-bold mb-4">実際のコンポーネント出力</h2>
-        <p className="mb-4 text-sm text-color-copy-light">
+        <h2 className="mb-4 font-bold text-xl">実際のコンポーネント出力</h2>
+        <p className="mb-4 text-color-copy-light text-sm">
             以下にコンポーネントがレンダリングされていますが、視覚的には表示されません。
             ブラウザの開発者ツールでHTMLを確認してください。
         </p>
-        <div className="border border-dashed border-gray-400 p-4 rounded-lg">
+        <div className="rounded-lg border border-gray-400 border-dashed p-4">
             <TrackingGTMScript id="GTM-EXAMPLE" />
             <TrackingGTMIFrame id="GTM-EXAMPLE" />
-            <p className="text-xs text-gray-500">
-                （script と noscript タグがここに出力されています）
-            </p>
+            <p className="text-gray-500 text-xs">（script と noscript タグがここに出力されています）</p>
         </div>
     </div>
 );

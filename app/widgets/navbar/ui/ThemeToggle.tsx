@@ -14,10 +14,7 @@ export const ThemeToggle = ({ isMobile, className, ...rest }: ThemeToggleProps) 
     const theme = (fetcher.formData?.get("theme") as string) || initialTheme;
 
     const toggleTheme = () => {
-        fetcher.submit(
-            { theme: theme === "dark" ? "light" : "dark" },
-            { action: "/api/set-theme", method: "post" },
-        );
+        fetcher.submit({ theme: theme === "dark" ? "light" : "dark" }, { action: "/api/set-theme", method: "post" });
     };
 
     return (

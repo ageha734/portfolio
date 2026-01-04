@@ -30,7 +30,7 @@ export const getMetaDataBase = (): MetaDescriptor[] => [
         "theme-color": "#ff0000",
     },
     {
-        viewport: `initial-scale=1, viewport-fit=cover, width=device-width`,
+        viewport: "initial-scale=1, viewport-fit=cover, width=device-width",
     },
     {
         "apple-mobile-web-app-capable": "yes",
@@ -39,7 +39,7 @@ export const getMetaDataBase = (): MetaDescriptor[] => [
         "apple-mobile-web-app-status-bar-style": "black",
     },
     {
-        "apple-mobile-web-app-title": `2023 Portfolio`,
+        "apple-mobile-web-app-title": "2023 Portfolio",
     },
 ];
 
@@ -79,11 +79,11 @@ export const getMetaData = (options: MetaDataOptions): MetaDescriptor[] => [
     },
     {
         property: "twitter:card",
-        content: `summary_large_image`,
+        content: "summary_large_image",
     },
     {
         property: "twitter:creator",
-        content: `@visormatt`,
+        content: "@visormatt",
     },
     {
         property: "twitter:description",
@@ -95,7 +95,7 @@ export const getMetaData = (options: MetaDataOptions): MetaDescriptor[] => [
     },
     {
         property: "twitter:site",
-        content: `@visormatt`,
+        content: "@visormatt",
     },
     {
         property: "twitter:title",

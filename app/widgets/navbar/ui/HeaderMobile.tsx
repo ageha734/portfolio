@@ -39,7 +39,7 @@ export const HeaderMobile = () => {
 
     return (
         <header
-            className={classNames("header overflow-hidden print:hidden md:hidden", {
+            className={classNames("header overflow-hidden md:hidden print:hidden", {
                 closed,
             })}
         >

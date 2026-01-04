@@ -40,6 +40,14 @@ describe("SocialLink Component", () => {
         const { container } = render(<SocialLink data={mockSocial} />);
 
         const link = container.querySelector("a");
-        expect(link).toHaveClass("flex", "items-center", "gap-4", "break-words", "break-all", "text-sm", "text-color-copy-light");
+        expect(link).toHaveClass(
+            "flex",
+            "items-center",
+            "gap-4",
+            "break-words",
+            "break-all",
+            "text-sm",
+            "text-color-copy-light",
+        );
     });
 });

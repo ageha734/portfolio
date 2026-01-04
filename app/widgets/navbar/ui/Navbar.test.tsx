@@ -13,8 +13,8 @@ vi.mock("@remix-run/react", async () => {
         }),
         useLoaderData: () => ({
             canonicalUrl: "https://example.com",
-        theme: "dark",
-    }),
+            theme: "dark",
+        }),
         useLocation: () => ({
             pathname: "/",
             hash: "",
@@ -105,7 +105,7 @@ describe("Navbar Component", () => {
             </MemoryRouter>,
         );
 
-        const socialLinks = container.querySelectorAll('[data-navbar-item]');
+        const socialLinks = container.querySelectorAll("[data-navbar-item]");
         expect(socialLinks.length).toBeGreaterThan(0);
     });
 

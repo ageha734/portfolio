@@ -11,7 +11,7 @@ export const FooterMobile = () => {
     return (
         <footer
             className={classNames(
-                "footer-mobile mt-10 justify-center gap-2 text-center text-sm print:hidden md:hidden",
+                "footer-mobile mt-10 justify-center gap-2 text-center text-sm md:hidden print:hidden",
             )}
         >
             <div className="m-auto flex justify-center gap-4">
@@ -50,7 +50,8 @@ export const FooterMobile = () => {
                 Built with <span className="text-color-primary--">&hearts;</span> in{" "}
                 <a href="https://www.google.com/search?q=san+diego+weather" rel="noreferrer" target="_blank">
                     San Diego
-                </a>, CA.
+                </a>
+                , CA.
             </p>
         </footer>
     );

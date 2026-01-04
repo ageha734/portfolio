@@ -12,7 +12,7 @@ export const SocialLink = (props: SocialLinkProps) => {
 
     return (
         <a
-            className="flex items-center gap-4 break-words break-all text-sm text-color-copy-light"
+            className="flex items-center gap-4 break-words break-all text-color-copy-light text-sm"
             href={data.url}
             key={data.title}
             rel="noopener noreferrer"

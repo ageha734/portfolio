@@ -26,7 +26,7 @@ export const SectionTechnology = () => {
 
                         return (
                             <button
-                                className={classnames(`rounded-md px-2 py-1 text-sm`, {
+                                className={classnames("rounded-md px-2 py-1 text-sm", {
                                     active,
                                 })}
                                 key={key}
@@ -44,7 +44,7 @@ export const SectionTechnology = () => {
             </div>
 
             <blockquote
-                className="my-8 basis-3/5 text-xl font-light leading-relaxed"
+                className="my-8 basis-3/5 font-light text-xl leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: description }}
                 ref={refDescription}
             />

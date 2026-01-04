@@ -15,9 +15,7 @@ export const Interactive = () => {
     return (
         <div className="flex flex-col items-center gap-4">
             <NavToggle menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} />
-            <p className="text-sm text-gray-500">
-                Menu is: {menuOpen ? "Open" : "Closed"}
-            </p>
+            <p className="text-gray-500 text-sm">Menu is: {menuOpen ? "Open" : "Closed"}</p>
         </div>
     );
 };

@@ -1,12 +1,12 @@
 export const SectionHardware = () => {
-    const laptop = `https://www.apple.com/macbook-pro/`;
-    const monitor = `https://www.amazon.com/gp/product/B074JKT894`;
-    const storage = `https://www.amazon.com/gp/product/B01MRSRQLA`;
-    const disks = `https://www.amazon.com/gp/product/B01AV1697A`;
-    const desk = `https://www.amazon.com/gp/product/B07HJJLLML`;
-    const keyboard = `https://www.apple.com/shop/product/MK2A3LL/A/magic-keyboard-us-english`;
-    const headphones = `https://www.amazon.com/Bose-QuietComfort-Wireless-Headphones-Cancelling/dp/B0756CYWWD`;
-    const mouse = `https://www.apple.com/shop/product/MMMQ3AM/A/magic-mouse-black-multi-touch-surface`;
+    const laptop = "https://www.apple.com/macbook-pro/";
+    const monitor = "https://www.amazon.com/gp/product/B074JKT894";
+    const storage = "https://www.amazon.com/gp/product/B01MRSRQLA";
+    const disks = "https://www.amazon.com/gp/product/B01AV1697A";
+    const desk = "https://www.amazon.com/gp/product/B07HJJLLML";
+    const keyboard = "https://www.apple.com/shop/product/MK2A3LL/A/magic-keyboard-us-english";
+    const headphones = "https://www.amazon.com/Bose-QuietComfort-Wireless-Headphones-Cancelling/dp/B0756CYWWD";
+    const mouse = "https://www.apple.com/shop/product/MMMQ3AM/A/magic-mouse-black-multi-touch-surface";
 
     const linkProps = {
         rel: "noreferrer",
@@ -14,7 +14,7 @@ export const SectionHardware = () => {
     };
 
     return (
-        <section className="m-auto max-w-6xl py-20 px-4 md:my-10">
+        <section className="m-auto max-w-6xl px-4 py-20 md:my-10">
             <h2 className="pb-8 text-3xl">
                 Hardware <span className="ml-2">💻</span>
             </h2>

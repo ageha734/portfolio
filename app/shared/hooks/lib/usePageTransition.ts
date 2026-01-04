@@ -7,7 +7,7 @@ export const usePageTransition = () => {
     const isBrowser = globalThis.window !== undefined;
     const isSupported = isBrowser && typeof (document as any).createDocumentTransition === "function"; // prettier-ignore
 
-    console.log(` 💬 ~ isSupported`, isSupported);
+    console.log(" 💬 ~ isSupported", isSupported);
 
     const transition = async (path: string) => {
         alert(` 💬 ~ isSupported ${isSupported}`);

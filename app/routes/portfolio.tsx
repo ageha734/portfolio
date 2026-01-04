@@ -41,7 +41,7 @@ export default function Portfolio() {
             </section>
 
             <section>
-                <div className="border-0 border-b border-t border-color-border bg-color-background-light text-color-background-dark">
+                <div className="border-0 border-color-border border-t border-b bg-color-background-light text-color-background-dark">
                     <Hero className="py-20 md:py-40" copy="In the past..." highlight="What I've built" tag="h2" />
                 </div>
                 <div className="mx-auto md:max-w-6xl">

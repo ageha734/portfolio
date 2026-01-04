@@ -49,10 +49,7 @@ export const Heading4 = () => (
 
 export const Paragraph = () => (
     <MemoryRouter>
-        <P>
-            This is a paragraph with some text content. It demonstrates the paragraph styling
-            used in blog posts.
-        </P>
+        <P>This is a paragraph with some text content. It demonstrates the paragraph styling used in blog posts.</P>
     </MemoryRouter>
 );
 
@@ -128,12 +125,7 @@ export const StrongText = () => (
 
 export const Image = () => (
     <MemoryRouter>
-        <Img
-            src="/images/assets/sample.jpg"
-            alt="Sample image"
-            width={800}
-            height={600}
-        />
+        <Img src="/images/assets/sample.jpg" alt="Sample image" width={800} height={600} />
     </MemoryRouter>
 );
 
@@ -145,23 +137,18 @@ export const EmbedExample = () => (
 
 export const FullExample = () => (
     <MemoryRouter>
-        <div className="max-w-3xl mx-auto p-4">
+        <div className="mx-auto max-w-3xl p-4">
             <H1 id="full-example">Full Example</H1>
-            <P>
-                This is a complete example showing all markdown elements together.
-            </P>
+            <P>This is a complete example showing all markdown elements together.</P>
             <H2 id="section-1">Section 1</H2>
             <P>
-                This paragraph contains a <A href="/blog">link</A> and
-                some <Code>inline code</Code>.
+                This paragraph contains a <A href="/blog">link</A> and some <Code>inline code</Code>.
             </P>
             <Ul>
                 <Li>First bullet point</Li>
                 <Li>Second bullet point</Li>
             </Ul>
-            <BlockquoteComponent>
-                This is a blockquote with important information.
-            </BlockquoteComponent>
+            <BlockquoteComponent>This is a blockquote with important information.</BlockquoteComponent>
             <Hr />
             <P>
                 More content after the horizontal rule with <Strong>strong text</Strong>.

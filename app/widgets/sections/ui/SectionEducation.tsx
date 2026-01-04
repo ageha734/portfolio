@@ -2,13 +2,13 @@ export const SectionEducation = () => {
     return (
         <section>
             <div>
-                <h2 className="py-8 text-lg print:py-4 md:text-xl">Education</h2>
-                <div className="mb-8 border-t border-solid border-color-border print:hidden" />
+                <h2 className="py-8 text-lg md:text-xl print:py-4">Education</h2>
+                <div className="mb-8 border-color-border border-t border-solid print:hidden" />
             </div>
 
             <h3>San Francisco State University</h3>
             <h4 className="font-normal">
-                Industrial Design <em className="text-sm text-color-copy-light">(incomplete)</em>
+                Industrial Design <em className="text-color-copy-light text-sm">(incomplete)</em>
             </h4>
 
             <div className="mt-8">
@@ -19,10 +19,8 @@ export const SectionEducation = () => {
                 </p>
             </div>
 
-            <ul className="my-4 ml-4 list-disc text-sm font-light">
-                <li className="my-1">
-                    Industrial Designers Society of America 2004 - 2007
-                </li>
+            <ul className="my-4 ml-4 list-disc font-light text-sm">
+                <li className="my-1">Industrial Designers Society of America 2004 - 2007</li>
                 <li className="my-1">Teaching Assistant: Automated Manufacturing Sys.</li>
                 <li className="my-1">Teaching Assistant: Metals Manufacturing</li>
                 <li className="my-1">Teaching Assistant: Drafting &amp; Sketching for Design</li>

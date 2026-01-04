@@ -25,7 +25,7 @@ export const PortfolioPreview = (props: PortfolioPreviewProps) => {
 
     return (
         <Link className="work-preview text-color-copy" prefetch="intent" to={`/portfolio/${data.slug}`}>
-            <h3 className="m-0 font-font-serif text-xl font-bold">{data.title}</h3>
+            <h3 className="m-0 font-bold font-font-serif text-xl">{data.title}</h3>
             <div className="mt-1 mb-6 flex items-baseline gap-2 font-medium text-color-copy-dark">
                 {!current && <span>{new Date(date).getFullYear()}</span>}
                 {!current && <span className="font-light">|</span>}

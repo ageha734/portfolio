@@ -28,10 +28,10 @@ export function ProjectHeader({
         <section className={cn("relative w-full", className)}>
             <div className="flex flex-col items-center justify-center gap-8 p-12 md:p-20">
                 <div className="flex flex-col gap-4">
-                    <h1 className="text-4xl md:text-6xl font-serif font-extrabold">{title}</h1>
+                    <h1 className="font-extrabold font-serif text-4xl md:text-6xl">{title}</h1>
                     <p className="text-lg text-muted-foreground">{description}</p>
                     {!!url && (
-                        <Button asChild className="w-fit mt-4">
+                        <Button asChild className="mt-4 w-fit">
                             <a href={url} target="_blank" rel="noopener noreferrer">
                                 {linkLabel}
                             </a>
@@ -39,10 +39,10 @@ export function ProjectHeader({
                     )}
                 </div>
                 {!!roles?.length && (
-                    <ul className="flex flex-wrap gap-4 mt-8">
+                    <ul className="mt-8 flex flex-wrap gap-4">
                         {roles.map((role, index) => (
                             <li
-                                className="px-4 py-2 bg-muted rounded-md text-sm animate-in fade-in slide-in-from-bottom-4"
+                                className="fade-in slide-in-from-bottom-4 animate-in rounded-md bg-muted px-4 py-2 text-sm"
                                 style={{
                                     animationDelay: `${initDelay + 300 + index * 140}ms`,
                                     animationFillMode: "forwards",
@@ -60,7 +60,7 @@ export function ProjectHeader({
 }
 
 export const ProjectContainer = ({ className, ...rest }: ProjectContainerProps) => (
-    <article className={cn("relative w-full flex flex-col items-center justify-center", className)} {...rest} />
+    <article className={cn("relative flex w-full flex-col items-center justify-center", className)} {...rest} />
 );
 
 export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
@@ -75,7 +75,7 @@ export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
             children,
             ...rest
         },
-        ref
+        ref,
     ) => {
         const paddingClasses = {
             both: "py-12 md:py-20 lg:py-24",
@@ -86,26 +86,29 @@ export const ProjectSection = forwardRef<HTMLElement, ProjectSectionProps>(
 
         return (
             <section
-                className={cn(
-                    "w-full relative grid",
-                    fullHeight && "min-h-screen",
-                    light && "bg-muted",
-                    className,
-                )}
+                className={cn("relative grid w-full", fullHeight && "min-h-screen", light && "bg-muted", className)}
                 ref={ref}
                 {...rest}
             >
                 {!!backgroundElement && (
-                    <div className="grid-area-[1/1] opacity-[var(--opacity)]" style={{ "--opacity": backgroundOverlayOpacity } as React.CSSProperties}>
+                    <div
+                        className="grid-area-[1/1] opacity-[var(--opacity)]"
+                        style={{ "--opacity": backgroundOverlayOpacity } as React.CSSProperties}
+                    >
                         {backgroundElement}
                     </div>
                 )}
-                <div className={cn("grid-area-[1/1] flex flex-col items-center justify-center relative", paddingClasses[padding])}>
+                <div
+                    className={cn(
+                        "grid-area-[1/1] relative flex flex-col items-center justify-center",
+                        paddingClasses[padding],
+                    )}
+                >
                     {children}
                 </div>
             </section>
         );
-    }
+    },
 );
 
 ProjectSection.displayName = "ProjectSection";
@@ -129,13 +132,7 @@ export const ProjectBackground = ({ opacity = 0.7, className, src, alt = "", ...
         <div className={cn("absolute inset-0 overflow-hidden", className)}>
             <div className="absolute inset-0 translate-y-[var(--offset,0px)]" ref={imageRef}>
                 {src && (
-                    <img
-                        src={src}
-                        alt={alt}
-                        role="presentation"
-                        className="object-cover w-full h-full"
-                        {...rest}
-                    />
+                    <img src={src} alt={alt} role="presentation" className="h-full w-full object-cover" {...rest} />
                 )}
             </div>
             <div className="absolute inset-0 bg-black/70" style={{ opacity }} />
@@ -158,7 +155,7 @@ export const ProjectImage = ({ className, alt, src, ...rest }: ProjectImageProps
                     src={src}
                     alt={alt}
                     className={cn(
-                        "w-full h-auto transition-opacity duration-300",
+                        "h-auto w-full transition-opacity duration-300",
                         visible ? "opacity-100" : "opacity-0",
                     )}
                     {...rest}
@@ -176,17 +173,23 @@ const widthClasses = {
 };
 
 export const ProjectSectionContent = ({ className, width = "l", ...rest }: ProjectSectionContentProps) => (
-    <div className={cn("w-full mx-auto px-4", widthClasses[width], className)} {...rest} />
+    <div className={cn("mx-auto w-full px-4", widthClasses[width], className)} {...rest} />
 );
 
-export const ProjectSectionHeading = ({ className, level = 3, as: As = "h2", children, ...rest }: ProjectSectionHeadingProps) => (
-    <As className={cn("text-3xl md:text-4xl font-serif font-extrabold mb-4", className)} {...rest}>
+export const ProjectSectionHeading = ({
+    className,
+    level = 3,
+    as: As = "h2",
+    children,
+    ...rest
+}: ProjectSectionHeadingProps) => (
+    <As className={cn("mb-4 font-extrabold font-serif text-3xl md:text-4xl", className)} {...rest}>
         {children}
     </As>
 );
 
 export const ProjectSectionText = ({ className, children, ...rest }: ProjectSectionTextProps) => (
-    <p className={cn("text-base md:text-lg text-muted-foreground mb-4", className)} {...rest}>
+    <p className={cn("mb-4 text-base text-muted-foreground md:text-lg", className)} {...rest}>
         {children}
     </p>
 );
@@ -210,7 +213,7 @@ export const ProjectTextRow = ({
 }: ProjectTextRowProps) => (
     <div
         className={cn(
-            "flex flex-col md:flex-row gap-4",
+            "flex flex-col gap-4 md:flex-row",
             justifyClasses[justify],
             center && "items-center",
             stretch && "items-stretch",
@@ -224,5 +227,8 @@ export const ProjectTextRow = ({
 );
 
 export const ProjectSectionColumns = ({ className, centered, ...rest }: ProjectSectionColumnsProps) => (
-    <ProjectSectionContent className={cn("grid grid-cols-1 md:grid-cols-2 gap-8", centered && "items-center", className)} {...rest} />
+    <ProjectSectionContent
+        className={cn("grid grid-cols-1 gap-8 md:grid-cols-2", centered && "items-center", className)}
+        {...rest}
+    />
 );

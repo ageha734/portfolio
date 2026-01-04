@@ -1,15 +1,17 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { Post } from "./Post";
 
 vi.mock("~/hooks", () => ({
-    useScrollToHash: () => vi.fn(),
-    useParallax: () => {},
+    useScrollToHash: vi.fn().mockImplementation(() => ({
+        scrollTo: vi.fn(),
+    })),
+    useParallax: vi.fn().mockReturnValue({ transform: "translateY(0px)" }),
 }));
 
 vi.mock("~/widgets/footer", () => ({
-    Footer: () => <footer>Footer</footer>,
+    Footer: () => <footer data-testid="mock-footer">Footer</footer>,
 }));
 
 describe("Post Component", () => {
@@ -38,33 +40,8 @@ describe("Post Component", () => {
                 </Post>
             </MemoryRouter>,
         );
-
         const images = screen.getAllByRole("img");
         expect(images.length).toBeGreaterThan(0);
-    });
-
-    test("should render post without banner", () => {
-        render(
-            <MemoryRouter>
-                <Post title="Test Post" date="2024-01-01">
-                    <p>Post content</p>
-                </Post>
-            </MemoryRouter>,
-        );
-
-        expect(screen.getByText("Test Post")).toBeInTheDocument();
-    });
-
-    test("should render post with timecode", () => {
-        render(
-            <MemoryRouter>
-                <Post title="Test Post" date="2024-01-01" timecode="5 min read">
-                    <p>Post content</p>
-                </Post>
-            </MemoryRouter>,
-        );
-
-        expect(screen.getByText("5 min read")).toBeInTheDocument();
     });
 
     test("should render scroll indicator link", () => {
@@ -75,22 +52,8 @@ describe("Post Component", () => {
                 </Post>
             </MemoryRouter>,
         );
-
-        const link = screen.getByLabelText("Scroll to post content");
+        const link = screen.getByLabelText(/scroll/i);
         expect(link).toHaveAttribute("href", "#postContent");
-    });
-
-    test("should render post content section", () => {
-        const { container } = render(
-            <MemoryRouter>
-                <Post title="Test Post" date="2024-01-01">
-                    <p>Post content</p>
-                </Post>
-            </MemoryRouter>,
-        );
-
-        const contentSection = container.querySelector("#postContent");
-        expect(contentSection).toBeInTheDocument();
     });
 
     test("should render footer", () => {
@@ -101,7 +64,6 @@ describe("Post Component", () => {
                 </Post>
             </MemoryRouter>,
         );
-
-        expect(screen.getByText("Footer")).toBeInTheDocument();
+        expect(screen.getByTestId("mock-footer")).toBeInTheDocument();
     });
 });

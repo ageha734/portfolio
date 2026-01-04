@@ -6,12 +6,7 @@ export const experienceSchema = z.object({
     companyUrl: urlSchema,
     contract: z.boolean().optional(),
     date: z.string().min(1),
-    dateRange: z
-        .tuple([
-            z.date(),
-            z.date().optional(),
-        ])
-        .optional(),
+    dateRange: z.tuple([z.date(), z.date().optional()]).optional(),
     description: z.string().min(1),
     highlights: z.array(z.string()),
     image: urlSchema.optional(),

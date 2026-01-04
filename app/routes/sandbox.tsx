@@ -10,14 +10,14 @@ export const meta: MetaFunction = (args) => {
         },
         {
             name: "description",
-            content: `A Sandbox for Remix-Run and various web experiments.`,
+            content: "A Sandbox for Remix-Run and various web experiments.",
         },
     ];
 };
 
 export default function Sandbox() {
     return (
-        <section className="bg-gradient-dark-- bg-color-background-dark text-color-background">
+        <section className="bg-color-background-dark bg-gradient-dark-- text-color-background">
             <Hero
                 className="mx-auto max-w-6xl py-20 md:py-40"
                 copy="Developer sandbox 🏖️"
@@ -36,4 +36,4 @@ export default function Sandbox() {
             </div>
         </section>
     );
-};
+}

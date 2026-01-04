@@ -1,27 +1,39 @@
-import { expect, test, vi, beforeEach, afterEach } from "vitest";
 import { renderHook } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { useIntro } from "./useIntro";
 
 describe("useIntro", () => {
+    let logs: string[] = [];
+
     let consoleGroupSpy: ReturnType<typeof vi.spyOn>;
     let consoleLogSpy: ReturnType<typeof vi.spyOn>;
     let consoleGroupEndSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
-        consoleGroupSpy = vi.spyOn(console, "group").mockImplementation(() => {});
-        consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
-        consoleGroupEndSpy = vi.spyOn(console, "groupEnd").mockImplementation(() => {});
+        logs = [];
+        consoleGroupSpy = vi.spyOn(console, "group").mockImplementation((label) => {
+            logs.push(`group: ${label}`);
+        });
+        consoleLogSpy = vi.spyOn(console, "log").mockImplementation((...args) => {
+            logs.push(`log: ${args.join(" ")}`);
+        });
+        consoleGroupEndSpy = vi.spyOn(console, "groupEnd").mockImplementation(() => {
+            logs.push("groupEnd");
+        });
     });
 
     afterEach(() => {
         vi.restoreAllMocks();
     });
 
-    test("should log intro message", () => {
+    test("should log intro message in correct order", () => {
         renderHook(() => useIntro());
 
         expect(consoleGroupSpy).toHaveBeenCalledWith("👀 Thank you for looking, lets connect!");
         expect(consoleLogSpy).toHaveBeenCalled();
         expect(consoleGroupEndSpy).toHaveBeenCalled();
+
+        expect(logs[0]).toContain("group: 👀");
+        expect(logs.at(-1)).toBe("groupEnd");
     });
 });

@@ -16,11 +16,7 @@ export const Default = () => (
 
 export const WithBanner = () => (
     <MemoryRouter>
-        <Post
-            title="Blog Post with Banner"
-            date="2024-01-15"
-            banner="/images/assets/sample-banner.jpg"
-        >
+        <Post title="Blog Post with Banner" date="2024-01-15" banner="/images/assets/sample-banner.jpg">
             <p>This blog post includes a banner image.</p>
         </Post>
     </MemoryRouter>
@@ -53,12 +49,12 @@ export const LongContent = () => (
         <Post title="Long Blog Post" date="2024-01-15">
             <p>This is a longer blog post with multiple paragraphs.</p>
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+                dolore magna aliqua.
             </p>
             <p>
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                aliquip ex ea commodo consequat.
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                consequat.
             </p>
         </Post>
     </MemoryRouter>

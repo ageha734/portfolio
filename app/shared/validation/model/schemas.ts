@@ -1,6 +1,9 @@
 import { z } from "zod";
 
-export const slugSchema = z.string().min(1).regex(/^[a-z0-9-]+$/);
+export const slugSchema = z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9-]+$/);
 
 export const urlSchema = z.string().refine(
     (val) => {

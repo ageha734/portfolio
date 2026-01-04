@@ -7,6 +7,4 @@ export default {
 
 export const Default = () => <BlogUpcoming />;
 
-export const WithClassName = () => (
-    <BlogUpcoming className="max-w-md bg-gray-100 dark:bg-gray-800 p-4 rounded-lg" />
-);
+export const WithClassName = () => <BlogUpcoming className="max-w-md rounded-lg bg-gray-100 p-4 dark:bg-gray-800" />;

@@ -27,7 +27,7 @@ export const OnPortfolioPage = () => (
 export const HiddenOnResume = () => (
     <MemoryRouter initialEntries={["/resume"]}>
         <div className="p-4">
-            <p className="mb-4 text-sm text-color-copy-light">
+            <p className="mb-4 text-color-copy-light text-sm">
                 Footerはresumeページでは表示されません（nullを返します）
             </p>
             <Footer />

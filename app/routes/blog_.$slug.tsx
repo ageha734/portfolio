@@ -54,7 +54,7 @@ export default function Blog_Slug() {
 
             <img
                 alt={data.title}
-                className="w-full border-b border-t border-color-border-dark"
+                className="w-full border-color-border-dark border-t border-b"
                 height="auto"
                 loading="eager"
                 src={data.imageTemp}
@@ -63,8 +63,8 @@ export default function Blog_Slug() {
 
             <section className="m-auto max-w-4xl">
                 <div className="mb-20 p-4">
-                    <div className="my-8 md:my-12 ">
-                        <h2 className="text-highlight m-0 mb-2 inline-block text-left text-3xl md:text-4xl">
+                    <div className="my-8 md:my-12">
+                        <h2 className="m-0 mb-2 inline-block text-left text-3xl text-highlight md:text-4xl">
                             {data.title}
                         </h2>
                         <div className="font-font-monospace text-sm">{date}</div>

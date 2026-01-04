@@ -13,7 +13,7 @@ vi.mock("@remix-run/react", async () => {
         }),
         useLoaderData: () => ({
             theme: "dark",
-    }),
+        }),
     };
 });
 
@@ -36,10 +36,7 @@ describe("ThemeToggle Component", () => {
         fireEvent.click(button);
 
         expect(mockSubmit).toHaveBeenCalledTimes(1);
-        expect(mockSubmit).toHaveBeenCalledWith(
-            { theme: "light" },
-            { action: "/api/set-theme", method: "post" },
-        );
+        expect(mockSubmit).toHaveBeenCalledWith({ theme: "light" }, { action: "/api/set-theme", method: "post" });
     });
 
     test("should apply isMobile data attribute", () => {

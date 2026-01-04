@@ -12,10 +12,9 @@ const samplePortfolio: Portfolio = {
     date: "2023-06-15",
     slug: "sample-project",
     title: "Sample Project",
-    overview: "A comprehensive web application built with modern technologies including React, TypeScript, and Node.js.",
-    images: [
-        { url: "https://picsum.photos/800/600" },
-    ],
+    overview:
+        "A comprehensive web application built with modern technologies including React, TypeScript, and Node.js.",
+    images: [{ url: "https://picsum.photos/800/600" }],
 };
 
 const currentPortfolio: Portfolio = {
@@ -25,18 +24,12 @@ const currentPortfolio: Portfolio = {
     slug: "current-project",
     title: "Current Project",
     overview: "An ongoing project focused on improving user experience and performance optimization.",
-    images: [
-        { url: "https://picsum.photos/800/600?random=2" },
-    ],
+    images: [{ url: "https://picsum.photos/800/600?random=2" }],
 };
 
-export const Default = () => (
-    <PortfolioPreview current={false} data={samplePortfolio} />
-);
+export const Default = () => <PortfolioPreview current={false} data={samplePortfolio} />;
 
-export const CurrentProject = () => (
-    <PortfolioPreview current={true} data={currentPortfolio} />
-);
+export const CurrentProject = () => <PortfolioPreview current={true} data={currentPortfolio} />;
 
 export const WithoutImages = () => {
     const portfolioWithoutImages: Portfolio = {

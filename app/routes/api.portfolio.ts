@@ -28,7 +28,7 @@ export const loader: LoaderFunction = async (args) => {
     const items = res.data.portfolios ?? [];
 
     if (!items.length) {
-        throw new Response(`Portfolio items not found`, { status: 404 });
+        throw new Response("Portfolio items not found", { status: 404 });
     }
 
     return Response.json(items as LoaderData);

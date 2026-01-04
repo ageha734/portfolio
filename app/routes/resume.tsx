@@ -40,7 +40,7 @@ export default function Resume() {
                         </div>
                         <div className="mt-8 flex gap-4 print:hidden">
                             <a
-                                className="ui-btn custom-bg-gradient flex-1 whitespace-nowrap rounded-2xl px-4 py-2 text-center text-sm font-normal text-white"
+                                className="ui-btn custom-bg-gradient flex-1 whitespace-nowrap rounded-2xl px-4 py-2 text-center font-normal text-sm text-white"
                                 download={true}
                                 href="/resume/Matthew_Scholta_2024.pdf"
                             >
@@ -53,11 +53,11 @@ export default function Resume() {
 
                 <div className="resume-sections mb-20 flex flex-1 flex-col gap-10">
                     <section>
-                        <h1 className="uppercase- mb-10 text-2xl font-extrabold md:text-4xl">
+                        <h1 className="uppercase- mb-10 font-extrabold text-2xl md:text-4xl">
                             <span className="sr-only">The {SITE_YEAR} online resume of </span>
                             {SITE_AUTHOR}
                         </h1>
-                        <div className="mb-8 border-t border-solid border-color-border print:hidden" />
+                        <div className="mb-8 border-color-border border-t border-solid print:hidden" />
                         <div className="flex items-center gap-10">
                             <p>
                                 <span className="mr-1">👨‍💻</span> A Software Engineer whose passion lies in creating{" "}

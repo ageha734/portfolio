@@ -60,7 +60,10 @@ export const loader = async ({ request, context }: LoaderFunctionArgs) => {
             maxAge: 604_800,
             path: "/",
             sameSite: "lax",
-            secrets: [(context as { cloudflare?: { env?: { SESSION_SECRET?: string } } }).cloudflare?.env?.SESSION_SECRET || " "],
+            secrets: [
+                (context as { cloudflare?: { env?: { SESSION_SECRET?: string } } }).cloudflare?.env?.SESSION_SECRET ||
+                    " ",
+            ],
             secure: true,
         },
     });
@@ -127,7 +130,7 @@ export default function App() {
 
     const theme = (fetcher.formData?.get("theme") as string) || initialTheme;
 
-    function toggleTheme(newTheme?: string) {
+    function _toggleTheme(newTheme?: string) {
         fetcher.submit(
             { theme: newTheme || (theme === "dark" ? "light" : "dark") },
             { action: "/api/set-theme", method: "post" },
@@ -142,24 +145,22 @@ export default function App() {
             <head>
                 <Meta />
                 <Links />
-                {GOOGLE_ANALYTICS_ENABLED &&
-                    GOOGLE_ANALYTICS !== "__undefined__" && <TrackingGA id={GOOGLE_ANALYTICS} />}
-                {GOOGLE_TAG_MANAGER_ENABLED &&
-                    GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMScript id={GOOGLE_TAG_MANAGER} />}
+                {GOOGLE_ANALYTICS_ENABLED && GOOGLE_ANALYTICS !== "__undefined__" && (
+                    <TrackingGA id={GOOGLE_ANALYTICS} />
+                )}
+                {GOOGLE_TAG_MANAGER_ENABLED && GOOGLE_TAG_MANAGER !== "__undefined__" && (
+                    <TrackingGTMScript id={GOOGLE_TAG_MANAGER} />
+                )}
             </head>
             <body data-theme={theme} className={theme === "dark" ? "dark" : ""}>
-                {GOOGLE_TAG_MANAGER_ENABLED &&
-                    GOOGLE_TAG_MANAGER !== "__undefined__" && <TrackingGTMIFrame id={GOOGLE_TAG_MANAGER} />}
+                {GOOGLE_TAG_MANAGER_ENABLED && GOOGLE_TAG_MANAGER !== "__undefined__" && (
+                    <TrackingGTMIFrame id={GOOGLE_TAG_MANAGER} />
+                )}
                 <I18nextProvider i18n={i18n}>
                     <Navbar />
                     <Header />
                     <HeaderMobile />
-                    <main
-                        id="main-content"
-                        className="container"
-                        tabIndex={-1}
-                        data-loading={state === "loading"}
-                    >
+                    <main id="main-content" className="container" tabIndex={-1} data-loading={state === "loading"}>
                         <Outlet />
                     </main>
                     <Footer />

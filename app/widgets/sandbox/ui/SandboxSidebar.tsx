@@ -26,7 +26,7 @@ export const SandboxSidebar = (props: SandboxSidebarProps) => {
     return (
         <aside className={classnames("sandbox-sidebar w-full p-4 md:w-64 md:p-6", className)}>
             <nav className="flex flex-col gap-4">
-                <h3 className="mb-2 font-font-serif text-lg font-bold">Sandboxes</h3>
+                <h3 className="mb-2 font-bold font-font-serif text-lg">Sandboxes</h3>
                 <ul className="flex flex-col gap-2">
                     {sandboxItems.map((item) => (
                         <li key={item.slug}>
@@ -37,9 +37,9 @@ export const SandboxSidebar = (props: SandboxSidebarProps) => {
                             >
                                 <div className="font-medium">{item.title}</div>
                                 {item.description && (
-                                    <div className="mt-1 text-sm text-color-background-light/70">
+                                    <div className="mt-1 text-color-background-light/70 text-sm">
                                         {item.description}
-        </div>
+                                    </div>
                                 )}
                             </Link>
                         </li>

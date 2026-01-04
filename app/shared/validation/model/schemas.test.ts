@@ -59,13 +59,7 @@ describe("Validation Schemas", () => {
         });
 
         test("should reject invalid URLs", () => {
-            const invalidUrls = [
-                "",
-                "not-a-url",
-                "example.com",
-                "ftp://example.com",
-                "javascript:alert(1)",
-            ];
+            const invalidUrls = ["", "not-a-url", "example.com", "ftp://example.com", "javascript:alert(1)"];
 
             for (const url of invalidUrls) {
                 const result = urlSchema.safeParse(url);

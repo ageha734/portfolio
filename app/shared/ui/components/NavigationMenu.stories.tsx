@@ -34,8 +34,8 @@ export const WithTrigger = () => (
             <NavigationMenuItem>
                 <NavigationMenuTrigger>Products</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                    <div className="p-4 w-64">
-                        <h3 className="font-semibold mb-2">Product Categories</h3>
+                    <div className="w-64 p-4">
+                        <h3 className="mb-2 font-semibold">Product Categories</h3>
                         <ul className="space-y-2">
                             <li>
                                 <NavigationMenuLink href="/products/web">Web Development</NavigationMenuLink>
@@ -66,8 +66,8 @@ export const MultipleTriggers = () => (
             <NavigationMenuItem>
                 <NavigationMenuTrigger>Services</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                    <div className="p-4 w-64">
-                        <h3 className="font-semibold mb-2">Our Services</h3>
+                    <div className="w-64 p-4">
+                        <h3 className="mb-2 font-semibold">Our Services</h3>
                         <ul className="space-y-2">
                             <li>
                                 <NavigationMenuLink href="/services/consulting">Consulting</NavigationMenuLink>
@@ -82,8 +82,8 @@ export const MultipleTriggers = () => (
             <NavigationMenuItem>
                 <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                    <div className="p-4 w-64">
-                        <h3 className="font-semibold mb-2">Resources</h3>
+                    <div className="w-64 p-4">
+                        <h3 className="mb-2 font-semibold">Resources</h3>
                         <ul className="space-y-2">
                             <li>
                                 <NavigationMenuLink href="/resources/docs">Documentation</NavigationMenuLink>
@@ -108,16 +108,20 @@ export const WithCustomContent = () => (
             <NavigationMenuItem>
                 <NavigationMenuTrigger>Solutions</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                    <div className="p-6 w-80">
-                        <h3 className="text-lg font-semibold mb-4">Our Solutions</h3>
+                    <div className="w-80 p-6">
+                        <h3 className="mb-4 font-semibold text-lg">Our Solutions</h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <h4 className="font-medium mb-2">Enterprise</h4>
-                                <p className="text-sm text-muted-foreground">Scalable solutions for large organizations</p>
+                                <h4 className="mb-2 font-medium">Enterprise</h4>
+                                <p className="text-muted-foreground text-sm">
+                                    Scalable solutions for large organizations
+                                </p>
                             </div>
                             <div>
-                                <h4 className="font-medium mb-2">Startup</h4>
-                                <p className="text-sm text-muted-foreground">Fast-track solutions for growing businesses</p>
+                                <h4 className="mb-2 font-medium">Startup</h4>
+                                <p className="text-muted-foreground text-sm">
+                                    Fast-track solutions for growing businesses
+                                </p>
                             </div>
                         </div>
                     </div>

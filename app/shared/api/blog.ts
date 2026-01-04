@@ -29,7 +29,7 @@ export const loader: LoaderFunction = async () => {
     const tags = tagsData.map((tag: EnumValue) => tag.name).sort((a, b) => a.localeCompare(b));
 
     if (!posts.length) {
-        throw new Response(`Blog posts not found`, { status: 404 });
+        throw new Response("Blog posts not found", { status: 404 });
     }
 
     return Response.json({ posts, tags } as LoaderData);

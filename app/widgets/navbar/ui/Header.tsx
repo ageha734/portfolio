@@ -16,7 +16,7 @@ export const Header = () => {
     };
 
     return (
-        <header className={classNames("header hidden overflow-hidden print:hidden md:block", { closed })}>
+        <header className={classNames("header hidden overflow-hidden md:block print:hidden", { closed })}>
             <div className="mx-auto flex h-full w-full max-w-5xl items-center justify-evenly md:text-sm">
                 <button
                     className="header-logo ml-4 gap-2 px-4 md:hidden"

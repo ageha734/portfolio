@@ -5,28 +5,20 @@ export default {
     title: "widgets/hero/Hero",
 };
 
-export const Default = () => (
-    <Hero tag="h1" highlight="Hello World" />
-);
+export const Default = () => <Hero tag="h1" highlight="Hello World" />;
 
-export const WithCopy = () => (
-    <Hero tag="h1" highlight="Software Engineer" copy="Welcome to my portfolio" />
-);
+export const WithCopy = () => <Hero tag="h1" highlight="Software Engineer" copy="Welcome to my portfolio" />;
 
-export const H2Tag = () => (
-    <Hero tag="h2" highlight="My Projects" copy="Check out what I've built" />
-);
+export const H2Tag = () => <Hero tag="h2" highlight="My Projects" copy="Check out what I've built" />;
 
-export const H3Tag = () => (
-    <Hero tag="h3" highlight="About Me" />
-);
+export const H3Tag = () => <Hero tag="h3" highlight="About Me" />;
 
 export const WithClassName = () => (
     <Hero
         tag="h1"
         highlight="Styled Hero"
         copy="Custom styling applied"
-        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg"
+        className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 text-white"
     />
 );
 

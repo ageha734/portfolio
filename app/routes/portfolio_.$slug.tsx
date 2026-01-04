@@ -30,7 +30,7 @@ export default function Portfolio_Slug() {
             {img && (
                 <img
                     alt={data.title}
-                    className="mb-20 mt-0 w-full border-b border-t border-color-border"
+                    className="mt-0 mb-20 w-full border-color-border border-t border-b"
                     height="auto"
                     loading="eager"
                     src={img}

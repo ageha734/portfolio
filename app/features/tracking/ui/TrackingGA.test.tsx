@@ -22,7 +22,7 @@ describe("TrackingGA Component", () => {
     test("should render script tag with correct src", () => {
         const { container } = render(<TrackingGA {...props} />);
 
-        const script = container.querySelector('script[src]');
+        const script = container.querySelector("script[src]");
         expect(script).toHaveAttribute("src", `https://www.googletagmanager.com/gtag/js?id=${props.id}`);
     });
 
@@ -39,7 +39,7 @@ describe("TrackingGA Component", () => {
     test("should render async and defer attributes", () => {
         const { container } = render(<TrackingGA {...props} />);
 
-        const script = container.querySelector('script[src]');
+        const script = container.querySelector("script[src]");
         expect(script).toHaveAttribute("async");
         expect(script).toHaveAttribute("defer");
     });

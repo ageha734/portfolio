@@ -9,11 +9,7 @@ import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
 import * as Sentry from "@sentry/remix";
-import {
-    SENTRY_DSN,
-    SENTRY_ENVIRONMENT,
-    SENTRY_TRACES_SAMPLE_RATE,
-} from "~/shared/config/settings";
+import { SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_TRACES_SAMPLE_RATE } from "~/shared/config/settings";
 
 if (SENTRY_DSN !== "__undefined__") {
     Sentry.init({

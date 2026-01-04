@@ -113,7 +113,7 @@ describe("Error Component", () => {
             </MemoryRouter>,
         );
 
-        const videoContainer = container.querySelector('[data-visible]');
+        const videoContainer = container.querySelector("[data-visible]");
         expect(videoContainer).toBeInTheDocument();
     });
 });

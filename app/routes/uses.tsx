@@ -10,7 +10,7 @@ export const meta: MetaFunction = (args) => {
         },
         {
             name: "description",
-            content: `Check out uses.tech for a list of more /uses pages!`,
+            content: "Check out uses.tech for a list of more /uses pages!",
         },
     ];
 };
@@ -22,7 +22,7 @@ export default function Uses() {
                 <Hero className="py-20 md:py-40" copy="If you're curious" highlight="What I'm using" tag="h1" />
             </section>
             <SectionHardware />
-            <div className="border-0 border-t border-solid border-t-color-border bg-color-background-light">
+            <div className="border-0 border-t border-t-color-border border-solid bg-color-background-light">
                 <SectionSoftware />
             </div>
             <div className="bg-color-background-dark py-20 text-color-background-light">

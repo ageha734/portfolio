@@ -6,23 +6,16 @@ export default {
 };
 
 export const Default = () => (
-    <UserCard
-        image="https://avatars.githubusercontent.com/u/1?v=4"
-        copy="Software Engineer"
-    />
+    <UserCard image="https://avatars.githubusercontent.com/u/1?v=4" copy="Software Engineer" />
 );
 
 export const WithAlt = () => (
-    <UserCard
-        alt="Profile picture"
-        image="https://avatars.githubusercontent.com/u/1?v=4"
-        copy="Full Stack Developer"
-    />
+    <UserCard alt="Profile picture" image="https://avatars.githubusercontent.com/u/1?v=4" copy="Full Stack Developer" />
 );
 
 export const WithClassName = () => (
     <UserCard
-        className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg"
+        className="rounded-lg bg-gray-100 p-4 dark:bg-gray-800"
         image="https://avatars.githubusercontent.com/u/1?v=4"
         copy="Frontend Engineer"
     />

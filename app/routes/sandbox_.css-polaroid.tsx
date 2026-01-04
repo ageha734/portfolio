@@ -9,14 +9,14 @@ export const meta: MetaFunction = (args) => {
             title: `Sandbox | ${SITE_TITLE}`,
         },
         {
-            description: `A Sandbox project making a Poloroid camera with CSS.`,
+            description: "A Sandbox project making a Poloroid camera with CSS.",
         },
     ];
 };
 
 export default function Sandbox_CSSPolaroid() {
     return (
-        <section className="bg-gradient-dark-- bg-color-background-dark text-color-background">
+        <section className="bg-color-background-dark bg-gradient-dark-- text-color-background">
             <Hero
                 className="mx-auto max-w-6xl py-20 md:py-40"
                 copy="Looked like a fun challenge"
@@ -35,7 +35,7 @@ export default function Sandbox_CSSPolaroid() {
                             width: "650px",
                         }}
                     >
-                        <div className="ml-20 mr-20 mt-20">
+                        <div className="mt-20 mr-20 ml-20">
                             <h3>Sandboxes</h3>
                         </div>
                     </div>
@@ -44,4 +44,4 @@ export default function Sandbox_CSSPolaroid() {
             </div>
         </section>
     );
-};
+}

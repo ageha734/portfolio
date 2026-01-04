@@ -11,7 +11,7 @@ export const ShareButton = () => {
 
     return (
         <button
-            className="ui-btn custom-bg-gradient whitespace-nowrap rounded-2xl py-2 px-4 text-sm font-normal text-white"
+            className="ui-btn custom-bg-gradient whitespace-nowrap rounded-2xl px-4 py-2 font-normal text-sm text-white"
             onClick={onClick}
         >
             <img alt="Share" height={20} src="/images/svg/share.svg" width={20} />

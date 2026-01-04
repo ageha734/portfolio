@@ -56,9 +56,7 @@ export const SectionLight = () => (
         <ProjectSection light>
             <ProjectSectionContent>
                 <ProjectSectionHeading>Light Section</ProjectSectionHeading>
-                <ProjectSectionText>
-                    This is a light themed section.
-                </ProjectSectionText>
+                <ProjectSectionText>This is a light themed section.</ProjectSectionText>
             </ProjectSectionContent>
         </ProjectSection>
     </ProjectContainer>
@@ -69,9 +67,7 @@ export const SectionWithPadding = () => (
         <ProjectSection padding="top">
             <ProjectSectionContent>
                 <ProjectSectionHeading>Top Padding Only</ProjectSectionHeading>
-                <ProjectSectionText>
-                    This section only has top padding.
-                </ProjectSectionText>
+                <ProjectSectionText>This section only has top padding.</ProjectSectionText>
             </ProjectSectionContent>
         </ProjectSection>
     </ProjectContainer>
@@ -83,9 +79,7 @@ export const TextRow = () => (
             <ProjectSectionContent>
                 <ProjectTextRow center>
                     <ProjectSectionHeading>Centered Text Row</ProjectSectionHeading>
-                    <ProjectSectionText>
-                        This text is centered in the row.
-                    </ProjectSectionText>
+                    <ProjectSectionText>This text is centered in the row.</ProjectSectionText>
                 </ProjectTextRow>
             </ProjectSectionContent>
         </ProjectSection>
@@ -114,11 +108,11 @@ export const SectionColumns = () => (
     <ProjectContainer>
         <ProjectSection>
             <ProjectSectionColumns centered>
-                <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded">
+                <div className="rounded bg-gray-100 p-4 dark:bg-gray-800">
                     <h3 className="font-bold">Column 1</h3>
                     <p>First column content</p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded">
+                <div className="rounded bg-gray-100 p-4 dark:bg-gray-800">
                     <h3 className="font-bold">Column 2</h3>
                     <p>Second column content</p>
                 </div>
@@ -140,8 +134,8 @@ export const FullExample = () => (
                 <ProjectTextRow>
                     <ProjectSectionHeading>The Challenge</ProjectSectionHeading>
                     <ProjectSectionText>
-                        Creating a portfolio that effectively showcases work while maintaining excellent performance
-                        and accessibility standards.
+                        Creating a portfolio that effectively showcases work while maintaining excellent performance and
+                        accessibility standards.
                     </ProjectSectionText>
                 </ProjectTextRow>
             </ProjectSectionContent>
@@ -151,8 +145,8 @@ export const FullExample = () => (
                 <ProjectTextRow center>
                     <ProjectSectionHeading>The Solution</ProjectSectionHeading>
                     <ProjectSectionText>
-                        Built with modern technologies like React, Remix, and Tailwind CSS to deliver
-                        a fast and responsive experience.
+                        Built with modern technologies like React, Remix, and Tailwind CSS to deliver a fast and
+                        responsive experience.
                     </ProjectSectionText>
                 </ProjectTextRow>
             </ProjectSectionContent>

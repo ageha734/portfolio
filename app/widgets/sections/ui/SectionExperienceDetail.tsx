@@ -24,7 +24,7 @@ export const SectionExperienceDetail = (props: SectionExperienceDetailProps) => 
                             target="_blank"
                         />
                         {experience.contract && (
-                            <small className="text-xs font-normal italic text-gray-700">(contract)</small>
+                            <small className="font-normal text-gray-700 text-xs italic">(contract)</small>
                         )}
                         {image && (
                             <img
@@ -38,7 +38,7 @@ export const SectionExperienceDetail = (props: SectionExperienceDetailProps) => 
                         )}
                     </h3>
                 </div>
-                <h3 className="uppercase- text-xs font-medium">
+                <h3 className="uppercase- font-medium text-xs">
                     <div className="uppercase">{title}</div>
                     <div className="text-color-copy-light">{date}</div>
                 </h3>
@@ -46,9 +46,13 @@ export const SectionExperienceDetail = (props: SectionExperienceDetailProps) => 
 
             <div className="flex-1 text-sm leading-4">
                 <div dangerouslySetInnerHTML={{ __html: description }} />
-                <ul className="my-4 ml-4 list-disc text-sm font-light text-color-copy">
+                <ul className="my-4 ml-4 list-disc font-light text-color-copy text-sm">
                     {highlights.map((highlight, index) => (
-                        <li className="my-1" dangerouslySetInnerHTML={{ __html: highlight }} key={`${highlight}-${index}`} />
+                        <li
+                            className="my-1"
+                            dangerouslySetInnerHTML={{ __html: highlight }}
+                            key={`${highlight}-${index}`}
+                        />
                     ))}
                 </ul>
             </div>

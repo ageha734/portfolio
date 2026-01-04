@@ -2,12 +2,12 @@ import { data } from "~/shared/data/companies";
 
 export const SectionCompanies = () => {
     return (
-        <section className="work-companies border-0 border-b border-solid border-b-color-border ">
+        <section className="work-companies border-0 border-b border-b-color-border border-solid">
             <div className="flex-1 py-10 md:py-20">
                 <h2 className="mb-10 text-center text-xl md:mb-20 md:text-4xl">Companies I've built things for.</h2>
 
                 <div
-                    className="mx:mx-20 mx-10 flex flex-1 flex-wrap items-center justify-center gap-10 md:gap-20 lg:mx-40"
+                    className="mx-10 mx:mx-20 flex flex-1 flex-wrap items-center justify-center gap-10 md:gap-20 lg:mx-40"
                     style={{
                         filter: "grayscale(1)",
                     }}

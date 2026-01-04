@@ -1,20 +1,20 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
-    ProjectHeader,
-    ProjectContainer,
-    ProjectSection,
     ProjectBackground,
+    ProjectContainer,
+    ProjectHeader,
     ProjectImage,
+    ProjectSection,
+    ProjectSectionColumns,
     ProjectSectionContent,
     ProjectSectionHeading,
     ProjectSectionText,
     ProjectTextRow,
-    ProjectSectionColumns,
-} from "./project";
+} from "./Project";
 
 vi.mock("~/hooks", () => ({
-    useParallax: () => {},
+    useParallax: vi.fn().mockReturnValue({ ref: { current: null } }),
 }));
 
 describe("Project Components", () => {
@@ -31,13 +31,7 @@ describe("Project Components", () => {
         });
 
         test("should render project header with url", () => {
-            render(
-                <ProjectHeader
-                    title="Test Project"
-                    description="Test description"
-                    url="https://example.com"
-                />,
-            );
+            render(<ProjectHeader title="Test Project" description="Test description" url="https://example.com" />);
 
             expect(screen.getByText("Visit website")).toBeInTheDocument();
         });
@@ -57,11 +51,7 @@ describe("Project Components", () => {
 
         test("should render project header with roles", () => {
             render(
-                <ProjectHeader
-                    title="Test Project"
-                    description="Test description"
-                    roles={["Developer", "Designer"]}
-                />,
+                <ProjectHeader title="Test Project" description="Test description" roles={["Developer", "Designer"]} />,
             );
 
             expect(screen.getByText("Developer")).toBeInTheDocument();
@@ -75,9 +65,7 @@ describe("Project Components", () => {
         });
 
         test("should not render roles when roles array is empty", () => {
-            render(
-                <ProjectHeader title="Test Project" description="Test description" roles={[]} />,
-            );
+            render(<ProjectHeader title="Test Project" description="Test description" roles={[]} />);
 
             expect(screen.queryByText("Developer")).not.toBeInTheDocument();
         });
@@ -172,9 +160,7 @@ describe("Project Components", () => {
         });
 
         test("should apply custom className", () => {
-            const { container } = render(
-                <ProjectImage className="custom-class" src="test.jpg" alt="Test" />,
-            );
+            const { container } = render(<ProjectImage className="custom-class" src="test.jpg" alt="Test" />);
 
             const div = container.querySelector(".custom-class");
             expect(div).toBeInTheDocument();

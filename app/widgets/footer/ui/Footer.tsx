@@ -6,9 +6,14 @@ export const Footer = () => {
     const isResume = pathname.startsWith("/resume");
     if (isResume) return null;
     return (
-        <footer className="mt-10 hidden justify-center gap-2 text-center text-sm print:hidden md:mt-20 md:block">
+        <footer className="mt-10 hidden justify-center gap-2 text-center text-sm md:mt-20 md:block print:hidden">
             <div className="m-auto flex justify-center gap-4">
-                <a className="p-2 transition-opacity hover:opacity-70" href={SOCIAL_LINKEDIN} target="_blank" rel="noreferrer">
+                <a
+                    className="p-2 transition-opacity hover:opacity-70"
+                    href={SOCIAL_LINKEDIN}
+                    target="_blank"
+                    rel="noreferrer"
+                >
                     <img
                         alt="Follow me on LinkedIn"
                         className="h-4 w-4"
@@ -18,7 +23,12 @@ export const Footer = () => {
                         width={16}
                     />
                 </a>
-                <a className="p-2 transition-opacity hover:opacity-70" href={SOCIAL_GITHUB} target="_blank" rel="noreferrer">
+                <a
+                    className="p-2 transition-opacity hover:opacity-70"
+                    href={SOCIAL_GITHUB}
+                    target="_blank"
+                    rel="noreferrer"
+                >
                     <img
                         alt="Follow me on GitHub"
                         className="h-4 w-4"
@@ -28,7 +38,12 @@ export const Footer = () => {
                         width={16}
                     />
                 </a>
-                <a className="p-2 transition-opacity hover:opacity-70" href={SOCIAL_TWITTER} target="_blank" rel="noreferrer">
+                <a
+                    className="p-2 transition-opacity hover:opacity-70"
+                    href={SOCIAL_TWITTER}
+                    target="_blank"
+                    rel="noreferrer"
+                >
                     <img
                         alt="Follow me on Twitter"
                         className="h-4 w-4"
@@ -41,9 +56,15 @@ export const Footer = () => {
             </div>
             <p className="font-mono">
                 Built with <span className="text-primary">&hearts;</span> in{" "}
-                <a href="https://www.google.com/search?q=san+diego+weather" rel="noreferrer" target="_blank" className="text-primary hover:underline">
+                <a
+                    href="https://www.google.com/search?q=san+diego+weather"
+                    rel="noreferrer"
+                    target="_blank"
+                    className="text-primary hover:underline"
+                >
                     San Diego
-                </a>, CA.
+                </a>
+                , CA.
             </p>
         </footer>
     );
