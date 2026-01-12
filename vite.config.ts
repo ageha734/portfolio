@@ -53,7 +53,7 @@ export default defineConfig({
                     v3_singleFetch: true,
                     v3_lazyRouteDiscovery: true,
                 },
-                serverModuleFormat: "cjs",
+                serverModuleFormat: "esm",
             }),
         tsconfigPaths({
             ignoreConfigErrors: true,

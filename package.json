@@ -23,7 +23,7 @@
     "build:ui": "storybook build -o build/ui",
     "build:docs": "docusaurus build",
     "deploy": "bun run generate && bun run typegen && concurrently -n remix,ui -c \"blue,green\" \"bun run deploy:remix\" \"bun run deploy:ui\"",
-    "deploy:remix": "wrangler pages deploy ./build/remix --project-name portfolio",
+    "deploy:remix": "wrangler pages deploy ./build/client --project-name portfolio",
     "deploy:ui": "wrangler pages deploy ./build/ui --project-name portfolio-ui --branch master",
     "fmt": "concurrently -n markdownlint,typescript,shell,actions -c \"blue,green,yellow,purple\" \"bun run fmt:md:fix\" \"bun run fmt:ts:fix\" \"bun run fmt:shell:fix\" \"bun run fmt:actions:fix\"",
     "fmt:check": "concurrently -n markdownlint,typescript,shell,actions -c \"blue,green,yellow,purple\" \"bun run fmt:md:check\" \"bun run fmt:ts:check\" \"bun run fmt:shell:check\" \"bun run fmt:actions:check\"",
