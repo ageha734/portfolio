@@ -6,7 +6,6 @@ public/
 
 # Test reports
 docs/ladle
-docs/codecept
 docs/playwright
 docs/swagger
 docs/vitest

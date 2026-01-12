@@ -23,7 +23,6 @@ const config: KnipConfig = {
         "docs/vitest/**",
         "docs/playwright/**",
         "docs/lighthouse/**",
-        "docs/codecept/**",
         "docs/interactions/**",
         "docs/accessibility/**",
         "docs/visual/**",

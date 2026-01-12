@@ -1,7 +1,4 @@
 # Test reports and coverage
-codecept/report/*
-!codecept/report/.gitkeep
-
 playwright/report/*
 !playwright/report/.gitkeep
 

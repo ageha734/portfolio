@@ -9,15 +9,6 @@
     "typeRoots": ["./node_modules/@types", "."]
   },
   "files": ["env.d.ts"],
-  "include": [
-    "env.d.ts",
-    "codecept.conf.ts",
-    "orval.config.ts",
-    "playwright.config.ts",
-    "playwright.ladle.config.ts",
-    "tailwind.config.ts",
-    "vite.config.ts",
-    "vite.ladle.config.ts"
-  ],
+  "include": ["env.d.ts", "orval.config.ts", "playwright.config.ts", "tailwind.config.ts", "vite.config.ts"],
   "exclude": ["node_modules", "app", "tests", "docs"]
 }
