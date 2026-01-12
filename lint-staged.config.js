@@ -17,15 +17,48 @@ export default {
         });
         const hasTsFiles = filteredFilenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
 
-        return [
-            ...filteredFilenames.flatMap((f) => [`bun run fmt:ts:check -- ${f}`, `bun run lint:ts:check -- ${f}`]),
-            ...sourceFilesWithTests.map((f) => {
-                const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
-                return `bun run test -- ${testFile}`;
-            }),
-            ...sourceFilesWithTests.map((f) => `bun run coverage -- ${f}`),
-            ...(hasTsFiles ? ["bun run typecheck"] : []),
-        ];
+        const workspaceFiles = filteredFilenames.filter(
+            (f) =>
+                f.startsWith("apps/") ||
+                f.startsWith("packages/") ||
+                f.startsWith("tooling/") ||
+                f.startsWith("testing/"),
+        );
+        const rootFiles = filteredFilenames.filter(
+            (f) =>
+                !f.startsWith("apps/") &&
+                !f.startsWith("packages/") &&
+                !f.startsWith("tooling/") &&
+                !f.startsWith("testing/"),
+        );
+
+        const commands = [];
+
+        if (workspaceFiles.length > 0) {
+            commands.push(`turbo run fmt lint --filter='[${workspaceFiles.join(",")}]'`);
+        }
+
+        if (rootFiles.length > 0) {
+            commands.push(
+                ...rootFiles.flatMap((f) => [`bun run fmt:ts:check -- ${f}`, `bun run lint:ts:check -- ${f}`]),
+            );
+        }
+
+        if (sourceFilesWithTests.length > 0) {
+            commands.push(
+                ...sourceFilesWithTests.map((f) => {
+                    const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
+                    return `bun run test -- ${testFile}`;
+                }),
+                ...sourceFilesWithTests.map((f) => `bun run coverage -- ${f}`),
+            );
+        }
+
+        if (hasTsFiles) {
+            commands.push("turbo run typecheck");
+        }
+
+        return commands;
     },
     "*.md": (filenames) =>
         filenames.flatMap((f) => [

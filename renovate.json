@@ -1,0 +1,63 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended"
+    ],
+    "packageRules": [
+        {
+            "matchPackagePatterns": ["^@portfolio/"],
+            "enabled": false
+        },
+        {
+            "matchDepTypes": ["engines"],
+            "enabled": false
+        },
+        {
+            "matchPackageNames": ["turbo"],
+            "groupName": "turborepo"
+        },
+        {
+            "matchPackageNames": ["@biomejs/biome"],
+            "groupName": "biome"
+        },
+        {
+            "matchPackageNames": ["typescript"],
+            "groupName": "typescript"
+        },
+        {
+            "matchPackagePatterns": ["^@remix-run/"],
+            "groupName": "remix"
+        },
+        {
+            "matchPackagePatterns": ["^@storybook/"],
+            "groupName": "storybook"
+        },
+        {
+            "matchPackagePatterns": ["^@playwright/", "playwright"],
+            "groupName": "playwright"
+        },
+        {
+            "matchPackagePatterns": ["^@vitest/", "vitest"],
+            "groupName": "vitest"
+        },
+        {
+            "matchPackagePatterns": ["^@docusaurus/"],
+            "groupName": "docusaurus"
+        }
+    ],
+    "ignorePresets": [
+        ":prHourlyLimit2"
+    ],
+    "prHourlyLimit": 10,
+    "prConcurrentLimit": 5,
+    "timezone": "Asia/Tokyo",
+    "schedule": [
+        "before 10am on Monday"
+    ],
+    "automerge": false,
+    "automergeType": "pr",
+    "platform": "github",
+    "repositories": [
+        "ageha734/portfolio"
+    ]
+}

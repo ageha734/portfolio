@@ -2,18 +2,21 @@ pre-commit:
     parallel: true
     commands:
         lint-staged:
-            run: npx lint-staged
+            run: bunx lint-staged
             stage_fixed: true
 
 pre-push:
     parallel: false
     commands:
         typecheck:
+            run: bun run typecheck
+            tags: build
+        build:
             run: bun run build
             tags: build
 
 commit-msg:
     commands:
         commitlint:
-            run: npx commitlint --edit {1}
+            run: bunx commitlint --edit {1}
             tags: commit

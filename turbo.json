@@ -1,0 +1,74 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "globalDependencies": [
+        "**/.env.*local"
+    ],
+    "pipeline": {
+        "build": {
+            "dependsOn": ["^build"],
+            "outputs": [
+                "build/**"
+            ],
+            "env": [
+                "NODE_ENV",
+                "CI"
+            ]
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "lint": {
+            "dependsOn": ["^lint"],
+            "outputs": []
+        },
+        "lint:fix": {
+            "dependsOn": ["^lint:fix"],
+            "cache": false
+        },
+        "fmt": {
+            "dependsOn": ["^fmt"],
+            "outputs": []
+        },
+        "fmt:check": {
+            "dependsOn": ["^fmt:check"],
+            "outputs": []
+        },
+        "typecheck": {
+            "dependsOn": ["^typecheck"],
+            "outputs": []
+        },
+        "test": {
+            "dependsOn": ["^build"],
+            "outputs": [
+                ".coverage/**",
+                ".results/**"
+            ],
+            "env": [
+                "NODE_ENV",
+                "CI"
+            ]
+        },
+        "coverage": {
+            "dependsOn": ["^build"],
+            "outputs": [
+                ".coverage/**"
+            ],
+            "env": [
+                "NODE_ENV",
+                "CI"
+            ]
+        },
+        "e2e": {
+            "dependsOn": ["build"],
+            "outputs": [
+                ".results/**",
+                ".reports/**"
+            ],
+            "env": [
+                "NODE_ENV",
+                "CI"
+            ]
+        }
+    }
+}
