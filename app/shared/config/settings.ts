@@ -1,23 +1,26 @@
-export const BASE_URL = process.env.BASE_URL ?? "__undefined__";
-export const GOOGLE_ANALYTICS = process.env.GOOGLE_ANALYTICS ?? "__undefined__";
-export const GOOGLE_TAG_MANAGER = process.env.GOOGLE_TAG_MANAGER ?? "__undefined__";
-export const GOOGLE_ANALYTICS_ENABLED = process.env.GOOGLE_ANALYTICS_ENABLED === "true";
-export const GOOGLE_TAG_MANAGER_ENABLED = process.env.GOOGLE_TAG_MANAGER_ENABLED === "true";
+// Cloudflare Workers環境では process.env は使えないため import.meta.env を使用
+// サーバーサイドで動的に環境変数が必要な場合は、loaderでcontext.cloudflare.envから取得する
 
-export const GRAPHCMS_ADMIN = process.env.GRAPHCMS_ADMIN ?? "__undefined__";
-export const GRAPHCMS_TOKEN = process.env.GRAPHCMS_TOKEN ?? "__undefined__";
-export const GRAPHCMS_URL = process.env.GRAPHCMS_URL ?? "__undefined__";
+export const BASE_URL = import.meta.env.VITE_BASE_URL ?? "__undefined__";
+export const GOOGLE_ANALYTICS = import.meta.env.VITE_GOOGLE_ANALYTICS ?? "__undefined__";
+export const GOOGLE_TAG_MANAGER = import.meta.env.VITE_GOOGLE_TAG_MANAGER ?? "__undefined__";
+export const GOOGLE_ANALYTICS_ENABLED = import.meta.env.VITE_GOOGLE_ANALYTICS_ENABLED === "true";
+export const GOOGLE_TAG_MANAGER_ENABLED = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ENABLED === "true";
 
-export const XSTATE_INSPECTOR_ENABLED = process.env.XSTATE_INSPECTOR_ENABLED === "true";
+export const GRAPHCMS_ADMIN = import.meta.env.VITE_GRAPHCMS_ADMIN ?? "__undefined__";
+export const GRAPHCMS_TOKEN = import.meta.env.VITE_GRAPHCMS_TOKEN ?? "__undefined__";
+export const GRAPHCMS_URL = import.meta.env.VITE_GRAPHCMS_URL ?? "__undefined__";
 
-export const SENTRY_DSN = process.env.SENTRY_DSN ?? "__undefined__";
-export const SENTRY_ENVIRONMENT = process.env.SENTRY_ENVIRONMENT ?? "development";
-export const SENTRY_TRACES_SAMPLE_RATE = process.env.SENTRY_TRACES_SAMPLE_RATE
-    ? Number.parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE)
+export const XSTATE_INSPECTOR_ENABLED = import.meta.env.VITE_XSTATE_INSPECTOR_ENABLED === "true";
+
+export const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN ?? "__undefined__";
+export const SENTRY_ENVIRONMENT = import.meta.env.VITE_SENTRY_ENVIRONMENT ?? "development";
+export const SENTRY_TRACES_SAMPLE_RATE = import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE
+    ? Number.parseFloat(import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE)
     : 1;
-export const SENTRY_REPLAY_SAMPLE_RATE = process.env.SENTRY_REPLAY_SAMPLE_RATE
-    ? Number.parseFloat(process.env.SENTRY_REPLAY_SAMPLE_RATE)
+export const SENTRY_REPLAY_SAMPLE_RATE = import.meta.env.VITE_SENTRY_REPLAY_SAMPLE_RATE
+    ? Number.parseFloat(import.meta.env.VITE_SENTRY_REPLAY_SAMPLE_RATE)
     : 0.1;
-export const SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE = process.env.SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE
-    ? Number.parseFloat(process.env.SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE)
+export const SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE = import.meta.env.VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE
+    ? Number.parseFloat(import.meta.env.VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE)
     : 1;
