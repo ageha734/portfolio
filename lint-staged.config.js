@@ -6,7 +6,7 @@ import { existsSync } from "node:fs";
 export default {
     ".github/**/*.yml": (filenames) =>
         filenames.flatMap((f) => [`bun run fmt:actions:check -- ${f}`, `bun run lint:actions:check -- ${f}`]),
-    "*.{ts,tsx,js,jsx,json,jsonc}": (filenames) => {
+    "*.{ts,tsx,js,jsx}": (filenames) => {
         const filteredFilenames = filenames.filter((f) => !f.includes("worker-configuration.d.ts"));
         const sourceFiles = filteredFilenames.filter(
             (f) => !f.endsWith(".test.ts") && !f.endsWith(".test.tsx") && (f.endsWith(".ts") || f.endsWith(".tsx")),

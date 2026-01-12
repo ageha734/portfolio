@@ -1,7 +1,7 @@
 {
   "recommendations": [
-    "EditorConfig.EditorConfig",
     "biomejs.biome",
+    "davidanson.vscode-markdownlint",
     "oven.bun-vscode",
     "better-ts-errors.better-ts-errors",
     "bierner.markdown-preview-github-styles",

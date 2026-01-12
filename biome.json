@@ -6,7 +6,7 @@
   },
   "formatter": {
     "enabled": true,
-    "useEditorconfig": true,
+    "useEditorconfig": false,
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 4,
