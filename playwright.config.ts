@@ -2,7 +2,17 @@ import { defineConfig, devices } from "@playwright/test";
 
 import "dotenv/config";
 
-const PORT = process.env.PORT || "3000";
+function getPortFromBaseUrl(baseUrl: string): string {
+    try {
+        const url = new URL(baseUrl);
+        return url.port || "3000";
+    } catch {
+        return "3000"; // デフォルト
+    }
+}
+
+const baseUrl = process.env.VITE_BASE_URL ?? "http://localhost:3000";
+const PORT = getPortFromBaseUrl(baseUrl);
 
 export default defineConfig({
     testDir: "./tests/e2e",
@@ -38,7 +48,7 @@ export default defineConfig({
     ],
 
     webServer: {
-        command: process.env.CI ? `bun -w run start-remix-production` : `bun run dev`,
+        command: process.env.CI ? "bun -w run start-remix-production" : "bun run dev",
         port: Number(PORT),
         reuseExistingServer: !process.env.CI,
         stdout: "pipe",

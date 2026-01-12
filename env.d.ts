@@ -4,17 +4,17 @@
 /// <reference path="./worker-configuration.d.ts" />
 
 interface ImportMetaEnv {
-    readonly VITE_BASE_URL: string;
+    readonly VITE_BASE_URL: "https://ageha734.jp" | "https://dev.ageha734.jp";
     readonly VITE_GOOGLE_ANALYTICS: string;
     readonly VITE_GOOGLE_TAG_MANAGER: string;
-    readonly VITE_GOOGLE_ANALYTICS_ENABLED: string;
-    readonly VITE_GOOGLE_TAG_MANAGER_ENABLED: string;
+    readonly VITE_GOOGLE_ANALYTICS_ENABLED: "true" | "false";
+    readonly VITE_GOOGLE_TAG_MANAGER_ENABLED: "true" | "false";
     readonly VITE_GRAPHCMS_ADMIN: string;
     readonly VITE_GRAPHCMS_TOKEN: string;
     readonly VITE_GRAPHCMS_URL: string;
-    readonly VITE_XSTATE_INSPECTOR_ENABLED: string;
+    readonly VITE_XSTATE_INSPECTOR_ENABLED: "true" | "false";
     readonly VITE_SENTRY_DSN: string;
-    readonly VITE_SENTRY_ENVIRONMENT: string;
+    readonly VITE_SENTRY_ENVIRONMENT: "production" | "development";
     readonly VITE_SENTRY_TRACES_SAMPLE_RATE: string;
     readonly VITE_SENTRY_REPLAY_SAMPLE_RATE: string;
     readonly VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE: string;
