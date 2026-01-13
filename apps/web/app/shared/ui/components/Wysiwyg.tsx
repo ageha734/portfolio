@@ -16,7 +16,5 @@ export const Wysiwyg = (props: WysiwygProps) => {
         }
     }, [content]);
 
-    return (
-        <div className="wysiwyg" ref={wysiwygRef} dangerouslySetInnerHTML={{ __html: content }} />
-    );
+    return <div className="wysiwyg" ref={wysiwygRef} dangerouslySetInnerHTML={{ __html: content }} />;
 };

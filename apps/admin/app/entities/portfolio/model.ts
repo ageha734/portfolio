@@ -39,10 +39,5 @@ export function portfolioToListItem(portfolio: Portfolio): PortfolioListItem {
  * Validate Portfolio form data
  */
 export function validatePortfolioFormData(data: PortfolioFormData): boolean {
-    return (
-        data.title.length > 0 &&
-        data.slug.length > 0 &&
-        data.company.length > 0 &&
-        data.date.length > 0
-    );
+    return data.title.length > 0 && data.slug.length > 0 && data.company.length > 0 && data.date.length > 0;
 }

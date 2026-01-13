@@ -15,9 +15,7 @@ vi.mock("~/shared/lib/trpc", () => ({
         },
         portfolios: {
             list: {
-                query: vi.fn().mockResolvedValue([
-                    { id: "1", title: "Test Portfolio 1" },
-                ]),
+                query: vi.fn().mockResolvedValue([{ id: "1", title: "Test Portfolio 1" }]),
             },
         },
     },

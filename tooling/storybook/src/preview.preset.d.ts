@@ -7,6 +7,4 @@ export interface StorybookPreviewPresetOptions {
     additionalParameters?: Preview["parameters"];
 }
 
-export declare function createStorybookPreviewPreset(
-    options?: StorybookPreviewPresetOptions,
-): Preview;
+export declare function createStorybookPreviewPreset(options?: StorybookPreviewPresetOptions): Preview;

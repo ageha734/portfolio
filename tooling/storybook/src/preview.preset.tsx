@@ -8,14 +8,8 @@ export interface StorybookPreviewPresetOptions {
     additionalParameters?: Preview["parameters"];
 }
 
-export function createStorybookPreviewPreset(
-    options: StorybookPreviewPresetOptions = {},
-): Preview {
-    const {
-        tailwindCssPath,
-        additionalDecorators = [],
-        additionalParameters = {},
-    } = options;
+export function createStorybookPreviewPreset(options: StorybookPreviewPresetOptions = {}): Preview {
+    const { tailwindCssPath, additionalDecorators = [], additionalParameters = {} } = options;
 
     if (tailwindCssPath) {
         import(tailwindCssPath);

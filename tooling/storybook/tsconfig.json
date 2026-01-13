@@ -3,8 +3,8 @@
     "extends": "@portfolio/tsconfig/react.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "paths": {},
+        "paths": {}
     },
     "include": ["**/*.ts", "**/*.tsx"],
-    "exclude": ["node_modules"],
+    "exclude": ["node_modules"]
 }

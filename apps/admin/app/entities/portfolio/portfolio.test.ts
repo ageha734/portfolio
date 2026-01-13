@@ -1,9 +1,5 @@
 import { describe, expect, test } from "vitest";
-import {
-    mapApiPortfolioToPortfolio,
-    portfolioToListItem,
-    validatePortfolioFormData,
-} from "./model";
+import { mapApiPortfolioToPortfolio, portfolioToListItem, validatePortfolioFormData } from "./model";
 import type { Portfolio, PortfolioFormData } from "./types";
 
 describe("Portfolio entity", () => {

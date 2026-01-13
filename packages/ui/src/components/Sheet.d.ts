@@ -43,15 +43,13 @@ export declare const SheetFooter: React.ForwardRefExoticComponent<
     SheetFooterProps & React.RefAttributes<HTMLDivElement>
 >;
 
-export interface SheetTitleProps
-    extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title> {}
+export interface SheetTitleProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title> {}
 
 export declare const SheetTitle: React.ForwardRefExoticComponent<
     SheetTitleProps & React.RefAttributes<React.ElementRef<typeof DialogPrimitive.Title>>
 >;
 
-export interface SheetDescriptionProps
-    extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description> {}
+export interface SheetDescriptionProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description> {}
 
 export declare const SheetDescription: React.ForwardRefExoticComponent<
     SheetDescriptionProps & React.RefAttributes<React.ElementRef<typeof DialogPrimitive.Description>>

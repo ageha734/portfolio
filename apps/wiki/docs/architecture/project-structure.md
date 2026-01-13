@@ -34,6 +34,7 @@
 ポートフォリオサイト（BFF）です。Feature-Sliced Design (FSD) を採用しています。
 
 **構造:**
+
 - `app/`: FSDルート（`src/`は使用しない）
   - `entities/`: ドメインモデル
   - `features/`: ユーザー機能
@@ -50,6 +51,7 @@
 CMS APIです。Domain-Driven Design (DDD) を採用しています。
 
 **構造:**
+
 - `app/`: DDDルート（`src/`は使用しない）
   - `usecase/`: Application Rules
   - `service/`: Domain Services
@@ -66,6 +68,7 @@ CMS APIです。Domain-Driven Design (DDD) を採用しています。
 管理ダッシュボードです。Feature-Sliced Design (FSD) を採用しています。
 
 **構造:**
+
 - `app/`: FSDルート（`src/`は使用しない）
   - `app/`: App initialization
   - `routes/`: Tanstack Router
@@ -83,6 +86,7 @@ CMS APIです。Domain-Driven Design (DDD) を採用しています。
 Wiki & Reportsサイトです。
 
 **構造:**
+
 - `docs/`: Markdownドキュメント
 - `app/`: Custom Root
   - `pages/`: カスタムページ
@@ -96,6 +100,7 @@ Wiki & Reportsサイトです。
 Design System（公開予定）です。
 
 **構造:**
+
 - `src/`: ソースコード（`src/`を使用可能）
   - `components/`: Atomic Components
   - `hooks/`: カスタムフック
@@ -106,6 +111,7 @@ Design System（公開予定）です。
 API定義統合パッケージです。
 
 **構造:**
+
 - `src/`: ソースコード
   - `router/`: 共有型定義
   - `schema/`: Zod/TypeSpec Schema
@@ -117,6 +123,7 @@ API定義統合パッケージです。
 Database（Prisma + D1）パッケージです。
 
 **構造:**
+
 - `prisma/`: Prismaスキーマ
 - `migrations/`: D1用マイグレーションSQL
 - `src/`: ソースコード
@@ -128,6 +135,7 @@ Database（Prisma + D1）パッケージです。
 Better-auth共通設定パッケージです。
 
 **構造:**
+
 - `src/`: ソースコード
   - `config.ts`: Better-auth設定
   - `index.ts`: エクスポート

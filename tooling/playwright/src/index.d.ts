@@ -10,10 +10,6 @@ export interface PlaywrightConfigOptions {
     additionalConfig?: Partial<PlaywrightTestConfig>;
 }
 
-export declare function createPlaywrightConfig(
-    options?: PlaywrightConfigOptions,
-): PlaywrightTestConfig;
+export declare function createPlaywrightConfig(options?: PlaywrightConfigOptions): PlaywrightTestConfig;
 
-export declare function createPlaywrightStorybookConfig(
-    options?: PlaywrightConfigOptions,
-): PlaywrightTestConfig;
+export declare function createPlaywrightStorybookConfig(options?: PlaywrightConfigOptions): PlaywrightTestConfig;

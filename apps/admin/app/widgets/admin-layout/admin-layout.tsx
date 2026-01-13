@@ -17,18 +17,10 @@ export function AdminLayout() {
     return (
         <div className="min-h-screen bg-background">
             {/* Mobile sidebar */}
-            <div
-                className={cn(
-                    "fixed inset-0 z-50 lg:hidden",
-                    sidebarOpen ? "block" : "hidden",
-                )}
-            >
+            <div className={cn("fixed inset-0 z-50 lg:hidden", sidebarOpen ? "block" : "hidden")}>
                 <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
                 <div className="fixed inset-y-0 left-0 w-64 bg-card border-r">
-                    <SidebarContent
-                        location={location}
-                        onNavigate={() => setSidebarOpen(false)}
-                    />
+                    <SidebarContent location={location} onNavigate={() => setSidebarOpen(false)} />
                 </div>
             </div>
 
@@ -43,12 +35,7 @@ export function AdminLayout() {
             <div className="lg:pl-64">
                 {/* Header */}
                 <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b bg-background px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="lg:hidden"
-                        onClick={() => setSidebarOpen(true)}
-                    >
+                    <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
                         <Menu className="h-6 w-6" />
                     </Button>
                     <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">

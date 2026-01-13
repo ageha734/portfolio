@@ -6,9 +6,9 @@
         "outDir": "./dist",
         "rootDir": "./src",
         "paths": {
-            "~/*": ["./src/*"],
-        },
+            "~/*": ["./src/*"]
+        }
     },
     "include": ["src/**/*", ".storybook/**/*"],
-    "exclude": ["node_modules", "dist", "build"],
+    "exclude": ["node_modules", "dist", "build"]
 }

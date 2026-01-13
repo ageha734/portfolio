@@ -13,7 +13,7 @@
 
 #### トリガー条件
 
-- **pull_request**: 次のパスが変更された場合
+- **pull\_request**: 次のパスが変更された場合
   - `.github/**`
   - `docs/**`
   - `scripts/**`
@@ -158,15 +158,15 @@
   - `vite.config.ts`
   - `docs/swagger/**`
   - `.github/workflows/deploy.yml`
-- **pull_request** (masterブランチ): 次のパスが変更された場合
+- **pull\_request** (masterブランチ): 次のパスが変更された場合
   - `docs/**`
   - `.github/workflows/deploy.yml`
-- **workflow_run**: CIワークフロー完了時
-- **workflow_dispatch**: 手動実行
+- **workflow\_run**: CIワークフロー完了時
+- **workflow\_dispatch**: 手動実行
 
 #### CDワークフローのジョブ一覧
 
-1. **detect-changes** (workflow_run以外)
+1. **detect-changes** (workflow\_run以外)
    - 変更されたファイルを検出し、次のカテゴリに分類
    - 出力: `docs`, `storybook`, `swagger`
    - タイムアウト: 5分

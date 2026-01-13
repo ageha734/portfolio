@@ -29,8 +29,7 @@ export declare const DropdownMenuContent: React.ForwardRefExoticComponent<
     DropdownMenuContentProps & React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Content>>
 >;
 
-export interface DropdownMenuItemProps
-    extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
+export interface DropdownMenuItemProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
     inset?: boolean;
 }
 
@@ -48,8 +47,7 @@ export declare const DropdownMenuRadioItem: React.ForwardRefExoticComponent<
         React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>>
 >;
 
-export interface DropdownMenuLabelProps
-    extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> {
+export interface DropdownMenuLabelProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> {
     inset?: boolean;
 }
 

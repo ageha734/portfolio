@@ -6,10 +6,10 @@
         "outDir": "./dist",
         "rootDir": "./app",
         "paths": {
-            "~/*": ["./app/*"],
+            "~/*": ["./app/*"]
         },
-        "types": ["@cloudflare/workers-types", "vitest/globals"],
+        "types": ["@cloudflare/workers-types", "vitest/globals"]
     },
     "include": ["app/**/*", "env.d.ts"],
-    "exclude": ["node_modules", "dist", "build"],
+    "exclude": ["node_modules", "dist", "build"]
 }

@@ -74,9 +74,7 @@ export function PortfoliosList() {
                                         <CardDescription>{portfolio.company}</CardDescription>
                                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                             <span>{new Date(portfolio.date).toLocaleDateString()}</span>
-                                            {portfolio.current && (
-                                                <span className="text-green-600">Current</span>
-                                            )}
+                                            {portfolio.current && <span className="text-green-600">Current</span>}
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -93,9 +91,7 @@ export function PortfoliosList() {
                             </CardHeader>
                             {portfolio.overview && (
                                 <CardContent>
-                                    <p className="text-sm text-muted-foreground line-clamp-2">
-                                        {portfolio.overview}
-                                    </p>
+                                    <p className="text-sm text-muted-foreground line-clamp-2">{portfolio.overview}</p>
                                 </CardContent>
                             )}
                         </Card>

@@ -6,11 +6,11 @@
         "outDir": "./dist",
         "rootDir": ".",
         "paths": {
-            "@/*": ["./app/*"],
+            "@/*": ["./app/*"]
         },
         "jsx": "react-jsx",
-        "allowJs": true,
+        "allowJs": true
     },
     "include": ["app/**/*", "docusaurus.config.ts", "sidebars.ts"],
-    "exclude": ["node_modules", "dist", "build", ".docusaurus"],
+    "exclude": ["node_modules", "dist", "build", ".docusaurus"]
 }

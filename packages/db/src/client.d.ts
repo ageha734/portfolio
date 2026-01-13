@@ -5,8 +5,6 @@ export interface CreatePrismaClientOptions {
     databaseUrl?: string;
 }
 
-export declare function createPrismaClient(
-    options?: CreatePrismaClientOptions,
-): PrismaClient;
+export declare function createPrismaClient(options?: CreatePrismaClientOptions): PrismaClient;
 
 export type PrismaClientType = ReturnType<typeof createPrismaClient>;

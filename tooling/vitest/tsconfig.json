@@ -3,8 +3,8 @@
     "extends": "@portfolio/tsconfig/node.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "paths": {},
+        "paths": {}
     },
     "include": ["**/*.ts"],
-    "exclude": ["node_modules"],
+    "exclude": ["node_modules"]
 }

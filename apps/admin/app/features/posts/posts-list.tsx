@@ -71,14 +71,10 @@ export function PostsList() {
                                 <div className="flex items-start justify-between">
                                     <div className="space-y-1">
                                         <CardTitle>{post.title}</CardTitle>
-                                        <CardDescription>
-                                            {post.description || "No description"}
-                                        </CardDescription>
+                                        <CardDescription>{post.description || "No description"}</CardDescription>
                                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                             <span>{new Date(post.date).toLocaleDateString()}</span>
-                                            {post.tags && post.tags.length > 0 && (
-                                                <span>{post.tags.length} tags</span>
-                                            )}
+                                            {post.tags && post.tags.length > 0 && <span>{post.tags.length} tags</span>}
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">

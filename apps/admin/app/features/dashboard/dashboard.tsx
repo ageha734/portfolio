@@ -81,9 +81,7 @@ export function Dashboard() {
                         <CardContent>
                             <div className="text-2xl font-bold">{stat.value}</div>
                             <p className="text-xs text-muted-foreground">{stat.description}</p>
-                            {stat.trend && (
-                                <p className="text-xs text-green-600 mt-1">{stat.trend} from last month</p>
-                            )}
+                            {stat.trend && <p className="text-xs text-green-600 mt-1">{stat.trend} from last month</p>}
                         </CardContent>
                     </Card>
                 ))}

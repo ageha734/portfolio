@@ -7,6 +7,4 @@ export interface StorybookMainPresetOptions {
     additionalAddons?: string[];
 }
 
-export declare function createStorybookMainPreset(
-    options: StorybookMainPresetOptions,
-): StorybookConfig;
+export declare function createStorybookMainPreset(options: StorybookMainPresetOptions): StorybookConfig;

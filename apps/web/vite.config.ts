@@ -26,37 +26,40 @@ const baseConfig = createViteConfig({
     },
 });
 
-export default mergeConfig(baseConfig, defineConfig({
-    assetsInclude: ["**/*.glb", "**/*.hdr", "**/*.glsl"],
-    build: {
-        assetsInlineLimit: 1024,
-        target: "es2022",
-        rollupOptions: {
-            external: (id) => id === "@xstate/inspect",
+export default mergeConfig(
+    baseConfig,
+    defineConfig({
+        assetsInclude: ["**/*.glb", "**/*.hdr", "**/*.glsl"],
+        build: {
+            assetsInlineLimit: 1024,
+            target: "es2022",
+            rollupOptions: {
+                external: (id) => id === "@xstate/inspect",
+            },
         },
-    },
-    optimizeDeps: {
-        exclude: ["@xstate/inspect"],
-    },
-    plugins: [
-        tailwindcss(),
-        mdx({
-            rehypePlugins: [[rehypeImgSize, { dir: "public" }], rehypeSlug, rehypePrism] as any,
-            remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] as any,
-            providerImportSource: "@mdx-js/react",
-        }),
-        !isStorybook && remixCloudflareDevProxy(),
-        !isStorybook &&
-            remix({
-                ignoredRouteFiles: ["**/.*", "**/*.test.{ts,tsx}"],
-                future: {
-                    v3_fetcherPersist: true,
-                    v3_relativeSplatPath: true,
-                    v3_throwAbortReason: true,
-                    v3_singleFetch: true,
-                    v3_lazyRouteDiscovery: true,
-                },
-                serverModuleFormat: "esm",
+        optimizeDeps: {
+            exclude: ["@xstate/inspect"],
+        },
+        plugins: [
+            tailwindcss(),
+            mdx({
+                rehypePlugins: [[rehypeImgSize, { dir: "public" }], rehypeSlug, rehypePrism] as any,
+                remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter] as any,
+                providerImportSource: "@mdx-js/react",
             }),
-    ].filter(Boolean),
-}));
+            !isStorybook && remixCloudflareDevProxy(),
+            !isStorybook &&
+                remix({
+                    ignoredRouteFiles: ["**/.*", "**/*.test.{ts,tsx}"],
+                    future: {
+                        v3_fetcherPersist: true,
+                        v3_relativeSplatPath: true,
+                        v3_throwAbortReason: true,
+                        v3_singleFetch: true,
+                        v3_lazyRouteDiscovery: true,
+                    },
+                    serverModuleFormat: "esm",
+                }),
+        ].filter(Boolean),
+    }),
+);
