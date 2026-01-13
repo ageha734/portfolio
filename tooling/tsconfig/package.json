@@ -1,0 +1,10 @@
+{
+    "name": "@portfolio/tsconfig",
+    "private": true,
+    "files": [
+        "*.json"
+    ],
+    "peerDependencies": {
+        "typescript": "5.9.3"
+    }
+}
