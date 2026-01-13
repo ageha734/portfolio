@@ -36,7 +36,7 @@
         "editor.formatOnSave": false
     },
     "editor.codeActionsOnSave": {
-        "source.fixAll.biome,
+        "source.fixAll.biome": "explicit",
         "plyconfig.json": "jsonc"
     },
     "files.exclude": {
