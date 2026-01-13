@@ -1,0 +1,11 @@
+excludes:
+  - policy_name: checkout_persist_credentials_should_be_false
+    workflow_file_path: .github/workflows/ci.yml
+    job_name: run-coverage-ts
+    step_name: Checkout repository
+    reason: This job needs to commit and push coverage reports to the repository
+  - policy_name: checkout_persist_credentials_should_be_false
+    workflow_file_path: .github/workflows/ci.yml
+    job_name: run-e2e-ts
+    step_name: Checkout repository
+    reason: This job needs to commit and push E2E reports to the repository

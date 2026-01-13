@@ -177,7 +177,7 @@ jobs:
             COVERAGE_DIR=$(find . -type d -name "coverage" | head -1 || echo "")
           fi
 
-          if [ -n "${COVERAGE_DIR}" ] && [ -d "${COVERAGE_DIR}" ] && [ "$(ls -A ${COVERAGE_DIR})" ]; then
+          if [ -n "${COVERAGE_DIR}" ] && [ -d "${COVERAGE_DIR}" ] && [ "$(ls -A "${COVERAGE_DIR}")" ]; then
             cp -r "${COVERAGE_DIR}"/* "${REPORT_DIR}/" || true
 
             # Create metadata
@@ -206,6 +206,7 @@ jobs:
           else
             git commit -m "ci: Add coverage reports for ${COMMIT_SHA}" || true
             git push || true
+          fi
   run-sonarcloud:
     needs: [detect-changes, run-coverage-ts]
     if: needs.detect-changes.outputs.web == 'true'

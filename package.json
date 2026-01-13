@@ -29,7 +29,7 @@
         "fmt:actions:fix": "bun run scripts/check.ts --check-type=fmt --lint-type=actions --fix",
         "fmt:actions:check": "bun run scripts/check.ts --check-type=fmt --lint-type=actions",
         "lint": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"bun run lint:ts:check\" \"bun run lint:shell:check\" \"bun run lint:actions:check\"",
-        "lint:fix": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"bun run lint:ts:fix\" \"bun run lint:shell:fix\" \"bun run lint:actions:fix\"",
+        "lint:fix": "concurrently -n turbo -c \"yellow\" \"bun run lint:ts:fix\" ",
         "lint:ts:check": "turbo run lint",
         "lint:ts:fix": "turbo run lint:fix",
         "lint:shell:check": "bun run scripts/check.ts --check-type=lint --lint-type=shell",
