@@ -1,8 +1,0 @@
-# Test reports and coverage
-playwright/report/*
-!playwright/report/.gitkeep
-
-playwright/result/
-
-vitest/coverage/*
-!vitest/coverage/.gitkeep
