@@ -9,7 +9,7 @@
         "generate": "prisma generate",
         "dev": "prisma studio --browser none",
         "build": "run-s push migrate seed",
-        "push": "prisma db push",
+        "push": "bunx dotenv-cli -e ../../.env -- prisma db push",
         "migrate": "wrangler d1 migrations apply",
         "seed": "bun run src/seed.ts",
         "lint": "biome lint .",
