@@ -1,28 +1,28 @@
 {
-  "private": true,
-  "name": "@portfolio/playwright-config",
-  "type": "module",
-  "types": "./src/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./src/index.d.ts",
-      "default": "./src/index.ts"
+    "private": true,
+    "name": "@portfolio/playwright-config",
+    "type": "module",
+    "types": "./src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.ts"
+        }
+    },
+    "scripts": {
+        "clean": "git clean -xdf .cache .turbo node_modules",
+        "fmt": "biome format --write .",
+        "fmt:check": "biome format .",
+        "lint": "biome lint .",
+        "lint:fix": "biome lint --write .",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@playwright/test": "1.57.0"
+    },
+    "devDependencies": {
+        "@portfolio/biome-config": "workspace:*",
+        "@portfolio/tsconfig": "workspace:*",
+        "typescript": "5.9.3"
     }
-  },
-  "scripts": {
-    "clean": "git clean -xdf .cache .turbo node_modules",
-    "fmt": "biome format --write .",
-    "fmt:check": "biome format .",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@playwright/test": "1.57.0"
-  },
-  "devDependencies": {
-    "@portfolio/biome-config": "workspace:*",
-    "@portfolio/tsconfig": "workspace:*",
-    "typescript": "5.9.3"
-  }
 }

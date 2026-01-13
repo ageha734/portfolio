@@ -30,6 +30,27 @@ const sidebars: SidebarsConfig = {
             id: "prompts",
             label: "Prompts",
         },
+        {
+            type: "category",
+            label: "Reports",
+            items: [
+                {
+                    type: "link",
+                    label: "レポート一覧",
+                    href: "/reports",
+                },
+                {
+                    type: "link",
+                    label: "E2Eテストレポート",
+                    href: "/reports/e2e",
+                },
+                {
+                    type: "link",
+                    label: "カバレッジレポート",
+                    href: "/reports/coverage",
+                },
+            ],
+        },
     ],
 };
 

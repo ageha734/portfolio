@@ -26,7 +26,12 @@ const config = {
 		]),
 	"*.{ts,tsx,js,jsx}": (filenames) => {
 		const filteredFilenames = filenames.filter(
-			(f) => !f.includes("worker-configuration.d.ts"),
+			(f) =>
+				!f.includes("worker-configuration.d.ts") &&
+				!f.includes("/dist/") &&
+				!f.includes("/build/") &&
+				!f.includes("/.next/") &&
+				!f.includes("/coverage/"),
 		);
 		const sourceFiles = filteredFilenames.filter(
 			(f) =>
@@ -64,12 +69,17 @@ const config = {
 		}
 
 		if (rootFiles.length > 0) {
-			commands.push(
-				...rootFiles.flatMap((f) => [
-					`bun run fmt:ts:check -- ${f}`,
-					`bun run lint:ts:check -- ${f}`,
-				]),
+			const rootWorkspaceFiles = rootFiles.filter(
+				(f) =>
+					f.endsWith(".ts") ||
+					f.endsWith(".tsx") ||
+					f.endsWith(".js") ||
+					f.endsWith(".jsx"),
 			);
+			if (rootWorkspaceFiles.length > 0) {
+				commands.push("turbo run fmt:check");
+				commands.push("turbo run lint");
+			}
 		}
 
 		if (sourceFilesWithTests.length > 0) {
@@ -94,12 +104,33 @@ const config = {
 
 		return commands;
 	},
-	"*.md": (filenames) =>
-		filenames.flatMap((f) => [
-			`bun run fmt:md:check -- ${f}`,
-			`bun run lint:md:check -- ${f}`,
-			`bun run lint:textlint:check -- ${f}`,
-		]),
+	"*.md": (filenames) => {
+		const wikiFiles = filenames.filter((f) => f.includes("apps/wiki/"));
+		const otherFiles = filenames.filter((f) => !f.includes("apps/wiki/"));
+
+		const commands = [];
+
+		if (wikiFiles.length > 0) {
+			const relativeFiles = wikiFiles.map((f) => {
+				const match = f.match(/apps\/wiki\/(.+)/);
+				return match ? match[1] : f;
+			});
+			commands.push(
+				`cd apps/wiki && bun run fmt:md:check -- ${relativeFiles.join(" ")}`,
+				`cd apps/wiki && bun run lint:md:check -- ${relativeFiles.join(" ")}`,
+				`cd apps/wiki && bun run lint:textlint:check -- ${relativeFiles.join(" ")}`,
+			);
+		}
+
+		// ルートディレクトリや他のディレクトリのMarkdownファイルは警告を出す
+		if (otherFiles.length > 0) {
+			console.warn(
+				`Warning: The following markdown files are outside apps/wiki/ and will not be checked: ${otherFiles.join(", ")}`,
+			);
+		}
+
+		return commands;
+	},
 	"*.sh": (filenames) =>
 		filenames.flatMap((f) => [
 			`bun run fmt:shell:check -- ${f}`,

@@ -1,58 +1,58 @@
 {
-  "private": true,
-  "name": "@portfolio/vitest-config",
-  "type": "module",
-  "types": "./src/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./src/index.d.ts",
-      "default": "./src/index.ts"
+    "private": true,
+    "name": "@portfolio/vitest-config",
+    "type": "module",
+    "types": "./src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.ts"
+        },
+        "./env": {
+            "types": "./src/env.d.ts",
+            "default": "./src/env.ts"
+        },
+        "./mocks": {
+            "types": "./src/mocks.d.ts",
+            "default": "./src/mocks.ts"
+        },
+        "./msw": {
+            "types": "./src/msw.d.ts",
+            "default": "./src/msw.ts"
+        },
+        "./render": {
+            "types": "./src/render.d.ts",
+            "default": "./src/render.tsx"
+        },
+        "./setup": {
+            "types": "./src/setup.d.ts",
+            "default": "./src/setup.ts"
+        }
     },
-    "./env": {
-      "types": "./src/env.d.ts",
-      "default": "./src/env.ts"
+    "scripts": {
+        "clean": "git clean -xdf .cache .turbo node_modules",
+        "fmt": "biome format --write .",
+        "fmt:check": "biome format .",
+        "lint": "biome lint .",
+        "lint:fix": "biome lint --write .",
+        "typecheck": "tsc --noEmit"
     },
-    "./mocks": {
-      "types": "./src/mocks.d.ts",
-      "default": "./src/mocks.ts"
+    "dependencies": {
+        "@testing-library/jest-dom": "6.9.1",
+        "@testing-library/react": "16.3.1",
+        "@testing-library/user-event": "14.6.1",
+        "@vitejs/plugin-react": "5.1.2",
+        "dotenv": "17.2.3",
+        "jsdom": "27.4.0",
+        "react-router": "7.11.0",
+        "regenerator-runtime": "0.14.1",
+        "vite": "5.4.0",
+        "vite-tsconfig-paths": "6.0.3",
+        "vitest": "3.2.4"
     },
-    "./msw": {
-      "types": "./src/msw.d.ts",
-      "default": "./src/msw.ts"
-    },
-    "./render": {
-      "types": "./src/render.d.ts",
-      "default": "./src/render.tsx"
-    },
-    "./setup": {
-      "types": "./src/setup.d.ts",
-      "default": "./src/setup.ts"
+    "devDependencies": {
+        "@portfolio/biome-config": "workspace:*",
+        "@portfolio/tsconfig": "workspace:*",
+        "typescript": "5.9.3"
     }
-  },
-  "scripts": {
-    "clean": "git clean -xdf .cache .turbo node_modules",
-    "fmt": "biome format --write .",
-    "fmt:check": "biome format .",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/react": "16.3.1",
-    "@testing-library/user-event": "14.6.1",
-    "@vitejs/plugin-react": "5.1.2",
-    "dotenv": "17.2.3",
-    "jsdom": "27.4.0",
-    "react-router": "7.11.0",
-    "regenerator-runtime": "0.14.1",
-    "vite": "5.4.0",
-    "vite-tsconfig-paths": "6.0.3",
-    "vitest": "3.2.4"
-  },
-  "devDependencies": {
-    "@portfolio/biome-config": "workspace:*",
-    "@portfolio/tsconfig": "workspace:*",
-    "typescript": "5.9.3"
-  }
 }
