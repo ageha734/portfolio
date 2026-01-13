@@ -1,41 +1,41 @@
 {
-    "name": "@portfolio/api",
-    "private": true,
-    "type": "module",
-    "main": "./src/index.ts",
-    "types": "./src/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./src/index.d.ts",
-            "import": "./src/index.ts"
-        }
-    },
-    "scripts": {
-        "clean": "git clean -xdf .cache .turbo node_modules dist",
-        "generate": "echo 'Skipping tsp compile: TypeSpec schema not configured'",
-        "lint": "biome lint .",
-        "lint:fix": "biome lint --write .",
-        "fmt": "biome format --write .",
-        "fmt:check": "biome format .",
-        "typecheck": "tsc --noEmit",
-        "test": "vitest run",
-        "coverage": "vitest run --coverage"
-    },
-    "dependencies": {
-        "@trpc/server": "11.0.0",
-        "zod": "4.3.4"
-    },
-    "devDependencies": {
-        "@portfolio/biome-config": "workspace:*",
-        "@portfolio/tsconfig": "workspace:*",
-        "@portfolio/vitest-config": "workspace:*",
-        "@typespec/compiler": "1.7.1",
-        "@typespec/http": "1.7.0",
-        "@typespec/openapi3": "1.7.0",
-        "typescript": "5.9.3",
-        "vitest": "3.2.4"
-    },
-    "peerDependencies": {
-        "@trpc/server": "11.0.0"
+  "private": true,
+  "name": "@portfolio/api",
+  "type": "module",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.ts"
     }
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo node_modules dist",
+    "coverage": "vitest run --coverage",
+    "fmt": "biome format --write .",
+    "fmt:check": "biome format .",
+    "generate": "echo 'Skipping tsp compile: TypeSpec schema not configured'",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@trpc/server": "11.0.0",
+    "zod": "4.3.4"
+  },
+  "devDependencies": {
+    "@portfolio/biome-config": "workspace:*",
+    "@portfolio/tsconfig": "workspace:*",
+    "@portfolio/vitest-config": "workspace:*",
+    "@typespec/compiler": "1.7.1",
+    "@typespec/http": "1.7.0",
+    "@typespec/openapi3": "1.7.0",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  },
+  "peerDependencies": {
+    "@trpc/server": "11.0.0"
+  },
+  "main": "./src/index.ts"
 }

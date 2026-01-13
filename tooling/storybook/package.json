@@ -1,49 +1,48 @@
 {
-    "name": "@portfolio/storybook-config",
-    "version": "0.0.0",
-    "private": true,
-    "description": "Shared Storybook configuration",
-    "type": "module",
-    "types": "./src/main.preset.d.ts",
-    "exports": {
-        "./main": {
-            "types": "./src/main.preset.d.ts",
-            "default": "./src/main.preset.ts"
-        },
-        "./preview": {
-            "types": "./src/preview.preset.d.ts",
-            "default": "./src/preview.preset.ts"
-        },
-        "./theme": {
-            "types": "./src/theme.d.ts",
-            "default": "./src/theme.ts"
-        }
+  "private": true,
+  "version": "0.0.0",
+  "name": "@portfolio/storybook-config",
+  "type": "module",
+  "types": "./src/main.preset.d.ts",
+  "exports": {
+    "./main": {
+      "types": "./src/main.preset.d.ts",
+      "default": "./src/main.preset.ts"
     },
-    "scripts": {
-        "clean": "git clean -xdf .cache .turbo node_modules",
-        "lint": "biome lint .",
-        "lint:fix": "biome lint --write .",
-        "fmt": "biome format --write .",
-        "fmt:check": "biome format .",
-        "typecheck": "tsc --noEmit"
+    "./preview": {
+      "types": "./src/preview.preset.d.ts",
+      "default": "./src/preview.preset.ts"
     },
-    "dependencies": {
-        "@storybook/react": "8.6.14",
-        "@storybook/react-vite": "8.6.14",
-        "@storybook/addon-essentials": "8.6.14",
-        "@storybook/addon-interactions": "8.6.14",
-        "@storybook/addon-links": "8.6.14",
-        "@storybook/addon-a11y": "8.6.14",
-        "@storybook/theming": "8.6.14",
-        "react": "18.3.1",
-        "react-dom": "18.3.1",
-        "react-router": "7.11.0",
-        "vite": "5.4.0",
-        "vite-tsconfig-paths": "6.0.3"
-    },
-    "devDependencies": {
-        "@portfolio/biome-config": "workspace:*",
-        "@portfolio/tsconfig": "workspace:*",
-        "typescript": "5.9.3"
+    "./theme": {
+      "types": "./src/theme.d.ts",
+      "default": "./src/theme.ts"
     }
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo node_modules",
+    "fmt": "biome format --write .",
+    "fmt:check": "biome format .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@storybook/addon-a11y": "8.6.14",
+    "@storybook/addon-essentials": "8.6.14",
+    "@storybook/addon-interactions": "8.6.14",
+    "@storybook/addon-links": "8.6.14",
+    "@storybook/react": "8.6.14",
+    "@storybook/react-vite": "8.6.14",
+    "@storybook/theming": "8.6.14",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router": "7.11.0",
+    "vite": "5.4.0",
+    "vite-tsconfig-paths": "6.0.3"
+  },
+  "devDependencies": {
+    "@portfolio/biome-config": "workspace:*",
+    "@portfolio/tsconfig": "workspace:*",
+    "typescript": "5.9.3"
+  }
 }

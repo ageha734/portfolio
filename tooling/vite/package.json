@@ -1,32 +1,32 @@
 {
-    "name": "@portfolio/vite-config",
-    "private": true,
-    "type": "module",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "default": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "clean": "git clean -xdf .cache .turbo node_modules dist",
-        "build": "tsc --outDir dist",
-        "dev": "tsc --watch --outDir dist",
-        "lint": "biome lint .",
-        "lint:fix": "biome lint --write .",
-        "fmt": "biome format --write .",
-        "fmt:check": "biome format .",
-        "typecheck": "tsc --noEmit"
-    },
-    "dependencies": {
-        "vite-tsconfig-paths": "6.0.3",
-        "vite": "5.4.0"
-    },
-    "devDependencies": {
-        "@portfolio/biome-config": "workspace:*",
-        "@portfolio/tsconfig": "workspace:*",
-        "@types/node": "22.10.5",
-        "typescript": "5.9.3"
+  "private": true,
+  "name": "@portfolio/vite-config",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
+  },
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "clean": "git clean -xdf .cache .turbo node_modules dist",
+    "dev": "tsc --watch --outDir dist",
+    "fmt": "biome format --write .",
+    "fmt:check": "biome format .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "vite": "5.4.0",
+    "vite-tsconfig-paths": "6.0.3"
+  },
+  "devDependencies": {
+    "@portfolio/biome-config": "workspace:*",
+    "@portfolio/tsconfig": "workspace:*",
+    "@types/node": "22.10.5",
+    "typescript": "5.9.3"
+  }
 }

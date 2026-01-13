@@ -1,10 +1,10 @@
 {
-    "name": "@portfolio/biome-config",
-    "private": true,
-    "exports": {
-        "./base": "./base.json"
-    },
-    "peerDependencies": {
-        "@biomejs/biome": "2.3.10"
-    }
+  "private": true,
+  "name": "@portfolio/biome-config",
+  "exports": {
+    "./base": "./base.json"
+  },
+  "peerDependencies": {
+    "@biomejs/biome": "2.3.10"
+  }
 }

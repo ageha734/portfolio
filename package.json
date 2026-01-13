@@ -1,59 +1,58 @@
 {
-    "private": true,
-    "name": "portfolio",
-    "packageManager": "bun@1.1.43",
-    "workspaces": [
-        "apps/*",
-        "packages/*",
-        "tooling/*",
-        "testing/*"
-    ],
-    "engines": {
-        "bun": "1.1.43",
-        "node": "20.19.0"
-    },
-    "scripts": {
-        "prepare": "SKIP_INSTALL=true bun run scripts/setup.ts",
-        "knip": "knip",
-        "syncpack": "syncpack list-mismatches",
-        "generate": "turbo run generate",
-        "dev": "turbo run dev",
-        "build": "turbo run build",
-        "check": "concurrently -n fmt,lint,knip,syncpack,test,coverage -c \"blue,green,yellow,purple,cyan,red\" \"turbo run fmt:check\" \"turbo run lint:check\" \"turbo run knip\" \"turbo run syncpack\" \"turbo run test\" \"turbo run coverage\"",
-        "fmt": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"turbo run fmt\" \"bun run fmt:shell:fix\" \"bun run fmt:actions:fix\"",
-        "fmt:check": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"turbo run fmt:check\" \"bun run fmt:shell:check\" \"bun run fmt:actions:check\"",
-        "fmt:ts:fix": "turbo run fmt",
-        "fmt:ts:check": "turbo run fmt:check",
-        "fmt:shell:fix": "bun run scripts/check.ts --check-type=fmt --lint-type=shell --fix",
-        "fmt:shell:check": "bun run scripts/check.ts --check-type=fmt --lint-type=shell",
-        "fmt:actions:fix": "bun run scripts/check.ts --check-type=fmt --lint-type=actions --fix",
-        "fmt:actions:check": "bun run scripts/check.ts --check-type=fmt --lint-type=actions",
-        "lint": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"bun run lint:ts:check\" \"bun run lint:shell:check\" \"bun run lint:actions:check\"",
-        "lint:fix": "concurrently -n turbo -c \"yellow\" \"bun run lint:ts:fix\" ",
-        "lint:ts:check": "turbo run lint",
-        "lint:ts:fix": "turbo run lint:fix",
-        "lint:shell:check": "bun run scripts/check.ts --check-type=lint --lint-type=shell",
-        "lint:actions:check": "bun run scripts/check.ts --check-type=lint --lint-type=actions",
-        "typecheck": "turbo run typecheck",
-        "test": "turbo run test",
-        "coverage": "turbo run coverage",
-        "e2e": "turbo run e2e"
-    },
-    "dependencies": {
-        "dotenv": "17.2.3"
-    },
-    "devDependencies": {
-        "@commitlint/cli": "20.3.0",
-        "@commitlint/config-conventional": "20.3.0",
-        "@types/bun": "1.3.5",
-        "@types/node": "25.0.3",
-        "concurrently": "9.2.1",
-        "knip": "5.79.0",
-        "lefthook": "2.0.13",
-        "lint-staged": "16.2.7",
-        "renovate": "^41.0.0",
-        "sherif": "^1.0.0",
-        "syncpack": "^13.0.0",
-        "turbo": "^2.3.0"
-    }
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "check": "concurrently -n fmt,lint,knip,syncpack,test,coverage -c \"blue,green,yellow,purple,cyan,red\" \"turbo run fmt:check\" \"turbo run lint:check\" \"turbo run knip\" \"turbo run syncpack\" \"turbo run test\" \"turbo run coverage\"",
+    "coverage": "turbo run coverage",
+    "dev": "turbo run dev",
+    "e2e": "turbo run e2e",
+    "fmt": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"turbo run fmt\" \"bun run fmt:shell:fix\" \"bun run fmt:actions:fix\"",
+    "fmt:actions:check": "bun run scripts/check.ts --check-type=fmt --lint-type=actions",
+    "fmt:actions:fix": "bun run scripts/check.ts --check-type=fmt --lint-type=actions --fix",
+    "fmt:check": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"turbo run fmt:check\" \"bun run fmt:shell:check\" \"bun run fmt:actions:check\"",
+    "fmt:shell:check": "bun run scripts/check.ts --check-type=fmt --lint-type=shell",
+    "fmt:shell:fix": "bun run scripts/check.ts --check-type=fmt --lint-type=shell --fix",
+    "fmt:ts:check": "turbo run fmt:check",
+    "fmt:ts:fix": "turbo run fmt",
+    "generate": "turbo run generate",
+    "knip": "knip",
+    "lint": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"bun run lint:ts:check\" \"bun run lint:shell:check\" \"bun run lint:actions:check\"",
+    "lint:actions:check": "bun run scripts/check.ts --check-type=lint --lint-type=actions",
+    "lint:fix": "concurrently -n turbo -c \"yellow\" \"bun run lint:ts:fix\" ",
+    "lint:shell:check": "bun run scripts/check.ts --check-type=lint --lint-type=shell",
+    "lint:ts:check": "turbo run lint",
+    "lint:ts:fix": "turbo run lint:fix",
+    "pkg": "syncpack list-mismatches",
+    "prepare": "SKIP_INSTALL=true bun run scripts/setup.ts",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck"
+  },
+  "dependencies": {
+    "dotenv": "17.2.3"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "20.3.0",
+    "@commitlint/config-conventional": "20.3.0",
+    "@types/bun": "1.3.5",
+    "@types/node": "25.0.3",
+    "concurrently": "9.2.1",
+    "knip": "5.79.0",
+    "lefthook": "2.0.13",
+    "lint-staged": "16.2.7",
+    "renovate": "^41.0.0",
+    "sherif": "^1.0.0",
+    "syncpack": "^13.0.0",
+    "turbo": "^2.3.0"
+  },
+  "engines": {
+    "bun": "1.1.43",
+    "node": "20.19.0"
+  },
+  "packageManager": "bun@1.1.43",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "tooling/*",
+    "testing/*"
+  ]
 }
