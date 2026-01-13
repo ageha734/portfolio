@@ -4,6 +4,9 @@
         "**/.env.*local"
     ],
     "tasks": {
+        "generate": {
+            "cache": false
+        },
         "build": {
             "dependsOn": ["^build"],
             "outputs": [

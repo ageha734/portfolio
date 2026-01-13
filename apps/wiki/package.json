@@ -5,7 +5,7 @@
     "scripts": {
         "generate": "wrangler types",
         "clean": "git clean -xdf .cache .turbo node_modules dist",
-        "dev": "docusaurus start --no-open",
+        "dev": "docusaurus start --no-open --port 13000",
         "build": "docusaurus build",
         "lint": "run-p lint:*:check",
         "lint:fix": "run-p lint:*:fix",

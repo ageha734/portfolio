@@ -12,7 +12,7 @@
     },
     "scripts": {
         "clean": "git clean -xdf .cache .turbo node_modules dist",
-        "generate": "tsp compile",
+        "generate": "echo 'Skipping tsp compile: TypeSpec schema not configured'",
         "lint": "biome lint .",
         "lint:fix": "biome lint --write .",
         "fmt": "biome format --write .",
