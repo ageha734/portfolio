@@ -1,0 +1,14 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "@portfolio/tsconfig/react.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./dist",
+        "rootDir": "./app",
+        "paths": {
+            "~/*": ["./app/*"],
+        },
+    },
+    "include": ["app/**/*", "app/main.tsx", "app/router.tsx", "routeTree.gen.ts", ".storybook"],
+    "exclude": ["node_modules", "dist", "build"],
+}

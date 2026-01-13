@@ -1,0 +1,10 @@
+import { publicProcedure, router } from "@portfolio/api";
+import { z } from "zod";
+
+export const {{name}}Router = router({
+    // TODO: Add tRPC procedures
+    list: publicProcedure.query(async ({ ctx }) => {
+        // TODO: Implement list query
+        return [];
+    }),
+});

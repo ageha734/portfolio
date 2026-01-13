@@ -1,0 +1,46 @@
+{
+    "name": "@portfolio/cms",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./app/interface/trpc/router": "./app/interface/trpc/router.ts"
+    },
+    "scripts": {
+        "generate": "wrangler types",
+        "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "dev": "wrangler dev",
+        "build": "wrangler build",
+        "lint": "biome lint .",
+        "lint:fix": "biome lint --write .",
+        "fmt": "biome format --write .",
+        "fmt:check": "biome format .",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "coverage": "vitest run --coverage",
+        "e2e": "playwright test",
+        "deploy": "wrangler deploy"
+    },
+    "dependencies": {
+        "@portfolio/api": "workspace:*",
+        "@portfolio/auth": "workspace:*",
+        "@portfolio/db": "workspace:*",
+        "@trpc/server": "11.0.0",
+        "hono": "4.6.11"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "4.20260101.0",
+        "@portfolio/biome-config": "workspace:*",
+        "@portfolio/tsconfig": "workspace:*",
+        "@portfolio/vitest-config": "workspace:*",
+        "@trpc/server": "11.0.0",
+        "typescript": "5.9.3",
+        "vitest": "3.2.4",
+        "wrangler": "4.54.0"
+    },
+    "peerDependencies": {
+        "wrangler": "4.54.0"
+    }
+}

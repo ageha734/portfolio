@@ -1,0 +1,143 @@
+// This is your Prisma schema file for Cloudflare D1
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Post {
+    id          String   @id @default(uuid())
+    title       String
+    slug        String   @unique
+    date        DateTime
+    description String?
+    content     String   // HTML content
+    contentRaw  String?  @map("content_raw") // Raw JSON content
+    imageTemp   String   @map("image_temp")
+    sticky      Boolean  @default(false)
+    intro       String?
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+
+    tags PostTag[]
+    images PostImage[]
+
+    @@map("posts")
+}
+
+model Tag {
+    id   String @id @default(uuid())
+    name String @unique
+
+    posts PostTag[]
+
+    @@map("tags")
+}
+
+model PostTag {
+    postId String @map("post_id")
+    tagId  String @map("tag_id")
+
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+    tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+    @@id([postId, tagId])
+    @@map("post_tags")
+}
+
+model PostImage {
+    id     String @id @default(uuid())
+    postId String @map("post_id")
+    url    String
+
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@map("post_images")
+}
+
+model Portfolio {
+    id            String   @id @default(uuid())
+    title         String
+    slug          String   @unique
+    company       String
+    date          DateTime
+    current       Boolean  @default(false)
+    overview      String?
+    description   String?
+    content       String?  // HTML content
+    thumbnailTemp String?  @map("thumbnail_temp")
+    intro         String?
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+
+    images PortfolioImage[]
+
+    @@map("portfolios")
+}
+
+model PortfolioImage {
+    id          String @id @default(uuid())
+    portfolioId String @map("portfolio_id")
+    url         String
+
+    portfolio Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+    @@map("portfolio_images")
+}
+
+model User {
+    id        String   @id @default(uuid())
+    name      String
+    email     String   @unique
+    image     String?
+    bio       String?
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    experiences UserExperience[]
+    socials     UserSocial[]
+
+    @@map("users")
+}
+
+model UserExperience {
+    id          String    @id @default(uuid())
+    userId      String    @map("user_id")
+    company     String
+    companyUrl  String    @map("company_url")
+    contract    Boolean?  @default(false)
+    date        String
+    dateStart   DateTime? @map("date_start")
+    dateEnd     DateTime? @map("date_end")
+    description String
+    highlights  String    // JSON array as string
+    image       String?
+    tags        String    // JSON array as string
+    title       String
+    createdAt   DateTime  @default(now()) @map("created_at")
+    updatedAt   DateTime  @updatedAt @map("updated_at")
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("user_experiences")
+}
+
+model UserSocial {
+    id        String   @id @default(uuid())
+    userId    String   @map("user_id")
+    icon      String
+    title     String
+    url       String
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("user_socials")
+}

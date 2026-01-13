@@ -20,6 +20,3 @@ scanner = "@acme/bun-security-scanner"
 
 [runtime]
 node = true
-
-[install.scopes]
-workspaces = true

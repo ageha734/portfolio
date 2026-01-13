@@ -1,0 +1,10 @@
+import type { {{pascalCase domain}}, {{pascalCase domain}}Repository } from "../domain/{{domain}}";
+
+export class {{name}}UseCase {
+    constructor(private readonly {{domain}}Repository: {{pascalCase domain}}Repository) {}
+
+    async execute(): Promise<{{pascalCase domain}}[]> {
+        // TODO: Implement use case logic
+        return this.{{domain}}Repository.findAll();
+    }
+}

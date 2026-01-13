@@ -1,0 +1,12 @@
+export interface {{pascalCase name}} {
+    id: string;
+    // TODO: Add domain properties
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface {{pascalCase name}}Repository {
+    findAll(): Promise<{{pascalCase name}}[]>;
+    findById(id: string): Promise<{{pascalCase name}} | null>;
+    // TODO: Add repository methods
+}

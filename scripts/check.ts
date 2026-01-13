@@ -19,7 +19,7 @@
  */
 
 import { existsSync, readdirSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative, resolve } from "node:path";
 import { $, spawn } from "bun";
 
 type CheckType = "lint" | "fmt" | "test" | "coverage";
@@ -30,6 +30,26 @@ interface Config {
     lintType: LintType;
     isFix: boolean;
 }
+
+function findRootDir(startDir: string = process.cwd()): string {
+    let currentDir = resolve(startDir);
+    const root = resolve("/");
+
+    while (currentDir !== root) {
+        const packageJsonPath = join(currentDir, "package.json");
+        const turboJsonPath = join(currentDir, "turbo.json");
+
+        if (existsSync(packageJsonPath) && existsSync(turboJsonPath)) {
+            return currentDir;
+        }
+
+        currentDir = resolve(currentDir, "..");
+    }
+
+    return process.cwd();
+}
+
+const ROOT_DIR = findRootDir();
 
 function parseArgs(): { config: Config; files: string[] } {
     const args = process.argv.slice(2);
@@ -56,29 +76,50 @@ function parseArgs(): { config: Config; files: string[] } {
     };
 }
 
+function getWorkspaceFromPath(filePath: string): string | null {
+    const absolutePath = resolve(ROOT_DIR, filePath);
+    const relativePath = relative(ROOT_DIR, absolutePath);
+
+    const workspacePatterns = [/^apps\/([^/]+)/, /^packages\/([^/]+)/, /^tooling\/([^/]+)/, /^testing\/([^/]+)/];
+
+    for (const pattern of workspacePatterns) {
+        const match = relativePath.match(pattern);
+        if (match) {
+            return match[1];
+        }
+    }
+
+    return null;
+}
+
 function getDefaultPath(lintType: LintType): string[] {
     switch (lintType) {
         case "tsp":
-            return ["api/"];
+            return [join(ROOT_DIR, "packages/api/"), join(ROOT_DIR, "api/")];
         case "md":
-            return ["docs/prompt/"];
+            return [join(ROOT_DIR, "docs/prompt/"), join(ROOT_DIR, "apps/docs/")];
         case "shell": {
-            const scriptsDir = join(process.cwd(), "scripts");
+            const scriptsDir = join(ROOT_DIR, "scripts");
             try {
                 const files = readdirSync(scriptsDir)
                     .filter((f) => f.endsWith(".sh"))
-                    .map((f) => `scripts/${f}`);
+                    .map((f) => join(ROOT_DIR, "scripts", f));
                 return files.length > 0 ? files : [];
             } catch {
                 return [];
             }
         }
         case "actions":
-            return [".github/"];
+            return [join(ROOT_DIR, ".github/")];
         case "textlint":
-            return ["docs/prompt/"];
+            return [join(ROOT_DIR, "docs/prompt/"), join(ROOT_DIR, "apps/docs/")];
         default:
-            return ["app/"];
+            return [
+                join(ROOT_DIR, "apps/*/app/"),
+                join(ROOT_DIR, "packages/*/src/"),
+                join(ROOT_DIR, "tooling/*/src/"),
+                join(ROOT_DIR, "testing/*/src/"),
+            ];
     }
 }
 
@@ -93,20 +134,21 @@ function getSourceFilePath(testFile: string): string | null {
 }
 
 async function checkFileCoverage(sourceFile: string): Promise<void> {
-    const vitestPath = join(process.cwd(), "node_modules", ".bin", "vitest");
-    const testFile = getTestFilePath(sourceFile);
+    const absoluteSourceFile = resolve(ROOT_DIR, sourceFile);
+    const vitestPath = join(ROOT_DIR, "node_modules", ".bin", "vitest");
+    const testFile = getTestFilePath(absoluteSourceFile);
 
     if (!testFile) {
         console.error(`Error: Test file not found for ${sourceFile}`);
         process.exit(1);
     }
 
-    await $`${vitestPath} run --coverage --coverage.include=${sourceFile} --coverage.threshold.lines=100 --coverage.threshold.functions=100 --coverage.threshold.branches=100 --coverage.threshold.statements=100 ${testFile}`.env(
-        {
+    await $`${vitestPath} run --coverage --coverage.include=${absoluteSourceFile} --coverage.threshold.lines=100 --coverage.threshold.functions=100 --coverage.threshold.branches=100 --coverage.threshold.statements=100 ${testFile}`
+        .cwd(ROOT_DIR)
+        .env({
             NODE_ENV: "test",
             PATH: process.env.PATH || "",
-        },
-    );
+        });
 }
 
 async function runTest(files: string[], lintType: LintType): Promise<void> {
@@ -114,8 +156,9 @@ async function runTest(files: string[], lintType: LintType): Promise<void> {
         console.error(`Error: --lint-type=${lintType} is not supported for test. Only --lint-type=ts is supported.`);
         process.exit(1);
     }
-    const vitestPath = join(process.cwd(), "node_modules", ".bin", "vitest");
-    await $`${vitestPath} run ${files}`.env({
+    const absoluteFiles = files.map((f) => resolve(ROOT_DIR, f));
+    const vitestPath = join(ROOT_DIR, "node_modules", ".bin", "vitest");
+    await $`${vitestPath} run ${absoluteFiles}`.cwd(ROOT_DIR).env({
         NODE_ENV: "test",
         PATH: process.env.PATH || "",
     });
@@ -128,15 +171,16 @@ async function runCoverage(files: string[], lintType: LintType): Promise<void> {
         );
         process.exit(1);
     }
-    const vitestPath = join(process.cwd(), "node_modules", ".bin", "vitest");
+    const vitestPath = join(ROOT_DIR, "node_modules", ".bin", "vitest");
 
     if (files.length > 0) {
         const sourceFiles = files
             .map((f) => {
+                const absolutePath = resolve(ROOT_DIR, f);
                 if (f.includes(".test.")) {
-                    return getSourceFilePath(f);
+                    return getSourceFilePath(absolutePath);
                 }
-                return f;
+                return absolutePath;
             })
             .filter((f): f is string => f !== null);
 
@@ -146,88 +190,106 @@ async function runCoverage(files: string[], lintType: LintType): Promise<void> {
         }
 
         for (const sourceFile of sourceFiles) {
-            await checkFileCoverage(sourceFile);
+            await checkFileCoverage(relative(ROOT_DIR, sourceFile));
         }
         return;
     }
 
-    await $`${vitestPath} run --coverage`.env({
+    await $`${vitestPath} run --coverage`.cwd(ROOT_DIR).env({
         NODE_ENV: "test",
         PATH: process.env.PATH || "",
     });
 }
 
 async function runTspCommand(tspPath: string, checkType: CheckType, isFix: boolean, files: string[]): Promise<void> {
+    const absoluteFiles = files.map((f) => resolve(ROOT_DIR, f));
     if (checkType === "fmt") {
         if (isFix) {
-            await $`${tspPath} format ${files}`;
+            await $`${tspPath} format ${absoluteFiles}`.cwd(ROOT_DIR);
         } else {
-            await $`${tspPath} format --check ${files}`;
+            await $`${tspPath} format --check ${absoluteFiles}`.cwd(ROOT_DIR);
         }
         return;
     }
 
     if (isFix) {
-        await $`${tspPath} compile ${files}`;
+        await $`${tspPath} compile ${absoluteFiles}`.cwd(ROOT_DIR);
     } else {
-        await $`${tspPath} compile ${files} --warn-as-error`;
+        await $`${tspPath} compile ${absoluteFiles} --warn-as-error`.cwd(ROOT_DIR);
     }
 }
 
 async function runTsCommand(biomePath: string, checkType: CheckType, isFix: boolean, files: string[]): Promise<void> {
-    if (checkType === "fmt") {
-        if (isFix) {
-            await $`${biomePath} format --write ${files}`;
+    const workspaces = new Set<string>();
+    const rootFiles: string[] = [];
+
+    for (const file of files) {
+        const absoluteFile = resolve(ROOT_DIR, file);
+        const workspace = getWorkspaceFromPath(absoluteFile);
+        if (workspace) {
+            workspaces.add(workspace);
         } else {
-            await $`${biomePath} format ${files}`;
+            rootFiles.push(absoluteFile);
         }
-        return;
     }
 
-    if (isFix) {
-        await $`${biomePath} lint --write ${files}`;
-    } else {
-        await $`${biomePath} lint ${files}`;
+    if (workspaces.size > 0) {
+        const workspaceList = Array.from(workspaces);
+        const filter = workspaceList.map((w) => `--filter=${w}`).join(" ");
+        const command = checkType === "fmt" ? (isFix ? "fmt" : "fmt:check") : isFix ? "lint:fix" : "lint";
+        await $`turbo run ${command} ${filter}`.cwd(ROOT_DIR);
+    }
+
+    if (rootFiles.length > 0) {
+        if (checkType === "fmt") {
+            if (isFix) {
+                await $`${biomePath} format --write ${rootFiles}`.cwd(ROOT_DIR);
+            } else {
+                await $`${biomePath} format ${rootFiles}`.cwd(ROOT_DIR);
+            }
+        } else {
+            if (isFix) {
+                await $`${biomePath} lint --write ${rootFiles}`.cwd(ROOT_DIR);
+            } else {
+                await $`${biomePath} lint ${rootFiles}`.cwd(ROOT_DIR);
+            }
+        }
     }
 }
 
 async function runMdCommand(checkType: CheckType, isFix: boolean, files: string[]): Promise<void> {
+    const absoluteFiles = files.map((f) => resolve(ROOT_DIR, f));
     if (checkType === "fmt") {
         if (isFix) {
-            await $`remark ${files} --output`;
+            await $`remark ${absoluteFiles} --output`.cwd(ROOT_DIR);
         } else {
-            await $`remark ${files} --frail --quiet`;
+            await $`remark ${absoluteFiles} --frail --quiet`.cwd(ROOT_DIR);
         }
         return;
     }
 
-    const markdownlintPath = join(process.cwd(), "node_modules", ".bin", "markdownlint-cli2");
+    const markdownlintPath = join(ROOT_DIR, "node_modules", ".bin", "markdownlint-cli2");
     if (isFix) {
-        await $`${markdownlintPath} --fix ${files}`;
+        await $`${markdownlintPath} --fix ${absoluteFiles}`.cwd(ROOT_DIR);
     } else {
-        await $`${markdownlintPath} ${files}`;
+        await $`${markdownlintPath} ${absoluteFiles}`.cwd(ROOT_DIR);
     }
 }
 
 async function runShellCommand(checkType: CheckType, isFix: boolean, files: string[]): Promise<void> {
+    const absoluteFiles = files.map((f) => resolve(ROOT_DIR, f));
     if (checkType === "fmt") {
         if (isFix) {
-            await $`go run mvdan.cc/sh/v3/cmd/shfmt@v3.12.0 -w ${files}`;
+            await $`go run mvdan.cc/sh/v3/cmd/shfmt@v3.12.0 -w ${absoluteFiles}`.cwd(ROOT_DIR);
         } else {
-            await $`go run mvdan.cc/sh/v3/cmd/shfmt@v3.12.0 -l -d ${files}`;
+            await $`go run mvdan.cc/sh/v3/cmd/shfmt@v3.12.0 -l -d ${absoluteFiles}`.cwd(ROOT_DIR);
         }
         return;
     }
 
-    const relativeFiles = files.map((f) => {
-        const cwd = process.cwd();
-        if (f.startsWith(cwd)) {
-            return f.slice(cwd.length + 1);
-        }
-        return f;
-    });
+    const relativeFiles = absoluteFiles.map((f) => relative(ROOT_DIR, f));
 
-    await $`docker run --rm -v ${process.cwd()}:/work -w /work -v ${process.cwd()}/node_modules:/work/node_modules koalaman/shellcheck:v0.11.0 ${relativeFiles}`;
+    await $`docker run --rm -v ${ROOT_DIR}:/work -w /work -v ${ROOT_DIR}/node_modules:/work/node_modules koalaman/shellcheck:v0.11.0 ${relativeFiles}`;
 }
 
 async function runTextlintCommand(checkType: CheckType, isFix: boolean, files: string[]): Promise<void> {
@@ -236,11 +298,12 @@ async function runTextlintCommand(checkType: CheckType, isFix: boolean, files: s
         process.exit(1);
     }
 
-    const textlintPath = join(process.cwd(), "node_modules", ".bin", "textlint");
+    const absoluteFiles = files.map((f) => resolve(ROOT_DIR, f));
+    const textlintPath = join(ROOT_DIR, "node_modules", ".bin", "textlint");
     if (isFix) {
-        await $`${textlintPath} --fix ${files}`;
+        await $`${textlintPath} --fix ${absoluteFiles}`.cwd(ROOT_DIR);
     } else {
-        await $`${textlintPath} ${files}`;
+        await $`${textlintPath} ${absoluteFiles}`.cwd(ROOT_DIR);
     }
 }
 
@@ -282,7 +345,7 @@ async function runActionsCommand(checkType: CheckType, isFix: boolean, files: st
 
 async function runLintOrFormatCommand(config: Config, files: string[]): Promise<void> {
     const { checkType, lintType } = config;
-    const nodeModulesBin = join(process.cwd(), "node_modules", ".bin");
+    const nodeModulesBin = join(ROOT_DIR, "node_modules", ".bin");
 
     switch (lintType) {
         case "tsp": {

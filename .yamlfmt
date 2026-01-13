@@ -7,6 +7,13 @@ formatter:
   preserve_line_breaks: false
 exclude:
   - .cache/**
-  - node_modules/**
+  - .coverage/**
+  - .docusaurus/**
+  - .results/**
+  - .turbo/**
+  - .wrangler/**
   - build/**
-  - docs/**
+  - dist/**
+  - node_modules/**
+  - report/**
+  - results/**

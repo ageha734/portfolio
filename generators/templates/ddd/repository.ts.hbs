@@ -1,0 +1,18 @@
+import type { {{pascalCase name}}, {{pascalCase name}}Repository } from "../domain/{{domain}}";
+import { createPrismaClient } from "@portfolio/db";
+
+export class D1{{pascalCase name}}Repository implements {{pascalCase name}}Repository {
+    constructor(private readonly db: D1Database) {}
+
+    async findAll(): Promise<{{pascalCase name}}[]> {
+        const prisma = createPrismaClient({ d1: this.db });
+        // TODO: Implement repository logic
+        return [];
+    }
+
+    async findById(id: string): Promise<{{pascalCase name}} | null> {
+        const prisma = createPrismaClient({ d1: this.db });
+        // TODO: Implement repository logic
+        return null;
+    }
+}

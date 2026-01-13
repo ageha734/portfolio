@@ -40,10 +40,6 @@
         },
         "test": {
             "dependsOn": ["^build"],
-            "outputs": [
-                ".coverage/**",
-                ".results/**"
-            ],
             "env": [
                 "NODE_ENV",
                 "CI"
@@ -69,6 +65,10 @@
                 "NODE_ENV",
                 "CI"
             ]
+        },
+        "deploy": {
+            "dependsOn": ["^build"],
+            "outputs": []
         }
     }
 }

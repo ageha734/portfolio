@@ -1,4 +1,18 @@
 import { existsSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+
+function getWorkspaceDir(filePath: string): string | null {
+    const workspacePatterns = [/^apps\/([^/]+)/, /^packages\/([^/]+)/, /^tooling\/([^/]+)/, /^testing\/([^/]+)/];
+
+    for (const pattern of workspacePatterns) {
+        const match = filePath.match(pattern);
+        if (match) {
+            return match[0];
+        }
+    }
+
+    return null;
+}
 
 /**
  * @type {import('lint-staged').Configuration}
@@ -17,25 +31,25 @@ export default {
         });
         const hasTsFiles = filteredFilenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
 
-        const workspaceFiles = filteredFilenames.filter(
-            (f) =>
-                f.startsWith("apps/") ||
-                f.startsWith("packages/") ||
-                f.startsWith("tooling/") ||
-                f.startsWith("testing/"),
-        );
-        const rootFiles = filteredFilenames.filter(
-            (f) =>
-                !f.startsWith("apps/") &&
-                !f.startsWith("packages/") &&
-                !f.startsWith("tooling/") &&
-                !f.startsWith("testing/"),
-        );
+        const workspaceGroups = new Map<string, string[]>();
+        const rootFiles: string[] = [];
+
+        for (const file of filteredFilenames) {
+            const workspaceDir = getWorkspaceDir(file);
+            if (workspaceDir) {
+                if (!workspaceGroups.has(workspaceDir)) {
+                    workspaceGroups.set(workspaceDir, []);
+                }
+                workspaceGroups.get(workspaceDir)!.push(file);
+            } else {
+                rootFiles.push(file);
+            }
+        }
 
         const commands = [];
 
-        if (workspaceFiles.length > 0) {
-            commands.push(`turbo run fmt lint --filter='[${workspaceFiles.join(",")}]'`);
+        for (const [workspaceDir, _files] of workspaceGroups) {
+            commands.push(`cd ${workspaceDir} && bun run fmt:check && bun run lint`);
         }
 
         if (rootFiles.length > 0) {
@@ -45,13 +59,17 @@ export default {
         }
 
         if (sourceFilesWithTests.length > 0) {
-            commands.push(
-                ...sourceFilesWithTests.map((f) => {
-                    const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
-                    return `bun run test -- ${testFile}`;
-                }),
-                ...sourceFilesWithTests.map((f) => `bun run coverage -- ${f}`),
-            );
+            for (const sourceFile of sourceFilesWithTests) {
+                const workspaceDir = getWorkspaceDir(sourceFile);
+                const testFile = sourceFile.replace(/\.(ts|tsx)$/, ".test.$1");
+                if (workspaceDir) {
+                    commands.push(`cd ${workspaceDir} && bun run test -- ${testFile}`);
+                    commands.push(`cd ${workspaceDir} && bun run coverage -- ${sourceFile}`);
+                } else {
+                    commands.push(`bun run test -- ${testFile}`);
+                    commands.push(`bun run coverage -- ${sourceFile}`);
+                }
+            }
         }
 
         if (hasTsFiles) {
@@ -70,5 +88,16 @@ export default {
         filenames.flatMap((f) => [`bun run fmt:shell:check -- ${f}`, `bun run lint:shell:check -- ${f}`]),
     "*.tsp": (filenames) =>
         filenames.flatMap((f) => [`bun run fmt:tsp:check -- ${f}`, `bun run lint:tsp:check -- ${f}`]),
-    "**/*.test.{ts,tsx}": (filenames) => filenames.map((f) => `bun run test -- ${f}`),
+    "**/*.test.{ts,tsx}": (filenames) => {
+        const commands = [];
+        for (const file of filenames) {
+            const workspaceDir = getWorkspaceDir(file);
+            if (workspaceDir) {
+                commands.push(`cd ${workspaceDir} && bun run test -- ${file}`);
+            } else {
+                commands.push(`bun run test -- ${file}`);
+            }
+        }
+        return commands;
+    },
 };

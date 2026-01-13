@@ -2,51 +2,42 @@ import type { KnipConfig } from "knip";
 
 const config: KnipConfig = {
     entry: [
-        "app/entry.client.tsx",
-        "app/entry.server.tsx",
+        "apps/web/entry.client.tsx",
+        "apps/web/entry.server.tsx",
         "apps/**/app/**/*.{ts,tsx}",
+        "apps/**/functions/[[path]].ts",
+        "apps/**/public/worker.js",
         "apps/**/vite.config.ts",
         "apps/**/vitest.config.ts",
         "apps/**/playwright.config.ts",
+        "apps/**/playwright.storybook.config.ts",
         "apps/**/docusaurus.config.ts",
         "packages/**/src/**/*.{ts,tsx}",
         "packages/**/index.ts",
         "tooling/**/*.{ts,tsx}",
         "testing/**/*.{ts,tsx}",
-        "vite.config.ts",
-        "vitest.config.ts",
-        "docusaurus.config.ts",
-        "playwright.config.ts",
-        "playwright.storybook.config.ts",
-        "orval.config.ts",
-        "postcss.config.cjs",
-        "tailwind.config.ts",
-        "biome.json",
-        "tspconfig.yaml",
-        "functions/[[path]].ts",
-        "public/worker.js",
+        "generators/**/*.{ts,tsx}",
+        "scripts/**/*.{ts,tsx}",
     ],
     project: [
-        "app/**/*.{ts,tsx}",
         "apps/**/*.{ts,tsx}",
-        "api/**/*.tsp",
         "packages/**/*.{ts,tsx}",
         "tooling/**/*.{ts,tsx}",
         "testing/**/*.{ts,tsx}",
-        "tests/**/*.{ts,tsx}",
-        "docs/**/*.{ts,tsx,js,jsx,mdx}",
+        "scripts/*.ts",
     ],
     ignore: [
         "build/**",
-        "docs/vitest/**",
-        "docs/playwright/**",
-        "docs/lighthouse/**",
-        "docs/interactions/**",
-        "docs/accessibility/**",
-        "docs/visual/**",
+        "dist/**",
         "node_modules/**",
         ".cache/**",
-        "public/**",
+        ".turbo/**",
+        ".wrangler/**",
+        ".coverage/**",
+        ".results/**",
+        "apps/**/public/**",
+        "results/**",
+        "report/**",
     ],
     ignoreDependencies: [
         "@types/bun",
@@ -59,21 +50,27 @@ const config: KnipConfig = {
         "@docusaurus/types",
     ],
     ignoreBinaries: ["wrangler", "playwright", "docusaurus", "storybook", "tsp", "orval"],
-    remix: {
-        entry: ["app/entry.client.tsx", "app/entry.server.tsx"],
-        routes: "app/routes",
-    },
-    storybook: {
-        configDir: ".storybook",
-    },
-    docusaurus: {
-        config: "docusaurus.config.ts",
-    },
-    vitest: {
-        config: "vitest.config.ts",
-    },
-    typescript: {
-        config: "tsconfig.json",
+    workspaces: {
+        "apps/web": {
+            remix: {
+                entry: ["app/entry.client.tsx", "app/entry.server.tsx"],
+            },
+        },
+        "apps/wiki": {
+            docusaurus: {
+                config: "docusaurus.config.ts",
+            },
+        },
+        "packages/ui": {
+            storybook: {
+                config: ".storybook/main.ts",
+            },
+        },
+        "apps/admin": {
+            storybook: {
+                config: ".storybook/main.ts",
+            },
+        },
     },
 };
 

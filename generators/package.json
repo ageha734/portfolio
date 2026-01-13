@@ -1,0 +1,21 @@
+{
+    "name": "@portfolio/generators",
+    "private": true,
+    "type": "module",
+    "main": "cli/index.ts",
+    "types": "cli/index.ts",
+    "scripts": {
+        "lint": "biome lint .",
+        "fmt": "biome format --write .",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "plop": "4.0.1"
+    },
+    "devDependencies": {
+        "@portfolio/biome-config": "workspace:*",
+        "@portfolio/tsconfig": "workspace:*",
+        "@types/node": "22.10.2",
+        "typescript": "5.9.3"
+    }
+}

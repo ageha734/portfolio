@@ -1,0 +1,12 @@
+name = "portfolio-api"
+compatibility_date = "2025-11-17"
+main = "src/index.ts"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "portfolio"
+database_id = "your-database-id-here"
+preview_database_id = "your-preview-database-id-here"
+
+[vars]
+NODE_ENV = "development"

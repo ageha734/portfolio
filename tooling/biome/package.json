@@ -1,0 +1,10 @@
+{
+    "name": "@portfolio/biome-config",
+    "private": true,
+    "files": [
+        "*.json"
+    ],
+    "peerDependencies": {
+        "@biomejs/biome": "2.3.10"
+    }
+}
