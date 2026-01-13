@@ -6,7 +6,7 @@
         "generate": "wrangler types",
         "clean": "git clean -xdf .cache .turbo node_modules dist",
         "dev": "run-p dev:ui dev:page",
-        "dev:ui": "storybook dev -p 6007",
+        "dev:ui": "storybook dev -p 16012 --no-open",
         "dev:page": "vite",
         "build": "run-s build:ui build:page",
         "build:ui": "storybook build",

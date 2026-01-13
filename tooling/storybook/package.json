@@ -6,15 +6,15 @@
     "type": "module",
     "types": "./src/main.preset.d.ts",
     "exports": {
-        "main": {
+        "./main": {
             "types": "./src/main.preset.d.ts",
             "default": "./src/main.preset.ts"
         },
-        "preview": {
+        "./preview": {
             "types": "./src/preview.preset.d.ts",
             "default": "./src/preview.preset.ts"
         },
-        "theme": {
+        "./theme": {
             "types": "./src/theme.d.ts",
             "default": "./src/theme.ts"
         }

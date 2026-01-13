@@ -7,7 +7,7 @@
     "scripts": {
         "clean": "git clean -xdf .cache .turbo node_modules dist",
         "generate": "prisma generate",
-        "dev": "prisma studio",
+        "dev": "prisma studio --browser none",
         "build": "run-s push migrate seed",
         "push": "prisma db push",
         "migrate": "wrangler d1 migrations apply",
