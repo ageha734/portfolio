@@ -1,6 +1,6 @@
-import { themes as prismThemes } from "prism-react-renderer";
-import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
+import type { Config } from "@docusaurus/types";
+import { themes as prismThemes } from "prism-react-renderer";
 
 const config: Config = {
     title: "Tech Docs",
@@ -11,10 +11,10 @@ const config: Config = {
         v4: false,
     },
 
-    url: "https://ageha734.github.io",
-    baseUrl: "/docs/",
+    url: "https://wiki.ageha734.jp",
+    baseUrl: "/",
     organizationName: "ageha734",
-    projectName: "docs",
+    projectName: "portfolio-wiki",
 
     onBrokenLinks: "throw",
     onBrokenMarkdownLinks: "warn",
@@ -24,7 +24,7 @@ const config: Config = {
         locales: ["ja"],
     },
 
-    staticDirectories: ["docs/static"],
+    staticDirectories: ["static"],
 
     presets: [
         [
@@ -37,7 +37,7 @@ const config: Config = {
                 },
                 blog: false,
                 theme: {
-                    customCss: "./docs/css/custom.css",
+                    customCss: "./app/css/custom.css",
                 },
             } satisfies Preset.Options,
         ],

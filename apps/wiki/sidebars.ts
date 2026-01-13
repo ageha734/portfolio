@@ -5,7 +5,13 @@ const sidebars: SidebarsConfig = {
         {
             type: "category",
             label: "Architecture",
-            items: ["architecture/overview", "architecture/project-structure", "architecture/tech-stack"],
+            items: [
+                "architecture/overview",
+                "architecture/project-structure",
+                "architecture/tech-stack",
+                "architecture/feature-sliced",
+                "architecture/domain-driven",
+            ],
         },
         {
             type: "category",
