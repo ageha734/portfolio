@@ -1,388 +1,500 @@
-name: "[CI] Validation and Checks"
+name: '[CI] Validation and Checks'
 on:
-  pull_request:
-    paths:
-      - ".github/**"
-      - "docs/**"
-      - "scripts/**"
-      - "app/**"
-      - "tests/**"
-      - "package.json"
-  push:
-    paths:
-      - ".github/**"
-      - "docs/**"
-      - "scripts/**"
-      - "app/**"
-      - "tests/**"
-      - "package.json"
+    pull_request:
+        paths:
+        - '.github/**'
+        - 'docs/**'
+        - 'scripts/**'
+        - 'app/**'
+        - 'tests/**'
+        - 'package.json'
+    push:
+        paths:
+        - '.github/**'
+        - 'docs/**'
+        - 'scripts/**'
+        - 'app/**'
+        - 'tests/**'
+        - 'package.json'
 jobs:
-  detect-changes:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    if: ${{ (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'copilot/')) || (github.event_name == 'push' && !startsWith(github.ref_name, 'copilot/')) }}
-    permissions:
-      contents: read
-      pull-requests: read
-    outputs:
-      web: ${{ steps.filter.outputs.web }}
-      e2e: ${{ steps.filter.outputs.e2e }}
-      docs: ${{ steps.filter.outputs.docs }}
-      shell: ${{ steps.filter.outputs.shell }}
-      actions: ${{ steps.filter.outputs.actions }}
-      tsp: ${{ steps.filter.outputs.tsp }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Detect changes
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
-        id: filter
-        with:
-          token: ${{ github.token }}
-          filters: |
-            web:
-              - 'app/**/*.ts'
-              - 'package.json'
-            e2e:
-              - 'tests/e2e/**'
-              - 'tests/mocks/**'
-              - 'package.json'
-            docs:
-              - 'docs/**/*.md'
-            shell:
-              - 'scripts/*.sh'
-            actions:
-              - '.github/**/*.yml'
-            tsp:
-              - 'api/**/*.tsp'
-              - 'tspconfig.yaml'
-              - 'package.json'
-  run-format-ts:
-    needs: [detect-changes]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Format check TypeScript
-        run: bun run fmt:ts:check
-  run-lint-ts:
-    needs: [detect-changes, run-format-ts]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Lint TypeScript
-        run: bun run lint:ts:check
-  run-typecheck:
-    needs: [detect-changes, run-format-ts]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Typecheck
-        run: bun run typecheck
-  run-knip:
-    needs: [detect-changes, run-lint-ts, run-typecheck]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Run knip
-        run: bun run knip
-  run-test-ts:
-    needs: [detect-changes, run-lint-ts, run-typecheck, run-knip]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Tests TypeScript
-        run: bun run test
-  run-coverage-ts:
-    needs: [detect-changes, run-test-ts]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Coverage TypeScript
-        run: bun run coverage
-      - name: Upload artifact for Coverage
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: always()
-        with:
-          name: vitest-coverage
-          path: docs/vitest/coverage/
-          retention-days: 7
-  run-sonarcloud:
-    needs: [detect-changes, run-coverage-ts]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    permissions:
-      contents: read
-      pull-requests: write
-      security-events: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Download coverage artifact
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
-        with:
-          name: vitest-coverage
-          path: docs/vitest/coverage/
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.run_id }}
+    detect-changes:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 5
+        if: ${{ (github.event_name == 'pull_request' && !startsWith(github.head_ref, 'copilot/')) || (github.event_name == 'push' && !startsWith(github.ref_name, 'copilot/')) }}
+        permissions:
+            contents: read
+            pull-requests: read
+        outputs:
+            web: ${{ steps.filter.outputs.web }}
+            e2e: ${{ steps.filter.outputs.e2e }}
+            docs: ${{ steps.filter.outputs.docs }}
+            shell: ${{ steps.filter.outputs.shell }}
+            actions: ${{ steps.filter.outputs.actions }}
+            tsp: ${{ steps.filter.outputs.tsp }}
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              fetch-depth: 0
+              persist-credentials: false
+        - name: Detect changes
+          uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
+          id: filter
+          with:
+              token: ${{ github.token }}
+              filters: |
+                  web:
+                    - 'app/**/*.ts'
+                    - 'package.json'
+                  e2e:
+                    - 'tests/e2e/**'
+                    - 'tests/mocks/**'
+                    - 'package.json'
+                  docs:
+                    - 'docs/**/*.md'
+                  shell:
+                    - 'scripts/*.sh'
+                  actions:
+                    - '.github/**/*.yml'
+                  tsp:
+                    - 'api/**/*.tsp'
+                    - 'tspconfig.yaml'
+                    - 'package.json'
+    run-format-ts:
+        needs: [detect-changes]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Format check TypeScript
+          run: bun run fmt:ts:check
+    run-lint-ts:
+        needs: [detect-changes, run-format-ts]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Lint TypeScript
+          run: bun run lint:ts:check
+    run-typecheck:
+        needs: [detect-changes, run-format-ts]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Typecheck
+          run: bun run typecheck
+    run-knip:
+        needs: [detect-changes, run-lint-ts, run-typecheck]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Run knip
+          run: bun run knip
+    run-test-ts:
+        needs: [detect-changes, run-lint-ts, run-typecheck, run-knip]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Tests TypeScript
+          run: bun run test
+    run-coverage-ts:
+        needs: [detect-changes, run-test-ts]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        permissions:
+            contents: write
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              fetch-depth: 0
+              persist-credentials: true
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Coverage TypeScript
+          run: bun run coverage
+        - name: Upload artifact for Coverage
+          uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+          if: always()
+          with:
+              name: vitest-coverage
+              path: docs/vitest/coverage/
+              retention-days: 7
+        - name: Copy Coverage reports to wiki static
+          if: always()
+          run: |
+              COMMIT_SHA="${{ github.sha }}"
+              REPORT_DIR="apps/wiki/static/reports/coverage/${COMMIT_SHA}"
+              mkdir -p "${REPORT_DIR}"
+
+              # Find coverage directory
+              COVERAGE_DIR=$(find . -type d -name "coverage" -path "*/.coverage/*" | head -1 || echo "")
+              if [ -z "${COVERAGE_DIR}" ]; then
+                COVERAGE_DIR=$(find . -type d -name "coverage" | head -1 || echo "")
+              fi
+
+              if [ -n "${COVERAGE_DIR}" ] && [ -d "${COVERAGE_DIR}" ] && [ "$(ls -A ${COVERAGE_DIR})" ]; then
+                cp -r "${COVERAGE_DIR}"/* "${REPORT_DIR}/" || true
+
+                # Create metadata
+                cat > "${REPORT_DIR}/metadata.json" << EOF
+              {
+                "run_id": "${{ github.run_id }}",
+                "run_number": "${{ github.run_number }}",
+                "workflow": "${{ github.workflow }}",
+                "commit_sha": "${COMMIT_SHA}",
+                "branch": "${{ github.ref_name }}",
+                "event": "${{ github.event_name }}",
+                "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+                "report_type": "coverage"
+              }
+              EOF
+              fi
+        - name: Commit Coverage reports
+          if: always()
+          run: |
+              COMMIT_SHA="${{ github.sha }}"
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git add apps/wiki/static/reports/coverage/ || true
+              if git diff --staged --quiet; then
+                echo "No coverage report changes to commit"
+              else
+                git commit -m "ci: Add coverage reports for ${COMMIT_SHA}" || true
+                git push || true
+    run-sonarcloud:
+        needs: [detect-changes, run-coverage-ts]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        permissions:
+            contents: read
+            pull-requests: write
+            security-events: write
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              fetch-depth: 0
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Download coverage artifact
+          uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+          with:
+              name: vitest-coverage
+              path: docs/vitest/coverage/
+              github-token: ${{ secrets.GITHUB_TOKEN }}
+              run-id: ${{ github.run_id }}
+              continue-on-error: true
+        - name: SonarCloud Scan
+          uses: SonarSource/sonarcloud-github-action@ba3875ecf642b2129de2b589510c81a8b53dbf4e
+          env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           continue-on-error: true
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@ba3875ecf642b2129de2b589510c81a8b53dbf4e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        continue-on-error: true
-  run-e2e-ts:
-    needs: [detect-changes, run-test-ts, run-coverage-ts]
-    if: needs.detect-changes.outputs.web == 'true' || needs.detect-changes.outputs.e2e == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@7116e07421d015a32b6c6b8be9fd2f20e9a87248 # v3.8.0
-      - name: Run E2E tests in Docker container
-        run: bun run e2e
-      - name: Upload artifact for Playwright
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: always()
-        with:
-          name: playwright-report
-          path: docs/playwright/report/
-          retention-days: 7
-  run-build:
-    needs: [detect-changes, run-e2e-ts]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Build application
-        run: bun run build:remix
-  run-lighthouse:
-    needs: [detect-changes, run-build]
-    if: needs.detect-changes.outputs.web == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Build application
-        run: bun run build:remix
-      - name: Run Lighthouse CI
-        run: bun run lighthouse
-      - name: Upload artifact for Lighthouse
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: always()
-        with:
-          name: lighthouse-report
-          path: docs/lighthouse/report/
-          retention-days: 7
-  run-format-actions:
-    needs: [detect-changes]
-    if: needs.detect-changes.outputs.actions == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Go
-        uses: ./.github/actions/setup-go
-      - name: Format check YAML
-        run: npm run fmt:actions:check
-  run-lint-actions:
-    needs: [detect-changes, run-format-actions]
-    if: needs.detect-changes.outputs.actions == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Go
-        uses: ./.github/actions/setup-go
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Lint GitHub Actions workflows
-        run: npm run lint:actions:check
-  run-format-shell:
-    needs: [detect-changes]
-    if: needs.detect-changes.outputs.shell == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Go
-        uses: ./.github/actions/setup-go
-      - name: Format check shell scripts
-        run: npm run fmt:shell:check
-  run-lint-shell:
-    needs: [detect-changes, run-format-shell]
-    if: needs.detect-changes.outputs.shell == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Lint shell scripts
-        run: npm run lint:shell:check
-  run-format-md:
-    needs: [detect-changes]
-    if: needs.detect-changes.outputs.docs == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Format check Markdown
-        run: npm run fmt:md:check
-  run-lint-md:
-    needs: [detect-changes, run-format-md]
-    if: needs.detect-changes.outputs.docs == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Lint Markdown files
-        run: npm run lint:md:check
-  run-format-tsp:
-    needs: [detect-changes]
-    if: needs.detect-changes.outputs.tsp == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Format check TypeSpec
-        run: bun run fmt:tsp:check
-  run-lint-tsp:
-    needs: [detect-changes, run-format-tsp]
-    if: needs.detect-changes.outputs.tsp == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-        with:
-          persist-credentials: false
-      - name: Setup Node.js
-        uses: ./.github/actions/setup-ts
-      - name: Lint TypeSpec
-        run: bun run lint:tsp:check
+    run-e2e-ts:
+        needs: [detect-changes, run-test-ts, run-coverage-ts]
+        if: needs.detect-changes.outputs.web == 'true' || needs.detect-changes.outputs.e2e == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 30
+        permissions:
+            contents: write
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              fetch-depth: 0
+              persist-credentials: true
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@7116e07421d015a32b6c6b8be9fd2f20e9a87248 # v3.8.0
+        - name: Run E2E tests in Docker container
+          run: bun run e2e
+        - name: Upload artifact for Playwright
+          uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+          if: always()
+          with:
+              name: playwright-report
+              path: docs/playwright/report/
+              retention-days: 7
+        - name: Copy E2E reports to wiki static
+          if: always()
+          run: |
+              COMMIT_SHA="${{ github.sha }}"
+              REPORT_DIR="apps/wiki/static/reports/e2e/${COMMIT_SHA}"
+              mkdir -p "${REPORT_DIR}"
+
+              if [ -d "docs/playwright/report" ] && [ "$(ls -A docs/playwright/report)" ]; then
+                cp -r docs/playwright/report/* "${REPORT_DIR}/" || true
+
+                # Create metadata
+                cat > "${REPORT_DIR}/metadata.json" << EOF
+              {
+                "run_id": "${{ github.run_id }}",
+                "run_number": "${{ github.run_number }}",
+                "workflow": "${{ github.workflow }}",
+                "commit_sha": "${COMMIT_SHA}",
+                "branch": "${{ github.ref_name }}",
+                "event": "${{ github.event_name }}",
+                "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+                "report_type": "e2e"
+              }
+              EOF
+              fi
+        - name: Commit E2E reports
+          if: always()
+          run: |
+              COMMIT_SHA="${{ github.sha }}"
+              git config user.name "github-actions[bot]"
+              git config user.email "github-actions[bot]@users.noreply.github.com"
+              git add apps/wiki/static/reports/e2e/ || true
+              if git diff --staged --quiet; then
+                echo "No E2E report changes to commit"
+              else
+                git commit -m "ci: Add E2E reports for ${COMMIT_SHA}" || true
+                git push || true
+              fi
+    run-build:
+        needs: [detect-changes, run-e2e-ts]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Build application
+          run: bun run build:remix
+    run-lighthouse:
+        needs: [detect-changes, run-build]
+        if: needs.detect-changes.outputs.web == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 20
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Build application
+          run: bun run build:remix
+        - name: Run Lighthouse CI
+          run: bun run lighthouse
+        - name: Upload artifact for Lighthouse
+          uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+          if: always()
+          with:
+              name: lighthouse-report
+              path: docs/lighthouse/report/
+              retention-days: 7
+    run-format-actions:
+        needs: [detect-changes]
+        if: needs.detect-changes.outputs.actions == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 5
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Go
+          uses: ./.github/actions/setup-go
+        - name: Format check YAML
+          run: npm run fmt:actions:check
+    run-lint-actions:
+        needs: [detect-changes, run-format-actions]
+        if: needs.detect-changes.outputs.actions == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Go
+          uses: ./.github/actions/setup-go
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Lint GitHub Actions workflows
+          run: npm run lint:actions:check
+    run-format-shell:
+        needs: [detect-changes]
+        if: needs.detect-changes.outputs.shell == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 5
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Go
+          uses: ./.github/actions/setup-go
+        - name: Format check shell scripts
+          run: npm run fmt:shell:check
+    run-lint-shell:
+        needs: [detect-changes, run-format-shell]
+        if: needs.detect-changes.outputs.shell == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Lint shell scripts
+          run: npm run lint:shell:check
+    run-format-md:
+        needs: [detect-changes]
+        if: needs.detect-changes.outputs.docs == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 5
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Format check Markdown
+          run: npm run fmt:md:check
+    run-lint-md:
+        needs: [detect-changes, run-format-md]
+        if: needs.detect-changes.outputs.docs == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Lint Markdown files
+          run: npm run lint:md:check
+    run-format-tsp:
+        needs: [detect-changes]
+        if: needs.detect-changes.outputs.tsp == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Format check TypeSpec
+          run: bun run fmt:tsp:check
+    run-lint-tsp:
+        needs: [detect-changes, run-format-tsp]
+        if: needs.detect-changes.outputs.tsp == 'true'
+        runs-on: ubuntu-24.04
+        timeout-minutes: 10
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Node.js
+          uses: ./.github/actions/setup-ts
+        - name: Lint TypeSpec
+          run: bun run lint:tsp:check
+    run-build-wiki:
+        needs: [detect-changes, run-e2e-ts, run-coverage-ts]
+        if: always() && (needs.detect-changes.outputs.web == 'true' || needs.detect-changes.outputs.e2e == 'true')
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        permissions:
+            contents: read
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+              persist-credentials: false
+        - name: Setup Bun
+          uses: ./.github/actions/setup-ts
+          with:
+              working-directory: '.'
+        - name: Install wiki dependencies
+          uses: ./.github/actions/setup-ts
+          with:
+              working-directory: 'apps/wiki'
+        - name: Build Docusaurus
+          run: |
+              cd apps/wiki
+              bun run build
+        - name: Upload wiki build artifact
+          uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+          if: always()
+          with:
+              name: wiki-build
+              path: apps/wiki/build
+              retention-days: 1
