@@ -1,6 +1,7 @@
 {
     "private": true,
     "name": "portfolio",
+    "packageManager": "bun@1.1.43",
     "workspaces": [
         "apps/*",
         "packages/*",
