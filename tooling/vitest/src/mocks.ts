@@ -10,7 +10,6 @@ export const resetClipboardStore = (): void => {
     clipboardStore = "";
 };
 
-// clipboardプロパティが既に定義されている場合は再定義しない
 try {
     if (!navigator.clipboard) {
         Object.defineProperty(navigator, "clipboard", {
@@ -26,7 +25,6 @@ try {
             },
         });
     } else {
-        // 既存のclipboardオブジェクトのメソッドをモック
         vi.spyOn(navigator.clipboard, "writeText").mockImplementation(async (text: string) => {
             clipboardStore = text;
         });

@@ -1,0 +1,29 @@
+{
+    "name": "@portfolio/vite-config",
+    "private": true,
+    "type": "module",
+    "types": "./src/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./src/index.d.ts",
+            "default": "./src/index.ts"
+        }
+    },
+    "scripts": {
+        "clean": "git clean -xdf .cache .turbo node_modules",
+        "lint": "biome lint .",
+        "lint:fix": "biome lint --write .",
+        "fmt": "biome format --write .",
+        "fmt:check": "biome format .",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "vite-tsconfig-paths": "6.0.3",
+        "vite": "5.4.0"
+    },
+    "devDependencies": {
+        "@portfolio/biome-config": "workspace:*",
+        "@portfolio/tsconfig": "workspace:*",
+        "typescript": "5.9.3"
+    }
+}

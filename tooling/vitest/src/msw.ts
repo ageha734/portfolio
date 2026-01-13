@@ -1,6 +1,6 @@
-import { beforeAll, afterEach, afterAll, vi } from "vitest";
+import { server } from "@portfolio/testing-mocks";
 import { cleanup } from "@testing-library/react";
-import { server } from "../mocks";
+import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 beforeAll(() => {
     server.listen({ onUnhandledRequest: "error" });

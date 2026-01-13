@@ -7,9 +7,6 @@ interface WrapperOptions {
     initialEntries?: string[];
 }
 
-/**
- * カスタムレンダー関数 - Routerコンテキストを提供
- */
 export function renderWithRouter(ui: ReactElement, options?: Omit<RenderOptions, "wrapper"> & WrapperOptions) {
     const route: string = options?.route ?? "/";
     const initialEntries: string[] = options?.initialEntries ?? [route];
@@ -33,9 +30,6 @@ export function renderWithRouter(ui: ReactElement, options?: Omit<RenderOptions,
     };
 }
 
-/**
- * カスタムラッパー - Routerコンテキストを提供するProvider
- */
 export function createRouterWrapper(options?: WrapperOptions) {
     const route: string = options?.route ?? "/";
     const initialEntries: string[] = options?.initialEntries ?? [route];
