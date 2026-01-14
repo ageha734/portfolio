@@ -1,11 +1,11 @@
-import { type SetupWorkerApi, setupWorker } from "msw/browser";
+import { setupWorker } from "msw/browser";
 import { trpcHandlers } from "./handlers";
 
 const handlers = [...trpcHandlers];
 
-export const worker: SetupWorkerApi = setupWorker(...handlers);
+const worker = setupWorker(...handlers);
 
-if (typeof window !== "undefined") {
+if ("window" in globalThis) {
     worker.start({
         onUnhandledRequest: "bypass",
         serviceWorker: {
@@ -14,4 +14,5 @@ if (typeof window !== "undefined") {
     });
 }
 
-export { worker as default };
+export { worker };
+export default worker;

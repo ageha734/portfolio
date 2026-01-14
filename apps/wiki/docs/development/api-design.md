@@ -447,8 +447,49 @@ describe("postsRouter", () => {
 });
 ```
 
+## TypeSpec設定
+
+このプロジェクトでは、TypeSpecを使用してOpenAPI仕様を生成する設定が含まれています。
+
+### 設定ファイル
+
+`packages/api/tspconfig.yaml` にTypeSpecの設定が定義されています。
+
+```yaml
+emit:
+- '@typespec/openapi3'
+
+options:
+    '@typespec/openapi3':
+        # TODO:
+        output-file: '../../docs/swagger/openapi.yaml'
+```
+
+### 設定の説明
+
+- **`emit`**: 出力形式を指定します。`@typespec/openapi3` を使用してOpenAPI 3.0仕様を生成します。
+- **`options['@typespec/openapi3']`**: OpenAPI3エミッターのオプション設定
+  - **`output-file`**: 生成されるOpenAPI仕様ファイルの出力パス（現在はTODO状態）
+
+### 使用方法
+
+```bash
+# TypeSpecスキーマからOpenAPI仕様を生成
+cd packages/api
+bunx tsp compile
+```
+
+### 今後の拡張
+
+現在、`output-file` はTODO状態ですが、将来的には以下のような用途で使用されます：
+
+- APIドキュメントの自動生成
+- クライアントSDKの生成
+- API仕様の共有と検証
+
 ## 参考資料
 
 - [tRPC ドキュメント](https://trpc.io/docs)
 - [Zod ドキュメント](https://zod.dev/)
 - [Hono ドキュメント](https://hono.dev/)
+- [TypeSpec ドキュメント](https://typespec.io/)

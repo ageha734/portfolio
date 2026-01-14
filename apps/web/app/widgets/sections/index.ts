@@ -1,3 +1,4 @@
+export type { SectionExperienceDetailProps } from "./model/types.d";
 export { SectionAmbitions } from "./ui/SectionAmbitions";
 export { SectionCompanies } from "./ui/SectionCompanies";
 export { SectionEducation } from "./ui/SectionEducation";
@@ -9,4 +10,3 @@ export { SectionMisc } from "./ui/SectionMisc";
 export { SectionProficiencies } from "./ui/SectionProficiencies";
 export { SectionSoftware } from "./ui/SectionSoftware";
 export { SectionTechnology } from "./ui/SectionTechnology";
-export type { SectionExperienceDetailProps } from "./model/types";

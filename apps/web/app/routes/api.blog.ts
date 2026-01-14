@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { createTRPCClient } from "~/shared/lib/trpc";
+import { createTRPCApiClient } from "~/shared/lib/trpc";
 
 export interface Post {
     id: string;
@@ -23,7 +23,7 @@ export type LoaderData = {
 
 export const loader: LoaderFunction = async (args) => {
     const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
-    const trpc = createTRPCClient(apiUrl);
+    const trpc = createTRPCApiClient(apiUrl);
 
     const posts = await trpc.posts.list.query();
 

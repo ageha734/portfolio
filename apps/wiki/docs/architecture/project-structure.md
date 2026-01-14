@@ -4,7 +4,7 @@
 
 ## Monorepo構造
 
-```
+```text
 ./
 ├── apps/                         # アプリケーション層
 │   ├── web/                      # Remix + Cloudflare Pages

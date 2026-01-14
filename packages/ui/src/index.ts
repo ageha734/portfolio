@@ -6,6 +6,11 @@ export type { LogoProps } from "./components/Logo";
 export { Logo } from "./components/Logo";
 export * from "./components/NavigationMenu";
 export * from "./components/Separator";
+export { ShareButton } from "./components/ShareButton";
+export type {
+	ShareButtonProps,
+	ShareOptions,
+} from "./components/ShareButton.d";
 export * from "./components/Sheet";
 export type { Social, SocialLinkProps } from "./components/SocialLink";
 export { SocialLink } from "./components/SocialLink";

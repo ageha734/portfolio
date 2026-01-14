@@ -3,7 +3,9 @@
     "extends": "@portfolio/tsconfig/node.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "paths": {}
+        "paths": {},
+        "typeRoots": ["../../node_modules/@types"],
+        "rootDir": "./src"
     },
     "include": ["**/*.ts", "**/*.js"],
     "exclude": ["node_modules"]

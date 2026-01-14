@@ -7,7 +7,8 @@
         "rootDir": "./src",
         "paths": {
             "~/*": ["./src/*"]
-        }
+        },
+        "typeRoots": ["../../node_modules/@types"]
     },
     "include": ["src/**/*", "**/*.tsp"],
     "exclude": ["node_modules", "dist"]

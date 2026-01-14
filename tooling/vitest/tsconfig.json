@@ -3,8 +3,12 @@
     "extends": "@portfolio/tsconfig/node.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "paths": {}
+        "paths": {},
+        "typeRoots": ["../../node_modules/@types"],
+        "jsx": "react-jsx",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "rootDir": "./src"
     },
-    "include": ["**/*.ts"],
-    "exclude": ["node_modules"]
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "exclude": ["node_modules", "dist"]
 }

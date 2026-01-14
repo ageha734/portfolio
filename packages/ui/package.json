@@ -2,16 +2,18 @@
     "private": true,
     "name": "@portfolio/ui",
     "type": "module",
-    "types": "./src/index.d.ts",
+    "types": "./src/index.ts",
     "exports": {
         ".": {
-            "types": "./src/index.d.ts",
+            "types": "./src/index.ts",
             "import": "./src/index.ts"
         },
         "./tailwind.css": "./src/tailwind.css"
     },
     "scripts": {
-        "build": "storybook build -o build",
+        "build": "run-s build:ui build:storybook",
+        "build:storybook": "storybook build -o build",
+        "build:ui": "tsc --outDir dist",
         "clean": "git clean -xdf .cache .turbo node_modules dist",
         "coverage": "vitest run --coverage",
         "dev": "storybook dev -p 16001 --no-open",
@@ -67,6 +69,5 @@
     "peerDependencies": {
         "react": "18.3.1",
         "react-dom": "18.3.1"
-    },
-    "main": "./src/index.ts"
+    }
 }

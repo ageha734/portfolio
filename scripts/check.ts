@@ -1,23 +1,5 @@
 #!/usr/bin/env bun
 
-/**
- * リント・フォーマット・テスト・カバレッジチェックスクリプト
- *
- * コマンドオプションで動作を制御:
- * - --check-type: "lint" (デフォルト), "fmt", "test", "coverage"
- * - --lint-type: "ts" (デフォルト), "tsp", "md", "shell", "actions"
- * - --fix: 修正モード（フラグ）
- *
- * 引数なし: デフォルトパス全体をチェック/修正
- * 引数あり: 指定されたファイルのみをチェック/修正
- *
- * 例:
- * - bun scripts/check.ts --check-type=fmt --lint-type=ts
- * - bun scripts/check.ts --lint-type=md --fix file.md
- * - bun scripts/check.ts --check-type=test
- * - bun scripts/check.ts --check-type=coverage file.ts
- */
-
 import { existsSync, readdirSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { $, spawn } from "bun";
@@ -231,6 +213,53 @@ async function runTspCommand(
 	}
 }
 
+function getTurboCommand(checkType: CheckType, isFix: boolean): string {
+	if (checkType === "fmt") {
+		return isFix ? "fmt" : "fmt:check";
+	}
+	return isFix ? "lint:fix" : "lint";
+}
+
+async function runWorkspaceCommand(
+	workspaces: Set<string>,
+	checkType: CheckType,
+	isFix: boolean,
+): Promise<void> {
+	if (workspaces.size === 0) {
+		return;
+	}
+
+	const workspaceList = Array.from(workspaces);
+	const filter = workspaceList.map((w) => `--filter=${w}`).join(" ");
+	const command = getTurboCommand(checkType, isFix);
+	await $`turbo run ${command} ${filter}`.cwd(ROOT_DIR);
+}
+
+async function runRootFilesCommand(
+	biomePath: string,
+	checkType: CheckType,
+	isFix: boolean,
+	rootFiles: string[],
+): Promise<void> {
+	if (rootFiles.length === 0) {
+		return;
+	}
+
+	const isFormat = checkType === "fmt";
+
+	if (isFormat) {
+		if (isFix) {
+			await $`${biomePath} format --write ${rootFiles}`.cwd(ROOT_DIR);
+		} else {
+			await $`${biomePath} format ${rootFiles}`.cwd(ROOT_DIR);
+		}
+	} else if (isFix) {
+		await $`${biomePath} lint --write ${rootFiles}`.cwd(ROOT_DIR);
+	} else {
+		await $`${biomePath} lint ${rootFiles}`.cwd(ROOT_DIR);
+	}
+}
+
 async function runTsCommand(
 	biomePath: string,
 	checkType: CheckType,
@@ -250,35 +279,8 @@ async function runTsCommand(
 		}
 	}
 
-	if (workspaces.size > 0) {
-		const workspaceList = Array.from(workspaces);
-		const filter = workspaceList.map((w) => `--filter=${w}`).join(" ");
-		const command =
-			checkType === "fmt"
-				? isFix
-					? "fmt"
-					: "fmt:check"
-				: isFix
-					? "lint:fix"
-					: "lint";
-		await $`turbo run ${command} ${filter}`.cwd(ROOT_DIR);
-	}
-
-	if (rootFiles.length > 0) {
-		if (checkType === "fmt") {
-			if (isFix) {
-				await $`${biomePath} format --write ${rootFiles}`.cwd(ROOT_DIR);
-			} else {
-				await $`${biomePath} format ${rootFiles}`.cwd(ROOT_DIR);
-			}
-		} else {
-			if (isFix) {
-				await $`${biomePath} lint --write ${rootFiles}`.cwd(ROOT_DIR);
-			} else {
-				await $`${biomePath} lint ${rootFiles}`.cwd(ROOT_DIR);
-			}
-		}
-	}
+	await runWorkspaceCommand(workspaces, checkType, isFix);
+	await runRootFilesCommand(biomePath, checkType, isFix, rootFiles);
 }
 
 async function runMdCommand(
@@ -316,7 +318,6 @@ async function runShellCommand(
 ): Promise<void> {
 	const absoluteFiles = files.map((f) => resolve(ROOT_DIR, f));
 
-	// ファイルがない場合は処理をスキップ
 	if (absoluteFiles.length === 0) {
 		console.log("No shell files to check");
 		return;

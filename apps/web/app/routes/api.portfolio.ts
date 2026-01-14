@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { createTRPCClient } from "~/shared/lib/trpc";
+import { createTRPCApiClient } from "~/shared/lib/trpc";
 
 export interface Portfolio {
     id: string;
@@ -21,7 +21,7 @@ export type LoaderData = Portfolio[];
 
 export const loader: LoaderFunction = async (args) => {
     const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
-    const trpc = createTRPCClient(apiUrl);
+    const trpc = createTRPCApiClient(apiUrl);
 
     const portfolios = await trpc.portfolios.list.query();
 

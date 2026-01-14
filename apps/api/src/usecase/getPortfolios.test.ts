@@ -1,32 +1,32 @@
 import { describe, expect, test, vi } from "vitest";
+import type { Portfolio, PortfolioRepository } from "~/domain/portfolio";
 import { GetPortfoliosUseCase } from "./getPortfolios";
-import type { Portfolio, PortfolioRepository } from "../domain/portfolio";
 
 describe("GetPortfoliosUseCase", () => {
-    test("should return all portfolios", async () => {
-        const mockPortfolios: Portfolio[] = [
-            {
-                id: "1",
-                title: "Test Portfolio",
-                slug: "test-portfolio",
-                company: "Test Company",
-                date: new Date(),
-                current: true,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-        ];
+	test("should return all portfolios", async () => {
+		const mockPortfolios: Portfolio[] = [
+			{
+				id: "1",
+				title: "Test Portfolio",
+				slug: "test-portfolio",
+				company: "Test Company",
+				date: new Date(),
+				current: true,
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+		];
 
-        const mockRepository: PortfolioRepository = {
-            findAll: vi.fn().mockResolvedValue(mockPortfolios),
-            findBySlug: vi.fn(),
-            findById: vi.fn(),
-        };
+		const mockRepository: PortfolioRepository = {
+			findAll: vi.fn().mockResolvedValue(mockPortfolios),
+			findBySlug: vi.fn(),
+			findById: vi.fn(),
+		};
 
-        const useCase = new GetPortfoliosUseCase(mockRepository);
-        const result = await useCase.execute();
+		const useCase = new GetPortfoliosUseCase(mockRepository);
+		const result = await useCase.execute();
 
-        expect(result).toEqual(mockPortfolios);
-        expect(mockRepository.findAll).toHaveBeenCalledTimes(1);
-    });
+		expect(result).toEqual(mockPortfolios);
+		expect(mockRepository.findAll).toHaveBeenCalledTimes(1);
+	});
 });

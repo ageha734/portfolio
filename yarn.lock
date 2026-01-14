@@ -5727,6 +5727,7 @@
   devDependencies:
     "@portfolio/biome-config" "tooling/biome"
     "@portfolio/tsconfig" "tooling/tsconfig"
+    "@types/node" "25.0.3"
     typescript "5.9.3"
   dependencies:
     "@playwright/test" "1.57.0"
@@ -5758,6 +5759,7 @@
   devDependencies:
     "@portfolio/biome-config" "tooling/biome"
     "@portfolio/tsconfig" "tooling/tsconfig"
+    "@types/node" "25.0.3"
     typescript "5.9.3"
   dependencies:
     "@tailwindcss/postcss" "4.1.18"
@@ -5770,9 +5772,14 @@
   devDependencies:
     "@portfolio/biome-config" "tooling/biome"
     "@portfolio/tsconfig" "tooling/tsconfig"
+    "@types/node" "25.0.3"
     typescript "5.9.3"
   dependencies:
     msw "2.12.7"
+
+"@portfolio/testing-vitest@testing/vitest":
+  version "workspace:testing/vitest"
+  resolved "workspace:testing/vitest"
 
 "@portfolio/tsconfig@tooling/tsconfig":
   version "workspace:tooling/tsconfig"
@@ -5840,6 +5847,7 @@
   devDependencies:
     "@portfolio/biome-config" "tooling/biome"
     "@portfolio/tsconfig" "tooling/tsconfig"
+    "@types/node" "25.0.3"
     typescript "5.9.3"
   dependencies:
     "@testing-library/jest-dom" "6.9.1"
@@ -5949,6 +5957,8 @@
     "@docusaurus/core" "3.9.2"
     "@docusaurus/preset-classic" "3.9.2"
     "@mdx-js/react" "3.1.1"
+    "@portfolio/auth" "packages/auth"
+    "@portfolio/db" "packages/db"
     prism-react-renderer "2.4.1"
     rehype-img-size "1.0.1"
     rehype-slug "6.0.0"
@@ -6526,7 +6536,7 @@
     stream-slice "^0.1.2"
     undici "^6.21.2"
 
-"@remix-run/react@2.17.2", "@remix-run/react@2.x", "@remix-run/react@^2.17.0":
+"@remix-run/react@*", "@remix-run/react@2.17.2", "@remix-run/react@2.x", "@remix-run/react@^2.17.0":
   version "2.17.2"
   resolved "https://registry.npmjs.org/@remix-run/react/-/react-2.17.2.tgz"
   integrity sha512-/s/PYqDjTsQ/2bpsmY3sytdJYXuFHwPX3IRHKcM+UZXFRVGPKF5dgGuvCfb+KW/TmhVKNgpQv0ybCoGpCuF6aA==
@@ -8389,7 +8399,7 @@
     picocolors "^1.1.1"
     redent "^3.0.0"
 
-"@testing-library/react@16.3.1":
+"@testing-library/react@*", "@testing-library/react@16.3.1":
   version "16.3.1"
   resolved "https://registry.npmjs.org/@testing-library/react/-/react-16.3.1.tgz"
   integrity sha512-gr4KtAWqIOQoucWYD/f6ki+j5chXfcPc74Col/6poTyqTmn7zRmodWahWRCp8tYd+GMqBonw6hstNzqjbs6gjw==
@@ -25863,7 +25873,7 @@ vite-tsconfig-paths@6.0.3:
     globrex "^0.1.2"
     tsconfck "^3.0.3"
 
-vitest@3.2.4, "vitest@^2.0.0 || ^3.0.0 || ^4.0.0", vitest@^3.2.4:
+vitest@*, vitest@3.2.4, "vitest@^2.0.0 || ^3.0.0 || ^4.0.0", vitest@^3.2.4:
   version "3.2.4"
   resolved "https://registry.npmjs.org/vitest/-/vitest-3.2.4.tgz"
   integrity sha512-LUCP5ev3GURDysTWiP47wRRUpLKMOfPh+yKTx3kVIEiu5KOMeqzpnYNsKyOoVrULivR8tLcks4+lga33Whn90A==

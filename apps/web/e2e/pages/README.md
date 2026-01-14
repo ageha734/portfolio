@@ -60,6 +60,7 @@ test("Ladle test", async ({ page }) => {
 ## 利用可能なページオブジェクト
 
 ### HomePage (`home.page.ts`)
+
 - `gotoHome()`: ホームページに移動
 - `gotoHomeLadle()`: Ladleのホームページストーリーに移動
 - `expectHeroVisible()`: ヒーローセクションが表示されていることを確認
@@ -68,6 +69,7 @@ test("Ladle test", async ({ page }) => {
 - `clickPortfolioLink()`: ポートフォリオリンクをクリック
 
 ### BlogPage (`blog.page.ts`)
+
 - `gotoBlog()`: ブログページに移動
 - `gotoBlogLadle()`: Ladleのブログページストーリーに移動
 - `expectHeroVisible()`: ヒーローセクションが表示されていることを確認
@@ -78,6 +80,7 @@ test("Ladle test", async ({ page }) => {
 - `clickFirstBlogPost()`: 最初のブログ投稿をクリック
 
 ### PortfolioPage (`portfolio.page.ts`)
+
 - `gotoPortfolio()`: ポートフォリオページに移動
 - `gotoPortfolioLadle()`: Ladleのポートフォリオページストーリーに移動
 - `expectHeroVisible()`: ヒーローセクションが表示されていることを確認
@@ -88,6 +91,7 @@ test("Ladle test", async ({ page }) => {
 - `clickFirstPortfolioItem()`: 最初のポートフォリオアイテムをクリック
 
 ### ResumePage (`resume.page.ts`)
+
 - `gotoResume()`: 履歴書ページに移動
 - `gotoResumeLadle()`: Ladleの履歴書ページストーリーに移動
 - `expectNameVisible()`: 名前が表示されていることを確認
@@ -100,6 +104,7 @@ test("Ladle test", async ({ page }) => {
 - `clickDownloadButton()`: ダウンロードボタンをクリック
 
 ### UsesPage (`uses.page.ts`)
+
 - `gotoUses()`: Usesページに移動
 - `gotoUsesLadle()`: LadleのUsesページストーリーに移動
 - `expectHeroVisible()`: ヒーローセクションが表示されていることを確認

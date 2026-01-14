@@ -2,35 +2,37 @@
     "private": true,
     "name": "@portfolio/vitest-config",
     "type": "module",
-    "types": "./src/index.d.ts",
+    "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "types": "./src/index.d.ts",
-            "default": "./src/index.ts"
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.ts"
         },
         "./env": {
-            "types": "./src/env.d.ts",
-            "default": "./src/env.ts"
+            "types": "./dist/env.d.ts",
+            "default": "./dist/env.ts"
         },
         "./mocks": {
-            "types": "./src/mocks.d.ts",
-            "default": "./src/mocks.ts"
+            "types": "./dist/mocks.d.ts",
+            "default": "./dist/mocks.ts"
         },
         "./msw": {
-            "types": "./src/msw.d.ts",
-            "default": "./src/msw.ts"
+            "types": "./dist/msw.d.ts",
+            "default": "./dist/msw.ts"
         },
         "./render": {
-            "types": "./src/render.d.ts",
-            "default": "./src/render.tsx"
+            "types": "./dist/render.d.ts",
+            "default": "./dist/render.tsx"
         },
         "./setup": {
-            "types": "./src/setup.d.ts",
-            "default": "./src/setup.ts"
+            "types": "./dist/setup.d.ts",
+            "default": "./dist/setup.ts"
         }
     },
     "scripts": {
-        "clean": "git clean -xdf .cache .turbo node_modules",
+        "build": "tsc --outDir dist",
+        "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "dev": "tsc --watch --outDir dist",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",
         "lint": "biome lint .",
@@ -53,6 +55,7 @@
     "devDependencies": {
         "@portfolio/biome-config": "workspace:*",
         "@portfolio/tsconfig": "workspace:*",
+        "@types/node": "25.0.3",
         "typescript": "5.9.3"
     }
 }

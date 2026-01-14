@@ -1,16 +1,15 @@
+import type { D1Database } from "@cloudflare/workers-types";
 import { describe, expect, test, vi } from "vitest";
 import { initAuth } from "./index";
 
-// Mock @portfolio/db
 vi.mock("@portfolio/db", () => ({
     createPrismaClient: vi.fn(() => ({
         $disconnect: vi.fn(),
     })),
 }));
 
-// Mock better-auth
 vi.mock("better-auth", () => ({
-    betterAuth: vi.fn((config) => ({
+    betterAuth: vi.fn((_config) => ({
         api: {
             getSession: vi.fn(),
         },
@@ -21,7 +20,7 @@ vi.mock("better-auth", () => ({
 }));
 
 vi.mock("better-auth/adapters/prisma", () => ({
-    prismaAdapter: vi.fn((prisma, options) => ({
+    prismaAdapter: vi.fn((_prisma, options) => ({
         provider: options.provider,
     })),
 }));

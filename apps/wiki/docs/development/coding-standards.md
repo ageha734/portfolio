@@ -107,7 +107,7 @@ import { Link } from "@remix-run/react";
 import classnames from "classnames";
 
 import { BlogPreview } from "~/features/blog-preview";
-import { Button } from "~/shared/ui";
+import { Button } from "@portfolio/ui";
 
 import type { BlogPreviewProps } from "~/features/blog-preview";
 ```

@@ -1,10 +1,15 @@
+import "@testing-library/jest-dom/vitest";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
-import { Route } from "./__root";
+import { routeTree } from "~/routeTree.gen";
+
+const router = createRouter({ routeTree });
 
 describe("Root Route", () => {
-    test("should render root component", () => {
-        render(<Route.component />);
-        expect(screen.getByText("Root")).toBeInTheDocument();
-    });
+	test("should render admin layout", () => {
+		render(<RouterProvider router={router} />);
+		expect(screen.getByText("CMS")).toBeInTheDocument();
+		expect(screen.getByText("Admin Dashboard")).toBeInTheDocument();
+	});
 });

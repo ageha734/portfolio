@@ -1,6 +1,4 @@
 /**
- * @portfolio/testing-mocks
- *
  * MSW (Mock Service Worker) の設定とハンドラーを提供するパッケージ
  *
  * 使用方法:
@@ -11,5 +9,5 @@
 
 export { default as workerDefault, worker } from "./browser";
 export { trpcHandlers } from "./handlers";
-export * from "./handlers/types";
-export { default as serverDefault, server } from "./server";
+export { default as server } from "./server";
+export * from "./types";

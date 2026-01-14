@@ -1,26 +1,25 @@
+import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import {
-    NavigationMenu,
-    NavigationMenuContent,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger,
+	NavigationMenu,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
 } from "./NavigationMenu";
 
 describe("NavigationMenu Component", () => {
-    test("should render navigation menu", () => {
-        render(
-            <NavigationMenu>
-                <NavigationMenuList>
-                    <NavigationMenuItem>
-                        <NavigationMenuLink href="/">Home</NavigationMenuLink>
-                    </NavigationMenuItem>
-                </NavigationMenuList>
-            </NavigationMenu>,
-        );
+	test("should render navigation menu", () => {
+		render(
+			<NavigationMenu>
+				<NavigationMenuList>
+					<NavigationMenuItem>
+						<NavigationMenuLink href="/">Home</NavigationMenuLink>
+					</NavigationMenuItem>
+				</NavigationMenuList>
+			</NavigationMenu>,
+		);
 
-        expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
-    });
+		expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
+	});
 });

@@ -1,6 +1,4 @@
 import type { ClassValue } from "clsx";
-import type { VariantProps } from "class-variance-authority";
-import type * as React from "react";
 
 export declare function cn(...inputs: ClassValue[]): string;
 
@@ -8,12 +6,12 @@ export type { ButtonProps } from "./components/Button";
 export { Button, buttonVariants } from "./components/Button";
 
 export {
-    Card,
-    CardHeader,
-    CardFooter,
-    CardTitle,
-    CardDescription,
-    CardContent,
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
 } from "./components/Card";
 
 export * from "./components/DropdownMenu";

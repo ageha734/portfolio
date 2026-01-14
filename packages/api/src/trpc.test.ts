@@ -1,20 +1,20 @@
 import { describe, expect, test } from "vitest";
-import { router, publicProcedure } from "./trpc";
+import { publicProcedure, router } from "./trpc";
 
 describe("tRPC", () => {
-    test("should create router", () => {
-        const testRouter = router({
-            test: publicProcedure.query(() => "test"),
-        });
+	test("should create router", () => {
+		const testRouter = router({
+			test: publicProcedure.query(() => "test"),
+		});
 
-        expect(testRouter).toBeDefined();
-    });
+		expect(testRouter).toBeDefined();
+	});
 
-    test("should create public procedure", () => {
-        const testRouter = router({
-            test: publicProcedure.query(() => "test"),
-        });
+	test("should create public procedure", () => {
+		const testRouter = router({
+			test: publicProcedure.query(() => "test"),
+		});
 
-        expect(testRouter).toBeDefined();
-    });
+		expect(testRouter).toBeDefined();
+	});
 });

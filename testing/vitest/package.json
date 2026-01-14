@@ -1,0 +1,16 @@
+{
+	"name": "@portfolio/testing-vitest",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./index.ts",
+		"./render": "./render.tsx"
+	},
+	"peerDependencies": {
+		"@remix-run/react": "*",
+		"@testing-library/react": "*",
+		"react": "*",
+		"vitest": "*"
+	}
+}

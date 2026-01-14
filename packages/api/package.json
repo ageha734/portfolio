@@ -2,15 +2,15 @@
     "private": true,
     "name": "@portfolio/api",
     "type": "module",
-    "types": "./src/index.d.ts",
+    "types": "./src/index.ts",
     "exports": {
         ".": {
-            "types": "./src/index.d.ts",
+            "types": "./src/index.ts",
             "import": "./src/index.ts"
         }
     },
     "scripts": {
-        "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "clean": "git clean -xdf .cache .turbo node_modules",
         "coverage": "vitest run --coverage",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",
@@ -36,6 +36,5 @@
     },
     "peerDependencies": {
         "@trpc/server": "11.0.0"
-    },
-    "main": "./src/index.ts"
+    }
 }

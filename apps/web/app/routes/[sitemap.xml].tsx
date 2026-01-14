@@ -3,7 +3,7 @@ import type { Post } from "~/entities/blog";
 import type { Portfolio } from "~/entities/portfolio";
 import { SITE_UPDATED } from "~/shared/config/constants";
 import { BASE_URL } from "~/shared/config/settings";
-import { createTRPCClient } from "~/shared/lib/trpc";
+import { createTRPCApiClient } from "~/shared/lib/trpc";
 
 /**
  * @method GET
@@ -12,7 +12,7 @@ import { createTRPCClient } from "~/shared/lib/trpc";
  */
 export const loader: LoaderFunction = async (args) => {
     const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
-    const trpc = createTRPCClient(apiUrl);
+    const trpc = createTRPCApiClient(apiUrl);
 
     const [portfolios, posts] = await Promise.all([trpc.portfolios.list.query(), trpc.posts.list.query()]);
 

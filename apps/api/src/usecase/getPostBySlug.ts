@@ -1,9 +1,9 @@
-import type { Post, PostRepository } from "../domain/post";
+import type { Post, PostRepository } from "~/domain/post";
 
 export class GetPostBySlugUseCase {
-    constructor(private readonly postRepository: PostRepository) {}
+	constructor(private readonly postRepository: PostRepository) {}
 
-    async execute(slug: string): Promise<Post | null> {
-        return this.postRepository.findBySlug(slug);
-    }
+	async execute(slug: string): Promise<Post | null> {
+		return this.postRepository.findBySlug(slug);
+	}
 }

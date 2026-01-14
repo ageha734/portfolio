@@ -3,23 +3,23 @@ import { Header } from "./Header";
 import "~/tailwind.css";
 
 export default {
-    title: "widgets/navbar/Header",
+	title: "widgets/navbar/Header",
 };
 
 export const Default = () => (
-    <MemoryRouter initialEntries={["/"]}>
-        <Header />
-    </MemoryRouter>
+	<MemoryRouter initialEntries={["/"]}>
+		<Header />
+	</MemoryRouter>
 );
 
 export const OnBlogPage = () => (
-    <MemoryRouter initialEntries={["/blog"]}>
-        <Header />
-    </MemoryRouter>
+	<MemoryRouter initialEntries={["/blog"]}>
+		<Header />
+	</MemoryRouter>
 );
 
 export const OnPortfolioPage = () => (
-    <MemoryRouter initialEntries={["/portfolio"]}>
-        <Header />
-    </MemoryRouter>
+	<MemoryRouter initialEntries={["/portfolio"]}>
+		<Header />
+	</MemoryRouter>
 );

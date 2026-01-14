@@ -83,5 +83,9 @@
     "typescript.preferences.importModuleSpecifier": "relative",
     "typescript.suggest.autoImports": true,
     "typescript.tsdk": "node_modules/typescript/lib",
-    "typescript.workspaceSymbols.scope": "allOpenProjects"
+    "typescript.workspaceSymbols.scope": "allOpenProjects",
+    "files.associations": {
+        "*.dbclient-js": "javascript",
+        "plyconfig.json": "jsonc"
+    }
 }

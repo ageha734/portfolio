@@ -1,22 +1,27 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
-import { createTRPCClient } from "~/shared/lib/trpc";
+import { createTRPCApiClient } from "~/shared/lib/trpc";
 import { slugSchema } from "~/shared/validation";
 
 export interface Portfolio {
-    id: string;
-    title: string;
-    slug: string;
-    company: string;
-    date: Date | string;
-    current: boolean;
-    overview?: string;
-    description?: string;
-    content?: string;
-    thumbnailTemp?: string;
-    intro?: string;
-    createdAt: Date | string;
-    updatedAt: Date | string;
+	id: string;
+	title: string;
+	slug: string;
+	company: string;
+	date: Date | string;
+	current: boolean;
+	overview?: string;
+	description?: string;
+	content?: {
+		html: string;
+	};
+	images?: Array<{
+		url: string;
+	}>;
+	thumbnailTemp?: string;
+	intro?: string;
+	createdAt: Date | string;
+	updatedAt: Date | string;
 }
 
 export type LoaderData = Portfolio;
@@ -31,7 +36,7 @@ export const loader: LoaderFunction = async (args) => {
 
     const validatedSlug = slugResult.data;
     const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
-    const trpc = createTRPCClient(apiUrl);
+    const trpc = createTRPCApiClient(apiUrl);
 
     const portfolio = await trpc.portfolios.bySlug.query({ slug: validatedSlug });
 

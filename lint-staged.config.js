@@ -18,6 +18,97 @@ function getWorkspaceDir(filePath) {
 	return null;
 }
 
+function filterFilenames(filenames) {
+	return filenames.filter(
+		(f) =>
+			!f.includes("worker-configuration.d.ts") &&
+			!f.includes("/dist/") &&
+			!f.includes("/build/") &&
+			!f.includes("/.next/") &&
+			!f.includes("/coverage/"),
+	);
+}
+
+function getSourceFiles(filteredFilenames) {
+	return filteredFilenames.filter(
+		(f) =>
+			!f.endsWith(".test.ts") &&
+			!f.endsWith(".test.tsx") &&
+			(f.endsWith(".ts") || f.endsWith(".tsx")),
+	);
+}
+
+function getSourceFilesWithTests(sourceFiles) {
+	return sourceFiles.filter((f) => {
+		const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
+		return existsSync(testFile);
+	});
+}
+
+function groupFilesByWorkspace(filteredFilenames) {
+	const workspaceGroups = new Map();
+	const rootFiles = [];
+
+	for (const file of filteredFilenames) {
+		const workspaceDir = getWorkspaceDir(file);
+		if (workspaceDir) {
+			if (!workspaceGroups.has(workspaceDir)) {
+				workspaceGroups.set(workspaceDir, []);
+			}
+			workspaceGroups.get(workspaceDir).push(file);
+		} else {
+			rootFiles.push(file);
+		}
+	}
+
+	return { workspaceGroups, rootFiles };
+}
+
+function buildFormatLintCommands(workspaceGroups, rootFiles) {
+	const commands = [];
+
+	for (const [workspaceDir] of workspaceGroups) {
+		commands.push(`cd ${workspaceDir} && bun run fmt:check && bun run lint`);
+	}
+
+	if (rootFiles.length > 0) {
+		const rootWorkspaceFiles = rootFiles.filter(
+			(f) =>
+				f.endsWith(".ts") ||
+				f.endsWith(".tsx") ||
+				f.endsWith(".js") ||
+				f.endsWith(".jsx"),
+		);
+		if (rootWorkspaceFiles.length > 0) {
+			commands.push("turbo run fmt:check", "turbo run lint");
+		}
+	}
+
+	return commands;
+}
+
+function buildTestCoverageCommands(sourceFilesWithTests) {
+	const commands = [];
+
+	for (const sourceFile of sourceFilesWithTests) {
+		const workspaceDir = getWorkspaceDir(sourceFile);
+		const testFile = sourceFile.replace(/\.(ts|tsx)$/, ".test.$1");
+		if (workspaceDir) {
+			commands.push(
+				`cd ${workspaceDir} && bun run test -- ${testFile}`,
+				`cd ${workspaceDir} && bun run coverage -- ${sourceFile}`,
+			);
+		} else {
+			commands.push(
+				`bun run test -- ${testFile}`,
+				`bun run coverage -- ${sourceFile}`,
+			);
+		}
+	}
+
+	return commands;
+}
+
 const config = {
 	".github/**/*.yml": (filenames) =>
 		filenames.flatMap((f) => [
@@ -25,78 +116,20 @@ const config = {
 			`bun run lint:actions:check -- ${f}`,
 		]),
 	"*.{ts,tsx,js,jsx}": (filenames) => {
-		const filteredFilenames = filenames.filter(
-			(f) =>
-				!f.includes("worker-configuration.d.ts") &&
-				!f.includes("/dist/") &&
-				!f.includes("/build/") &&
-				!f.includes("/.next/") &&
-				!f.includes("/coverage/"),
-		);
-		const sourceFiles = filteredFilenames.filter(
-			(f) =>
-				!f.endsWith(".test.ts") &&
-				!f.endsWith(".test.tsx") &&
-				(f.endsWith(".ts") || f.endsWith(".tsx")),
-		);
-		const sourceFilesWithTests = sourceFiles.filter((f) => {
-			const testFile = f.replace(/\.(ts|tsx)$/, ".test.$1");
-			return existsSync(testFile);
-		});
+		const filteredFilenames = filterFilenames(filenames);
+		const sourceFiles = getSourceFiles(filteredFilenames);
+		const sourceFilesWithTests = getSourceFilesWithTests(sourceFiles);
 		const hasTsFiles = filteredFilenames.some(
 			(f) => f.endsWith(".ts") || f.endsWith(".tsx"),
 		);
 
-		const workspaceGroups = new Map();
-		const rootFiles = [];
+		const { workspaceGroups, rootFiles } =
+			groupFilesByWorkspace(filteredFilenames);
 
-		for (const file of filteredFilenames) {
-			const workspaceDir = getWorkspaceDir(file);
-			if (workspaceDir) {
-				if (!workspaceGroups.has(workspaceDir)) {
-					workspaceGroups.set(workspaceDir, []);
-				}
-				workspaceGroups.get(workspaceDir).push(file);
-			} else {
-				rootFiles.push(file);
-			}
-		}
-
-		const commands = [];
-
-		for (const [workspaceDir, _files] of workspaceGroups) {
-			commands.push(`cd ${workspaceDir} && bun run fmt:check && bun run lint`);
-		}
-
-		if (rootFiles.length > 0) {
-			const rootWorkspaceFiles = rootFiles.filter(
-				(f) =>
-					f.endsWith(".ts") ||
-					f.endsWith(".tsx") ||
-					f.endsWith(".js") ||
-					f.endsWith(".jsx"),
-			);
-			if (rootWorkspaceFiles.length > 0) {
-				commands.push("turbo run fmt:check");
-				commands.push("turbo run lint");
-			}
-		}
-
-		if (sourceFilesWithTests.length > 0) {
-			for (const sourceFile of sourceFilesWithTests) {
-				const workspaceDir = getWorkspaceDir(sourceFile);
-				const testFile = sourceFile.replace(/\.(ts|tsx)$/, ".test.$1");
-				if (workspaceDir) {
-					commands.push(`cd ${workspaceDir} && bun run test -- ${testFile}`);
-					commands.push(
-						`cd ${workspaceDir} && bun run coverage -- ${sourceFile}`,
-					);
-				} else {
-					commands.push(`bun run test -- ${testFile}`);
-					commands.push(`bun run coverage -- ${sourceFile}`);
-				}
-			}
-		}
+		const commands = [
+			...buildFormatLintCommands(workspaceGroups, rootFiles),
+			...buildTestCoverageCommands(sourceFilesWithTests),
+		];
 
 		if (hasTsFiles) {
 			commands.push("turbo run typecheck");
@@ -122,7 +155,6 @@ const config = {
 			);
 		}
 
-		// ルートディレクトリや他のディレクトリのMarkdownファイルは警告を出す
 		if (otherFiles.length > 0) {
 			console.warn(
 				`Warning: The following markdown files are outside apps/wiki/ and will not be checked: ${otherFiles.join(", ")}`,

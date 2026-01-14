@@ -4,14 +4,14 @@
 
 ## 適用範囲
 
-FSDは次のアプリケーションで採用されています：
+FSDは次のアプリケーションで採用されています
 
 - **`apps/web`**: Remixベースのポートフォリオサイト（BFF）
 - **`apps/admin`**: React + Vite + Tanstack Routerベースの管理ダッシュボード
 
 ## レイヤー構造
 
-FSDは、アプリケーションを次のレイヤーに分割します：
+FSDは、アプリケーションを次のレイヤーに分割します
 
 ### app/
 
@@ -43,7 +43,7 @@ FSDは、アプリケーションを次のレイヤーに分割します：
 - ページ固有の大きなUIセクション
 - 例: `Footer`, `Navbar`, `Hero`, `Sections`
 
-各ウィジェットは次の構造を持ちます：
+各ウィジェットは次の構造を持ちます
 
 ```text
 widget-name/
@@ -64,7 +64,7 @@ widget-name/
 - ビジネスロジックを含む
 - 例: `BlogPreview`, `PortfolioPreview`, `ShareButton`, `Tracking`
 
-各フィーチャーは次の構造を持ちます：
+各フィーチャーは次の構造を持ちます
 
 ```text
 feature-name/
@@ -85,7 +85,7 @@ feature-name/
 - エンティティ固有のロジック
 - 例: `Blog`, `Portfolio`, `User`
 
-各エンティティは次の構造を持ちます：
+各エンティティは次の構造を持ちます
 
 ```text
 entity-name/
@@ -130,7 +130,7 @@ FSDのインポートルールに従い、上位レイヤーから下位レイ�
 
 ## パスエイリアス
 
-TypeScriptのパスエイリアスが設定されており、`~`プレフィックスでインポートできます：
+TypeScriptのパスエイリアスが設定されており、`~`プレフィックスでインポートできます
 
 - `~/shared/*` → `app/shared/*`
 - `~/entities/*` → `app/entities/*`

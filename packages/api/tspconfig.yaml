@@ -3,5 +3,4 @@ emit:
 
 options:
     '@typespec/openapi3':
-        # TODO:
-        output-file: '../../docs/swagger/openapi.yaml'
+        output-file: '../../apps/wiki/static/swagger/openapi.yaml'

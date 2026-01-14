@@ -3,23 +3,25 @@
     "version": "0.0.0",
     "name": "@portfolio/storybook-config",
     "type": "module",
-    "types": "./src/main.preset.d.ts",
+    "types": "./dist/main.preset.d.ts",
     "exports": {
         "./main": {
-            "types": "./src/main.preset.d.ts",
-            "default": "./src/main.preset.ts"
+            "types": "./dist/main.preset.d.ts",
+            "default": "./dist/main.preset.ts"
         },
         "./preview": {
-            "types": "./src/preview.preset.d.ts",
-            "default": "./src/preview.preset.ts"
+            "types": "./dist/preview.preset.d.ts",
+            "default": "./dist/preview.preset.ts"
         },
         "./theme": {
-            "types": "./src/theme.d.ts",
-            "default": "./src/theme.ts"
+            "types": "./dist/theme.d.ts",
+            "default": "./dist/theme.ts"
         }
     },
     "scripts": {
-        "clean": "git clean -xdf .cache .turbo node_modules",
+        "build": "tsc --outDir dist",
+        "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "dev": "tsc --watch --outDir dist",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",
         "lint": "biome lint .",

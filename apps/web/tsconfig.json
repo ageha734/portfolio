@@ -4,12 +4,11 @@
     "compilerOptions": {
         "baseUrl": ".",
         "outDir": "./dist",
-        "rootDir": "./app",
         "paths": {
             "~/*": ["./app/*"]
         },
         "types": ["@cloudflare/workers-types", "vitest/globals"]
     },
-    "include": ["app/**/*", "env.d.ts"],
+    "include": ["app/**/*", "env.d.ts", ".storybook", "vite.config.ts"],
     "exclude": ["node_modules", "dist", "build"]
 }
