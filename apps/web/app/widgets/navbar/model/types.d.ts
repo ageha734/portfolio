@@ -1,10 +1,10 @@
 export interface NavLink {
-	label: string;
-	pathname: string;
+    label: string;
+    pathname: string;
 }
 
 export interface SocialLink {
-	label: string;
-	url: string;
-	icon: string;
+    label: string;
+    url: string;
+    icon: string;
 }

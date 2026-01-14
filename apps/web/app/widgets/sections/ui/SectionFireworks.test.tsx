@@ -4,43 +4,43 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { SectionFireworks } from "./SectionFireworks";
 
 vi.mock("../lib/esm-modules", () => ({
-	fireworks: vi.fn(() =>
-		Promise.resolve({
-			Fireworks: ({ style }: { style: React.CSSProperties }) => (
-				<div data-testid="fireworks" style={style}>
-					Fireworks Component
-				</div>
-			),
-		}),
-	),
+    fireworks: vi.fn(() =>
+        Promise.resolve({
+            Fireworks: ({ style }: { style: React.CSSProperties }) => (
+                <div data-testid="fireworks" style={style}>
+                    Fireworks Component
+                </div>
+            ),
+        }),
+    ),
 }));
 
 describe("SectionFireworks Component", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-	afterEach(() => {
-		vi.restoreAllMocks();
-	});
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
 
-	test("should not render anything initially", () => {
-		render(<SectionFireworks />);
+    test("should not render anything initially", () => {
+        render(<SectionFireworks />);
 
-		expect(screen.queryByTestId("fireworks")).not.toBeInTheDocument();
-	});
+        expect(screen.queryByTestId("fireworks")).not.toBeInTheDocument();
+    });
 
-	test("should render fireworks component after loading", async () => {
-		render(<SectionFireworks />);
+    test("should render fireworks component after loading", async () => {
+        render(<SectionFireworks />);
 
-		await waitFor(() => {
-			expect(screen.getByTestId("fireworks")).toBeInTheDocument();
-		});
-	});
+        await waitFor(() => {
+            expect(screen.getByTestId("fireworks")).toBeInTheDocument();
+        });
+    });
 
-	test("should return null when not loaded", () => {
-		const { container } = render(<SectionFireworks />);
+    test("should return null when not loaded", () => {
+        const { container } = render(<SectionFireworks />);
 
-		expect(container.firstChild).toBeNull();
-	});
+        expect(container.firstChild).toBeNull();
+    });
 });

@@ -28,12 +28,14 @@
 ### 技術スタック
 
 - **Monorepo**: Turborepo + Bun Workspaces
-- **Runtime**: Cloudflare Workers (API), Cloudflare Pages (Web), Cloudflare D1 (DB)
+- **Runtime**: Cloudflare Workers (API), Cloudflare Pages (Web),
+  Cloudflare D1 (DB)
 - **Language**: TypeScript (Strict Mode)
 
 ### 重要なルール
 
-- **Naming**: `utils`というディレクトリ名は**厳格に禁止**。代わりに`lib`、`shared`、`infra`、または具体的な名前を使用
+- **Naming**: `utils`というディレクトリ名は**厳格に禁止**。
+  代わりに`lib`、`shared`、`infra`、または具体的な名前を使用
 - **App Structure**: `apps/*`内のすべてのディレクトリは`app/`をソースルートとして使用（`src/`は使用しない）
 - **Package Structure**: `packages/*`と`tooling/*`内のディレクトリは`src/`を使用可能
 
@@ -41,7 +43,8 @@
 
 ## Feature-Sliced Design (FSD)
 
-このプロジェクトは、フロントエンドアプリケーション（`apps/web`、`apps/admin`）でFeature-Sliced Design (FSD) アーキテクチャを採用しています。
+このプロジェクトは、フロントエンドアプリケーション（`apps/web`、`apps/admin`）で
+Feature-Sliced Design (FSD) アーキテクチャを採用しています。
 
 ### レイヤー構造
 

@@ -6,70 +6,63 @@ import { describe, expect, test, vi } from "vitest";
 import { SandboxSidebar } from "./SandboxSidebar";
 
 vi.mock("@remix-run/react", async () => {
-	const actual = await vi.importActual("@remix-run/react");
-	return {
-		...actual,
-		Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
-			<RouterLink to={to} {...props}>
-				{children}
-			</RouterLink>
-		),
-		NavLink: ({
-			to,
-			children,
-			...props
-		}: {
-			to: string;
-			children: ReactNode;
-		}) => (
-			<RouterLink to={to} {...props}>
-				{children}
-			</RouterLink>
-		),
-	};
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+        NavLink: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+    };
 });
 
 describe("SandboxSidebar Component", () => {
-	test("should render sandbox sidebar", () => {
-		render(
-			<MemoryRouter>
-				<SandboxSidebar />
-			</MemoryRouter>,
-		);
+    test("should render sandbox sidebar", () => {
+        render(
+            <MemoryRouter>
+                <SandboxSidebar />
+            </MemoryRouter>,
+        );
 
-		expect(screen.getByText("Sandboxes")).toBeInTheDocument();
-	});
+        expect(screen.getByText("Sandboxes")).toBeInTheDocument();
+    });
 
-	test("should render with default className", () => {
-		const { container } = render(
-			<MemoryRouter>
-				<SandboxSidebar />
-			</MemoryRouter>,
-		);
+    test("should render with default className", () => {
+        const { container } = render(
+            <MemoryRouter>
+                <SandboxSidebar />
+            </MemoryRouter>,
+        );
 
-		const sidebar = container.querySelector(".sandbox-sidebar");
-		expect(sidebar).toBeInTheDocument();
-	});
+        const sidebar = container.querySelector(".sandbox-sidebar");
+        expect(sidebar).toBeInTheDocument();
+    });
 
-	test("should apply custom className", () => {
-		const { container } = render(
-			<MemoryRouter>
-				<SandboxSidebar className="custom-class" />
-			</MemoryRouter>,
-		);
+    test("should apply custom className", () => {
+        const { container } = render(
+            <MemoryRouter>
+                <SandboxSidebar className="custom-class" />
+            </MemoryRouter>,
+        );
 
-		const sidebar = container.querySelector(".sandbox-sidebar");
-		expect(sidebar).toHaveClass("custom-class");
-	});
+        const sidebar = container.querySelector(".sandbox-sidebar");
+        expect(sidebar).toHaveClass("custom-class");
+    });
 
-	test("should render heading", () => {
-		render(
-			<MemoryRouter>
-				<SandboxSidebar />
-			</MemoryRouter>,
-		);
+    test("should render heading", () => {
+        render(
+            <MemoryRouter>
+                <SandboxSidebar />
+            </MemoryRouter>,
+        );
 
-		const heading = screen.getByRole("heading", { level: 3 });
-		expect(heading).toHaveTextContent("Sandboxes");
-	});
+        const heading = screen.getByRole("heading", { level: 3 });
+        expect(heading).toHaveTextContent("Sandboxes");
+    });
 });

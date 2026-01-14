@@ -9,50 +9,43 @@ import { RemixServer } from "@remix-run/react";
 import * as Sentry from "@sentry/remix";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
-import {
-	SENTRY_DSN,
-	SENTRY_ENVIRONMENT,
-	SENTRY_TRACES_SAMPLE_RATE,
-} from "~/shared/config/settings";
+import { SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_TRACES_SAMPLE_RATE } from "~/shared/config/settings";
 
 if (SENTRY_DSN !== "__undefined__") {
-	Sentry.init({
-		dsn: SENTRY_DSN,
-		environment: SENTRY_ENVIRONMENT,
-		tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
-	});
+    Sentry.init({
+        dsn: SENTRY_DSN,
+        environment: SENTRY_ENVIRONMENT,
+        tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    });
 }
 
 async function handleRequest(
-	request: Request,
-	responseStatusCode: number,
-	responseHeaders: Headers,
-	remixContext: EntryContext,
+    request: Request,
+    responseStatusCode: number,
+    responseHeaders: Headers,
+    remixContext: EntryContext,
 ) {
-	let statusCode = responseStatusCode;
-	const body = await renderToReadableStream(
-		<RemixServer context={remixContext} url={request.url} />,
-		{
-			signal: request.signal,
-			onError(error: unknown) {
-				console.error(error);
-				if (SENTRY_DSN !== "__undefined__") {
-					Sentry.captureException(error);
-				}
-				statusCode = 500;
-			},
-		},
-	);
+    let statusCode = responseStatusCode;
+    const body = await renderToReadableStream(<RemixServer context={remixContext} url={request.url} />, {
+        signal: request.signal,
+        onError(error: unknown) {
+            console.error(error);
+            if (SENTRY_DSN !== "__undefined__") {
+                Sentry.captureException(error);
+            }
+            statusCode = 500;
+        },
+    });
 
-	if (isbot(request.headers.get("user-agent") || "")) {
-		await body.allReady;
-	}
+    if (isbot(request.headers.get("user-agent") || "")) {
+        await body.allReady;
+    }
 
-	responseHeaders.set("Content-Type", "text/html");
-	return new Response(body, {
-		headers: responseHeaders,
-		status: statusCode,
-	});
+    responseHeaders.set("Content-Type", "text/html");
+    return new Response(body, {
+        headers: responseHeaders,
+        status: statusCode,
+    });
 }
 
 export default handleRequest;

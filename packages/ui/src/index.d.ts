@@ -6,12 +6,12 @@ export type { ButtonProps } from "./components/Button";
 export { Button, buttonVariants } from "./components/Button";
 
 export {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
 } from "./components/Card";
 
 export * from "./components/DropdownMenu";

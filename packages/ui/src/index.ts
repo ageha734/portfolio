@@ -8,8 +8,8 @@ export * from "./components/NavigationMenu";
 export * from "./components/Separator";
 export { ShareButton } from "./components/ShareButton";
 export type {
-	ShareButtonProps,
-	ShareOptions,
+    ShareButtonProps,
+    ShareOptions,
 } from "./components/ShareButton.d";
 export * from "./components/Sheet";
 export type { Social, SocialLinkProps } from "./components/SocialLink";

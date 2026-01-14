@@ -120,56 +120,56 @@ bun remove --filter @portfolio/web package-name
 
 1. **ディレクトリの作成**
 
-    ```bash
-    mkdir -p packages/new-package
-    cd packages/new-package
-    ```
+   ```bash
+   mkdir -p packages/new-package
+   cd packages/new-package
+   ```
 
 2. **package.json の作成**
 
-    ```json
-    {
-      "name": "@portfolio/new-package",
-      "version": "0.0.0",
-      "private": true,
-      "type": "module",
-      "main": "./src/index.ts",
-      "types": "./src/index.ts",
-      "scripts": {
-        "build": "tsc",
-        "test": "vitest run",
-        "lint": "biome lint .",
-        "fmt": "biome format --write ."
-      },
-      "dependencies": {},
-      "devDependencies": {
-        "@portfolio/biome-config": "workspace:*",
-        "@portfolio/tsconfig": "workspace:*",
-        "@portfolio/vitest-config": "workspace:*",
-        "typescript": "5.9.3"
-      }
-    }
-    ```
+   ```json
+   {
+     "name": "@portfolio/new-package",
+     "version": "0.0.0",
+     "private": true,
+     "type": "module",
+     "main": "./src/index.ts",
+     "types": "./src/index.ts",
+     "scripts": {
+       "build": "tsc",
+       "test": "vitest run",
+       "lint": "biome lint .",
+       "fmt": "biome format --write ."
+     },
+     "dependencies": {},
+     "devDependencies": {
+       "@portfolio/biome-config": "workspace:*",
+       "@portfolio/tsconfig": "workspace:*",
+       "@portfolio/vitest-config": "workspace:*",
+       "typescript": "5.9.3"
+     }
+   }
+   ```
 
-3. **ルートの package.json に追加**
+3. ルートの package.json に追加
 
-    ルートの `package.json` の `workspaces` に新しいパッケージを追加します。
+   ルートの `package.json` の `workspaces` に新しいパッケージを追加します。
 
-    ```json
-    {
-      "workspaces": [
-        "apps/*",
-        "packages/*",
-        "tooling/*"
-      ]
-    }
-    ```
+   ```json
+   {
+     "workspaces": [
+       "apps/*",
+       "packages/*",
+       "tooling/*"
+     ]
+   }
+   ```
 
 4. **依存関係のインストール**
 
-    ```bash
-    bun install
-    ```
+   ```bash
+   bun install
+   ```
 
 ## パッケージの検索
 

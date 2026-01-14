@@ -1,3 +1,3 @@
 export interface SandboxSidebarProps {
-	className?: string;
+    className?: string;
 }

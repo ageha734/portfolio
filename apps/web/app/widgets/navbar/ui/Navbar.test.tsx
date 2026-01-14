@@ -6,146 +6,142 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { Navbar } from "./Navbar";
 
 vi.mock("@remix-run/react", async () => {
-	const actual = await vi.importActual("@remix-run/react");
-	return {
-		...actual,
-		Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
-			<RouterLink to={to} {...props}>
-				{children}
-			</RouterLink>
-		),
-		useFetcher: () => ({
-			formData: null,
-			submit: vi.fn(),
-		}),
-		useLoaderData: () => ({
-			canonicalUrl: "https://example.com",
-			theme: "dark",
-		}),
-		useLocation: () => ({
-			pathname: "/",
-			hash: "",
-			key: "test",
-		}),
-	};
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+        useFetcher: () => ({
+            formData: null,
+            submit: vi.fn(),
+        }),
+        useLoaderData: () => ({
+            canonicalUrl: "https://example.com",
+            theme: "dark",
+        }),
+        useLocation: () => ({
+            pathname: "/",
+            hash: "",
+            key: "test",
+        }),
+    };
 });
 
 describe("Navbar Component", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-		document.body.innerHTML = "";
-	});
+    beforeEach(() => {
+        vi.clearAllMocks();
+        document.body.innerHTML = "";
+    });
 
-	test("should render navbar", () => {
-		render(
-			<MemoryRouter>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should render navbar", () => {
+        render(
+            <MemoryRouter>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		expect(
-			screen.getByLabelText("Matthew Scholta, Software Engineer"),
-		).toBeInTheDocument();
-	});
+        expect(screen.getByLabelText("Matthew Scholta, Software Engineer")).toBeInTheDocument();
+    });
 
-	test("should render navigation links", () => {
-		render(
-			<MemoryRouter>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should render navigation links", () => {
+        render(
+            <MemoryRouter>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		expect(screen.getByText("Projects")).toBeInTheDocument();
-		expect(screen.getByText("Details")).toBeInTheDocument();
-		expect(screen.getByText("Articles")).toBeInTheDocument();
-		expect(screen.getByText("Contact")).toBeInTheDocument();
-	});
+        expect(screen.getByText("Projects")).toBeInTheDocument();
+        expect(screen.getByText("Details")).toBeInTheDocument();
+        expect(screen.getByText("Articles")).toBeInTheDocument();
+        expect(screen.getByText("Contact")).toBeInTheDocument();
+    });
 
-	test("should render monogram logo", () => {
-		const { container } = render(
-			<MemoryRouter>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should render monogram logo", () => {
+        const { container } = render(
+            <MemoryRouter>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		const logoLink = container.querySelector(
-			`[aria-label="Matthew Scholta, Software Engineer"]`,
-		);
-		expect(logoLink).toBeInTheDocument();
-		const svg = logoLink?.querySelector("svg");
-		expect(svg).toBeInTheDocument();
-	});
+        const logoLink = container.querySelector(`[aria-label="Matthew Scholta, Software Engineer"]`);
+        expect(logoLink).toBeInTheDocument();
+        const svg = logoLink?.querySelector("svg");
+        expect(svg).toBeInTheDocument();
+    });
 
-	test("should toggle mobile menu", () => {
-		render(
-			<MemoryRouter>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should toggle mobile menu", () => {
+        render(
+            <MemoryRouter>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		const toggleButton = screen.getByLabelText("Menu");
-		expect(toggleButton).toBeInTheDocument();
+        const toggleButton = screen.getByLabelText("Menu");
+        expect(toggleButton).toBeInTheDocument();
 
-		fireEvent.click(toggleButton);
+        fireEvent.click(toggleButton);
 
-		// モバイルメニューが開いたことをダイアログの存在で確認
-		const mobileNav = document.querySelector('[role="dialog"]');
-		expect(mobileNav).toBeInTheDocument();
-	});
+        // モバイルメニューが開いたことをダイアログの存在で確認
+        const mobileNav = document.querySelector('[role="dialog"]');
+        expect(mobileNav).toBeInTheDocument();
+    });
 
-	test("should close mobile menu when link is clicked", () => {
-		render(
-			<MemoryRouter>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should close mobile menu when link is clicked", () => {
+        render(
+            <MemoryRouter>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		const toggleButton = screen.getByLabelText("Menu");
-		fireEvent.click(toggleButton);
+        const toggleButton = screen.getByLabelText("Menu");
+        fireEvent.click(toggleButton);
 
-		// 複数要素がある場合は最初のものを取得
-		const projectsLinks = screen.getAllByText("Projects");
-		fireEvent.click(projectsLinks[0]);
+        // 複数要素がある場合は最初のものを取得
+        const projectsLinks = screen.getAllByText("Projects");
+        fireEvent.click(projectsLinks[0]);
 
-		// ダイアログが閉じたことを確認（アニメーション後に閉じる可能性があるためdata-stateをチェック）
-		const _mobileNav = document.querySelector('[role="dialog"]');
-		// Note: ダイアログはまだDOMにある場合があるため、テストを調整
-		expect(projectsLinks.length).toBeGreaterThan(0);
-	});
+        // ダイアログが閉じたことを確認（アニメーション後に閉じる可能性があるためdata-stateをチェック）
+        const _mobileNav = document.querySelector('[role="dialog"]');
+        // Note: ダイアログはまだDOMにある場合があるため、テストを調整
+        expect(projectsLinks.length).toBeGreaterThan(0);
+    });
 
-	test("should render social links", () => {
-		const { container } = render(
-			<MemoryRouter>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should render social links", () => {
+        const { container } = render(
+            <MemoryRouter>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		// ナビゲーションリンクが存在することを確認
-		const navLinks = container.querySelectorAll("nav a, header a");
-		expect(navLinks.length).toBeGreaterThan(0);
-	});
+        // ナビゲーションリンクが存在することを確認
+        const navLinks = container.querySelectorAll("nav a, header a");
+        expect(navLinks.length).toBeGreaterThan(0);
+    });
 
-	test("should handle nav item click with hash", () => {
-		render(
-			<MemoryRouter initialEntries={["/"]}>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should handle nav item click with hash", () => {
+        render(
+            <MemoryRouter initialEntries={["/"]}>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		const projectsLink = screen.getByText("Projects").closest("a");
-		expect(projectsLink).toHaveAttribute("href", "/#project-1");
-	});
+        const projectsLink = screen.getByText("Projects").closest("a");
+        expect(projectsLink).toHaveAttribute("href", "/#project-1");
+    });
 
-	test("should have navigation links with correct href", () => {
-		render(
-			<MemoryRouter>
-				<Navbar />
-			</MemoryRouter>,
-		);
+    test("should have navigation links with correct href", () => {
+        render(
+            <MemoryRouter>
+                <Navbar />
+            </MemoryRouter>,
+        );
 
-		const projectsLink = screen.getByText("Projects").closest("a");
-		// リンクが存在してhrefを持つことを確認
-		expect(projectsLink).toBeInTheDocument();
-		expect(projectsLink).toHaveAttribute("href");
-	});
+        const projectsLink = screen.getByText("Projects").closest("a");
+        // リンクが存在してhrefを持つことを確認
+        expect(projectsLink).toBeInTheDocument();
+        expect(projectsLink).toHaveAttribute("href");
+    });
 });

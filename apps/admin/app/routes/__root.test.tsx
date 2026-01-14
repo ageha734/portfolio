@@ -7,9 +7,9 @@ import { routeTree } from "~/routeTree.gen";
 const router = createRouter({ routeTree });
 
 describe("Root Route", () => {
-	test("should render admin layout", () => {
-		render(<RouterProvider router={router} />);
-		expect(screen.getByText("CMS")).toBeInTheDocument();
-		expect(screen.getByText("Admin Dashboard")).toBeInTheDocument();
-	});
+    test("should render admin layout", () => {
+        render(<RouterProvider router={router} />);
+        expect(screen.getByText("CMS")).toBeInTheDocument();
+        expect(screen.getByText("Admin Dashboard")).toBeInTheDocument();
+    });
 });

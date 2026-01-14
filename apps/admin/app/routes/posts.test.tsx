@@ -7,9 +7,9 @@ import { routeTree } from "~/routeTree.gen";
 const router = createRouter({ routeTree });
 
 describe("Posts Route", () => {
-	test("should render posts route", () => {
-		render(<RouterProvider router={router} />);
-		router.navigate({ to: "/posts" });
-		expect(screen.getByText("Posts")).toBeInTheDocument();
-	});
+    test("should render posts route", () => {
+        render(<RouterProvider router={router} />);
+        router.navigate({ to: "/posts" });
+        expect(screen.getByText("Posts")).toBeInTheDocument();
+    });
 });

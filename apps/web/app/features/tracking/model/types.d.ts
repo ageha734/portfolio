@@ -1,11 +1,11 @@
 export interface TrackingGAProps {
-	id: string;
+    id: string;
 }
 
 export interface TrackingGTMIFrameProps {
-	id: string;
+    id: string;
 }
 
 export interface TrackingGTMScriptProps {
-	id: string;
+    id: string;
 }

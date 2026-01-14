@@ -7,9 +7,9 @@ import { routeTree } from "~/routeTree.gen";
 const router = createRouter({ routeTree });
 
 describe("Index Route", () => {
-	test("should render admin dashboard", () => {
-		render(<RouterProvider router={router} />);
-		router.navigate({ to: "/" });
-		expect(screen.getByText("Dashboard")).toBeInTheDocument();
-	});
+    test("should render admin dashboard", () => {
+        render(<RouterProvider router={router} />);
+        router.navigate({ to: "/" });
+        expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    });
 });

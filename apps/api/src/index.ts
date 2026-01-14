@@ -7,20 +7,20 @@ import { appRouter } from "./interface/trpc/router";
 export type { AppRouter } from "./interface/trpc/router";
 
 type Env = {
-	DB: D1Database;
+    DB: D1Database;
 };
 
 const app = new Hono<{ Bindings: Env }>();
 
 app.all("/trpc/*", async (c) => {
-	const response = await fetchRequestHandler({
-		endpoint: "/trpc",
-		req: c.req.raw,
-		router: appRouter,
-		createContext: () => createContext({ DB: c.env.DB }),
-	});
+    const response = await fetchRequestHandler({
+        endpoint: "/trpc",
+        req: c.req.raw,
+        router: appRouter,
+        createContext: () => createContext({ DB: c.env.DB }),
+    });
 
-	return response;
+    return response;
 });
 
 export default app;

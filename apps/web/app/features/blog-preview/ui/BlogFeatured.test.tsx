@@ -6,83 +6,83 @@ import type { Post } from "~/entities/blog";
 import { BlogFeatured } from "./BlogFeatured";
 
 describe("BlogFeatured Component", () => {
-	let mockPost: Post;
+    let mockPost: Post;
 
-	beforeEach(() => {
-		mockPost = {
-			id: "test-id",
-			slug: "test-post",
-			title: "Test Post Title",
-			date: "2024-01-01",
-			imageTemp: "https://example.com/image.jpg",
-			content: {
-				html: "<p>Test content</p>",
-			},
-			sticky: true,
-			tags: ["test", "featured"],
-		};
-	});
+    beforeEach(() => {
+        mockPost = {
+            id: "test-id",
+            slug: "test-post",
+            title: "Test Post Title",
+            date: "2024-01-01",
+            imageTemp: "https://example.com/image.jpg",
+            content: {
+                html: "<p>Test content</p>",
+            },
+            sticky: true,
+            tags: ["test", "featured"],
+        };
+    });
 
-	test("should render blog featured post", () => {
-		render(
-			<MemoryRouter>
-				<BlogFeatured post={mockPost} />
-			</MemoryRouter>,
-		);
+    test("should render blog featured post", () => {
+        render(
+            <MemoryRouter>
+                <BlogFeatured post={mockPost} />
+            </MemoryRouter>,
+        );
 
-		expect(screen.getByText("Test Post Title")).toBeInTheDocument();
-	});
+        expect(screen.getByText("Test Post Title")).toBeInTheDocument();
+    });
 
-	test("should pass correct props to BlogPreview", () => {
-		render(
-			<MemoryRouter>
-				<BlogFeatured post={mockPost} />
-			</MemoryRouter>,
-		);
+    test("should pass correct props to BlogPreview", () => {
+        render(
+            <MemoryRouter>
+                <BlogFeatured post={mockPost} />
+            </MemoryRouter>,
+        );
 
-		const link = screen.getByText("Test Post Title").closest("a");
-		expect(link).toHaveAttribute("href", "/blog/test-post");
-	});
+        const link = screen.getByText("Test Post Title").closest("a");
+        expect(link).toHaveAttribute("href", "/blog/test-post");
+    });
 
-	test("should apply custom className", () => {
-		const { container } = render(
-			<MemoryRouter>
-				<BlogFeatured className="custom-class" post={mockPost} />
-			</MemoryRouter>,
-		);
+    test("should apply custom className", () => {
+        const { container } = render(
+            <MemoryRouter>
+                <BlogFeatured className="custom-class" post={mockPost} />
+            </MemoryRouter>,
+        );
 
-		const link = container.querySelector(".custom-class");
-		expect(link).toBeInTheDocument();
-	});
+        const link = container.querySelector(".custom-class");
+        expect(link).toBeInTheDocument();
+    });
 
-	test("should render with featured flag set to true", () => {
-		render(
-			<MemoryRouter>
-				<BlogFeatured post={mockPost} />
-			</MemoryRouter>,
-		);
+    test("should render with featured flag set to true", () => {
+        render(
+            <MemoryRouter>
+                <BlogFeatured post={mockPost} />
+            </MemoryRouter>,
+        );
 
-		expect(screen.getByText("Test Post Title")).toBeInTheDocument();
-	});
+        expect(screen.getByText("Test Post Title")).toBeInTheDocument();
+    });
 
-	test("should render image", () => {
-		render(
-			<MemoryRouter>
-				<BlogFeatured post={mockPost} />
-			</MemoryRouter>,
-		);
+    test("should render image", () => {
+        render(
+            <MemoryRouter>
+                <BlogFeatured post={mockPost} />
+            </MemoryRouter>,
+        );
 
-		const image = screen.getByAltText("Test Post Title");
-		expect(image).toHaveAttribute("src", "https://example.com/image.jpg");
-	});
+        const image = screen.getByAltText("Test Post Title");
+        expect(image).toHaveAttribute("src", "https://example.com/image.jpg");
+    });
 
-	test("should render date", () => {
-		render(
-			<MemoryRouter>
-				<BlogFeatured post={mockPost} />
-			</MemoryRouter>,
-		);
+    test("should render date", () => {
+        render(
+            <MemoryRouter>
+                <BlogFeatured post={mockPost} />
+            </MemoryRouter>,
+        );
 
-		expect(screen.getByText(/01\/01\/2024/)).toBeInTheDocument();
-	});
+        expect(screen.getByText(/01\/01\/2024/)).toBeInTheDocument();
+    });
 });

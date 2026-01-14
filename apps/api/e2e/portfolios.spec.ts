@@ -4,66 +4,60 @@ const API_URL = process.env.VITE_API_URL ?? "http://localhost:8787";
 const TRPC_ENDPOINT = `${API_URL}/trpc`;
 
 test.describe("Portfolios API", () => {
-	test("should return portfolios list", async ({ request }) => {
-		const response = await request.post(`${TRPC_ENDPOINT}/portfolios.list`, {
-			data: {},
-		});
+    test("should return portfolios list", async ({ request }) => {
+        const response = await request.post(`${TRPC_ENDPOINT}/portfolios.list`, {
+            data: {},
+        });
 
-		expect(response.status()).toBe(200);
+        expect(response.status()).toBe(200);
 
-		const data = await response.json();
-		expect(data).toHaveProperty("result");
-		expect(data.result).toHaveProperty("data");
-		expect(Array.isArray(data.result.data)).toBe(true);
-	});
+        const data = await response.json();
+        expect(data).toHaveProperty("result");
+        expect(data.result).toHaveProperty("data");
+        expect(Array.isArray(data.result.data)).toBe(true);
+    });
 
-	test("should return portfolio by slug", async ({ request }) => {
-		const listResponse = await request.post(
-			`${TRPC_ENDPOINT}/portfolios.list`,
-			{
-				data: {},
-			},
-		);
-		const listData = await listResponse.json();
+    test("should return portfolio by slug", async ({ request }) => {
+        const listResponse = await request.post(`${TRPC_ENDPOINT}/portfolios.list`, {
+            data: {},
+        });
+        const listData = await listResponse.json();
 
-		if (listData.result?.data?.length > 0) {
-			const slug = listData.result.data[0].slug;
+        if (listData.result?.data?.length > 0) {
+            const slug = listData.result.data[0].slug;
 
-			const response = await request.post(
-				`${TRPC_ENDPOINT}/portfolios.bySlug`,
-				{
-					data: { slug },
-				},
-			);
+            const response = await request.post(`${TRPC_ENDPOINT}/portfolios.bySlug`, {
+                data: { slug },
+            });
 
-			expect(response.status()).toBe(200);
+            expect(response.status()).toBe(200);
 
-			const data = await response.json();
-			expect(data).toHaveProperty("result");
-			expect(data.result).toHaveProperty("data");
-			expect(data.result.data).toHaveProperty("slug", slug);
-		}
-	});
+            const data = await response.json();
+            expect(data).toHaveProperty("result");
+            expect(data.result).toHaveProperty("data");
+            expect(data.result.data).toHaveProperty("slug", slug);
+        }
+    });
 
-	test("should return null for non-existent slug", async ({ request }) => {
-		const response = await request.post(`${TRPC_ENDPOINT}/portfolios.bySlug`, {
-			data: { slug: "non-existent-slug-12345" },
-		});
+    test("should return null for non-existent slug", async ({ request }) => {
+        const response = await request.post(`${TRPC_ENDPOINT}/portfolios.bySlug`, {
+            data: { slug: "non-existent-slug-12345" },
+        });
 
-		expect(response.status()).toBe(200);
+        expect(response.status()).toBe(200);
 
-		const data = await response.json();
-		expect(data).toHaveProperty("result");
-		expect(data.result).toHaveProperty("data");
-		expect(data.result.data).toBeNull();
-	});
+        const data = await response.json();
+        expect(data).toHaveProperty("result");
+        expect(data.result).toHaveProperty("data");
+        expect(data.result.data).toBeNull();
+    });
 
-	test("should validate input for bySlug query", async ({ request }) => {
-		const response = await request.post(`${TRPC_ENDPOINT}/portfolios.bySlug`, {
-			data: {},
-		});
+    test("should validate input for bySlug query", async ({ request }) => {
+        const response = await request.post(`${TRPC_ENDPOINT}/portfolios.bySlug`, {
+            data: {},
+        });
 
-		// Should return error for missing slug
-		expect(response.status()).toBeGreaterThanOrEqual(400);
-	});
+        // Should return error for missing slug
+        expect(response.status()).toBeGreaterThanOrEqual(400);
+    });
 });

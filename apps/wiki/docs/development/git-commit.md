@@ -2,7 +2,9 @@
 
 ## 概要
 
-このプロジェクトでは[Conventional Commits](https://www.conventionalcommits.org/)形式に基づいたコミットメッセージを使用します。`commitlint.config.js`の設定に従い、一貫性のあるコミット履歴を維持します。
+このプロジェクトでは[Conventional Commits](https://www.conventionalcommits.org/)形式に基づいた
+コミットメッセージを使用します。
+`commitlint.config.js`の設定に従い、一貫性のあるコミット履歴を維持します。
 
 ## コミットメッセージの形式
 

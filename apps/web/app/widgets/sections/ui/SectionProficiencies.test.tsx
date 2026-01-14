@@ -4,40 +4,40 @@ import { describe, expect, test } from "vitest";
 import { SectionProficiencies } from "./SectionProficiencies";
 
 describe("SectionProficiencies Component", () => {
-	test("should render proficiencies section", () => {
-		render(<SectionProficiencies />);
+    test("should render proficiencies section", () => {
+        render(<SectionProficiencies />);
 
-		expect(screen.getByText("Proficiencies")).toBeInTheDocument();
-	});
+        expect(screen.getByText("Proficiencies")).toBeInTheDocument();
+    });
 
-	test("should render heading", () => {
-		render(<SectionProficiencies />);
+    test("should render heading", () => {
+        render(<SectionProficiencies />);
 
-		const heading = screen.getByRole("heading", { level: 2 });
-		expect(heading).toHaveTextContent("Proficiencies");
-	});
+        const heading = screen.getByRole("heading", { level: 2 });
+        expect(heading).toHaveTextContent("Proficiencies");
+    });
 
-	test("should render description", () => {
-		render(<SectionProficiencies />);
+    test("should render description", () => {
+        render(<SectionProficiencies />);
 
-		expect(screen.getByText(/Not saying I am an "expert"/)).toBeInTheDocument();
-	});
+        expect(screen.getByText(/Not saying I am an "expert"/)).toBeInTheDocument();
+    });
 
-	test("should render proficiency categories", () => {
-		render(<SectionProficiencies />);
+    test("should render proficiency categories", () => {
+        render(<SectionProficiencies />);
 
-		expect(screen.getByText("DevOps")).toBeInTheDocument();
-		// 複数要素がある場合はgetAllByTextを使用
-		expect(screen.getAllByText("Testing").length).toBeGreaterThan(0);
-		expect(screen.getByText("Design")).toBeInTheDocument();
-	});
+        expect(screen.getByText("DevOps")).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText("Testing").length).toBeGreaterThan(0);
+        expect(screen.getByText("Design")).toBeInTheDocument();
+    });
 
-	test("should render proficiency items", () => {
-		render(<SectionProficiencies />);
+    test("should render proficiency items", () => {
+        render(<SectionProficiencies />);
 
-		expect(screen.getByText(/React/)).toBeInTheDocument();
-		expect(screen.getByText(/TypeScript/)).toBeInTheDocument();
-		// 複数要素がある場合はgetAllByTextを使用
-		expect(screen.getAllByText(/Docker/).length).toBeGreaterThan(0);
-	});
+        expect(screen.getByText(/React/)).toBeInTheDocument();
+        expect(screen.getByText(/TypeScript/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Docker/).length).toBeGreaterThan(0);
+    });
 });

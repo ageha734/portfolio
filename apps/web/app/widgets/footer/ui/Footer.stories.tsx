@@ -3,34 +3,34 @@ import { Footer } from "./Footer";
 import "~/tailwind.css";
 
 export default {
-	title: "widgets/footer/Footer",
+    title: "widgets/footer/Footer",
 };
 
 export const Default = () => (
-	<MemoryRouter initialEntries={["/"]}>
-		<Footer />
-	</MemoryRouter>
+    <MemoryRouter initialEntries={["/"]}>
+        <Footer />
+    </MemoryRouter>
 );
 
 export const OnBlogPage = () => (
-	<MemoryRouter initialEntries={["/blog"]}>
-		<Footer />
-	</MemoryRouter>
+    <MemoryRouter initialEntries={["/blog"]}>
+        <Footer />
+    </MemoryRouter>
 );
 
 export const OnPortfolioPage = () => (
-	<MemoryRouter initialEntries={["/portfolio"]}>
-		<Footer />
-	</MemoryRouter>
+    <MemoryRouter initialEntries={["/portfolio"]}>
+        <Footer />
+    </MemoryRouter>
 );
 
 export const HiddenOnResume = () => (
-	<MemoryRouter initialEntries={["/resume"]}>
-		<div className="p-4">
-			<p className="mb-4 text-color-copy-light text-sm">
-				Footerはresumeページでは表示されません（nullを返します）
-			</p>
-			<Footer />
-		</div>
-	</MemoryRouter>
+    <MemoryRouter initialEntries={["/resume"]}>
+        <div className="p-4">
+            <p className="mb-4 text-color-copy-light text-sm">
+                Footerはresumeページでは表示されません（nullを返します）
+            </p>
+            <Footer />
+        </div>
+    </MemoryRouter>
 );

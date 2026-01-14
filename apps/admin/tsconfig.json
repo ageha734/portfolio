@@ -9,6 +9,6 @@
         },
         "types": ["vitest/globals"]
     },
-    "include": ["app/**/*", ".storybook", "vite.config.ts", "env.d.ts"],
+    "include": ["app/**/*", ".storybook", "vite.config.ts", "env.d.ts", "functions/**/*"],
     "exclude": ["node_modules", "dist", "build"]
 }

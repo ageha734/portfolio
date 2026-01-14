@@ -7,19 +7,19 @@ import type { TrackingGTMScriptProps } from "../model/types.d";
  * responsible for loading GTM which loads our Tags and Pixels
  */
 export const TrackingGTMScript = (props: TrackingGTMScriptProps) => {
-	const { id } = props;
+    const { id } = props;
 
-	const __html = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    const __html = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','${id}');`;
 
-	return (
-		<script
-			// biome-ignore lint: Google Tag Managerスクリプトを埋め込むために必要
-			dangerouslySetInnerHTML={{ __html }}
-			type="text/javascript"
-		/>
-	);
+    return (
+        <script
+            // biome-ignore lint: Google Tag Managerスクリプトを埋め込むために必要
+            dangerouslySetInnerHTML={{ __html }}
+            type="text/javascript"
+        />
+    );
 };

@@ -3,23 +3,23 @@ import { createTRPCApiClient } from "~/shared/lib/trpc";
 import { slugSchema } from "~/shared/validation";
 
 export interface Post {
-	id: string;
-	title: string;
-	slug: string;
-	date: Date | string;
-	description?: string;
-	content: {
-		html: string;
-		raw?: unknown;
-	};
-	imageTemp: string;
-	images?: Array<{
-		url: string;
-	}>;
-	sticky: boolean;
-	intro?: string;
-	createdAt: Date | string;
-	updatedAt: Date | string;
+    id: string;
+    title: string;
+    slug: string;
+    date: Date | string;
+    description?: string;
+    content: {
+        html: string;
+        raw?: unknown;
+    };
+    imageTemp: string;
+    images?: Array<{
+        url: string;
+    }>;
+    sticky: boolean;
+    intro?: string;
+    createdAt: Date | string;
+    updatedAt: Date | string;
 }
 
 export type LoaderData = Post;

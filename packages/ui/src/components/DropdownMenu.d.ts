@@ -9,77 +9,55 @@ export declare const DropdownMenuSub: typeof DropdownMenuPrimitive.Sub;
 export declare const DropdownMenuRadioGroup: typeof DropdownMenuPrimitive.RadioGroup;
 
 export interface DropdownMenuSubTriggerProps
-	extends React.ComponentPropsWithoutRef<
-		typeof DropdownMenuPrimitive.SubTrigger
-	> {
-	inset?: boolean;
+    extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubTrigger> {
+    inset?: boolean;
 }
 
 export declare const DropdownMenuSubTrigger: React.ForwardRefExoticComponent<
-	DropdownMenuSubTriggerProps &
-		React.RefAttributes<
-			React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>
-		>
+    DropdownMenuSubTriggerProps & React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.SubTrigger>>
 >;
 
 export declare const DropdownMenuSubContent: React.ForwardRefExoticComponent<
-	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent> &
-		React.RefAttributes<
-			React.ElementRef<typeof DropdownMenuPrimitive.SubContent>
-		>
+    React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.SubContent> &
+        React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.SubContent>>
 >;
 
 export interface DropdownMenuContentProps
-	extends React.ComponentPropsWithoutRef<
-		typeof DropdownMenuPrimitive.Content
-	> {}
+    extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content> {}
 
 export declare const DropdownMenuContent: React.ForwardRefExoticComponent<
-	DropdownMenuContentProps &
-		React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Content>>
+    DropdownMenuContentProps & React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Content>>
 >;
 
-export interface DropdownMenuItemProps
-	extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
-	inset?: boolean;
+export interface DropdownMenuItemProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Item> {
+    inset?: boolean;
 }
 
 export declare const DropdownMenuItem: React.ForwardRefExoticComponent<
-	DropdownMenuItemProps &
-		React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Item>>
+    DropdownMenuItemProps & React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Item>>
 >;
 
 export declare const DropdownMenuCheckboxItem: React.ForwardRefExoticComponent<
-	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem> &
-		React.RefAttributes<
-			React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>
-		>
+    React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.CheckboxItem> &
+        React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>>
 >;
 
 export declare const DropdownMenuRadioItem: React.ForwardRefExoticComponent<
-	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem> &
-		React.RefAttributes<
-			React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>
-		>
+    React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.RadioItem> &
+        React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.RadioItem>>
 >;
 
-export interface DropdownMenuLabelProps
-	extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> {
-	inset?: boolean;
+export interface DropdownMenuLabelProps extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Label> {
+    inset?: boolean;
 }
 
 export declare const DropdownMenuLabel: React.ForwardRefExoticComponent<
-	DropdownMenuLabelProps &
-		React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Label>>
+    DropdownMenuLabelProps & React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Label>>
 >;
 
 export declare const DropdownMenuSeparator: React.ForwardRefExoticComponent<
-	React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator> &
-		React.RefAttributes<
-			React.ElementRef<typeof DropdownMenuPrimitive.Separator>
-		>
+    React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Separator> &
+        React.RefAttributes<React.ElementRef<typeof DropdownMenuPrimitive.Separator>>
 >;
 
-export declare const DropdownMenuShortcut: React.FC<
-	React.HTMLAttributes<HTMLSpanElement>
->;
+export declare const DropdownMenuShortcut: React.FC<React.HTMLAttributes<HTMLSpanElement>>;

@@ -2,8 +2,8 @@ import { Logo } from "./Logo";
 import "~/tailwind.css";
 
 export default {
-	title: "components/Logo",
-	component: Logo,
+    title: "components/Logo",
+    component: Logo,
 };
 
 export const Default = () => <Logo />;

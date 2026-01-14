@@ -6,21 +6,21 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-	plugins: [
-		react(),
-		TanStackRouterVite({
-			routesDirectory: "./app/routes",
-			generatedRouteTree: "./app/routeTree.gen.tsx",
-			routeFileIgnorePattern: ".test.",
-		}),
-		tsconfigPaths({
-			ignoreConfigErrors: true,
-		}),
-		tailwindcss(),
-	],
-	resolve: {
-		alias: {
-			"~": resolve(__dirname, "./app"),
-		},
-	},
+    plugins: [
+        react(),
+        TanStackRouterVite({
+            routesDirectory: "./app/routes",
+            generatedRouteTree: "./app/routeTree.gen.tsx",
+            routeFileIgnorePattern: ".test.",
+        }),
+        tsconfigPaths({
+            ignoreConfigErrors: true,
+        }),
+        tailwindcss(),
+    ],
+    resolve: {
+        alias: {
+            "~": resolve(__dirname, "./app"),
+        },
+    },
 });

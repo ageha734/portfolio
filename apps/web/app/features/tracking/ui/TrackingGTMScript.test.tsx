@@ -5,43 +5,43 @@ import type { TrackingGTMScriptProps } from "../model/types.d";
 import { TrackingGTMScript } from "./TrackingGTMScript";
 
 describe("TrackingGTMScript Component", () => {
-	let props: TrackingGTMScriptProps;
+    let props: TrackingGTMScriptProps;
 
-	beforeEach(() => {
-		props = {
-			id: "GTM-123456789",
-		};
-	});
+    beforeEach(() => {
+        props = {
+            id: "GTM-123456789",
+        };
+    });
 
-	test("should render script tag", () => {
-		const { container } = render(<TrackingGTMScript {...props} />);
+    test("should render script tag", () => {
+        const { container } = render(<TrackingGTMScript {...props} />);
 
-		const scripts = container.querySelectorAll("script");
-		expect(scripts.length).toBeGreaterThan(0);
-	});
+        const scripts = container.querySelectorAll("script");
+        expect(scripts.length).toBeGreaterThan(0);
+    });
 
-	test("should include GTM ID in script content", () => {
-		const { container } = render(<TrackingGTMScript {...props} />);
+    test("should include GTM ID in script content", () => {
+        const { container } = render(<TrackingGTMScript {...props} />);
 
-		const scripts = container.querySelectorAll("script");
-		const scriptContent = Array.from(scripts)
-			.map((script) => script.innerHTML)
-			.join(" ");
-		expect(scriptContent).toContain(props.id);
-	});
+        const scripts = container.querySelectorAll("script");
+        const scriptContent = Array.from(scripts)
+            .map((script) => script.innerHTML)
+            .join(" ");
+        expect(scriptContent).toContain(props.id);
+    });
 
-	test("should render script with type text/javascript", () => {
-		const { container } = render(<TrackingGTMScript {...props} />);
+    test("should render script with type text/javascript", () => {
+        const { container } = render(<TrackingGTMScript {...props} />);
 
-		const script = container.querySelector("script");
-		expect(script).toHaveAttribute("type", "text/javascript");
-	});
+        const script = container.querySelector("script");
+        expect(script).toHaveAttribute("type", "text/javascript");
+    });
 
-	test("should include dataLayer initialization in script", () => {
-		const { container } = render(<TrackingGTMScript {...props} />);
+    test("should include dataLayer initialization in script", () => {
+        const { container } = render(<TrackingGTMScript {...props} />);
 
-		const script = container.querySelector("script");
-		expect(script?.innerHTML).toContain("dataLayer");
-		expect(script?.innerHTML).toContain("gtm.js");
-	});
+        const script = container.querySelector("script");
+        expect(script?.innerHTML).toContain("dataLayer");
+        expect(script?.innerHTML).toContain("gtm.js");
+    });
 });

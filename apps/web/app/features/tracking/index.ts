@@ -1,7 +1,7 @@
 export type {
-	TrackingGAProps,
-	TrackingGTMIFrameProps,
-	TrackingGTMScriptProps,
+    TrackingGAProps,
+    TrackingGTMIFrameProps,
+    TrackingGTMScriptProps,
 } from "./model/types.d";
 export { TrackingGA } from "./ui/TrackingGA";
 export { TrackingGTMIFrame } from "./ui/TrackingGTMIFrame";

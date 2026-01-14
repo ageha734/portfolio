@@ -1,5 +1,5 @@
 export type {
-	Portfolio,
-	PortfolioFormData,
-	PortfolioListItem,
+    Portfolio,
+    PortfolioFormData,
+    PortfolioListItem,
 } from "./model/types";

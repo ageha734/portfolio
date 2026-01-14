@@ -4,24 +4,24 @@ import { createTRPCApiClient } from "~/shared/lib/trpc";
 import { slugSchema } from "~/shared/validation";
 
 export interface Portfolio {
-	id: string;
-	title: string;
-	slug: string;
-	company: string;
-	date: Date | string;
-	current: boolean;
-	overview?: string;
-	description?: string;
-	content?: {
-		html: string;
-	};
-	images?: Array<{
-		url: string;
-	}>;
-	thumbnailTemp?: string;
-	intro?: string;
-	createdAt: Date | string;
-	updatedAt: Date | string;
+    id: string;
+    title: string;
+    slug: string;
+    company: string;
+    date: Date | string;
+    current: boolean;
+    overview?: string;
+    description?: string;
+    content?: {
+        html: string;
+    };
+    images?: Array<{
+        url: string;
+    }>;
+    thumbnailTemp?: string;
+    intro?: string;
+    createdAt: Date | string;
+    updatedAt: Date | string;
 }
 
 export type LoaderData = Portfolio;

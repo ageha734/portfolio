@@ -1,7 +1,7 @@
 export type {
-	BlogFeaturedProps,
-	BlogPreviewProps,
-	BlogUpcomingProps,
+    BlogFeaturedProps,
+    BlogPreviewProps,
+    BlogUpcomingProps,
 } from "./model/types.d";
 export { BlogFeatured } from "./ui/BlogFeatured";
 export { BlogPreview } from "./ui/BlogPreview";

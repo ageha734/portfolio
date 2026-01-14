@@ -29,7 +29,8 @@ Feature-Sliced Design (FSD) アーキテクチャを採用してプロジェク�
 - **entities/**: ドメインモデル
 - **shared/**: 共通リソース
 
-詳細は [`architecture/feature-sliced.md`](./architecture/feature-sliced.md) を参照してください。
+詳細は [`architecture/feature-sliced.md`](./architecture/feature-sliced.md)
+を参照してください。
 
 ## テストの拡充
 

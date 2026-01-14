@@ -64,9 +64,9 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 3. **リダイレクトURIを設定**
 
-    ```url
-    https://your-domain.com/api/auth/callback/google
-    ```
+   ```url
+   https://your-domain.com/api/auth/callback/google
+   ```
 
 4. **環境変数を設定**
 
@@ -305,16 +305,16 @@ wrangler d1 execute portfolio-db --command "SELECT * FROM sessions"
 
 1. **リダイレクトURIを確認**
 
-    ```url
-    https://your-domain.com/api/auth/callback/google
-    ```
+   ```url
+   https://your-domain.com/api/auth/callback/google
+   ```
 
 2. **クライアントIDとシークレットを確認**
 
-    ```bash
-    echo $GOOGLE_CLIENT_ID
-    echo $GOOGLE_CLIENT_SECRET
-    ```
+   ```bash
+   echo $GOOGLE_CLIENT_ID
+   echo $GOOGLE_CLIENT_SECRET
+   ```
 
 3. **Google Cloud Consoleの設定を確認**
 

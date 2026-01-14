@@ -3,50 +3,46 @@ import { describe, expect, test } from "vitest";
 import { SectionEducation } from "./SectionEducation";
 
 describe("SectionEducation Component", () => {
-	test("should render education section", () => {
-		render(<SectionEducation />);
+    test("should render education section", () => {
+        render(<SectionEducation />);
 
-		expect(screen.getByText("Education")).toBeInTheDocument();
-	});
+        expect(screen.getByText("Education")).toBeInTheDocument();
+    });
 
-	test("should render heading", () => {
-		render(<SectionEducation />);
+    test("should render heading", () => {
+        render(<SectionEducation />);
 
-		const heading = screen.getByRole("heading", { level: 2 });
-		expect(heading).toHaveTextContent("Education");
-	});
+        const heading = screen.getByRole("heading", { level: 2 });
+        expect(heading).toHaveTextContent("Education");
+    });
 
-	test("should render university name", () => {
-		render(<SectionEducation />);
+    test("should render university name", () => {
+        render(<SectionEducation />);
 
-		expect(
-			screen.getByText("San Francisco State University"),
-		).toBeInTheDocument();
-	});
+        expect(screen.getByText("San Francisco State University")).toBeInTheDocument();
+    });
 
-	test("should render major", () => {
-		render(<SectionEducation />);
+    test("should render major", () => {
+        render(<SectionEducation />);
 
-		// 複数要素がある場合はgetAllByTextを使用
-		expect(screen.getAllByText(/Industrial Design/).length).toBeGreaterThan(0);
-		expect(screen.getByText(/incomplete/)).toBeInTheDocument();
-	});
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Industrial Design/).length).toBeGreaterThan(0);
+        expect(screen.getByText(/incomplete/)).toBeInTheDocument();
+    });
 
-	test("should render description", () => {
-		render(<SectionEducation />);
+    test("should render description", () => {
+        render(<SectionEducation />);
 
-		expect(screen.getByText(/Mechanical Engineering/)).toBeInTheDocument();
-		// 複数要素がある場合はgetAllByTextを使用
-		expect(screen.getAllByText(/Industrial Design/).length).toBeGreaterThan(0);
-	});
+        expect(screen.getByText(/Mechanical Engineering/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Industrial Design/).length).toBeGreaterThan(0);
+    });
 
-	test("should render list items", () => {
-		render(<SectionEducation />);
+    test("should render list items", () => {
+        render(<SectionEducation />);
 
-		expect(
-			screen.getByText(/Industrial Designers Society of America/),
-		).toBeInTheDocument();
-		// 複数要素がある場合はgetAllByTextを使用
-		expect(screen.getAllByText(/Teaching Assistant/).length).toBeGreaterThan(0);
-	});
+        expect(screen.getByText(/Industrial Designers Society of America/)).toBeInTheDocument();
+        // 複数要素がある場合はgetAllByTextを使用
+        expect(screen.getAllByText(/Teaching Assistant/).length).toBeGreaterThan(0);
+    });
 });

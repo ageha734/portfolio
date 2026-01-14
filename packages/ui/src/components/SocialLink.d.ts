@@ -1,11 +1,11 @@
 export interface Social {
-	icon: string;
-	title: string;
-	url: string;
+    icon: string;
+    title: string;
+    url: string;
 }
 
 export interface SocialLinkProps {
-	data: Social;
+    data: Social;
 }
 
 export declare const SocialLink: (props: SocialLinkProps) => JSX.Element;

@@ -62,7 +62,8 @@ export const GOOGLE_ANALYTICS_ENABLED =
     import.meta.env.VITE_GOOGLE_ANALYTICS_ENABLED === "true";
 ```
 
-**注意**: Cloudflare Workers環境では `process.env` は使用できません。`import.meta.env` を使用してください。
+**注意**: Cloudflare Workers環境では `process.env` は使用できません。
+`import.meta.env` を使用してください。
 
 ### サーバーサイド（Remix Loader）
 

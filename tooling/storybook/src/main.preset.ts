@@ -3,101 +3,94 @@ import { mergeConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export interface StorybookMainPresetOptions {
-	stories: string[];
-	rootDir?: string;
-	additionalAliases?: Record<string, string>;
-	additionalAddons?: string[];
+    stories: string[];
+    rootDir?: string;
+    additionalAliases?: Record<string, string>;
+    additionalAddons?: string[];
 }
 
 function getPluginName(plugin: unknown): string {
-	if (typeof plugin === "object" && plugin !== null && "name" in plugin) {
-		const nameValue = (plugin as { name?: unknown }).name;
-		return typeof nameValue === "string" ? nameValue : "";
-	}
-	if (typeof plugin === "function") {
-		const fnNameValue = (plugin as { name?: unknown }).name;
-		return typeof fnNameValue === "string" ? fnNameValue : "";
-	}
-	return "";
+    if (typeof plugin === "object" && plugin !== null && "name" in plugin) {
+        const nameValue = (plugin as { name?: unknown }).name;
+        return typeof nameValue === "string" ? nameValue : "";
+    }
+    if (typeof plugin === "function") {
+        const fnNameValue = (plugin as { name?: unknown }).name;
+        return typeof fnNameValue === "string" ? fnNameValue : "";
+    }
+    return "";
 }
 
 function shouldExcludeRemixPlugin(plugin: unknown): boolean {
-	if (!plugin) return false;
+    if (!plugin) return false;
 
-	if (Array.isArray(plugin)) {
-		const [pluginFn] = plugin;
-		if (pluginFn) {
-			const name = getPluginName(pluginFn);
-			if (name.toLowerCase().includes("remix")) {
-				return true;
-			}
-		}
-		return false;
-	}
+    if (Array.isArray(plugin)) {
+        const [pluginFn] = plugin;
+        if (pluginFn) {
+            const name = getPluginName(pluginFn);
+            if (name.toLowerCase().includes("remix")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	const name = getPluginName(plugin);
-	return name.toLowerCase().includes("remix");
+    const name = getPluginName(plugin);
+    return name.toLowerCase().includes("remix");
 }
 
 function filterRemixPlugins(plugins: unknown[]): unknown[] {
-	return plugins.filter((plugin) => !shouldExcludeRemixPlugin(plugin));
+    return plugins.filter((plugin) => !shouldExcludeRemixPlugin(plugin));
 }
 
-export function createStorybookMainPreset(
-	options: StorybookMainPresetOptions,
-): StorybookConfig {
-	const {
-		stories,
-		rootDir = process.cwd(),
-		additionalAliases = {},
-		additionalAddons = [],
-	} = options;
+export function createStorybookMainPreset(options: StorybookMainPresetOptions): StorybookConfig {
+    const { stories, rootDir = process.cwd(), additionalAliases = {}, additionalAddons = [] } = options;
 
-	const config: StorybookConfig = {
-		stories,
-		addons: [
-			"@storybook/addon-essentials",
-			"@storybook/addon-interactions",
-			"@storybook/addon-links",
-			"@storybook/addon-a11y",
-			...additionalAddons,
-		],
-		framework: {
-			name: "@storybook/react-vite",
-			options: {},
-		},
-		core: {
-			disableTelemetry: true,
-		},
-		async viteFinal(config) {
-			const filteredPlugins = filterRemixPlugins(config.plugins || []);
+    const config: StorybookConfig = {
+        stories,
+        addons: [
+            "@storybook/addon-essentials",
+            "@storybook/addon-interactions",
+            "@storybook/addon-links",
+            "@storybook/addon-a11y",
+            ...additionalAddons,
+        ],
+        framework: {
+            name: "@storybook/react-vite",
+            options: {},
+        },
+        core: {
+            disableTelemetry: true,
+        },
+        async viteFinal(config) {
+            const filteredPlugins = filterRemixPlugins(config.plugins || []);
 
-			return mergeConfig(
-				{
-					...config,
-					plugins: filteredPlugins,
-				},
-				{
-					plugins: [
-						tsconfigPaths({
-							root: rootDir,
-							ignoreConfigErrors: true,
-						}),
-					],
-					resolve: {
-						alias: {
-							...additionalAliases,
-						},
-					},
-					server: {
-						watch: {
-							ignored: ["**/.cache/**", "**/docs/**"],
-						},
-					},
-				},
-			);
-		},
-	};
+            return mergeConfig(
+                {
+                    ...config,
+                    plugins: filteredPlugins,
+                },
+                {
+                    plugins: [
+                        tsconfigPaths({
+                            root: rootDir,
+                            ignoreConfigErrors: true,
+                        }),
+                    ],
+                    resolve: {
+                        alias: {
+                            ...additionalAliases,
+                        },
+                    },
+                    server: {
+                        watch: {
+                            ignored: ["**/.cache/**", "**/docs/**"],
+                        },
+                    },
+                },
+            );
+        },
+    };
 
-	return config;
+    return config;
 }

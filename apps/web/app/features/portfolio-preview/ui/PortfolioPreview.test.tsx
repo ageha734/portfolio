@@ -6,93 +6,93 @@ import type { PortfolioPreviewProps } from "../model/types.d";
 import { PortfolioPreview } from "./PortfolioPreview";
 
 describe("PortfolioPreview Component", () => {
-	let props: PortfolioPreviewProps;
+    let props: PortfolioPreviewProps;
 
-	beforeEach(() => {
-		props = {
-			current: false,
-			data: {
-				id: "1",
-				title: "Test Portfolio",
-				slug: "test-portfolio",
-				company: "Test Company",
-				date: "2024-01-01",
-				current: false,
-				overview: "Test overview",
-				images: [
-					{
-						url: "/images/test.jpg",
-					},
-				],
-			},
-		};
-	});
+    beforeEach(() => {
+        props = {
+            current: false,
+            data: {
+                id: "1",
+                title: "Test Portfolio",
+                slug: "test-portfolio",
+                company: "Test Company",
+                date: "2024-01-01",
+                current: false,
+                overview: "Test overview",
+                images: [
+                    {
+                        url: "/images/test.jpg",
+                    },
+                ],
+            },
+        };
+    });
 
-	test("should render portfolio title", () => {
-		render(
-			<MemoryRouter>
-				<PortfolioPreview {...props} />
-			</MemoryRouter>,
-		);
+    test("should render portfolio title", () => {
+        render(
+            <MemoryRouter>
+                <PortfolioPreview {...props} />
+            </MemoryRouter>,
+        );
 
-		const title = screen.getByText("Test Portfolio");
-		expect(title).toBeInTheDocument();
-	});
+        const title = screen.getByText("Test Portfolio");
+        expect(title).toBeInTheDocument();
+    });
 
-	test("should render company name", () => {
-		render(
-			<MemoryRouter>
-				<PortfolioPreview {...props} />
-			</MemoryRouter>,
-		);
+    test("should render company name", () => {
+        render(
+            <MemoryRouter>
+                <PortfolioPreview {...props} />
+            </MemoryRouter>,
+        );
 
-		const company = screen.getByText("Test Company");
-		expect(company).toBeInTheDocument();
-	});
+        const company = screen.getByText("Test Company");
+        expect(company).toBeInTheDocument();
+    });
 
-	test("should render year when not current", () => {
-		render(
-			<MemoryRouter>
-				<PortfolioPreview {...props} />
-			</MemoryRouter>,
-		);
+    test("should render year when not current", () => {
+        render(
+            <MemoryRouter>
+                <PortfolioPreview {...props} />
+            </MemoryRouter>,
+        );
 
-		const year = screen.getByText("2024");
-		expect(year).toBeInTheDocument();
-	});
+        const year = screen.getByText("2024");
+        expect(year).toBeInTheDocument();
+    });
 
-	test("should not render year when current", () => {
-		props.current = true;
+    test("should not render year when current", () => {
+        props.current = true;
 
-		render(
-			<MemoryRouter>
-				<PortfolioPreview {...props} />
-			</MemoryRouter>,
-		);
+        render(
+            <MemoryRouter>
+                <PortfolioPreview {...props} />
+            </MemoryRouter>,
+        );
 
-		const year = screen.queryByText("2024");
-		expect(year).not.toBeInTheDocument();
-	});
+        const year = screen.queryByText("2024");
+        expect(year).not.toBeInTheDocument();
+    });
 
-	test("should render overview", () => {
-		render(
-			<MemoryRouter>
-				<PortfolioPreview {...props} />
-			</MemoryRouter>,
-		);
+    test("should render overview", () => {
+        render(
+            <MemoryRouter>
+                <PortfolioPreview {...props} />
+            </MemoryRouter>,
+        );
 
-		const overview = screen.getByText("Test overview");
-		expect(overview).toBeInTheDocument();
-	});
+        const overview = screen.getByText("Test overview");
+        expect(overview).toBeInTheDocument();
+    });
 
-	test("should link to portfolio page", () => {
-		render(
-			<MemoryRouter>
-				<PortfolioPreview {...props} />
-			</MemoryRouter>,
-		);
+    test("should link to portfolio page", () => {
+        render(
+            <MemoryRouter>
+                <PortfolioPreview {...props} />
+            </MemoryRouter>,
+        );
 
-		const link = screen.getByRole("link");
-		expect(link).toHaveAttribute("href", "/portfolio/test-portfolio");
-	});
+        const link = screen.getByRole("link");
+        expect(link).toHaveAttribute("href", "/portfolio/test-portfolio");
+    });
 });

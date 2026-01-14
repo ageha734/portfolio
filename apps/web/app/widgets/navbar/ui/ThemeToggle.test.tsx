@@ -5,71 +5,68 @@ import { ThemeToggle } from "./ThemeToggle";
 
 const mockSubmit = vi.fn();
 vi.mock("@remix-run/react", async () => {
-	const actual = await vi.importActual("@remix-run/react");
-	return {
-		...actual,
-		useFetcher: () => ({
-			submit: mockSubmit,
-			formData: null,
-		}),
-		useLoaderData: () => ({
-			theme: "dark",
-		}),
-	};
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        useFetcher: () => ({
+            submit: mockSubmit,
+            formData: null,
+        }),
+        useLoaderData: () => ({
+            theme: "dark",
+        }),
+    };
 });
 
 describe("ThemeToggle Component", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-	test("should render theme toggle button", () => {
-		render(<ThemeToggle />);
+    test("should render theme toggle button", () => {
+        render(<ThemeToggle />);
 
-		const button = screen.getByLabelText("Toggle theme");
-		expect(button).toBeInTheDocument();
-	});
+        const button = screen.getByLabelText("Toggle theme");
+        expect(button).toBeInTheDocument();
+    });
 
-	test("should call submit when clicked", () => {
-		render(<ThemeToggle />);
+    test("should call submit when clicked", () => {
+        render(<ThemeToggle />);
 
-		const button = screen.getByLabelText("Toggle theme");
-		fireEvent.click(button);
+        const button = screen.getByLabelText("Toggle theme");
+        fireEvent.click(button);
 
-		expect(mockSubmit).toHaveBeenCalledTimes(1);
-		expect(mockSubmit).toHaveBeenCalledWith(
-			{ theme: "light" },
-			{ action: "/api/set-theme", method: "post" },
-		);
-	});
+        expect(mockSubmit).toHaveBeenCalledTimes(1);
+        expect(mockSubmit).toHaveBeenCalledWith({ theme: "light" }, { action: "/api/set-theme", method: "post" });
+    });
 
-	test("should apply isMobile data attribute", () => {
-		render(<ThemeToggle isMobile />);
+    test("should apply isMobile data attribute", () => {
+        render(<ThemeToggle isMobile />);
 
-		const button = screen.getByLabelText("Toggle theme");
-		// isMobileがtrueの場合、ボタンがレンダリングされることを確認
-		expect(button).toBeInTheDocument();
-	});
+        const button = screen.getByLabelText("Toggle theme");
+        // isMobileがtrueの場合、ボタンがレンダリングされることを確認
+        expect(button).toBeInTheDocument();
+    });
 
-	test("should not apply isMobile data attribute when false", () => {
-		render(<ThemeToggle isMobile={false} />);
+    test("should not apply isMobile data attribute when false", () => {
+        render(<ThemeToggle isMobile={false} />);
 
-		const button = screen.getByLabelText("Toggle theme");
-		expect(button).not.toHaveAttribute("data-mobile", "");
-	});
+        const button = screen.getByLabelText("Toggle theme");
+        expect(button).not.toHaveAttribute("data-mobile", "");
+    });
 
-	test("should render SVG icon", () => {
-		const { container } = render(<ThemeToggle />);
+    test("should render SVG icon", () => {
+        const { container } = render(<ThemeToggle />);
 
-		const svg = container.querySelector("svg");
-		expect(svg).toBeInTheDocument();
-		expect(svg).toHaveAttribute("aria-hidden", "true");
-	});
+        const svg = container.querySelector("svg");
+        expect(svg).toBeInTheDocument();
+        expect(svg).toHaveAttribute("aria-hidden", "true");
+    });
 
-	test("should pass other props", () => {
-		render(<ThemeToggle data-testid="custom-toggle" />);
+    test("should pass other props", () => {
+        render(<ThemeToggle data-testid="custom-toggle" />);
 
-		const button = screen.getByTestId("custom-toggle");
-		expect(button).toBeInTheDocument();
-	});
+        const button = screen.getByTestId("custom-toggle");
+        expect(button).toBeInTheDocument();
+    });
 });
