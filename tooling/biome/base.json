@@ -2,6 +2,17 @@
 	"$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
 	"vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": false },
 	"files": {
+		"includes": [
+			"**/*.{ts,tsx,js,jsx}",
+			"!!**/.turbo",
+			"!!**/dist",
+			"!!**/build",
+			"!!**/node_modules",
+			"!!**/target",
+			"!!**/coverage",
+			"!!**/results",
+			"!!**/report"
+		],
 		"ignoreUnknown": true
 	},
 	"formatter": {
