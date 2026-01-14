@@ -1,36 +1,40 @@
 {
 	"folders": [
+        {
+			"name": "web",
+			"path": "apps/web"
+		},
+        {
+			"name": "ui",
+			"path": "packages/ui"
+		},
+        {
+			"name": "auth",
+			"path": "packages/auth"
+		},
+        {
+			"name": "db",
+			"path": "packages/db"
+		},
 		{
-			"name": "root",
-			"path": "."
+			"name": "api",
+			"path": "packages/api"
 		},
 		{
 			"name": "admin",
 			"path": "apps/admin"
 		},
 		{
-			"name": "api",
+			"name": "cms",
 			"path": "apps/api"
-		},
-		{
-			"name": "web",
-			"path": "apps/web"
 		},
 		{
 			"name": "wiki",
 			"path": "apps/wiki"
 		},
 		{
-			"name": "ui",
-			"path": "packages/ui"
-		},
-		{
-			"name": "auth",
-			"path": "packages/auth"
-		},
-		{
-			"name": "db",
-			"path": "packages/db"
+			"name": "root",
+			"path": "."
 		}
 	],
 	"settings": {
