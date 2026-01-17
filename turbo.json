@@ -50,6 +50,9 @@
         "deploy": {
             "dependsOn": ["^build"],
             "outputs": []
+        },
+        "clean": {
+            "cache": false
         }
     }
 }
