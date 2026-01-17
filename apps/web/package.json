@@ -3,7 +3,7 @@
     "name": "@portfolio/web",
     "type": "module",
     "scripts": {
-        "accessibility": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/accessibility/report:/work/docs/playwright/report portfolio-e2e bunx playwright test --config=playwright.storybook.config.ts e2e/accessibility",
+        "accessibility": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/accessibility/report:/work/docs/playwright/report e2e bunx playwright test --config=playwright.storybook.config.ts e2e/accessibility",
         "build": "remix vite:build",
         "build:ui": "storybook build -o ../wiki/design/web",
         "clean": "git clean -xdf .cache .turbo node_modules dist .wrangler",
@@ -11,18 +11,18 @@
         "deploy": "wrangler pages deploy ./build --project-name portfolio-web --branch master",
         "dev": "remix vite:dev",
         "dev:ui": "storybook dev -p 16011 --no-open",
-        "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report portfolio-e2e bunx playwright test",
+        "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",
         "generate": "wrangler types",
-        "interactions": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/interactions/report:/work/docs/playwright/report portfolio-e2e bunx playwright test --config=playwright.storybook.config.ts e2e/storybook/interactions",
+        "interactions": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/interactions/report:/work/docs/playwright/report e2e bunx playwright test --config=playwright.storybook.config.ts e2e/storybook/interactions",
         "lighthouse": "lhci autorun",
         "lint": "biome lint .",
         "lint:fix": "biome lint --write .",
-        "snapshot": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report portfolio-e2e bunx playwright test --project=chromium --update-snapshots",
+        "snapshot": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report e2e bunx playwright test --project=chromium --update-snapshots",
         "test": "vitest run",
         "typecheck": "tsc --noEmit",
-        "visual": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/visual/report:/work/docs/playwright/report portfolio-e2e bunx playwright test --config=playwright.storybook.config.ts e2e/storybook/visual"
+        "visual": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/visual/report:/work/docs/playwright/report e2e bunx playwright test --config=playwright.storybook.config.ts e2e/storybook/visual"
     },
     "dependencies": {
         "@fireworks-js/react": "2.10.8",

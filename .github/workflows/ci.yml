@@ -3,19 +3,23 @@ on:
   pull_request:
     paths:
       - '.github/**'
-      - 'docs/**'
+      - 'apps/**'
+      - 'packages/**'
+      - 'tooling/**'
+      - 'testing/**'
       - 'scripts/**'
-      - 'app/**'
-      - 'tests/**'
       - 'package.json'
+      - 'turbo.json'
   push:
     paths:
       - '.github/**'
-      - 'docs/**'
+      - 'apps/**'
+      - 'packages/**'
+      - 'tooling/**'
+      - 'testing/**'
       - 'scripts/**'
-      - 'app/**'
-      - 'tests/**'
       - 'package.json'
+      - 'turbo.json'
 jobs:
   detect-changes:
     runs-on: ubuntu-24.04
@@ -44,22 +48,28 @@ jobs:
           token: ${{ github.token }}
           filters: |
             web:
-              - 'app/**/*.ts'
+              - 'apps/**'
+              - 'packages/**'
+              - 'tooling/**'
+              - 'testing/**'
               - 'package.json'
+              - 'turbo.json'
             e2e:
-              - 'tests/e2e/**'
-              - 'tests/mocks/**'
+              - 'apps/*/e2e/**'
+              - 'testing/**'
               - 'package.json'
             docs:
-              - 'docs/**/*.md'
+              - 'apps/wiki/docs/**/*.md'
             shell:
               - 'scripts/*.sh'
+              - '.docker/**/*.sh'
             actions:
               - '.github/**/*.yml'
             tsp:
-              - 'api/**/*.tsp'
-              - 'tspconfig.yaml'
-              - 'package.json'
+              - 'packages/api/src/schema/**/*.tsp'
+              - 'packages/api/tspconfig.yaml'
+              - 'packages/api/orval.config.ts'
+              - 'packages/api/package.json'
   run-format-ts:
     needs: [detect-changes]
     if: needs.detect-changes.outputs.web == 'true'
@@ -93,8 +103,8 @@ jobs:
       - name: Lint TypeScript
         run: bun run lint:ts:check
   run-typecheck:
-    needs: [detect-changes, run-format-ts]
-    if: needs.detect-changes.outputs.web == 'true'
+    needs: [detect-changes, run-format-ts, run-lint-tsp]
+    if: needs.detect-changes.outputs.web == 'true' || needs.detect-changes.outputs.tsp == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -106,6 +116,11 @@ jobs:
           persist-credentials: false
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
+      - name: Generate API client (if TypeSpec changed)
+        if: needs.detect-changes.outputs.tsp == 'true'
+        run: |
+          cd packages/api
+          bun run generate
       - name: Typecheck
         run: bun run typecheck
   run-knip:
@@ -253,6 +268,16 @@ jobs:
           persist-credentials: true
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@7116e07421d015a32b6c6b8be9fd2f20e9a87248 # v3.8.0
+      - name: Build E2E Docker image
+        run: |
+          docker build -t e2e -f .docker/e2e/Dockerfile .
+      - name: Upload security scan reports
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: always()
+        with:
+          name: e2e-security-reports
+          path: docs/security/e2e/
+          retention-days: 30
       - name: Run E2E tests in Docker container
         run: bun run e2e
       - name: Upload artifact for Playwright
@@ -314,7 +339,7 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
       - name: Build application
-        run: bun run build:remix
+        run: bun run build
   run-lighthouse:
     needs: [detect-changes, run-build]
     if: needs.detect-changes.outputs.web == 'true'
@@ -330,9 +355,9 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
       - name: Build application
-        run: bun run build:remix
+        run: bun run build
       - name: Run Lighthouse CI
-        run: bun run lighthouse
+        run: cd apps/web && bun run lighthouse
       - name: Upload artifact for Lighthouse
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: always()
@@ -451,7 +476,9 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
       - name: Format check TypeSpec
-        run: bun run fmt:tsp:check
+        run: |
+          cd packages/api
+          bun run fmt:check
   run-lint-tsp:
     needs: [detect-changes, run-format-tsp]
     if: needs.detect-changes.outputs.tsp == 'true'
@@ -467,7 +494,14 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
       - name: Lint TypeSpec
-        run: bun run lint:tsp:check
+        run: |
+          cd packages/api
+          bun run lint
+      - name: Generate API client (TypeSpec + Orval)
+        run: |
+          cd packages/api
+          bun run generate
+        continue-on-error: true
   run-build-wiki:
     needs: [detect-changes, run-e2e-ts, run-coverage-ts]
     if: always() && (needs.detect-changes.outputs.web == 'true' || needs.detect-changes.outputs.e2e == 'true')
@@ -488,6 +522,10 @@ jobs:
         uses: ./.github/actions/setup-ts
         with:
           working-directory: 'apps/wiki'
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Build packages (for wiki dependencies)
+        run: bun run build --filter='@portfolio/*'
       - name: Build Docusaurus
         run: |
           cd apps/wiki

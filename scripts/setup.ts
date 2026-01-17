@@ -1,10 +1,12 @@
 #!/usr/bin/env bun
 
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { $ } from "bun";
 
-const rootDir = resolve(import.meta.dir, "..");
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const rootDir = resolve(__dirname, "..");
 
 async function checkBunInstalled(): Promise<boolean> {
     try {
@@ -66,8 +68,8 @@ async function runDatabaseMigrations(): Promise<void> {
         console.log("  ローカルMySQLに対してマイグレーションを実行しています...");
         const dbDir = join(rootDir, "packages/db");
         const schemaPath = join(dbDir, "prisma/schema.prisma");
-        const mysqlUser = process.env.MYSQL_USER || "portfolio";
-        const mysqlPassword = process.env.MYSQL_PASSWORD || "portfolio";
+        const mysqlUser = process.env.MYSQL_USER || "user";
+        const mysqlPassword = process.env.MYSQL_PASSWORD || "password";
         const mysqlDatabase = process.env.MYSQL_DATABASE || "portfolio";
         const mysqlHost = process.env.MYSQL_HOST || "localhost";
         const mysqlPort = process.env.MYSQL_PORT || "3306";
@@ -126,6 +128,16 @@ async function checkContainerRunning(containerName: string): Promise<boolean> {
     }
 }
 
+async function checkImageExists(imageName: string): Promise<boolean> {
+    try {
+        const result = await $`docker images --format {{.Repository}}:{{.Tag}}`.quiet();
+        const images = result.stdout.toString().trim().split("\n");
+        return images.some((img) => img.startsWith(`${imageName}:`) || img === imageName);
+    } catch {
+        return false;
+    }
+}
+
 async function waitForMySQL(containerName: string, maxAttempts = 30): Promise<boolean> {
     console.log("  MySQLの起動を待機しています...");
     const mysqlRootPassword = process.env.MYSQL_ROOT_PASSWORD || "rootpassword";
@@ -162,9 +174,14 @@ async function startMySQLContainer(): Promise<void> {
             return;
         }
 
-        console.log("  MySQL Dockerイメージをビルドしています...");
-        await $`docker build -t portfolio-mysql -f ${dbDockerfilePath} ${dbDir}`.cwd(rootDir);
-        console.log("  ✓ MySQL Dockerイメージのビルドが完了しました");
+        const imageExists = await checkImageExists("portfolio-mysql");
+        if (imageExists) {
+            console.log("  ✓ MySQL Dockerイメージは既に存在します（スキップ）");
+        } else {
+            console.log("  MySQL Dockerイメージをビルドしています...");
+            await $`docker build -t portfolio-mysql -f ${dbDockerfilePath} ${dbDir}`.cwd(rootDir);
+            console.log("  ✓ MySQL Dockerイメージのビルドが完了しました");
+        }
 
         const containerExists = await checkContainerExists(containerName);
 
@@ -185,8 +202,8 @@ async function startMySQLContainer(): Promise<void> {
         console.log("  MySQLコンテナを作成して起動しています...");
         const mysqlRootPassword = process.env.MYSQL_ROOT_PASSWORD || "rootpassword";
         const mysqlDatabase = process.env.MYSQL_DATABASE || "portfolio";
-        const mysqlUser = process.env.MYSQL_USER || "portfolio";
-        const mysqlPassword = process.env.MYSQL_PASSWORD || "portfolio";
+        const mysqlUser = process.env.MYSQL_USER || "user";
+        const mysqlPassword = process.env.MYSQL_PASSWORD || "password";
         await $`docker run -d \
             --name ${containerName} \
             -p 3306:3306 \
@@ -213,9 +230,14 @@ async function buildDockerImages(): Promise<void> {
     const e2eDockerfilePath = join(rootDir, ".docker/e2e/Dockerfile");
     if (existsSync(e2eDockerfilePath)) {
         try {
-            console.log("  E2E用Dockerイメージをビルドしています...");
-            await $`docker build -t portfolio-e2e -f ${e2eDockerfilePath} .`.cwd(rootDir);
-            console.log("  ✓ E2E用Dockerイメージのビルドが完了しました");
+            const imageExists = await checkImageExists("e2e");
+            if (imageExists) {
+                console.log("  ✓ E2E用Dockerイメージは既に存在します（スキップ）");
+            } else {
+                console.log("  E2E用Dockerイメージをビルドしています...");
+                await $`docker build -t e2e -f ${e2eDockerfilePath} .`.cwd(rootDir);
+                console.log("  ✓ E2E用Dockerイメージのビルドが完了しました");
+            }
         } catch (error) {
             console.warn("  ⚠️  E2E用Dockerイメージのビルドに失敗しました（スキップ）:", error);
         }

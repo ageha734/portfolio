@@ -77,24 +77,35 @@ function getWorkspaceFromPath(filePath: string): string | null {
 function getDefaultPath(lintType: LintType): string[] {
     switch (lintType) {
         case "tsp":
-            return [join(ROOT_DIR, "packages/api/"), join(ROOT_DIR, "api/")];
+            return [join(ROOT_DIR, "packages/api/src/schema/")];
         case "md":
-            return [join(ROOT_DIR, "docs/prompt/"), join(ROOT_DIR, "apps/docs/")];
+            return [join(ROOT_DIR, "apps/wiki/docs/")];
         case "shell": {
             const scriptsDir = join(ROOT_DIR, "scripts");
+            const dockerDir = join(ROOT_DIR, ".docker");
+            const files: string[] = [];
             try {
-                const files = readdirSync(scriptsDir)
+                const scriptFiles = readdirSync(scriptsDir)
                     .filter((f) => f.endsWith(".sh"))
                     .map((f) => join(ROOT_DIR, "scripts", f));
-                return files.length > 0 ? files : [];
+                files.push(...scriptFiles);
             } catch {
-                return [];
+                // scripts directory not found
             }
+            try {
+                const dockerFiles = (readdirSync(dockerDir, { recursive: true }) as string[])
+                    .filter((f) => f.endsWith(".sh"))
+                    .map((f) => join(dockerDir, f));
+                files.push(...dockerFiles);
+            } catch {
+                // .docker directory not found or no shell scripts
+            }
+            return files;
         }
         case "actions":
             return [join(ROOT_DIR, ".github/")];
         case "textlint":
-            return [join(ROOT_DIR, "docs/prompt/"), join(ROOT_DIR, "apps/docs/")];
+            return [join(ROOT_DIR, "apps/wiki/docs/")];
         default:
             return [
                 join(ROOT_DIR, "apps/*/app/"),

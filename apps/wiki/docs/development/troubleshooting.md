@@ -447,7 +447,7 @@ docker restart container-name
 docker logs container-name
 
 # イメージを再ビルド
-docker build -t portfolio-e2e .
+docker build -t e2e .
 ```
 
 ## よくある質問
