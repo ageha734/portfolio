@@ -1,13 +1,12 @@
 {
     "private": true,
-    "version": "0.0.0",
     "name": "@portfolio/testing-mocks",
     "type": "module",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "default": "./dist/index.ts"
+            "default": "./dist/index.js"
         }
     },
     "scripts": {

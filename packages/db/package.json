@@ -10,11 +10,12 @@
         }
     },
     "scripts": {
-        "build": "run-s push migrate seed",
+        "build": "",
         "clean": "git clean -xdf .cache .turbo node_modules",
         "coverage": "vitest run --coverage",
         "deploy": "wrangler d1 deploy",
-        "dev": "prisma studio --browser none",
+        "dev": "",
+        "dev:ui": "prisma studio --browser none",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",
         "generate": "prisma generate",
@@ -35,7 +36,6 @@
         "@portfolio/biome-config": "workspace:*",
         "@portfolio/tsconfig": "workspace:*",
         "@portfolio/vitest-config": "workspace:*",
-        "npm-run-all2": "8.0.4",
         "prisma": "5.22.0",
         "typescript": "5.9.3",
         "vitest": "3.2.4",

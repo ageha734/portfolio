@@ -6,27 +6,27 @@
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
-            "default": "./dist/index.ts"
+            "default": "./dist/index.js"
         },
         "./env": {
             "types": "./dist/env.d.ts",
-            "default": "./dist/env.ts"
+            "default": "./dist/env.js"
         },
         "./mocks": {
             "types": "./dist/mocks.d.ts",
-            "default": "./dist/mocks.ts"
+            "default": "./dist/mocks.js"
         },
         "./msw": {
             "types": "./dist/msw.d.ts",
-            "default": "./dist/msw.ts"
+            "default": "./dist/msw.js"
         },
         "./render": {
             "types": "./dist/render.d.ts",
-            "default": "./dist/render.tsx"
+            "default": "./dist/render.js"
         },
         "./setup": {
             "types": "./dist/setup.d.ts",
-            "default": "./dist/setup.ts"
+            "default": "./dist/setup.js"
         }
     },
     "scripts": {
