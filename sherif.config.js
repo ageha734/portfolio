@@ -56,10 +56,6 @@ const config = {
             "@docusaurus/tsconfig": "3.9.2",
             "@docusaurus/types": "3.9.2",
         },
-        trpc: {
-            "@trpc/client": "11.0.0",
-            "@trpc/server": "11.0.0",
-        },
         tanstack: {
             "@tanstack/react-router": "1.147.3",
             "@tanstack/router-plugin": "1.147.3",
@@ -73,6 +69,7 @@ const config = {
             zod: "4.3.4",
         },
         prisma: {
+            "@types/prismjs": "1.26.5",
             "@prisma/adapter-d1": "5.22.0",
             "@prisma/client": "5.22.0",
             prisma: "5.22.0",
@@ -111,6 +108,31 @@ const config = {
             dotenv: "17.2.3",
             jsdom: "27.4.0",
             "regenerator-runtime": "0.14.1",
+        },
+        axios: {
+            axios: "1.7.9",
+        },
+        orval: {
+            orval: "7.17.2",
+        },
+        ui: {
+            "@radix-ui/react-dialog": "1.1.15",
+            "@radix-ui/react-dropdown-menu": "2.1.16",
+            "@radix-ui/react-navigation-menu": "1.2.14",
+            "@radix-ui/react-separator": "1.1.8",
+            "@radix-ui/react-slot": "1.2.4",
+            "class-variance-authority": "0.7.1",
+            classnames: "2.5.1",
+            clsx: "2.1.1",
+            "lucide-react": "0.562.0",
+            prismjs: "1.30.0",
+            "tailwind-merge": "3.4.0",
+        },
+        devTools: {
+            "@lhci/cli": "0.15.1",
+            "@swc/core": "1.15.8",
+            "@swc/helpers": "0.5.18",
+            "@tailwindcss/vite": "4.1.18",
         },
     },
 };

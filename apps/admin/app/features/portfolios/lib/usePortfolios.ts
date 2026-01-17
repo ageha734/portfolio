@@ -1,6 +1,6 @@
 import type { Portfolio } from "@portfolio/api";
 import { useEffect, useState } from "react";
-import { trpc } from "~/shared/lib/trpc";
+import { api } from "~/shared/lib/api";
 
 export function usePortfolios() {
     const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
@@ -12,7 +12,8 @@ export function usePortfolios() {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await trpc.portfolios.list.query();
+                const response = await api.portfolios.listPortfolios();
+                const data = response.data as Portfolio[];
                 setPortfolios(data || []);
             } catch (err) {
                 const error = err instanceof Error ? err : new Error("Failed to fetch portfolios");

@@ -4,8 +4,7 @@
     "type": "module",
     "types": "./src/index.ts",
     "exports": {
-        ".": "./src/index.ts",
-        "./app/interface/trpc/router": "./app/interface/trpc/router.ts"
+        ".": "./src/index.ts"
     },
     "scripts": {
         "build": "wrangler build",
@@ -26,7 +25,6 @@
         "@portfolio/api": "workspace:*",
         "@portfolio/auth": "workspace:*",
         "@portfolio/db": "workspace:*",
-        "@trpc/server": "11.0.0",
         "hono": "4.6.11"
     },
     "devDependencies": {
@@ -34,7 +32,6 @@
         "@portfolio/biome-config": "workspace:*",
         "@portfolio/tsconfig": "workspace:*",
         "@portfolio/vitest-config": "workspace:*",
-        "@trpc/server": "11.0.0",
         "typescript": "5.9.3",
         "vitest": "3.2.4",
         "wrangler": "4.54.0"

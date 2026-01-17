@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { json } from "@remix-run/cloudflare";
-import { createTRPCApiClient } from "~/shared/lib/trpc";
+import { createApiClient } from "~/shared/lib/api";
 import { slugSchema } from "~/shared/validation";
 
 export interface Portfolio {
@@ -36,13 +36,21 @@ export const loader: LoaderFunction = async (args) => {
 
     const validatedSlug = slugResult.data;
     const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
-    const trpc = createTRPCApiClient(apiUrl);
+    const api = createApiClient(apiUrl);
 
-    const portfolio = await trpc.portfolios.bySlug.query({ slug: validatedSlug });
+    try {
+        const response = await api.portfolios.getPortfolioBySlug(validatedSlug);
+        const portfolio = response.data as Portfolio;
 
-    if (!portfolio) {
+        if (!portfolio) {
+            throw new Response(`Portfolio "${validatedSlug}" not found`, { status: 404 });
+        }
+
+        return json(portfolio as LoaderData);
+    } catch (error) {
+        if (error instanceof Response) {
+            throw error;
+        }
         throw new Response(`Portfolio "${validatedSlug}" not found`, { status: 404 });
     }
-
-    return json(portfolio as LoaderData);
 };

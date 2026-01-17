@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { trpc } from "~/shared/lib/trpc";
+import { api } from "~/shared/lib/api";
 import type { DashboardStats } from "../model/types";
 
 export function useDashboardStats() {
@@ -18,14 +18,17 @@ export function useDashboardStats() {
                 setLoading(true);
                 setError(null);
 
-                const [postsData, portfoliosData] = await Promise.all([
-                    trpc.posts.list.query(),
-                    trpc.portfolios.list.query(),
+                const [postsResponse, portfoliosResponse] = await Promise.all([
+                    api.posts.listPosts(),
+                    api.portfolios.listPortfolios(),
                 ]);
 
+                const postsData = postsResponse.data || [];
+                const portfoliosData = portfoliosResponse.data || [];
+
                 setStats({
-                    posts: postsData?.length || 0,
-                    portfolios: portfoliosData?.length || 0,
+                    posts: Array.isArray(postsData) ? postsData.length : 0,
+                    portfolios: Array.isArray(portfoliosData) ? portfoliosData.length : 0,
                     totalViews: 0,
                     users: 0,
                 });

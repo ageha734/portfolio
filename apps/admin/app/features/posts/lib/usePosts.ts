@@ -1,6 +1,6 @@
 import type { Post } from "@portfolio/api";
 import { useEffect, useState } from "react";
-import { trpc } from "~/shared/lib/trpc";
+import { api } from "~/shared/lib/api";
 
 export function usePosts() {
     const [posts, setPosts] = useState<Post[]>([]);
@@ -12,7 +12,8 @@ export function usePosts() {
             try {
                 setLoading(true);
                 setError(null);
-                const data = await trpc.posts.list.query();
+                const response = await api.posts.listPosts();
+                const data = response.data as Post[];
                 setPosts(data || []);
             } catch (err) {
                 const error = err instanceof Error ? err : new Error("Failed to fetch posts");

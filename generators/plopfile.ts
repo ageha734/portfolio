@@ -251,19 +251,19 @@ export default function plopfile(plop: NodePlopAPI) {
         ],
     });
 
-    plop.setGenerator("ddd:router", {
-        description: "DDD tRPC Routerを生成します",
+    plop.setGenerator("ddd:rest-handler", {
+        description: "DDD REST Handlerを生成します",
         prompts: [
             {
                 type: "input",
                 name: "name",
-                message: "Router名を入力してください（例: posts）:",
+                message: "Handler名を入力してください（例: posts）:",
                 validate: (value: string) => {
                     if (!value || value.trim().length === 0) {
-                        return "Router名は必須です";
+                        return "Handler名は必須です";
                     }
                     if (!/^[a-z0-9-]+$/.test(value)) {
-                        return "Router名は小文字、数字、ハイフンのみ使用できます";
+                        return "Handler名は小文字、数字、ハイフンのみ使用できます";
                     }
                     return true;
                 },
@@ -272,8 +272,8 @@ export default function plopfile(plop: NodePlopAPI) {
         actions: [
             {
                 type: "add",
-                path: "apps/api/app/interface/trpc/{{name}}.ts",
-                templateFile: "templates/ddd/router.ts.hbs",
+                path: "apps/api/src/interface/rest/{{name}}.ts",
+                templateFile: "templates/ddd/rest-handler.ts.hbs",
             },
         ],
     });

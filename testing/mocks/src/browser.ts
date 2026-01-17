@@ -1,7 +1,7 @@
 import { setupWorker } from "msw/browser";
-import { trpcHandlers } from "./handlers";
+import { restHandlers } from "./handlers";
 
-const handlers = [...trpcHandlers];
+const handlers = [...restHandlers];
 
 const worker = setupWorker(...handlers);
 

@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import type { Post } from "~/entities/blog";
-import { createTRPCApiClient } from "~/shared/lib/trpc";
+import { createApiClient } from "~/shared/lib/api";
 
 export type LoaderData = {
     posts: Post[];
@@ -12,9 +12,10 @@ export const loader: LoaderFunction = async (args) => {
         args.context.cloudflare && typeof args.context.cloudflare === "object" && "env" in args.context.cloudflare
             ? (args.context.cloudflare.env as { VITE_API_URL?: string })?.VITE_API_URL
             : undefined;
-    const trpc = createTRPCApiClient(apiUrl);
+    const api = createApiClient(apiUrl);
 
-    const posts = await trpc.posts.list.query();
+    const response = await api.posts.listPosts();
+    const posts = response.data as Post[];
 
     const tagSet = new Set<string>();
     posts.forEach((post) => {

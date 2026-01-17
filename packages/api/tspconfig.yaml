@@ -3,4 +3,4 @@ emit:
 
 options:
     '@typespec/openapi3':
-        output-file: '../../apps/wiki/reference/openapiyaml'
+        output-file: '../../apps/wiki/reference/openapi.yaml'

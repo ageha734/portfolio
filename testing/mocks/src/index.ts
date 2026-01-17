@@ -8,6 +8,6 @@
  */
 
 export { default as workerDefault, worker } from "./browser";
-export { trpcHandlers } from "./handlers";
+export { restHandlers } from "./handlers";
 export { default as server } from "./server";
 export * from "./types";

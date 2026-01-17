@@ -111,7 +111,7 @@ infra/
 
 外部との接点を定義します。
 
-- **tRPC Routers**: tRPCエンドポイントの定義
+- **REST Handlers**: REST APIエンドポイントの定義
 - **Middleware**: 認証、ロギング、エラーハンドリングなど
 
 ```text
@@ -128,7 +128,7 @@ interface/
 
 **例:**
 
-- `interface/trpc/routers/blog.ts`: ブログ関連のtRPCルーター
+- `interface/rest/blog.ts`: ブログ関連のRESTハンドラー
 - `interface/middleware/auth.ts`: 認証ミドルウェア
 
 ### pkg/ (Shared Internal Packages)
@@ -282,8 +282,8 @@ export class CreateBlogUseCase {
 ### Interface Layer の実装例
 
 ```typescript
-// app/interface/trpc/routers/blog.ts
-import { router } from '../trpc';
+// app/interface/rest/blog.ts
+import type { Context } from "hono";
 import { CreateBlogUseCase } from '~/usecase/blog/createBlog';
 import { getBlogRepository } from '~/di/container';
 

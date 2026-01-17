@@ -1,14 +1,12 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { trpc } from "~/shared/lib/trpc";
+import { api } from "~/shared/lib/api";
 import { usePosts } from "./usePosts";
 
-vi.mock("~/shared/lib/trpc", () => ({
-    trpc: {
+vi.mock("~/shared/lib/api", () => ({
+    api: {
         posts: {
-            list: {
-                query: vi.fn(),
-            },
+            listPosts: vi.fn(),
         },
     },
 }));
@@ -19,7 +17,7 @@ describe("usePosts", () => {
     });
 
     test("should initialize with empty posts and loading true", () => {
-        vi.mocked(trpc.posts.list.query).mockResolvedValue([]);
+        vi.mocked(api.posts.listPosts).mockResolvedValue({ data: [] } as never);
 
         const { result } = renderHook(() => usePosts());
 
@@ -42,7 +40,7 @@ describe("usePosts", () => {
             },
         ];
 
-        vi.mocked(trpc.posts.list.query).mockResolvedValue(mockPosts);
+        vi.mocked(api.posts.listPosts).mockResolvedValue({ data: mockPosts } as never);
 
         const { result } = renderHook(() => usePosts());
 
@@ -51,11 +49,11 @@ describe("usePosts", () => {
         });
 
         expect(result.current.posts).toEqual(mockPosts);
-        expect(trpc.posts.list.query).toHaveBeenCalled();
+        expect(api.posts.listPosts).toHaveBeenCalled();
     });
 
     test("should handle empty data", async () => {
-        vi.mocked(trpc.posts.list.query).mockResolvedValue(null);
+        vi.mocked(api.posts.listPosts).mockResolvedValue({ data: null } as never);
 
         const { result } = renderHook(() => usePosts());
 
@@ -68,7 +66,7 @@ describe("usePosts", () => {
 
     test("should handle errors", async () => {
         const error = new Error("Failed to fetch");
-        vi.mocked(trpc.posts.list.query).mockRejectedValue(error);
+        vi.mocked(api.posts.listPosts).mockRejectedValue(error);
 
         const { result } = renderHook(() => usePosts());
 

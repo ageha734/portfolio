@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { createTRPCApiClient } from "~/shared/lib/trpc";
+import { createApiClient } from "~/shared/lib/api";
 
 export interface Post {
     id: string;
@@ -14,6 +14,7 @@ export interface Post {
     intro?: string;
     createdAt: Date | string;
     updatedAt: Date | string;
+    tags: string[];
 }
 
 export type LoaderData = {
@@ -23,9 +24,10 @@ export type LoaderData = {
 
 export const loader: LoaderFunction = async (args) => {
     const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
-    const trpc = createTRPCApiClient(apiUrl);
+    const api = createApiClient(apiUrl);
 
-    const posts = await trpc.posts.list.query();
+    const response = await api.posts.listPosts();
+    const posts = response.data as Post[];
 
     // タグを抽出してソート
     const tagSet = new Set<string>();

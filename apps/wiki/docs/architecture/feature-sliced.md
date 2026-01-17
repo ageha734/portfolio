@@ -102,7 +102,7 @@ entity-name/
 全体で再利用可能なリソースを配置します。
 
 - **ui/**: 汎用UIコンポーネント（Button、Inputなど）
-- **api/**: APIクライアント、tRPC Client設定など
+- **api/**: APIクライアント、Orval生成クライアント設定など
 - **config/**: 設定ファイル（定数、i18n設定など）
 - **hooks/**: カスタムReactフック
 - **validation/**: バリデーションスキーマ（Zodなど）

@@ -1,1 +1,1 @@
-export { trpcHandlers } from "./trpc";
+export { restHandlers } from "./rest";

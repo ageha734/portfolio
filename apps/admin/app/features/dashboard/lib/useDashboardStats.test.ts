@@ -1,19 +1,15 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { trpc } from "~/shared/lib/trpc";
+import { api } from "~/shared/lib/api";
 import { useDashboardStats } from "./useDashboardStats";
 
-vi.mock("~/shared/lib/trpc", () => ({
-    trpc: {
+vi.mock("~/shared/lib/api", () => ({
+    api: {
         posts: {
-            list: {
-                query: vi.fn(),
-            },
+            listPosts: vi.fn(),
         },
         portfolios: {
-            list: {
-                query: vi.fn(),
-            },
+            listPortfolios: vi.fn(),
         },
     },
 }));
@@ -24,8 +20,8 @@ describe("useDashboardStats", () => {
     });
 
     test("should initialize with default stats", () => {
-        vi.mocked(trpc.posts.list.query).mockResolvedValue([]);
-        vi.mocked(trpc.portfolios.list.query).mockResolvedValue([]);
+        vi.mocked(api.posts.listPosts).mockResolvedValue({ data: [] } as never);
+        vi.mocked(api.portfolios.listPortfolios).mockResolvedValue({ data: [] } as never);
 
         const { result } = renderHook(() => useDashboardStats());
 
@@ -39,11 +35,15 @@ describe("useDashboardStats", () => {
     });
 
     test("should fetch and update stats", async () => {
-        vi.mocked(trpc.posts.list.query).mockResolvedValue([
-            { id: "1", title: "Test Post" },
-            { id: "2", title: "Test Post 2" },
-        ]);
-        vi.mocked(trpc.portfolios.list.query).mockResolvedValue([{ id: "1", title: "Test Portfolio" }]);
+        vi.mocked(api.posts.listPosts).mockResolvedValue({
+            data: [
+                { id: "1", title: "Test Post" },
+                { id: "2", title: "Test Post 2" },
+            ],
+        } as never);
+        vi.mocked(api.portfolios.listPortfolios).mockResolvedValue({
+            data: [{ id: "1", title: "Test Portfolio" }],
+        } as never);
 
         const { result } = renderHook(() => useDashboardStats());
 
@@ -57,13 +57,13 @@ describe("useDashboardStats", () => {
             totalViews: 0,
             users: 0,
         });
-        expect(trpc.posts.list.query).toHaveBeenCalled();
-        expect(trpc.portfolios.list.query).toHaveBeenCalled();
+        expect(api.posts.listPosts).toHaveBeenCalled();
+        expect(api.portfolios.listPortfolios).toHaveBeenCalled();
     });
 
     test("should handle empty data", async () => {
-        vi.mocked(trpc.posts.list.query).mockResolvedValue(null);
-        vi.mocked(trpc.portfolios.list.query).mockResolvedValue(null);
+        vi.mocked(api.posts.listPosts).mockResolvedValue({ data: null } as never);
+        vi.mocked(api.portfolios.listPortfolios).mockResolvedValue({ data: null } as never);
 
         const { result } = renderHook(() => useDashboardStats());
 
@@ -81,8 +81,8 @@ describe("useDashboardStats", () => {
 
     test("should handle errors", async () => {
         const error = new Error("Failed to fetch");
-        vi.mocked(trpc.posts.list.query).mockRejectedValue(error);
-        vi.mocked(trpc.portfolios.list.query).mockResolvedValue([]);
+        vi.mocked(api.posts.listPosts).mockRejectedValue(error);
+        vi.mocked(api.portfolios.listPortfolios).mockResolvedValue({ data: [] } as never);
 
         const { result } = renderHook(() => useDashboardStats());
 

@@ -1,32 +1,26 @@
 # API E2Eテスト
 
-このディレクトリには、tRPC APIエンドポイントのE2Eテストが含まれています。
+このディレクトリには、REST APIエンドポイントのE2Eテストが含まれています。
 
 ## ファイル構成
 
 テストは機能ごとに分割されています：
 
-- **`trpc.spec.ts`**: tRPCエンドポイントの基本テスト
-- **`posts.spec.ts`**: postsルーターのテスト
-- **`portfolios.spec.ts`**: portfoliosルーターのテスト
+- **`posts.spec.ts`**: Posts REST APIのテスト
+- **`portfolios.spec.ts`**: Portfolios REST APIのテスト
 
 ## テスト内容
 
-### tRPCエンドポイント (`trpc.spec.ts`)
+### Posts REST API (`posts.spec.ts`)
 
-- `/trpc` エンドポイントが正しく動作するか
-- エラーハンドリングが適切か
-
-### Postsルーター (`posts.spec.ts`)
-
-- `posts.list` クエリが正しいレスポンスを返すか
-- `posts.bySlug` クエリが正しいレスポンスを返すか
+- `GET /api/posts` が正しいレスポンスを返すか
+- `GET /api/post/:slug` が正しいレスポンスを返すか
 - 存在しないスラッグへのリクエストが適切にエラーを返すか
 
-### Portfoliosルーター (`portfolios.spec.ts`)
+### Portfolios REST API (`portfolios.spec.ts`)
 
-- `portfolios.list` クエリが正しいレスポンスを返すか
-- `portfolios.bySlug` クエリが正しいレスポンスを返すか
+- `GET /api/portfolios` が正しいレスポンスを返すか
+- `GET /api/portfolio/:slug` が正しいレスポンスを返すか
 - 存在しないスラッグへのリクエストが適切にエラーを返すか
 
 ## 実行方法
@@ -36,7 +30,6 @@
 bun run e2e
 
 # 特定のテストファイルを実行
-bun run e2e -- e2e/trpc.spec.ts
 bun run e2e -- e2e/posts.spec.ts
 bun run e2e -- e2e/portfolios.spec.ts
 ```

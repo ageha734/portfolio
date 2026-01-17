@@ -57,7 +57,7 @@ CMS APIです。Domain-Driven Design (DDD) を採用しています。
   - `service/`: Domain Services
   - `domain/`: Enterprise Rules（Model, Repo I/F）
   - `infra/`: Frameworks（D1, Repo Impl）
-  - `interface/`: Adapters（tRPC Routers, Middleware）
+  - `interface/`: Adapters（REST Handlers, Middleware）
   - `pkg/`: Shared internal packages
   - `di/`: Dependency Injection
 
@@ -113,10 +113,8 @@ API定義統合パッケージです。
 **構造:**
 
 - `src/`: ソースコード
-  - `router/`: 共有型定義
   - `schema/`: Zod/TypeSpec Schema
-  - `root.ts`: tRPCルート定義
-  - `trpc.ts`: tRPC設定
+  - `generated/`: Orval生成クライアント（自動生成）
 
 ### packages/db
 
@@ -180,7 +178,7 @@ FSDの各レイヤーの詳細については、[`feature-sliced.md`](./feature-
 
 - **ui/**: 汎用UIコンポーネント（Button、Inputなど）
 
-- **api/**: APIクライアント、tRPC Client設定など
+- **api/**: APIクライアント、Orval生成クライアント設定など
 
 - **config/**: 設定ファイル（定数、i18n設定など）
 

@@ -197,25 +197,21 @@ export async function authenticate(ctx: Context): Promise<{ userId: string } | n
 ### 保護されたルート
 
 ```typescript
-// tRPCルーターで認証を要求
+// RESTハンドラーで認証を要求
+import type { Context } from "hono";
 import { authenticate } from "../middleware/auth";
 
-export const protectedRouter = router({
-    createPost: protectedProcedure
-        .input(createPostSchema)
-        .mutation(async ({ input, ctx }) => {
-            const user = await authenticate(ctx);
-            if (!user) {
-                throw new TRPCError({
-                    code: "UNAUTHORIZED",
-                    message: "Authentication required",
-                });
-            }
+export async function createPost(c: Context) {
+    const user = await authenticate(c);
+    if (!user) {
+        return c.json({ error: "Authentication required" }, 401);
+    }
 
-            // 認証されたユーザーのみが実行可能
-            return await createPost(input, user.userId);
-        }),
-});
+    const body = await c.req.json();
+    // 認証されたユーザーのみが実行可能
+    const post = await createPostUseCase.execute(body, user.userId);
+    return c.json(post);
+}
 ```
 
 ## 認可（Authorization）
@@ -226,10 +222,7 @@ export const protectedRouter = router({
 // ユーザーのロールを確認
 const user = await getUser(userId);
 if (user.role !== "admin") {
-    throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "Admin access required",
-    });
+    return c.json({ error: "Admin access required" }, 403);
 }
 ```
 
@@ -239,9 +232,7 @@ if (user.role !== "admin") {
 // リソースの所有者を確認
 const post = await getPost(postId);
 if (post.authorId !== userId) {
-    throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "You don't have permission to access this resource",
+    return c.json({ error: "You don't have permission to access this resource" }, 403);
     });
 }
 ```

@@ -1,0 +1,63 @@
+import type { Context } from "hono";
+import { DIContainer } from "~/di/container";
+
+export async function get{{pascalCase name}}s(c: Context) {
+    const db = c.env.DB;
+    if (!db) {
+        return c.json({ error: "Database not available" }, 500);
+    }
+
+    try {
+        const container = new DIContainer(db);
+        const useCase = container.getGet{{pascalCase name}}sUseCase();
+        const {{camelCase name}}s = await useCase.execute();
+
+        if (!{{camelCase name}}s || {{camelCase name}}s.length === 0) {
+            return c.json({ error: "{{pascalCase name}}s not found" }, 404);
+        }
+
+        return c.json({{camelCase name}}s);
+    } catch (error) {
+        console.error("Error fetching {{camelCase name}}s:", error);
+        return c.json(
+            {
+                error: "Failed to fetch {{camelCase name}}s",
+                details: error instanceof Error ? error.message : String(error),
+            },
+            500,
+        );
+    }
+}
+
+export async function get{{pascalCase name}}BySlug(c: Context) {
+    const db = c.env.DB;
+    if (!db) {
+        return c.json({ error: "Database not available" }, 500);
+    }
+
+    const slug = c.req.param("slug");
+    if (!slug) {
+        return c.json({ error: "Invalid slug" }, 400);
+    }
+
+    try {
+        const container = new DIContainer(db);
+        const useCase = container.getGet{{pascalCase name}}BySlugUseCase();
+        const {{camelCase name}} = await useCase.execute(slug);
+
+        if (!{{camelCase name}}) {
+            return c.json({ error: "{{pascalCase name}} not found" }, 404);
+        }
+
+        return c.json({{camelCase name}});
+    } catch (error) {
+        console.error("Error fetching {{camelCase name}}:", error);
+        return c.json(
+            {
+                error: "Failed to fetch {{camelCase name}}",
+                details: error instanceof Error ? error.message : String(error),
+            },
+            500,
+        );
+    }
+}

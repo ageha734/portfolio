@@ -55,7 +55,7 @@
 
 - **Hono** (v4.x): 軽量なWebフレームワーク
   - Cloudflare Workers対応
-  - tRPC統合
+  - REST API実装
   - 高速なルーティング
 
 ### Database
@@ -145,7 +145,9 @@
 
 ### API & Data Fetching
 
-- **tRPC**: 型安全なAPI通信
+- **Orval + TypeSpec**: 型安全なAPI通信
+  - TypeSpecでOpenAPI仕様を定義
+  - OrvalでTypeScriptクライアントを自動生成
   - エンドツーエンドの型安全性
   - 自動型推論
   - クライアント/サーバー統合

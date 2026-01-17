@@ -4,24 +4,22 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { LoaderData, Post } from "./blog";
 import { loader } from "./blog";
 
-vi.mock("~/shared/lib/trpc", () => ({
-    createTRPCApiClient: vi.fn(),
+vi.mock("~/shared/lib/api", () => ({
+    createApiClient: vi.fn(),
 }));
 
 describe("api+/blog route", () => {
-    const mockTrpcClient = {
+    const mockApiClient = {
         posts: {
-            list: {
-                query: vi.fn(),
-            },
+            listPosts: vi.fn(),
         },
     };
 
     beforeEach(async () => {
         vi.clearAllMocks();
-        const { createTRPCApiClient } = await import("~/shared/lib/trpc");
-        vi.mocked(createTRPCApiClient).mockReturnValue(
-            mockTrpcClient as unknown as ReturnType<typeof import("~/shared/lib/trpc").createTRPCApiClient>,
+        const { createApiClient } = await import("~/shared/lib/api");
+        vi.mocked(createApiClient).mockReturnValue(
+            mockApiClient as unknown as ReturnType<typeof import("~/shared/lib/api").createApiClient>,
         );
     });
 
@@ -53,7 +51,7 @@ describe("api+/blog route", () => {
             },
         ];
 
-        mockTrpcClient.posts.list.query.mockResolvedValue(mockPosts);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
         const args = {
             request: new Request("https://example.com"),
@@ -111,7 +109,7 @@ describe("api+/blog route", () => {
             },
         ];
 
-        mockTrpcClient.posts.list.query.mockResolvedValue(mockPosts);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
         const args = {
             request: new Request("https://example.com"),
@@ -159,7 +157,7 @@ describe("api+/blog route", () => {
             },
         ];
 
-        mockTrpcClient.posts.list.query.mockResolvedValue(mockPosts);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
         const args = {
             request: new Request("https://example.com"),
@@ -213,7 +211,7 @@ describe("api+/blog route", () => {
             },
         ];
 
-        mockTrpcClient.posts.list.query.mockResolvedValue(mockPosts);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
         const args = {
             request: new Request("https://example.com"),

@@ -4,24 +4,22 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { LoaderData, Portfolio } from "./portfolio";
 import { loader } from "./portfolio";
 
-vi.mock("~/shared/lib/trpc", () => ({
-    createTRPCApiClient: vi.fn(),
+vi.mock("~/shared/lib/api", () => ({
+    createApiClient: vi.fn(),
 }));
 
 describe("api+/portfolio route", () => {
-    const mockTrpcClient = {
+    const mockApiClient = {
         portfolios: {
-            list: {
-                query: vi.fn(),
-            },
+            listPortfolios: vi.fn(),
         },
     };
 
     beforeEach(async () => {
         vi.clearAllMocks();
-        const { createTRPCApiClient } = await import("~/shared/lib/trpc");
-        vi.mocked(createTRPCApiClient).mockReturnValue(
-            mockTrpcClient as unknown as ReturnType<typeof import("~/shared/lib/trpc").createTRPCApiClient>,
+        const { createApiClient } = await import("~/shared/lib/api");
+        vi.mocked(createApiClient).mockReturnValue(
+            mockApiClient as unknown as ReturnType<typeof import("~/shared/lib/api").createApiClient>,
         );
     });
 
@@ -49,7 +47,7 @@ describe("api+/portfolio route", () => {
             },
         ];
 
-        mockTrpcClient.portfolios.list.query.mockResolvedValue(mockPortfolios);
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: mockPortfolios } as never);
 
         const args = {
             request: new Request("https://example.com"),
@@ -91,8 +89,8 @@ describe("api+/portfolio route", () => {
         await expect(loader(args)).rejects.toThrow("Portfolio items not found");
     });
 
-    test("should handle tRPC query error", async () => {
-        mockTrpcClient.portfolios.list.query.mockRejectedValue(new Error("Network error"));
+    test("should handle API query error", async () => {
+        mockApiClient.portfolios.listPortfolios.mockRejectedValue(new Error("Network error"));
 
         const args = {
             request: new Request("https://example.com"),
@@ -123,7 +121,7 @@ describe("api+/portfolio route", () => {
             },
         ];
 
-        mockTrpcClient.portfolios.list.query.mockResolvedValue(mockPortfolios);
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: mockPortfolios } as never);
 
         const args = {
             request: new Request("https://example.com"),

@@ -1,5 +1,5 @@
 import type { LoaderFunction } from "@remix-run/cloudflare";
-import { createTRPCApiClient } from "~/shared/lib/trpc";
+import { createApiClient } from "~/shared/lib/api";
 import { slugSchema } from "~/shared/validation";
 
 export interface Post {
@@ -34,13 +34,21 @@ export const loader: LoaderFunction = async (args) => {
 
     const validatedSlug = slugResult.data;
     const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
-    const trpc = createTRPCApiClient(apiUrl);
+    const api = createApiClient(apiUrl);
 
-    const post = await trpc.posts.bySlug.query({ slug: validatedSlug });
+    try {
+        const response = await api.posts.getPostBySlug(validatedSlug);
+        const post = response.data as Post;
 
-    if (!post) {
+        if (!post) {
+            throw new Response(`Post "${validatedSlug}" not found`, { status: 404 });
+        }
+
+        return Response.json(post as LoaderData);
+    } catch (error) {
+        if (error instanceof Response) {
+            throw error;
+        }
         throw new Response(`Post "${validatedSlug}" not found`, { status: 404 });
     }
-
-    return Response.json(post as LoaderData);
 };

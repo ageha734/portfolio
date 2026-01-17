@@ -1,455 +1,343 @@
 # API設計ガイドライン
 
-このプロジェクトでは、tRPCを使用して型安全なAPIを実装しています。
+このプロジェクトでは、TypeSpecで定義したOpenAPI仕様からOrvalでTypeScriptクライアントを生成し、HonoでREST APIエンドポイントを実装しています。
 
-## tRPC の概要
+## アーキテクチャ概要
 
-tRPCは、TypeScriptで型安全なAPIを構築するためのフレームワークです。
+- **API仕様**: TypeSpecで定義し、OpenAPI仕様を生成
+- **クライアント生成**: OrvalでOpenAPI仕様からTypeScriptクライアントを生成（axios使用）
+- **バックエンド**: HonoでREST APIエンドポイント実装（BFFとして機能）
 
-### 主な特徴
+## REST APIエンドポイント
 
-- **型安全性**: エンドツーエンドの型安全性
-- **自動型推論**: クライアント側で自動的に型が推論される
-- **軽量**: オーバーヘッドが少ない
-- **統合**: Honoと統合して使用
+### Posts API
 
-## アーキテクチャ
+- `GET /api/posts` - 投稿一覧取得
+- `GET /api/post/:slug` - 投稿詳細取得
 
-### サーバー側
+### Portfolios API
+
+- `GET /api/portfolios` - ポートフォリオ一覧取得
+- `GET /api/portfolio/:slug` - ポートフォリオ詳細取得
+
+## TypeSpecスキーマ定義
+
+### エンドポイント定義
 
 ```typescript
-// packages/api/src/trpc.ts
-import { initTRPC } from "@trpc/server";
+// packages/api/src/schema/models/api.tsp
+@route("/api")
+namespace Posts {
+    @get
+    @route("/posts")
+    @summary("Get all posts")
+    op listPosts(): Post[];
 
-export interface Context {
-    db?: D1Database;
-    user?: { id: string };
+    @get
+    @route("/post/{slug}")
+    @summary("Get a post by slug")
+    op getPostBySlug(@path slug: string): Post | ErrorResponse;
 }
-
-const t = initTRPC.context<Context>().create();
-
-export const router = t.router;
-export const publicProcedure = t.procedure;
 ```
 
-### クライアント側
+### モデル定義
 
 ```typescript
-// apps/web/app/shared/lib/trpc.ts
-import { createTRPCProxyClient } from "@trpc/client";
-import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
-import type { AppRouter } from "@portfolio/api";
-
-export const trpc = createTRPCProxyClient<AppRouter>({
-    links: [
-        httpBatchLink({
-            url: `${getBaseUrl()}/trpc`,
-        }),
-    ],
-});
+// packages/api/src/schema/models/post.tsp
+model Post {
+    id: string;
+    title: string;
+    slug: string;
+    date: string;
+    description?: string;
+    content: PostContent;
+    imageTemp: string;
+    tags: string[];
+    sticky: boolean;
+    intro?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    images?: Asset[];
+}
 ```
 
-## ルーターの定義
+## Orval設定
 
-### 基本的なルーター
+### 設定ファイル
+
+`packages/api/orval.config.ts` でOrvalの設定を定義しています。
 
 ```typescript
-// apps/api/src/interface/trpc/posts.ts
-import { router, publicProcedure } from "@portfolio/api";
-import { z } from "zod";
+// packages/api/orval.config.ts
+import type { Config } from "orval";
 
-export const postsRouter = router({
-    // クエリ: データの取得
-    list: publicProcedure
-        .input(z.object({
-            limit: z.number().min(1).max(100).default(10),
-            offset: z.number().min(0).default(0),
-        }))
-        .query(async ({ input, ctx }) => {
-            // データベースから取得
-            const posts = await getPosts(input.limit, input.offset);
-            return posts;
-        }),
+const config: Config = {
+    api: {
+        input: {
+            target: "../../apps/wiki/reference/openapi.yaml",
+        },
+        output: {
+            target: "./src/generated/api.ts",
+            client: "axios",
+            httpClient: "axios",
+            mode: "tags-split",
+            override: {
+                mutator: {
+                    path: "./src/generated/mutator.ts",
+                    name: "customInstance",
+                },
+            },
+        },
+    },
+};
 
-    // ミューテーション: データの変更
-    create: publicProcedure
-        .input(z.object({
-            title: z.string().min(1),
-            content: z.string(),
-        }))
-        .mutation(async ({ input, ctx }) => {
-            // データベースに保存
-            const post = await createPost(input);
-            return post;
-        }),
-});
+export default config;
 ```
 
-### ルーターの統合
+### クライアント生成
+
+```bash
+# TypeSpecからOpenAPI仕様を生成し、Orvalでクライアントを生成
+cd packages/api
+bun run generate
+# orval.config.tsはpackages/apiディレクトリに配置されています
+```
+
+## Hono REST API実装
+
+### エンドポイントハンドラー
 
 ```typescript
-// apps/api/src/interface/trpc/router.ts
-import { router } from "@portfolio/api";
-import { postsRouter } from "./posts";
-import { portfoliosRouter } from "./portfolios";
+// apps/api/src/interface/rest/posts.ts
+import type { Context } from "hono";
+import { DIContainer } from "~/di/container";
 
-export const appRouter = router({
-    posts: postsRouter,
-    portfolios: portfoliosRouter,
-});
+export async function getPosts(c: Context) {
+    const db = c.env.DB;
+    if (!db) {
+        return c.json({ error: "Database not available" }, 500);
+    }
 
-export type AppRouter = typeof appRouter;
+    try {
+        const container = new DIContainer(db);
+        const useCase = container.getGetPostsUseCase();
+        const posts = await useCase.execute();
+
+        if (!posts || posts.length === 0) {
+            return c.json({ error: "Posts not found" }, 404);
+        }
+
+        return c.json(posts);
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        return c.json(
+            {
+                error: "Failed to fetch posts",
+                details: error instanceof Error ? error.message : String(error),
+            },
+            500,
+        );
+    }
+}
+```
+
+### ルーター統合
+
+```typescript
+// apps/api/src/interface/rest/index.ts
+import { Hono } from "hono";
+import { getPortfolioBySlug, getPortfolios } from "./portfolios";
+import { getPostBySlug, getPosts } from "./posts";
+
+export const restRouter = new Hono();
+
+restRouter.get("/posts", getPosts);
+restRouter.get("/post/:slug", getPostBySlug);
+restRouter.get("/portfolios", getPortfolios);
+restRouter.get("/portfolio/:slug", getPortfolioBySlug);
+```
+
+## クライアント側の使用
+
+### APIクライアントの作成
+
+```typescript
+// apps/web/app/shared/lib/api.ts
+import { PostsApi, PortfoliosApi } from "@portfolio/api/generated/api";
+import { customInstance } from "@portfolio/api/generated/mutator";
+
+export const createApiClient = (apiUrl?: string) => {
+    const baseURL = getBaseUrl(apiUrl);
+    return {
+        posts: new PostsApi(undefined, baseURL, customInstance as never),
+        portfolios: new PortfoliosApi(undefined, baseURL, customInstance as never),
+    };
+};
+```
+
+### 使用例
+
+```typescript
+// apps/web/app/shared/api/blog.ts
+import { createApiClient } from "~/shared/lib/api";
+
+export const loader: LoaderFunction = async (args) => {
+    const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
+    const api = createApiClient(apiUrl);
+
+    const response = await api.posts.listPosts();
+    const posts = response.data as Post[];
+
+    return Response.json({ posts, tags });
+};
+```
+
+## エラーハンドリング
+
+### エラーレスポンス形式
+
+```typescript
+{
+    error: string;
+    details?: unknown;
+}
+```
+
+### ステータスコード
+
+- `200` - 成功
+- `400` - バリデーションエラー（Invalid slugなど）
+- `404` - リソース未検出
+- `500` - サーバーエラー
+
+### エラーハンドリングの実装
+
+```typescript
+export async function getPostBySlug(c: Context) {
+    const slug = c.req.param("slug");
+    if (!slug) {
+        return c.json({ error: "Invalid slug" }, 400);
+    }
+
+    try {
+        const post = await useCase.execute(slug);
+        if (!post) {
+            return c.json({ error: "Post not found" }, 404);
+        }
+        return c.json(post);
+    } catch (error) {
+        return c.json(
+            {
+                error: "Failed to fetch post",
+                details: error instanceof Error ? error.message : String(error),
+            },
+            500,
+        );
+    }
+}
 ```
 
 ## 入力バリデーション
 
 ### Zodスキーマの使用
 
+クライアント側では、Orval生成クライアントが型安全性を提供します。サーバー側では、必要に応じてZodスキーマを使用してバリデーションを行います。
+
 ```typescript
+// apps/web/app/shared/validation.ts
 import { z } from "zod";
 
-// 基本的なスキーマ
-const createPostSchema = z.object({
-    title: z.string().min(1).max(200),
-    content: z.string().min(1),
-    slug: z.string().regex(/^[a-z0-9-]+$/),
-    publishedAt: z.date().optional(),
-});
-
-// ネストされたスキーマ
-const createPostWithTagsSchema = z.object({
-    title: z.string().min(1),
-    tags: z.array(z.string()).min(1),
-    metadata: z.object({
-        description: z.string().optional(),
-        image: z.string().url().optional(),
-    }),
-});
-
-// 条件付きバリデーション
-const updatePostSchema = z.object({
-    id: z.string(),
-    title: z.string().min(1).optional(),
-    content: z.string().optional(),
-}).refine((data) => data.title || data.content, {
-    message: "Either title or content must be provided",
-});
-```
-
-### カスタムバリデーション
-
-```typescript
-// packages/api/src/schema/zod/post.ts
-import { z } from "zod";
-
-export const postSlugSchema = z.string()
-    .min(1)
-    .max(200)
-    .regex(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens");
-
-export const createPostSchema = z.object({
-    title: z.string().min(1).max(200),
-    slug: postSlugSchema,
-    content: z.string().min(1),
-});
-```
-
-## エラーハンドリング
-
-### エラーの定義
-
-```typescript
-import { TRPCError } from "@trpc/server";
-
-// エラーをスロー
-throw new TRPCError({
-    code: "NOT_FOUND",
-    message: "Post not found",
-});
-
-// エラーコードの種類
-// - BAD_REQUEST: 400
-// - UNAUTHORIZED: 401
-// - FORBIDDEN: 403
-// - NOT_FOUND: 404
-// - CONFLICT: 409
-// - INTERNAL_SERVER_ERROR: 500
-```
-
-### エラーハンドリングの実装
-
-```typescript
-export const postsRouter = router({
-    getById: publicProcedure
-        .input(z.object({ id: z.string() }))
-        .query(async ({ input, ctx }) => {
-            const post = await getPost(input.id);
-
-            if (!post) {
-                throw new TRPCError({
-                    code: "NOT_FOUND",
-                    message: `Post with id ${input.id} not found`,
-                });
-            }
-
-            return post;
-        }),
-});
-```
-
-## 認証と認可
-
-### 保護されたプロシージャ
-
-```typescript
-// 認証が必要なプロシージャを作成
-const protectedProcedure = publicProcedure.use(async ({ ctx, next }) => {
-    if (!ctx.user) {
-        throw new TRPCError({
-            code: "UNAUTHORIZED",
-            message: "Authentication required",
-        });
-    }
-
-    return next({
-        ctx: {
-            ...ctx,
-            user: ctx.user, // 型が推論される
-        },
-    });
-});
-
-// 使用例
-export const postsRouter = router({
-    create: protectedProcedure
-        .input(createPostSchema)
-        .mutation(async ({ input, ctx }) => {
-            // ctx.user が確実に存在する
-            return await createPost(input, ctx.user.id);
-        }),
-});
-```
-
-### ロールベースの認可
-
-```typescript
-// 管理者のみが実行可能なプロシージャ
-const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
-    if (ctx.user.role !== "admin") {
-        throw new TRPCError({
-            code: "FORBIDDEN",
-            message: "Admin access required",
-        });
-    }
-
-    return next({ ctx });
-});
-```
-
-## クエリの最適化
-
-### ページネーション
-
-```typescript
-export const postsRouter = router({
-    list: publicProcedure
-        .input(z.object({
-            page: z.number().min(1).default(1),
-            pageSize: z.number().min(1).max(100).default(10),
-        }))
-        .query(async ({ input, ctx }) => {
-            const { page, pageSize } = input;
-            const offset = (page - 1) * pageSize;
-
-            const [posts, total] = await Promise.all([
-                getPosts({ limit: pageSize, offset }),
-                getPostCount(),
-            ]);
-
-            return {
-                posts,
-                pagination: {
-                    page,
-                    pageSize,
-                    total,
-                    totalPages: Math.ceil(total / pageSize),
-                },
-            };
-        }),
-});
-```
-
-### フィルタリングとソート
-
-```typescript
-export const postsRouter = router({
-    list: publicProcedure
-        .input(z.object({
-            filter: z.object({
-                tags: z.array(z.string()).optional(),
-                published: z.boolean().optional(),
-            }).optional(),
-            sort: z.enum(["date", "title"]).default("date"),
-            order: z.enum(["asc", "desc"]).default("desc"),
-        }))
-        .query(async ({ input, ctx }) => {
-            return await getPosts({
-                filter: input.filter,
-                sort: input.sort,
-                order: input.order,
-            });
-        }),
-});
-```
-
-## バッチリクエスト
-
-tRPCは自動的にバッチリクエストを処理します。
-
-```typescript
-// クライアント側
-const [posts, portfolios] = await Promise.all([
-    trpc.posts.list.query(),
-    trpc.portfolios.list.query(),
-]);
-
-// サーバー側では1つのリクエストとして処理される
+export const slugSchema = z.string().min(1).regex(/^[a-z0-9-]+$/);
 ```
 
 ## 型の共有
 
-### サーバー側の型定義
+### 生成された型定義
+
+Orvalで生成されたクライアントには、OpenAPI仕様から型定義が自動的に含まれます。
 
 ```typescript
-// packages/api/src/router/posts.ts
-export type Post = {
+// packages/api/src/generated/api.ts (自動生成)
+export interface Post {
     id: string;
     title: string;
-    content: string;
-    createdAt: Date;
-};
-
-export const postsRouter = router({
-    list: publicProcedure.query<Post[]>(async () => {
-        // ...
-    }),
-});
+    slug: string;
+    // ...
+}
 ```
 
-### クライアント側での型の使用
+### 型の使用
 
 ```typescript
-// apps/web/app/shared/api/posts.ts
-import type { Post } from "@portfolio/api";
+import type { Post } from "@portfolio/api/generated/api";
 
-export const usePosts = () => {
-    const { data, isLoading } = trpc.posts.list.useQuery();
-
-    return {
-        posts: data as Post[] | undefined,
-        isLoading,
-    };
-};
+const response = await api.posts.listPosts();
+const posts = response.data as Post[];
 ```
 
 ## ベストプラクティス
 
-### 1. スキーマの再利用
-
-```typescript
-// packages/api/src/schema/zod/common.ts
-export const paginationSchema = z.object({
-    page: z.number().min(1).default(1),
-    pageSize: z.number().min(1).max(100).default(10),
-});
-
-// 使用例
-export const postsRouter = router({
-    list: publicProcedure
-        .input(paginationSchema)
-        .query(async ({ input }) => {
-            // ...
-        }),
-});
-```
-
-### 2. エラーメッセージの明確化
+### 1. エラーメッセージの明確化
 
 ```typescript
 // ✅ Good: 明確なエラーメッセージ
-throw new TRPCError({
-    code: "BAD_REQUEST",
-    message: "Title must be between 1 and 200 characters",
-});
+return c.json({ error: "Post not found" }, 404);
 
 // ❌ Bad: 曖昧なエラーメッセージ
-throw new TRPCError({
-    code: "BAD_REQUEST",
-    message: "Invalid input",
-});
+return c.json({ error: "Error" }, 404);
 ```
 
-### 3. 適切なHTTPステータスコードの使用
+### 2. 適切なHTTPステータスコードの使用
 
 ```typescript
 // リソースが見つからない場合
-throw new TRPCError({
-    code: "NOT_FOUND",
-    message: "Post not found",
-});
+return c.json({ error: "Post not found" }, 404);
 
-// 認証が必要な場合
-throw new TRPCError({
-    code: "UNAUTHORIZED",
-    message: "Authentication required",
-});
+// バリデーションエラーの場合
+return c.json({ error: "Invalid slug" }, 400);
 
-// 権限がない場合
-throw new TRPCError({
-    code: "FORBIDDEN",
-    message: "You don't have permission",
-});
+// サーバーエラーの場合
+return c.json({ error: "Internal server error" }, 500);
 ```
 
-### 4. 入力のサニタイゼーション
+### 3. ログの記録
 
 ```typescript
-import { z } from "zod";
-
-// HTMLタグを除去
-const sanitizeHtml = (html: string) => {
-    return html.replace(/<[^>]*>/g, "");
-};
-
-export const createPostSchema = z.object({
-    title: z.string().min(1).max(200),
-    content: z.string().min(1).transform(sanitizeHtml),
-});
+try {
+    const posts = await useCase.execute();
+    return c.json(posts);
+} catch (error) {
+    console.error("Error fetching posts:", error);
+    return c.json({ error: "Failed to fetch posts" }, 500);
+}
 ```
 
 ## テスト
 
-### ユニットテスト
+### E2Eテスト
 
 ```typescript
-// apps/api/src/interface/trpc/posts.test.ts
-import { describe, expect, it } from "vitest";
-import { createCaller } from "./router";
-
-describe("postsRouter", () => {
-    it("should return posts", async () => {
-        const caller = createCaller({ db: mockDb });
-        const result = await caller.posts.list();
-
-        expect(result).toBeDefined();
-        expect(Array.isArray(result)).toBe(true);
-    });
+// apps/api/e2e/posts.spec.ts
+test("should return posts list", async ({ request }) => {
+    const response = await request.get(`${API_URL}/api/posts`);
+    expect(response.status()).toBe(200);
+    const data = await response.json();
+    expect(Array.isArray(data)).toBe(true);
 });
 ```
 
-## TypeSpec設定
+### モック
 
-このプロジェクトでは、TypeSpecを使用してOpenAPI仕様を生成する設定が含まれています。
+```typescript
+// testing/mocks/src/handlers/rest.ts
+export const restHandlers: HttpHandler[] = [
+    http.get(`${API_URL}/api/posts`, () => {
+        return HttpResponse.json(mockPosts);
+    }),
+];
+```
+
+## TypeSpec設定
 
 ### 設定ファイル
 
@@ -461,35 +349,20 @@ emit:
 
 options:
     '@typespec/openapi3':
-        # TODO:
-        output-file: '../../docs/swagger/openapi.yaml'
+        output-file: '../../apps/wiki/reference/openapi.yaml'
 ```
-
-### 設定の説明
-
-- **`emit`**: 出力形式を指定します。`@typespec/openapi3` を使用してOpenAPI 3.0仕様を生成します。
-- **`options['@typespec/openapi3']`**: OpenAPI3エミッターのオプション設定
-  - **`output-file`**: 生成されるOpenAPI仕様ファイルの出力パス（現在はTODO状態）
 
 ### 使用方法
 
 ```bash
 # TypeSpecスキーマからOpenAPI仕様を生成
 cd packages/api
-bunx tsp compile
+bunx tsp compile .
 ```
-
-### 今後の拡張
-
-現在、`output-file` はTODO状態ですが、将来的には次のような用途で使用されます：
-
-- APIドキュメントの自動生成
-- クライアントSDKの生成
-- API仕様の共有と検証
 
 ## 参考資料
 
-- [tRPC ドキュメント](https://trpc.io/docs)
-- [Zod ドキュメント](https://zod.dev/)
-- [Hono ドキュメント](https://hono.dev/)
 - [TypeSpec ドキュメント](https://typespec.io/)
+- [Orval ドキュメント](https://orval.dev/)
+- [Hono ドキュメント](https://hono.dev/)
+- [OpenAPI 仕様](https://swagger.io/specification/)
