@@ -12,7 +12,7 @@
     },
     "scripts": {
         "build": "run-s build:ui build:storybook",
-        "build:storybook": "storybook build -o build",
+        "build:storybook": "storybook build -o ../../apps/wiki/design/ui",
         "build:ui": "tsc --outDir dist",
         "clean": "git clean -xdf .cache .turbo node_modules dist",
         "coverage": "vitest run --coverage",

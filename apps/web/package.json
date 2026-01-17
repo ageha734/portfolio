@@ -6,7 +6,7 @@
         "accessibility": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/accessibility/report:/work/docs/playwright/report portfolio-e2e bunx playwright test --config=playwright.storybook.config.ts e2e/accessibility",
         "build": "run-s build:ui build:page",
         "build:page": "remix vite:build",
-        "build:ui": "storybook build",
+        "build:ui": "storybook build -o ../wiki/design/web",
         "clean": "git clean -xdf .cache .turbo node_modules dist",
         "coverage": "vitest run --coverage",
         "deploy": "wrangler pages deploy ./build --project-name portfolio-web --branch master",
