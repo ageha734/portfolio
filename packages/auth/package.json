@@ -2,15 +2,18 @@
     "private": true,
     "name": "@portfolio/auth",
     "type": "module",
-    "types": "./src/index.d.ts",
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
     "exports": {
         ".": {
-            "types": "./src/index.d.ts",
-            "default": "./src/index.ts"
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
-        "clean": "git clean -xdf .cache .turbo node_modules",
+        "build": "tsc --outDir dist",
+        "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "dev": "tsc --watch --outDir dist",
         "coverage": "vitest run --coverage",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",

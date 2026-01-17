@@ -2,11 +2,12 @@
     "private": true,
     "name": "@portfolio/ui",
     "type": "module",
-    "types": "./src/index.ts",
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
     "exports": {
         ".": {
-            "types": "./src/index.ts",
-            "import": "./src/index.ts"
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         },
         "./tailwind.css": "./src/tailwind.css"
     },
@@ -15,7 +16,7 @@
         "build:ui": "storybook build -o ../../apps/wiki/design/ui",
         "clean": "git clean -xdf .cache .turbo node_modules dist",
         "coverage": "vitest run --coverage",
-        "dev": "",
+        "dev": "tsc --watch --outDir dist",
         "dev:ui": "storybook dev -p 16001 --no-open",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",

@@ -2,26 +2,29 @@
     "private": true,
     "name": "@portfolio/api",
     "type": "module",
-    "types": "./src/index.ts",
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
     "exports": {
         ".": {
-            "types": "./src/index.ts",
-            "import": "./src/index.ts"
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
         }
     },
     "scripts": {
+        "build": "tsc --outDir dist",
         "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "dev": "tsc --watch --outDir dist",
         "coverage": "vitest run --coverage",
         "fmt": "biome format --write .",
         "fmt:check": "biome format .",
-        "generate": "echo 'Skipping tsp compile: TypeSpec schema not configured'",
+        "generate": "tsp compile . && orval",
         "lint": "biome lint .",
         "lint:fix": "biome lint --write .",
         "test": "vitest run",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@trpc/server": "11.0.0",
+        "axios": "^1.7.9",
         "zod": "4.3.4"
     },
     "devDependencies": {
@@ -31,10 +34,8 @@
         "@typespec/compiler": "1.7.1",
         "@typespec/http": "1.7.0",
         "@typespec/openapi3": "1.7.0",
+        "orval": "^7.17.2",
         "typescript": "5.9.3",
         "vitest": "3.2.4"
-    },
-    "peerDependencies": {
-        "@trpc/server": "11.0.0"
     }
 }

@@ -1,15 +1,13 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": "@portfolio/tsconfig/node.json",
+    "extends": [
+        "@portfolio/tsconfig/node.json",
+        "@portfolio/tsconfig/compiled-package.json"
+    ],
     "compilerOptions": {
-        "baseUrl": ".",
         "paths": {},
         "typeRoots": ["./node_modules/@types"],
-        "declaration": true,
-        "emitDeclarationOnly": false,
-        "noEmit": false,
-        "allowImportingTsExtensions": false,
-        "rootDir": "./src"
+        "allowImportingTsExtensions": false
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules", "dist"]
