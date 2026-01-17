@@ -1,4 +1,5 @@
-import { createRouterWrapper } from "@portfolio/testing-vitest/render";
+import "@testing-library/jest-dom/vitest";
+import { createRouterWrapper } from "@portfolio/testing-vitest";
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { Link as RouterLink } from "react-router";
