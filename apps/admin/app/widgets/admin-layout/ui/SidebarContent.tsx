@@ -7,7 +7,7 @@ export function SidebarContent({ location, onNavigate }: Readonly<SidebarContent
     return (
         <>
             <div className="flex h-16 shrink-0 items-center">
-                <h2 className="text-xl font-bold">CMS</h2>
+                <h2 className="font-bold text-xl">CMS</h2>
             </div>
             <nav className="flex flex-1 flex-col">
                 <ul className="flex flex-1 flex-col gap-y-1">
@@ -19,10 +19,10 @@ export function SidebarContent({ location, onNavigate }: Readonly<SidebarContent
                                     to={item.href}
                                     onClick={onNavigate}
                                     className={cn(
-                                        "group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold",
+                                        "group flex gap-x-3 rounded-md p-3 font-semibold text-sm leading-6",
                                         isActive
                                             ? "bg-primary text-primary-foreground"
-                                            : "text-muted-foreground hover:text-foreground hover:bg-accent",
+                                            : "text-muted-foreground hover:bg-accent hover:text-foreground",
                                     )}
                                 >
                                     <item.icon className="h-6 w-6 shrink-0" />

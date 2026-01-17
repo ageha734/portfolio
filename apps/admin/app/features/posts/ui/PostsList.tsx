@@ -8,7 +8,7 @@ export function PostsList() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center h-64">
+            <div className="flex h-64 items-center justify-center">
                 <p className="text-muted-foreground">Loading posts...</p>
             </div>
         );
@@ -16,7 +16,7 @@ export function PostsList() {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center h-64">
+            <div className="flex h-64 items-center justify-center">
                 <p className="text-red-600">Failed to load posts: {error.message}</p>
             </div>
         );
@@ -26,11 +26,10 @@ export function PostsList() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Posts</h1>
+                    <h1 className="font-bold text-3xl tracking-tight">Posts</h1>
                     <p className="text-muted-foreground">Manage your blog posts</p>
                 </div>
                 <Button asChild>
-                    {/* biome-ignore lint/suspicious/noExplicitAny: ルートツリーが再生成されるまでの一時的な型アサーション */}
                     <Link to={"/posts/new" as any}>
                         <Plus className="mr-2 h-4 w-4" />
                         New Post
@@ -46,7 +45,6 @@ export function PostsList() {
                     </CardHeader>
                     <CardContent>
                         <Button asChild>
-                            {/* biome-ignore lint/suspicious/noExplicitAny: ルートツリーが再生成されるまでの一時的な型アサーション */}
                             <Link to={"/posts/new" as any}>
                                 <Plus className="mr-2 h-4 w-4" />
                                 Create Post
@@ -63,7 +61,7 @@ export function PostsList() {
                                     <div className="space-y-1">
                                         <CardTitle>{post.title}</CardTitle>
                                         <CardDescription>{post.description || "No description"}</CardDescription>
-                                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                        <div className="flex items-center gap-4 text-muted-foreground text-sm">
                                             <span>{new Date(post.date).toLocaleDateString()}</span>
                                             {post.tags && post.tags.length > 0 && <span>{post.tags.length} tags</span>}
                                         </div>

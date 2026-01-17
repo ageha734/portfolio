@@ -44,7 +44,6 @@ function getErrorMessage(error: ErrorData): ErrorMessage {
 function FlatlineThemeStyles() {
     return (
         <style
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: WYSIWYGコンポーネントはHTMLコンテンツを表示するために必要
             dangerouslySetInnerHTML={{
                 __html: `
             [data-theme='dark'] {

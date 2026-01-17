@@ -4,12 +4,12 @@ import Layout from "@theme/Layout";
 export default function ReportsIndexPage() {
     return (
         <Layout title="レポート">
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <h1>レポート</h1>
                 <p>CIで生成されたテストレポートとカバレッジレポートを確認できます。</p>
                 <div className="margin-vert--lg">
                     <div className="row">
-                        <div className="col col--6 margin-bottom--md">
+                        <div className="col margin-bottom--md col--6">
                             <div className="card">
                                 <div className="card__header">
                                     <h2>E2Eテストレポート</h2>
@@ -22,7 +22,7 @@ export default function ReportsIndexPage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="col col--6 margin-bottom--md">
+                        <div className="col margin-bottom--md col--6">
                             <div className="card">
                                 <div className="card__header">
                                     <h2>カバレッジレポート</h2>

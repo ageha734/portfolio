@@ -13,11 +13,11 @@ export const graphQLErrorSchema = z.object({
 
 export const graphQLRequestSchema = z.object({
     query: z.string(),
-    variables: z.record(z.unknown()).optional(),
+    variables: z.record(z.string(), z.unknown()).optional(),
 });
 
 export const graphQLResponseSchema = z.object({
-    data: z.record(z.unknown()).optional(),
+    data: z.record(z.string(), z.unknown()).optional(),
     errors: z.array(graphQLErrorSchema).optional(),
 });
 

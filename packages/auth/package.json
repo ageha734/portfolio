@@ -32,7 +32,7 @@
         "@portfolio/tsconfig": "workspace:*",
         "@portfolio/vitest-config": "workspace:*",
         "dotenv": "17.2.3",
-        "typescript": "^5.9.3",
-        "vitest": "^3.2.4"
+        "typescript": "5.9.3",
+        "vitest": "3.2.4"
     }
 }

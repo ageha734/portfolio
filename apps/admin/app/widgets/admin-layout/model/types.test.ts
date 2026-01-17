@@ -50,7 +50,9 @@ describe("SidebarContentProps", () => {
     });
 
     test("should allow onNavigate as optional callback", () => {
-        const callback = () => {};
+        const callback = () => {
+            // intentionally empty callback for testing
+        };
         const propsWithCallback: SidebarContentProps = {
             location: { pathname: "/" },
             onNavigate: callback,

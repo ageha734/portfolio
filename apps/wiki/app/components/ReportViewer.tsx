@@ -18,7 +18,7 @@ export function ReportViewer({ type, commitSha, metadata }: Readonly<ReportViewe
 
     return (
         <Layout title={title}>
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <div className="margin-bottom--md">
                     <Link to="/reports" className="button button--secondary">
                         ← レポート一覧に戻る

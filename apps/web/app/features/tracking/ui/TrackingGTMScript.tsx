@@ -15,11 +15,5 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','${id}');`;
 
-    return (
-        <script
-            // biome-ignore lint: Google Tag Managerスクリプトを埋め込むために必要
-            dangerouslySetInnerHTML={{ __html }}
-            type="text/javascript"
-        />
-    );
+    return <script dangerouslySetInnerHTML={{ __html }} type="text/javascript" />;
 };

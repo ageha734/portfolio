@@ -1,6 +1,7 @@
 import Prism from "prismjs";
 import * as React from "react";
 import "prismjs/plugins/line-numbers/prism-line-numbers";
+import { sanitizeHtml } from "../utils/sanitize";
 
 export interface WysiwygProps {
     content: string;
@@ -16,12 +17,7 @@ export const Wysiwyg = (props: WysiwygProps) => {
         }
     }, []);
 
-    return (
-        <div
-            className="wysiwyg"
-            ref={wysiwygRef}
-            // biome-ignore lint: WYSIWYGコンポーネントはHTMLコンテンツを表示するために必要
-            dangerouslySetInnerHTML={{ __html: content }}
-        />
-    );
+    const sanitizedContent = sanitizeHtml(content);
+
+    return <div className="wysiwyg" ref={wysiwygRef} dangerouslySetInnerHTML={{ __html: sanitizedContent }} />;
 };

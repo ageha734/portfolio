@@ -20,3 +20,4 @@ export type { UserCardProps } from "./components/UserCard";
 export { UserCard } from "./components/UserCard";
 export type { WysiwygProps } from "./components/Wysiwyg";
 export { Wysiwyg } from "./components/Wysiwyg";
+export { sanitizeHtml } from "./utils/sanitize";

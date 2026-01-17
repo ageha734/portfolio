@@ -107,11 +107,7 @@ export const Post = ({ children, title, date, banner, timecode }: PostProps) => 
                         </div>
                         <h1 className="font-extrabold font-serif text-4xl leading-tight md:text-6xl" aria-label={title}>
                             {title.split(" ").map((word, index) => (
-                                <span
-                                    className="inline-block overflow-hidden"
-                                    // biome-ignore lint: タイトルの単語の順序が重要で、同じ単語が複数回出現する可能性があるためindexを使用
-                                    key={`${title}-word-${index}`}
-                                >
+                                <span className="inline-block overflow-hidden" key={`${title}-word-${index}`}>
                                     <span
                                         className="slide-in-from-bottom-5 inline-block animate-in whitespace-pre duration-500"
                                         style={{

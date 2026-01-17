@@ -28,13 +28,13 @@ export function AdminLayout() {
                     onKeyDown={handleOverlayKeyDown}
                     aria-label="Close sidebar"
                 />
-                <div className="fixed inset-y-0 left-0 w-64 bg-card border-r">
+                <div className="fixed inset-y-0 left-0 w-64 border-r bg-card">
                     <SidebarContent location={location} onNavigate={() => setSidebarOpen(false)} />
                 </div>
             </div>
 
             <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
-                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-card border-r px-6 pb-4">
+                <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r bg-card px-6 pb-4">
                     <SidebarContent location={location} />
                 </div>
             </div>
@@ -46,12 +46,12 @@ export function AdminLayout() {
                     </Button>
                     <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                         <div className="flex flex-1 items-center">
-                            <h1 className="text-xl font-semibold">Admin Dashboard</h1>
+                            <h1 className="font-semibold text-xl">Admin Dashboard</h1>
                         </div>
                     </div>
                 </header>
 
-                <main className="py-8 px-4 sm:px-6 lg:px-8">
+                <main className="px-4 py-8 sm:px-6 lg:px-8">
                     <Outlet />
                 </main>
             </div>

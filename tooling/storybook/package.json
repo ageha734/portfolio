@@ -7,15 +7,15 @@
     "exports": {
         "./main": {
             "types": "./dist/main.preset.d.ts",
-            "default": "./dist/main.preset.ts"
+            "default": "./dist/main.preset.js"
         },
         "./preview": {
             "types": "./dist/preview.preset.d.ts",
-            "default": "./dist/preview.preset.ts"
+            "default": "./dist/preview.preset.js"
         },
         "./theme": {
             "types": "./dist/theme.d.ts",
-            "default": "./dist/theme.ts"
+            "default": "./dist/theme.js"
         }
     },
     "scripts": {

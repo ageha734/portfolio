@@ -1,6 +1,6 @@
 import { create } from "@storybook/theming/create";
 
-export const lightTheme = create({
+const _lightTheme = create({
     base: "light",
     brandTitle: "Portfolio",
     brandUrl: "/",
@@ -25,7 +25,7 @@ export const lightTheme = create({
     inputBorderRadius: 6,
 });
 
-export const darkTheme = create({
+const _darkTheme = create({
     base: "dark",
     brandTitle: "Portfolio",
     brandUrl: "/",
@@ -49,3 +49,6 @@ export const darkTheme = create({
     inputTextColor: "#f9fafb",
     inputBorderRadius: 6,
 });
+
+export const lightTheme: ReturnType<typeof create> = _lightTheme;
+export const darkTheme: ReturnType<typeof create> = _darkTheme;

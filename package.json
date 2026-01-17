@@ -3,8 +3,9 @@
   "scripts": {
     "build": "turbo run build",
     "check": "concurrently -n fmt,lint,knip,syncpack,test,coverage -c \"blue,green,yellow,purple,cyan,red\" \"turbo run fmt:check\" \"turbo run lint:check\" \"turbo run knip\" \"turbo run syncpack\" \"turbo run test\" \"turbo run coverage\"",
+    "clean": "turbo run clean",
     "coverage": "turbo run coverage",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --concurrency=12",
     "e2e": "turbo run e2e",
     "fmt": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"turbo run fmt\" \"bun run fmt:shell:fix\" \"bun run fmt:actions:fix\"",
     "fmt:actions:check": "bun run scripts/check.ts --check-type=fmt --lint-type=actions",
@@ -39,10 +40,10 @@
     "knip": "5.79.0",
     "lefthook": "2.0.13",
     "lint-staged": "16.2.7",
-    "renovate": "^41.0.0",
-    "sherif": "^1.0.0",
-    "syncpack": "^13.0.0",
-    "turbo": "^2.3.0"
+    "renovate": "41.0.0",
+    "sherif": "1.0.0",
+    "syncpack": "13.0.0",
+    "turbo": "2.3.0"
   },
   "engines": {
     "bun": "1.1.43",

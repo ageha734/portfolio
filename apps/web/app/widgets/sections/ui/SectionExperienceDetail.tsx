@@ -1,3 +1,4 @@
+import { sanitizeHtml } from "@portfolio/ui/utils/sanitize";
 import { getTimeWorked } from "../lib/date-time";
 import type { SectionExperienceDetailProps } from "../model/types.d";
 
@@ -18,8 +19,7 @@ export const SectionExperienceDetail = (props: SectionExperienceDetailProps) => 
                     <h3 className="flex items-center gap-2 font-bold">
                         <a
                             className="underline-offset-4 hover:underline print:text-color-copy-dark"
-                            // biome-ignore lint: SectionExperienceDetailコンポーネントはHTMLコンテンツを表示するために必要
-                            dangerouslySetInnerHTML={{ __html: company }}
+                            dangerouslySetInnerHTML={{ __html: sanitizeHtml(company) }}
                             href={companyUrl}
                             rel="noreferrer"
                             target="_blank"
@@ -46,17 +46,14 @@ export const SectionExperienceDetail = (props: SectionExperienceDetailProps) => 
             </div>
 
             <div className="flex-1 text-sm leading-4">
-                {/* biome-ignore lint: SectionExperienceDetailコンポーネントはHTMLコンテンツを表示するために必要 */}
-                <div dangerouslySetInnerHTML={{ __html: description }} />
+                <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }} />
                 <ul className="my-4 ml-4 list-disc font-light text-color-copy text-sm">
                     {highlights.map((highlight, index) => {
                         const highlightKey = highlight.replaceAll(/<[^>]*>/g, "").substring(0, 50);
                         return (
                             <li
                                 className="my-1"
-                                // biome-ignore lint: SectionExperienceDetailコンポーネントはHTMLコンテンツを表示するために必要
-                                dangerouslySetInnerHTML={{ __html: highlight }}
-                                // biome-ignore lint: highlights配列の順序が重要で、各要素に一意のIDがないためindexを使用
+                                dangerouslySetInnerHTML={{ __html: sanitizeHtml(highlight) }}
                                 key={`${title}-highlight-${highlightKey}-${index}`}
                             />
                         );

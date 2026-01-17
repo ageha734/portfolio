@@ -48,7 +48,7 @@ export default function ReportViewPage() {
 
     if (loading) {
         return (
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <p>読み込み中...</p>
             </div>
         );
@@ -56,7 +56,7 @@ export default function ReportViewPage() {
 
     if (error || !type || !commitSha || !metadata) {
         return (
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <div className="alert alert--danger">
                     <p>{error || "レポートが見つかりません"}</p>
                 </div>

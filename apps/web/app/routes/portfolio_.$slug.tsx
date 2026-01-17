@@ -1,5 +1,6 @@
+import { sanitizeHtml } from "@portfolio/ui/utils/sanitize";
 import type { MetaFunction } from "@remix-run/react";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderData } from "~/routes/api.portfolio.$slug";
 import { Hero } from "~/widgets/hero";
 
@@ -42,8 +43,7 @@ export default function Portfolio_Slug() {
                 <div className="relative m-auto flex max-w-3xl flex-col">
                     <div
                         className="wysiwyg px-4"
-                        // biome-ignore lint: PortfolioコンポーネントはHTMLコンテンツを表示するために必要
-                        dangerouslySetInnerHTML={{ __html: data.content.html }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeHtml(data.content.html) }}
                     />
                 </div>
             )}
@@ -52,27 +52,21 @@ export default function Portfolio_Slug() {
                 <blockquote>{data.intro}</blockquote>
             </div>
 
-            {/*
-      <div className="bg-color-background-dark py-20 text-color-background-light">
-        <div className="mx-auto flex max-w-6xl flex-col gap-20 md:flex-row">
-          <div className="flex flex-1 flex-col items-center justify-center">
-            <h3 className="mb-4 text-lg font-extrabold">
-              Testing another article
-            </h3>
-            <Link to="/portfolio">Read more {`>>`}</Link>
-          </div>
+            <div className="bg-color-background-dark py-20 text-color-background-light">
+                <div className="mx-auto flex max-w-6xl flex-col gap-20 md:flex-row">
+                    <div className="flex flex-1 flex-col items-center justify-center">
+                        <h3 className="mb-4 font-extrabold text-lg">Testing another article</h3>
+                        <Link to="/portfolio">Read more {">>"}</Link>
+                    </div>
 
-          <div className="border-0 border-solid md:border-l md:border-l-color-border" />
+                    <div className="border-0 border-solid md:border-l md:border-l-color-border" />
 
-          <div className="flex flex-1 flex-col items-center justify-center">
-            <h3 className="mb-4 text-lg font-extrabold">
-              Testing another article
-            </h3>
-            <Link to="/portfolio">Read more {`>>`}</Link>
-          </div>
-        </div>
-      </div>
-      */}
+                    <div className="flex flex-1 flex-col items-center justify-center">
+                        <h3 className="mb-4 font-extrabold text-lg">Testing another article</h3>
+                        <Link to="/portfolio">Read more {">>"}</Link>
+                    </div>
+                </div>
+            </div>
         </>
     );
 }

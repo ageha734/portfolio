@@ -15,11 +15,7 @@ export const TrackingGA = (props: TrackingGAProps) => {
     return (
         <>
             <script async={true} defer={true} src={src} type="text/javascript" />
-            <script
-                // biome-ignore lint: Google Tag Managerスクリプトを埋め込むために必要
-                dangerouslySetInnerHTML={{ __html }}
-                type="text/javascript"
-            />
+            <script dangerouslySetInnerHTML={{ __html }} type="text/javascript" />
         </>
     );
 };

@@ -1,8 +1,6 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-        "config:recommended"
-    ],
+    "extends": ["config:recommended"],
     "packageRules": [
         {
             "matchPackagePatterns": ["^@portfolio/"],
@@ -45,19 +43,13 @@
             "groupName": "docusaurus"
         }
     ],
-    "ignorePresets": [
-        ":prHourlyLimit2"
-    ],
+    "ignorePresets": [":prHourlyLimit2"],
     "prHourlyLimit": 10,
     "prConcurrentLimit": 5,
     "timezone": "Asia/Tokyo",
-    "schedule": [
-        "before 10am on Monday"
-    ],
+    "schedule": ["before 10am on Monday"],
     "automerge": false,
     "automergeType": "pr",
     "platform": "github",
-    "repositories": [
-        "ageha734/portfolio"
-    ]
+    "repositories": ["ageha734/portfolio"]
 }

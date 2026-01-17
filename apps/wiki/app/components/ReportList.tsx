@@ -25,7 +25,7 @@ export function ReportList({ type, reports }: Readonly<ReportListProps>) {
 
     return (
         <Layout title={title}>
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <h1>{title}</h1>
                 <p>CIで生成されたレポートの一覧です。</p>
                 {reports.length === 0 ? (

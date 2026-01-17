@@ -43,7 +43,7 @@ export default function ReportsPage() {
 
     if (loading) {
         return (
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <p>読み込み中...</p>
             </div>
         );
@@ -51,7 +51,7 @@ export default function ReportsPage() {
 
     if (error) {
         return (
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <div className="alert alert--danger">
                     <p>{error}</p>
                 </div>
@@ -66,7 +66,7 @@ export default function ReportsPage() {
 
     if (!type || (type !== "e2e" && type !== "coverage")) {
         return (
-            <div className="container margin-vert--lg">
+            <div className="margin-vert--lg container">
                 <div className="alert alert--danger">
                     <p>無効なレポートタイプです</p>
                 </div>

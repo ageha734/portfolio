@@ -1,4 +1,5 @@
 import classnames from "classnames";
+import { sanitizeHtml } from "../utils/sanitize";
 
 export interface UserCardProps {
     alt?: string;
@@ -11,16 +12,14 @@ export interface UserCardProps {
 export const UserCard = (props: UserCardProps) => {
     const { alt, author, className, copy, image } = props;
 
+    const sanitizedCopy = sanitizeHtml(copy);
+
     return (
         <div className={classnames(className, "flex items-center gap-4")}>
             <img alt={alt} className="h-10 w-10 rounded-full border border-color-border-dark" src={image} />
             <div>
                 {author && <h3 className="text-xl">{author}</h3>}
-                <div
-                    className="font-font-monospace text-xs"
-                    // biome-ignore lint: UserCardコンポーネントはHTMLコンテンツを表示するために必要
-                    dangerouslySetInnerHTML={{ __html: copy }}
-                />
+                <div className="font-font-monospace text-xs" dangerouslySetInnerHTML={{ __html: sanitizedCopy }} />
             </div>
         </div>
     );
