@@ -34,6 +34,7 @@ const config = {
         "type",
         "types",
         "exports",
+        "main",
         "scripts",
         "dependencies",
         "devDependencies",

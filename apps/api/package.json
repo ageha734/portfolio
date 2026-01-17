@@ -1,43 +1,43 @@
 {
-  "private": true,
-  "name": "@portfolio/cms",
-  "type": "module",
-  "types": "./src/index.ts",
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "scripts": {
-    "build": "wrangler build",
-    "clean": "git clean -xdf .cache .turbo node_modules dist .wrangler",
-    "coverage": "vitest run --coverage",
-    "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
-    "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
-    "fmt": "biome format --write .",
-    "fmt:check": "biome format .",
-    "generate": "wrangler types",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint --write .",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@portfolio/api": "workspace:*",
-    "@portfolio/auth": "workspace:*",
-    "@portfolio/db": "workspace:*",
-    "hono": "4.6.11"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "4.20260101.0",
-    "@portfolio/biome-config": "workspace:*",
-    "@portfolio/tsconfig": "workspace:*",
-    "@portfolio/vitest-config": "workspace:*",
-    "typescript": "5.9.3",
-    "vitest": "3.2.4",
-    "wrangler": "4.54.0"
-  },
-  "peerDependencies": {
-    "wrangler": "4.54.0"
-  },
-  "main": "./src/index.ts"
+    "private": true,
+    "name": "@portfolio/cms",
+    "type": "module",
+    "types": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "build": "wrangler build",
+        "clean": "git clean -xdf .cache .turbo node_modules dist .wrangler",
+        "coverage": "vitest run --coverage",
+        "deploy": "wrangler deploy",
+        "dev": "wrangler dev",
+        "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
+        "fmt": "biome format --write .",
+        "fmt:check": "biome format .",
+        "generate": "wrangler types",
+        "lint": "biome lint .",
+        "lint:fix": "biome lint --write .",
+        "test": "vitest run",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@portfolio/api": "workspace:*",
+        "@portfolio/auth": "workspace:*",
+        "@portfolio/db": "workspace:*",
+        "hono": "4.6.11"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "4.20260101.0",
+        "@portfolio/biome-config": "workspace:*",
+        "@portfolio/tsconfig": "workspace:*",
+        "@portfolio/vitest-config": "workspace:*",
+        "typescript": "5.9.3",
+        "vitest": "3.2.4",
+        "wrangler": "4.54.0"
+    },
+    "peerDependencies": {
+        "wrangler": "4.54.0"
+    },
+    "main": "./src/index.ts"
 }

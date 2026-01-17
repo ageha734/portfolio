@@ -127,6 +127,12 @@
     },
     "overrides": [
         {
+            "includes": ["**/package.json"],
+            "formatter": {
+                "enabled": false
+            }
+        },
+        {
             "includes": ["**/*.test.*"],
             "javascript": {
                 "globals": ["expect", "test", "describe", "beforeEach", "afterEach", "vi", "it"]

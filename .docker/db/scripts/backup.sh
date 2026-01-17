@@ -16,23 +16,23 @@ echo "Database: ${MYSQL_DATABASE}"
 echo "Backup file: ${BACKUP_FILE}"
 
 if ! docker ps --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
-    echo "❌ Error: Container '${CONTAINER_NAME}' is not running"
-    exit 1
+	echo "❌ Error: Container '${CONTAINER_NAME}' is not running"
+	exit 1
 fi
 
 docker exec "${CONTAINER_NAME}" mysqldump \
-    -u root \
-    -p"${MYSQL_ROOT_PASSWORD}" \
-    --single-transaction \
-    --routines \
-    --triggers \
-    --events \
-    "${MYSQL_DATABASE}" > "${BACKUP_FILE}"
+	-u root \
+	-p"${MYSQL_ROOT_PASSWORD}" \
+	--single-transaction \
+	--routines \
+	--triggers \
+	--events \
+	"${MYSQL_DATABASE}" >"${BACKUP_FILE}"
 
-if command -v gzip &> /dev/null; then
-    echo "🗜️  Compressing backup..."
-    gzip -f "${BACKUP_FILE}"
-    BACKUP_FILE="${BACKUP_FILE}.gz"
+if command -v gzip &>/dev/null; then
+	echo "🗜️  Compressing backup..."
+	gzip -f "${BACKUP_FILE}"
+	BACKUP_FILE="${BACKUP_FILE}.gz"
 fi
 
 FILE_SIZE=$(du -h "${BACKUP_FILE}" | cut -f1)
