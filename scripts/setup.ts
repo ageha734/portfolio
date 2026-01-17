@@ -61,7 +61,7 @@ async function generatePrismaSchema(): Promise<void> {
 async function runDatabaseMigrations(): Promise<void> {
     console.log("🔄 データベースマイグレーションを実行しています...");
 
-    const containerName = "portfolio-mysql";
+    const containerName = "db";
     const isRunning = await checkContainerRunning(containerName);
 
     if (isRunning) {
@@ -158,7 +158,7 @@ async function waitForMySQL(containerName: string, maxAttempts = 30): Promise<bo
 }
 
 async function startMySQLContainer(): Promise<void> {
-    const containerName = "portfolio-mysql";
+    const containerName = "db";
     const dbDir = join(rootDir, ".docker/db");
     const dbDockerfilePath = join(dbDir, "Dockerfile");
 
@@ -174,12 +174,12 @@ async function startMySQLContainer(): Promise<void> {
             return;
         }
 
-        const imageExists = await checkImageExists("portfolio-mysql");
+        const imageExists = await checkImageExists("db");
         if (imageExists) {
             console.log("  ✓ MySQL Dockerイメージは既に存在します（スキップ）");
         } else {
             console.log("  MySQL Dockerイメージをビルドしています...");
-            await $`docker build -t portfolio-mysql -f ${dbDockerfilePath} ${dbDir}`.cwd(rootDir);
+            await $`docker build -t db -f ${dbDockerfilePath} ${dbDir}`.cwd(rootDir);
             console.log("  ✓ MySQL Dockerイメージのビルドが完了しました");
         }
 
@@ -211,8 +211,8 @@ async function startMySQLContainer(): Promise<void> {
             -e MYSQL_DATABASE=${mysqlDatabase} \
             -e MYSQL_USER=${mysqlUser} \
             -e MYSQL_PASSWORD=${mysqlPassword} \
-            -v portfolio-mysql-data:/var/lib/mysql \
-            portfolio-mysql`.cwd(rootDir);
+            -v db-data:/var/lib/mysql \
+            db`.cwd(rootDir);
         console.log("  ✓ MySQLコンテナが起動しました");
 
         const isReady = await waitForMySQL(containerName);

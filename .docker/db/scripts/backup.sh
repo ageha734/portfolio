@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CONTAINER_NAME="${CONTAINER_NAME:-portfolio-mysql}"
+CONTAINER_NAME="${CONTAINER_NAME:-db}"
 MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-rootpassword}"
 MYSQL_DATABASE="${MYSQL_DATABASE:-portfolio}"
 BACKUP_DIR="${BACKUP_DIR:-./backups}"

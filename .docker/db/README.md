@@ -16,21 +16,21 @@
 ### イメージのビルド
 
 ```bash
-docker build -t portfolio-mysql -f .docker/db/Dockerfile .docker/db
+docker build -t db -f .docker/db/Dockerfile .docker/db
 ```
 
 ### コンテナの起動
 
 ```bash
 docker run -d \
-  --name portfolio-mysql \
+  --name db \
   -p 3306:3306 \
   -e MYSQL_ROOT_PASSWORD=rootpassword \
   -e MYSQL_DATABASE=portfolio \
   -e MYSQL_USER=user \
   -e MYSQL_PASSWORD=password \
-  -v portfolio-mysql-data:/var/lib/mysql \
-  portfolio-mysql
+  -v db-data:/var/lib/mysql \
+  db
 ```
 
 ### 環境変数
@@ -45,29 +45,29 @@ docker run -d \
 
 ### データの永続化
 
-データはDockerボリューム `portfolio-mysql-data` に保存されます。
+データはDockerボリューム `db-data` に保存されます。
 
 ### ログの確認
 
 ```bash
 # エラーログ
-docker exec portfolio-mysql tail -f /var/log/mysql/error.log
+docker exec db tail -f /var/log/mysql/error.log
 
 # スロークエリログ
-docker exec portfolio-mysql tail -f /var/log/mysql/slow.log
+docker exec db tail -f /var/log/mysql/slow.log
 
 # 一般クエリログ
-docker exec portfolio-mysql tail -f /var/log/mysql/general.log
+docker exec db tail -f /var/log/mysql/general.log
 ```
 
 ### データベースへの接続
 
 ```bash
 # rootユーザーで接続
-docker exec -it portfolio-mysql mysql -u root -prootpassword
+docker exec -it db mysql -u root -prootpassword
 
 # アプリケーションユーザーで接続
-docker exec -it portfolio-mysql mysql -u user -ppassword portfolio
+docker exec -it db mysql -u user -ppassword portfolio
 ```
 
 ### ヘルスチェック
@@ -75,7 +75,7 @@ docker exec -it portfolio-mysql mysql -u user -ppassword portfolio
 コンテナのヘルスステータスを確認：
 
 ```bash
-docker ps --filter name=portfolio-mysql --format "table {{.Names}}\t{{.Status}}"
+docker ps --filter name=db --format "table {{.Names}}\t{{.Status}}"
 ```
 
 ### バックアップとリストア
@@ -92,7 +92,7 @@ docker ps --filter name=portfolio-mysql --format "table {{.Names}}\t{{.Status}}"
 .docker/db/scripts/backup.sh my-backup
 
 # 環境変数で設定をカスタマイズ
-CONTAINER_NAME=portfolio-mysql \
+CONTAINER_NAME=db \
 MYSQL_ROOT_PASSWORD=rootpassword \
 MYSQL_DATABASE=portfolio \
 BACKUP_DIR=./backups \
@@ -102,7 +102,7 @@ BACKUP_DIR=./backups \
 または、直接mysqldumpを使用：
 
 ```bash
-docker exec portfolio-mysql mysqldump -u root -prootpassword portfolio > backup.sql
+docker exec db mysqldump -u root -prootpassword portfolio > backup.sql
 ```
 
 #### リストア
@@ -116,7 +116,7 @@ docker exec portfolio-mysql mysqldump -u root -prootpassword portfolio > backup.
 .docker/db/scripts/restore.sh backup.sql.gz
 
 # 環境変数で設定をカスタマイズ
-CONTAINER_NAME=portfolio-mysql \
+CONTAINER_NAME=db \
 MYSQL_ROOT_PASSWORD=rootpassword \
 MYSQL_DATABASE=portfolio \
 .docker/db/scripts/restore.sh backup.sql
@@ -125,20 +125,20 @@ MYSQL_DATABASE=portfolio \
 または、直接mysqlを使用：
 
 ```bash
-docker exec -i portfolio-mysql mysql -u root -prootpassword portfolio < backup.sql
+docker exec -i db mysql -u root -prootpassword portfolio < backup.sql
 ```
 
 ### コンテナの停止と削除
 
 ```bash
 # コンテナを停止
-docker stop portfolio-mysql
+docker stop db
 
 # コンテナを削除（データは保持）
-docker rm portfolio-mysql
+docker rm db
 
 # データも削除する場合
-docker volume rm portfolio-mysql-data
+docker volume rm db-data
 ```
 
 ## 設定の詳細
@@ -164,10 +164,10 @@ docker volume rm portfolio-mysql-data
 
 ```bash
 # ログを確認
-docker logs portfolio-mysql
+docker logs db
 
 # コンテナの状態を確認
-docker ps -a --filter name=portfolio-mysql
+docker ps -a --filter name=db
 ```
 
 ### ポートが既に使用されている
@@ -175,7 +175,7 @@ docker ps -a --filter name=portfolio-mysql
 別のポートを使用：
 
 ```bash
-docker run -d --name portfolio-mysql -p 3307:3306 ...
+docker run -d --name db -p 3307:3306 ...
 ```
 
 ### データが消えた
@@ -183,7 +183,7 @@ docker run -d --name portfolio-mysql -p 3307:3306 ...
 ボリュームが削除されていないか確認：
 
 ```bash
-docker volume ls | grep portfolio-mysql-data
+docker volume ls | grep db-data
 ```
 
 ## セキュリティ注意事項

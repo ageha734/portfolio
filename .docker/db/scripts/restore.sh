@@ -7,7 +7,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-CONTAINER_NAME="${CONTAINER_NAME:-portfolio-mysql}"
+CONTAINER_NAME="${CONTAINER_NAME:-db}"
 MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-rootpassword}"
 MYSQL_DATABASE="${MYSQL_DATABASE:-portfolio}"
 BACKUP_FILE="$1"
