@@ -1,48 +1,48 @@
 {
-    "private": true,
-    "name": "@portfolio/db",
-    "type": "module",
-    "types": "./dist/index.d.ts",
-    "main": "./dist/index.js",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "build": "tsc --outDir dist",
-        "clean": "git clean -xdf .cache .turbo node_modules",
-        "coverage": "vitest run --coverage",
-        "deploy": "wrangler d1 deploy",
-        "dev": "tsc --watch --outDir dist",
-        "dev:ui": "prisma studio --browser none",
-        "fmt": "biome format --write .",
-        "fmt:check": "biome format .",
-        "generate": "prisma generate",
-        "lint": "biome lint .",
-        "lint:fix": "biome lint --write .",
-        "migrate": "wrangler d1 migrations apply",
-        "push": "bunx dotenv-cli -e ../../.env -- prisma db push",
-        "seed": "bun run src/seed.ts",
-        "test": "vitest run",
-        "typecheck": "tsc --noEmit"
-    },
-    "dependencies": {
-        "@prisma/adapter-d1": "5.22.0",
-        "@prisma/client": "5.22.0"
-    },
-    "devDependencies": {
-        "@cloudflare/workers-types": "4.20260101.0",
-        "@portfolio/biome-config": "workspace:*",
-        "@portfolio/tsconfig": "workspace:*",
-        "@portfolio/vitest-config": "workspace:*",
-        "prisma": "5.22.0",
-        "typescript": "5.9.3",
-        "vitest": "3.2.4",
-        "wrangler": "4.54.0"
-    },
-    "peerDependencies": {
-        "wrangler": "4.54.0"
+  "private": true,
+  "name": "@portfolio/db",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
+  },
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "clean": "git clean -xdf .cache .turbo node_modules",
+    "coverage": "vitest run --coverage",
+    "deploy": "wrangler d1 deploy",
+    "dev": "tsc --watch --outDir dist",
+    "dev:ui": "prisma studio --browser none",
+    "fmt": "biome format --write .",
+    "fmt:check": "biome format .",
+    "generate": "prisma generate",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "migrate": "wrangler d1 migrations apply",
+    "push": "bunx dotenv-cli -e ../../.env -- prisma db push",
+    "seed": "bun run src/seed.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/adapter-d1": "5.22.0",
+    "@prisma/client": "5.22.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20260101.0",
+    "@portfolio/biome-config": "workspace:*",
+    "@portfolio/tsconfig": "workspace:*",
+    "@portfolio/vitest-config": "workspace:*",
+    "prisma": "5.22.0",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4",
+    "wrangler": "4.54.0"
+  },
+  "peerDependencies": {
+    "wrangler": "4.54.0"
+  },
+  "main": "./dist/index.js"
 }

@@ -24,10 +24,10 @@
     "lint:ts:check": "turbo run lint",
     "lint:ts:fix": "turbo run lint:fix",
     "pkg": "syncpack list-mismatches",
-    "ws": "sherif",
     "prepare": "SKIP_INSTALL=true bun run scripts/setup.ts",
     "test": "turbo run test",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "ws": "sherif"
   },
   "devDependencies": {
     "@commitlint/cli": "20.3.0",
