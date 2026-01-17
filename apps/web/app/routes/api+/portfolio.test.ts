@@ -72,7 +72,7 @@ describe("api+/portfolio route", () => {
     });
 
     test("should throw 404 if no portfolios found", async () => {
-        mockTrpcClient.portfolios.list.query.mockResolvedValue([]);
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: [] } as never);
 
         const args = {
             request: new Request("https://example.com"),

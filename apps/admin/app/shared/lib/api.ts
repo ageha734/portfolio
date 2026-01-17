@@ -1,4 +1,3 @@
-import type { AxiosRequestConfig } from "axios";
 import { PostsApi, PortfoliosApi } from "@portfolio/api/generated/api";
 import { customInstance } from "@portfolio/api/generated/mutator";
 
@@ -13,9 +12,6 @@ const getBaseUrl = () => {
 };
 
 const baseURL = getBaseUrl();
-const config: AxiosRequestConfig = {
-    baseURL,
-};
 
 export const api = {
     posts: new PostsApi(undefined, baseURL, customInstance as never),

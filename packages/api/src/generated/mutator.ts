@@ -1,8 +1,8 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
 
 const getBaseUrl = () => {
-    if (typeof window !== "undefined") {
-        return window.location.origin;
+    if (typeof globalThis !== "undefined" && "window" in globalThis && globalThis.window !== undefined) {
+        return (globalThis.window as any).location.origin;
     }
     return process.env.VITE_API_URL ?? "http://localhost:8787";
 };

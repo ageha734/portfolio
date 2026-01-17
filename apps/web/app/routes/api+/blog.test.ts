@@ -76,7 +76,7 @@ describe("api+/blog route", () => {
     });
 
     test("should throw 404 if no posts found", async () => {
-        mockTrpcClient.posts.list.query.mockResolvedValue([]);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: [] } as never);
 
         const args = {
             request: new Request("https://example.com"),
@@ -177,8 +177,8 @@ describe("api+/blog route", () => {
         expect((jsonResult as LoaderData).tags).toEqual(["Technical"]);
     });
 
-    test("should handle tRPC query error", async () => {
-        mockTrpcClient.posts.list.query.mockRejectedValue(new Error("Network error"));
+    test("should handle API query error", async () => {
+        mockApiClient.posts.listPosts.mockRejectedValue(new Error("Network error"));
 
         const args = {
             request: new Request("https://example.com"),

@@ -5,7 +5,11 @@
         "composite": true,
         "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
         "typeRoots": ["../../node_modules/@types"],
-        "allowImportingTsExtensions": false
+        "allowImportingTsExtensions": false,
+        "rootDir": "./src",
+        "paths": {
+            "~/*": ["./src/*"]
+        }
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]

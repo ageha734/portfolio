@@ -3,7 +3,11 @@
     "extends": ["@portfolio/tsconfig/node.json", "@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
         "typeRoots": ["../../node_modules"],
-        "types": ["@cloudflare/workers-types"]
+        "types": ["@cloudflare/workers-types"],
+        "rootDir": "./src",
+        "paths": {
+            "~/*": ["./src/*"]
+        }
     },
     "include": ["src/**/*", "prisma/**/*"],
     "exclude": ["node_modules", "dist"]
