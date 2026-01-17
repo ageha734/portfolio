@@ -2,13 +2,13 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": ["@portfolio/tsconfig/node.json", "@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
-        "paths": {},
-        "typeRoots": ["../../node_modules/@types"],
-        "jsx": "react-jsx",
-        "lib": ["ES2022", "DOM", "DOM.Iterable"],
-        "skipLibCheck": true,
-        "allowImportingTsExtensions": false
+        "paths": {
+            "~/*": ["./src/*"]
+        },
+        "typeRoots": ["./node_modules/@types"],
+        "allowImportingTsExtensions": false,
+        "rootDir": "./src"
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "include": ["src/**/*.ts"],
     "exclude": ["node_modules", "dist"]
 }
