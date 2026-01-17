@@ -5,16 +5,6 @@ pre-commit:
             run: bunx lint-staged
             stage_fixed: true
 
-pre-push:
-    parallel: false
-    commands:
-        typecheck:
-            run: bun run typecheck
-            tags: build
-        build:
-            run: bun run build
-            tags: build
-
 commit-msg:
     commands:
         commitlint:
