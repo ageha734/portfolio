@@ -4,7 +4,7 @@
     "type": "module",
     "scripts": {
         "build": "tsc && vite build",
-        "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "clean": "git clean -xdf .cache .turbo node_modules dist .tanstack .wrangler",
         "coverage": "vitest run --coverage",
         "deploy": "wrangler pages deploy ./build --project-name portfolio-admin --branch master",
         "dev": "vite",

@@ -3,7 +3,7 @@
   "scripts": {
     "build": "turbo run build",
     "check": "concurrently -n fmt,lint,knip,syncpack,test,coverage -c \"blue,green,yellow,purple,cyan,red\" \"turbo run fmt:check\" \"turbo run lint:check\" \"turbo run knip\" \"turbo run syncpack\" \"turbo run test\" \"turbo run coverage\"",
-    "clean": "turbo run clean",
+    "clean": "git clean -xdf .cache .turbo node_modules && turbo run clean",
     "coverage": "turbo run coverage",
     "dev": "turbo run dev --concurrency=12",
     "e2e": "turbo run e2e",

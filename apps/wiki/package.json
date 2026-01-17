@@ -4,7 +4,7 @@
     "type": "module",
     "scripts": {
         "build": "docusaurus build",
-        "clean": "git clean -xdf .cache .turbo node_modules dist",
+        "clean": "git clean -xdf .cache .turbo node_modules dist .docusaurus .wrangler",
         "coverage": "vitest run --coverage",
         "deploy": "wrangler pages deploy ./build --project-name portfolio-wiki --branch master",
         "dev": "docusaurus start --no-open --port 13000",
