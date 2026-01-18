@@ -92,5 +92,7 @@ export async function runEnv(): Promise<void> {
     console.log("✅ Environment variables import completed!");
     console.log("");
     console.log("Note: To view or manage secrets, visit:");
-    console.log(`  https://dash.cloudflare.com/ > Workers & Pages > ${PROJECT_NAME} > Settings > Environment variables`);
+    console.log(
+        `  https://dash.cloudflare.com/ > Workers & Pages > ${PROJECT_NAME} > Settings > Environment variables`,
+    );
 }

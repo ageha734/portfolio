@@ -60,7 +60,13 @@ function getWorkspaceFromPath(filePath: string, rootDir: string): string | null 
     const absolutePath = resolve(rootDir, filePath);
     const relativePath = relative(rootDir, absolutePath);
 
-    const workspacePatterns = [/^apps\/([^/]+)/, /^packages\/([^/]+)/, /^tooling\/([^/]+)/, /^testing\/([^/]+)/, /^scripts\/([^/]+)/];
+    const workspacePatterns = [
+        /^apps\/([^/]+)/,
+        /^packages\/([^/]+)/,
+        /^tooling\/([^/]+)/,
+        /^testing\/([^/]+)/,
+        /^scripts\/([^/]+)/,
+    ];
 
     for (const pattern of workspacePatterns) {
         const match = pattern.exec(relativePath);
