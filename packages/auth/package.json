@@ -17,7 +17,7 @@
     "dev": "tsc --watch --outDir dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
-    "generate": "bunx dotenv-cli -e ../../.env -- bunx @better-auth/cli generate --config script/auth-cli.ts --output ../db/src/auth-schema.ts",
+    "generate": "bunx dotenv-cli -e ../../.env -- bunx @better-auth/cli generate --config better.config.ts --output ../db/src/auth.ts",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "test": "vitest run",

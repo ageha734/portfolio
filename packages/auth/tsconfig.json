@@ -7,10 +7,11 @@
             "~/*": ["./src/*"]
         },
         "rootDir": "./src",
+        "incremental": true,
         "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
         "typeRoots": ["../../node_modules/@types"],
         "types": ["@cloudflare/workers-types", "vitest/globals"]
     },
     "exclude": ["node_modules", "dist"],
-    "include": ["src/**/*"]
+    "include": ["src/**/*", "env.d.ts"]
 }
