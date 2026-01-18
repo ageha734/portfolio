@@ -8,8 +8,7 @@ ARG USER_GID=1000
 
 SHELL ["/bin/bash", "-eux", "-o", "pipefail", "-c"]
 
-RUN \
-    groupadd --gid "${USER_GID}" "${USERNAME}" || true; \
+RUN groupadd --gid "${USER_GID}" "${USERNAME}" || true; \
     useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /bin/bash --create-home "${USERNAME}" || true; \
     apt-get update -qq; \
     apt-get install -qq --no-install-recommends \
@@ -56,8 +55,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 SHELL ["/bin/bash", "-eux", "-o", "pipefail", "-c"]
 
-RUN \
-    groupadd --gid "${USER_GID}" "${USERNAME}" || true; \
+RUN groupadd --gid "${USER_GID}" "${USERNAME}" || true; \
     useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /bin/bash --create-home "${USERNAME}" || true; \
     mkdir -p /work/.results /work/.reports /work/docs/playwright/report \
     && chown -R "${USER_UID}:${USER_GID}" /work/.results /work/.reports /work/docs \
