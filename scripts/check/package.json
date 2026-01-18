@@ -2,17 +2,14 @@
   "private": true,
   "name": "@portfolio/scripts-check",
   "type": "module",
-  "bin": {
-    "setup": "./dist/main.js"
-  },
   "scripts": {
     "build": "tsc --outDir dist",
-    "start": "node ./dist/main.js",
     "clean": "git clean -xdf .cache .turbo node_modules dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
+    "start": "node ./dist/main.js",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -21,5 +18,8 @@
     "@types/bun": "1.3.5",
     "@types/node": "25.0.3",
     "typescript": "5.9.3"
+  },
+  "bin": {
+    "setup": "./dist/main.js"
   }
 }

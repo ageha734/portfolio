@@ -17,11 +17,11 @@
     "clean": "git clean -xdf .cache .turbo node_modules dist",
     "coverage": "vitest run --coverage",
     "dev": "tsc --watch --outDir dist",
-    "studio": "storybook dev -p 16001 --no-open",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
+    "studio": "storybook dev -p 16001 --no-open",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

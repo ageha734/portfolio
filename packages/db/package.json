@@ -16,7 +16,6 @@
     "coverage": "vitest run --coverage",
     "deploy": "wrangler d1 deploy",
     "dev": "tsc --watch --outDir dist",
-    "studio": "prisma studio --browser none",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "generate": "prisma generate",
@@ -25,6 +24,7 @@
     "migrate": "wrangler d1 migrations apply",
     "push": "bunx dotenv-cli -e ../../.env -- prisma db push",
     "seed": "bun run src/index.ts",
+    "studio": "prisma studio --browser none",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

@@ -7,7 +7,6 @@
     "clean": "git clean -xdf .cache .turbo node_modules dist .docusaurus .wrangler",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler pages deploy ./build --project-name portfolio-wiki --branch master",
-    "studio": "docusaurus start --no-open --port 13000",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "fmt:md": "remark . --output",
@@ -19,6 +18,7 @@
     "lint:md:fix": "markdownlint-cli2 --fix .",
     "lint:textlint": "textlint .",
     "lint:textlint:fix": "textlint --fix .",
+    "studio": "docusaurus start --no-open --port 13000",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

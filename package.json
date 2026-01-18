@@ -6,7 +6,6 @@
     "clean": "git clean -xdf .cache .turbo node_modules && turbo run clean",
     "coverage": "turbo run coverage",
     "dev": "turbo run dev --concurrency=12",
-    "studio": "turbo run studio",
     "e2e": "turbo run e2e",
     "fmt": "concurrently -n turbo,shell,actions -c \"blue,green,yellow\" \"turbo run fmt\" \"bun run fmt:shell:fix\" \"bun run fmt:actions:fix\"",
     "fmt:actions:check": "bunx @portfolio/scripts-check check --check-type=fmt --lint-type=actions",
@@ -26,6 +25,7 @@
     "lint:ts:fix": "turbo run lint:fix",
     "pkg": "syncpack list-mismatches",
     "prepare": "SKIP_INSTALL=true bunx @portfolio/scripts-setup setup",
+    "studio": "turbo run studio",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "ws": "sherif"

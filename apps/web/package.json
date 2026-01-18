@@ -10,7 +10,6 @@
     "coverage": "vitest run --coverage",
     "deploy": "wrangler pages deploy ./build --project-name portfolio-web --branch master",
     "dev": "remix vite:dev",
-    "studio": "storybook dev -p 16011 --no-open",
     "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
@@ -20,6 +19,7 @@
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "snapshot": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report e2e bunx playwright test --project=chromium --update-snapshots",
+    "studio": "storybook dev -p 16011 --no-open",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "visual": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/visual/report:/work/docs/playwright/report e2e bunx playwright test --config=playwright.storybook.config.ts e2e/storybook/visual"

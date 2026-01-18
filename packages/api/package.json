@@ -16,12 +16,12 @@
     "clean": "git clean -xdf .cache .turbo node_modules dist",
     "coverage": "vitest run --coverage",
     "dev": "tsc --watch --outDir dist",
-    "studio": "redoc-cli serve openapi.yaml --port 28080",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "generate": "tsp compile schema/api.tsp && orval",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
+    "studio": "redoc-cli serve openapi.yaml --port 28080",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
