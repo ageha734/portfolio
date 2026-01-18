@@ -8,7 +8,7 @@
   },
   "main": "./src/index.ts",
   "scripts": {
-    "build": "wrangler build",
+    "build": "wrangler deploy --dry-run",
     "clean": "git clean -xdf .cache .turbo node_modules dist .wrangler",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler deploy",
@@ -29,11 +29,13 @@
     "hono": "4.6.11"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "1.12.3",
     "@cloudflare/workers-types": "4.20260101.0",
     "@portfolio/biome-config": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
     "@portfolio/vitest-config": "workspace:*",
     "typescript": "5.9.3",
+    "vite": "6.1.0",
     "vitest": "3.2.4",
     "wrangler": "4.54.0"
   },

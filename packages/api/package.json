@@ -2,30 +2,14 @@
   "private": true,
   "name": "@portfolio/api",
   "type": "module",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/src/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./generated/api": {
-      "types": "./generated/posts/posts.d.ts",
-      "import": "./generated/posts/posts.js"
-    },
-    "./generated/mutator": {
-      "types": "./generated/mutator.d.ts",
-      "import": "./generated/mutator.js"
-    },
-    "./generated/posts": {
-      "types": "./generated/posts/posts.d.ts",
-      "import": "./generated/posts/posts.js"
-    },
-    "./generated/portfolios": {
-      "types": "./generated/portfolios/portfolios.d.ts",
-      "import": "./generated/portfolios/portfolios.js"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
     }
   },
-  "main": "./dist/index.js",
+  "main": "./dist/src/index.js",
   "scripts": {
     "build": "tsc --outDir dist",
     "build:ui": "redoc-cli bundle openapi.yaml --output ../../apps/wiki/reference/index.html",
@@ -51,9 +35,9 @@
     "@typespec/compiler": "1.7.1",
     "@typespec/http": "1.7.0",
     "@typespec/openapi3": "1.7.0",
-    "@redocly/cli": "^1.20.0",
-    "orval": "^7.17.2",
-    "redoc-cli": "^0.13.21",
+    "@redocly/cli": "1.20.0",
+    "orval": "7.17.2",
+    "redoc-cli": "0.13.21",
     "typescript": "5.9.3",
     "vitest": "3.2.4"
   }

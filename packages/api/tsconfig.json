@@ -4,12 +4,13 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "~/*": ["./src/*"]
+            "~/*": ["./src/*"],
+            "@generated/*": ["./generated/*"]
         },
-        "rootDir": "./src",
+        "rootDir": ".",
         "typeRoots": ["../../node_modules/@types"],
-        "types": []
+        "types": ["node"]
     },
-    "exclude": ["node_modules", "dist", "generated"],
-    "include": ["src/**/*.ts"]
+    "exclude": ["node_modules", "dist"],
+    "include": ["src/**/*.ts", "generated/**/*.ts"]
 }
