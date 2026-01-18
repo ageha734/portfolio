@@ -11,7 +11,7 @@
     }
   },
   "bin": {
-    "check": "./src/index.ts"
+    "check": "./cmd/main.ts"
   },
   "files": [
     "dist",

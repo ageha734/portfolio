@@ -1,15 +1,14 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": ["@portfolio/tsconfig/node.json", "@portfolio/tsconfig/compiled-package.json"],
+    "extends": ["@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
             "~/*": ["./src/*"]
         },
-        "rootDir": "./src",
-        "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
+        "rootDir": ".",
         "typeRoots": ["../../../node_modules/@types"]
     },
     "exclude": ["node_modules", "dist"],
-    "include": ["src/**/*.ts"]
+    "include": ["cmd/**/*.ts", "src/**/*.ts"]
 }

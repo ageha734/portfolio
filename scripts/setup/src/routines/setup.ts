@@ -22,8 +22,6 @@ function findRootDir(startDir: string = process.cwd()): string {
     return process.cwd();
 }
 
-const rootDir = findRootDir();
-
 async function checkBunInstalled(): Promise<boolean> {
     try {
         await $`bun --version`.quiet();
@@ -33,7 +31,7 @@ async function checkBunInstalled(): Promise<boolean> {
     }
 }
 
-async function setupEnvFile(): Promise<void> {
+async function setupEnvFile(rootDir: string): Promise<void> {
     const envExamplePath = join(rootDir, ".env.example");
     const envPath = join(rootDir, ".env");
 
@@ -53,7 +51,7 @@ async function setupEnvFile(): Promise<void> {
     }
 }
 
-async function installDependencies(): Promise<void> {
+async function installDependencies(rootDir: string): Promise<void> {
     if (process.env.SKIP_INSTALL === "true") {
         console.log("⏭️  SKIP_INSTALLが設定されているため、依存関係のインストールをスキップします");
         return;
@@ -68,56 +66,13 @@ async function installDependencies(): Promise<void> {
     }
 }
 
-async function generatePrismaSchema(): Promise<void> {
+async function generatePrismaSchema(rootDir: string): Promise<void> {
     console.log("🗄️  Prismaスキーマを生成しています...");
     try {
         await $`bun run generate`.cwd(join(rootDir, "packages/db"));
         console.log("✓ Prismaスキーマの生成が完了しました");
     } catch (error) {
         console.warn("⚠️  Prismaスキーマの生成に失敗しました（スキップ）:", error);
-    }
-}
-
-async function runDatabaseMigrations(): Promise<void> {
-    console.log("🔄 データベースマイグレーションを実行しています...");
-
-    const containerName = "db";
-    const isRunning = await checkContainerRunning(containerName);
-
-    if (isRunning) {
-        console.log("  ローカルMySQLに対してマイグレーションを実行しています...");
-        const dbDir = join(rootDir, "packages/db");
-        const schemaPath = join(dbDir, "prisma/schema.prisma");
-        const mysqlUser = process.env.MYSQL_USER || "user";
-        const mysqlPassword = process.env.MYSQL_PASSWORD || "password";
-        const mysqlDatabase = process.env.MYSQL_DATABASE || "portfolio";
-        const mysqlHost = process.env.MYSQL_HOST || "localhost";
-        const mysqlPort = process.env.MYSQL_PORT || "3306";
-        const mysqlUrl = `mysql://${mysqlUser}:${mysqlPassword}@${mysqlHost}:${mysqlPort}/${mysqlDatabase}`;
-
-        try {
-            const originalSchema = readFileSync(schemaPath, "utf-8");
-
-            const mysqlSchema = originalSchema.replace(/provider\s*=\s*"sqlite"/, 'provider = "mysql"');
-            writeFileSync(schemaPath, mysqlSchema);
-
-            try {
-                await $`DATABASE_URL=${mysqlUrl} bun run push`.cwd(dbDir);
-                console.log("✓ データベースマイグレーションが完了しました");
-            } finally {
-                writeFileSync(schemaPath, originalSchema);
-            }
-        } catch (error) {
-            console.warn("⚠️  データベースマイグレーションに失敗しました（スキップ）:", error);
-        }
-    } else {
-        console.log("  Cloudflare D1に対してマイグレーションを実行しています...");
-        try {
-            await $`bun run migrate`.cwd(join(rootDir, "packages/db"));
-            console.log("✓ データベースマイグレーションが完了しました");
-        } catch (error) {
-            console.warn("⚠️  データベースマイグレーションに失敗しました（スキップ）:", error);
-        }
     }
 }
 
@@ -177,7 +132,7 @@ async function waitForMySQL(containerName: string, maxAttempts = 30): Promise<bo
     return false;
 }
 
-async function startMySQLContainer(): Promise<void> {
+async function startMySQLContainer(rootDir: string): Promise<void> {
     const containerName = "db";
     const dbDir = join(rootDir, ".docker/db");
     const dbDockerfilePath = join(dbDir, "Dockerfile");
@@ -244,7 +199,50 @@ async function startMySQLContainer(): Promise<void> {
     }
 }
 
-async function buildDockerImages(): Promise<void> {
+async function runDatabaseMigrations(rootDir: string): Promise<void> {
+    console.log("🔄 データベースマイグレーションを実行しています...");
+
+    const containerName = "db";
+    const isRunning = await checkContainerRunning(containerName);
+
+    if (isRunning) {
+        console.log("  ローカルMySQLに対してマイグレーションを実行しています...");
+        const dbDir = join(rootDir, "packages/db");
+        const schemaPath = join(dbDir, "prisma/schema.prisma");
+        const mysqlUser = process.env.MYSQL_USER || "user";
+        const mysqlPassword = process.env.MYSQL_PASSWORD || "password";
+        const mysqlDatabase = process.env.MYSQL_DATABASE || "portfolio";
+        const mysqlHost = process.env.MYSQL_HOST || "localhost";
+        const mysqlPort = process.env.MYSQL_PORT || "3306";
+        const mysqlUrl = `mysql://${mysqlUser}:${mysqlPassword}@${mysqlHost}:${mysqlPort}/${mysqlDatabase}`;
+
+        try {
+            const originalSchema = readFileSync(schemaPath, "utf-8");
+
+            const mysqlSchema = originalSchema.replace(/provider\s*=\s*"sqlite"/, 'provider = "mysql"');
+            writeFileSync(schemaPath, mysqlSchema);
+
+            try {
+                await $`DATABASE_URL=${mysqlUrl} bun run push`.cwd(dbDir);
+                console.log("✓ データベースマイグレーションが完了しました");
+            } finally {
+                writeFileSync(schemaPath, originalSchema);
+            }
+        } catch (error) {
+            console.warn("⚠️  データベースマイグレーションに失敗しました（スキップ）:", error);
+        }
+    } else {
+        console.log("  Cloudflare D1に対してマイグレーションを実行しています...");
+        try {
+            await $`bun run migrate`.cwd(join(rootDir, "packages/db"));
+            console.log("✓ データベースマイグレーションが完了しました");
+        } catch (error) {
+            console.warn("⚠️  データベースマイグレーションに失敗しました（スキップ）:", error);
+        }
+    }
+}
+
+async function buildDockerImages(rootDir: string): Promise<void> {
     console.log("🐳 Dockerイメージをビルドしています...");
 
     const e2eDockerfilePath = join(rootDir, ".docker/e2e/Dockerfile");
@@ -263,39 +261,43 @@ async function buildDockerImages(): Promise<void> {
         }
     }
 
-    await startMySQLContainer();
+    await startMySQLContainer(rootDir);
 }
 
-console.log("🚀 開発環境のセットアップを開始します...\n");
+export async function runSetup(): Promise<void> {
+    const rootDir = findRootDir();
 
-const bunInstalled = await checkBunInstalled();
-if (!bunInstalled) {
-    console.error("✗ Bunがインストールされていません。");
-    console.error("  Bunをインストールしてください: https://bun.sh");
-    process.exit(1);
-}
-console.log("✓ Bunがインストールされています\n");
+    console.log("🚀 開発環境のセットアップを開始します...\n");
 
-const shouldSkipInstall = process.env.SKIP_INSTALL === "true" || process.env.npm_lifecycle_event === "prepare";
-
-try {
-    await setupEnvFile();
-
-    if (shouldSkipInstall) {
-        console.log("📦 依存関係のインストールをスキップしました（prepareスクリプトから実行中）");
-    } else {
-        await installDependencies();
+    const bunInstalled = await checkBunInstalled();
+    if (!bunInstalled) {
+        console.error("✗ Bunがインストールされていません。");
+        console.error("  Bunをインストールしてください: https://bun.sh");
+        process.exit(1);
     }
+    console.log("✓ Bunがインストールされています\n");
 
-    await generatePrismaSchema();
-    await buildDockerImages();
-    await runDatabaseMigrations();
+    const shouldSkipInstall = process.env.SKIP_INSTALL === "true" || process.env.npm_lifecycle_event === "prepare";
 
-    console.log("\n✅ セットアップが完了しました！");
-    console.log("\n次のステップ:");
-    console.log("  - .envファイルを編集して環境変数を設定してください");
-    console.log("  - bun run dev で開発サーバーを起動できます");
-} catch (error) {
-    console.error("\n✗ セットアップ中にエラーが発生しました:", error);
-    process.exit(1);
+    try {
+        await setupEnvFile(rootDir);
+
+        if (shouldSkipInstall) {
+            console.log("📦 依存関係のインストールをスキップしました（prepareスクリプトから実行中）");
+        } else {
+            await installDependencies(rootDir);
+        }
+
+        await generatePrismaSchema(rootDir);
+        await buildDockerImages(rootDir);
+        await runDatabaseMigrations(rootDir);
+
+        console.log("\n✅ セットアップが完了しました！");
+        console.log("\n次のステップ:");
+        console.log("  - .envファイルを編集して環境変数を設定してください");
+        console.log("  - bun run dev で開発サーバーを起動できます");
+    } catch (error) {
+        console.error("\n✗ セットアップ中にエラーが発生しました:", error);
+        process.exit(1);
+    }
 }

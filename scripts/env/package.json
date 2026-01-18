@@ -11,7 +11,7 @@
     }
   },
   "bin": {
-    "env": "./src/index.ts"
+    "env": "./cmd/main.ts"
   },
   "files": [
     "dist",

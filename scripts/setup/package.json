@@ -11,7 +11,7 @@
     }
   },
   "bin": {
-    "setup": "./src/index.ts"
+    "setup": "./cmd/main.ts"
   },
   "files": [
     "dist",
