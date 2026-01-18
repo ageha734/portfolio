@@ -27,8 +27,8 @@ import {
 } from "~/shared/config/settings";
 import { useIntro } from "~/shared/hooks/lib/useIntro";
 import { usePageTracking } from "~/shared/hooks/lib/usePageTracking";
-import tailwind from "~/tailwind.css?url";
 import type { ErrorProps } from "~/widgets/error";
+import "~/tailwind.css";
 import { ErrorPage } from "~/widgets/error";
 import { Footer, FooterMobile } from "~/widgets/footer";
 import { Header, HeaderMobile, Navbar } from "~/widgets/navbar";
@@ -44,7 +44,6 @@ export const links: LinksFunction = () => [
     },
     { rel: "apple-touch-icon", href: "/icons/256.png", sizes: "256x256" },
     { rel: "author", href: "/humans.txt", type: "text/plain" },
-    { rel: "stylesheet", href: tailwind },
 ];
 
 export const loader = async ({ request, context }: LoaderFunctionArgs) => {

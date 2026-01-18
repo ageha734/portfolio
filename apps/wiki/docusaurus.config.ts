@@ -33,9 +33,7 @@ const config: Config = {
                 configureWebpack(config, isServer) {
                     if (isServer) {
                         return {
-                            externals: [
-                                /^@portfolio\//,
-                            ],
+                            externals: [/^@portfolio\//],
                         };
                     }
                     return {};
@@ -46,17 +44,19 @@ const config: Config = {
             return {
                 name: "polyfill-require-resolve-weak",
                 configureWebpack(config, isServer) {
-                    if (isServer && typeof require !== "undefined") {
-                        const originalRequire = require;
-                        if (!originalRequire.resolveWeak) {
-                            // @ts-expect-error - Adding polyfill to require
-                            originalRequire.resolveWeak = function (id: string) {
-                                try {
-                                    return originalRequire.resolve(id);
-                                } catch {
-                                    return id;
-                                }
-                            };
+                    if (isServer) {
+                        if (typeof require !== "undefined") {
+                            // @ts-expect-error - Adding polyfill to require.resolveWeak
+                            if (!require.resolveWeak) {
+                                // @ts-expect-error - Adding polyfill to require
+                                require.resolveWeak = function (id: string) {
+                                    try {
+                                        return require.resolve(id);
+                                    } catch {
+                                        return id;
+                                    }
+                                };
+                            }
                         }
                     }
                     return config;

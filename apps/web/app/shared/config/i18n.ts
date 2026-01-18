@@ -14,7 +14,7 @@ const resources = {
     },
 };
 
-const i18n = i18next.use(initReactI18next).init({
+i18next.use(initReactI18next).init({
     resources,
     lng: "en",
     fallbackLng: "en",
@@ -23,4 +23,4 @@ const i18n = i18next.use(initReactI18next).init({
     },
 });
 
-export default i18n;
+export default i18next;

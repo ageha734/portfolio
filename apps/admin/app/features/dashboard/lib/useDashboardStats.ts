@@ -24,7 +24,9 @@ export function useDashboardStats() {
                 ]);
 
                 const postsData = Array.isArray(postsResponse) ? postsResponse : postsResponse.data || [];
-                const portfoliosData = Array.isArray(portfoliosResponse) ? portfoliosResponse : portfoliosResponse.data || [];
+                const portfoliosData = Array.isArray(portfoliosResponse)
+                    ? portfoliosResponse
+                    : portfoliosResponse.data || [];
 
                 setStats({
                     posts: Array.isArray(postsData) ? postsData.length : 0,
