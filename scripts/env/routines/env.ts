@@ -21,12 +21,18 @@ function parseEnvLine(line: string): { key: string; value: string } | null {
         return null;
     }
 
-    const match = trimmedLine.match(/^([A-Za-z_]\w*)=(.*)$/);
+    const pattern = /^([A-Za-z_]\w*)=(.*)$/;
+    const match = pattern.exec(trimmedLine);
     if (!match) {
         return null;
     }
 
-    const [, key, value] = match;
+    const key = match[1];
+    const value = match[2];
+
+    if (!key || value === undefined) {
+        return null;
+    }
 
     let cleanValue = value;
     if (

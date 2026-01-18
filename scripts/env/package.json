@@ -1,26 +1,14 @@
 {
   "private": true,
-  "name": "@portfolio/scripts-env",
+  "name": "@portfolio/scripts-setup",
   "type": "module",
-  "version": "0.0.0",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "bin": {
-    "env": "./cmd/main.ts"
+    "setup": "./dist/main.js"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
     "build": "tsc --outDir dist",
+    "start": "node ./dist/main.js",
     "clean": "git clean -xdf .cache .turbo node_modules dist",
-    "dev": "tsc --watch --outDir dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",

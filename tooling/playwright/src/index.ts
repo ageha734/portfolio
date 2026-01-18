@@ -74,7 +74,7 @@ export function createPlaywrightStorybookConfig(options: PlaywrightConfigOptions
         testDir: options.testDir ?? "./e2e/storybook",
         baseURL: options.baseURL ?? `http://localhost:${resolvedPort}`,
         port: resolvedPort,
-        webServerCommand: options.webServerCommand ?? "bun run dev:ui",
+        webServerCommand: options.webServerCommand ?? "bun run studio",
         projects: options.projects ?? [
             {
                 name: "chromium",

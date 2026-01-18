@@ -3,14 +3,10 @@
     "extends": "@portfolio/tsconfig/react.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "outDir": "./dist",
-        "rootDir": ".",
         "paths": {
-            "@/*": ["./app/*"]
-        },
-        "jsx": "react-jsx",
-        "allowJs": true
+            "~/*": ["./app/*"]
+        }
     },
-    "include": ["app/**/*", "docusaurus.config.ts", "sidebars.ts"],
-    "exclude": ["node_modules", "dist", "build", ".docusaurus"]
+    "exclude": ["node_modules", "dist", ".docusaurus"],
+    "include": ["app/**/*", "docusaurus.config.ts", "sidebars.ts", "functions/**/*"]
 }

@@ -4,11 +4,12 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "~/*": ["./src/*"]
+            "~/*": ["./routines/*"]
         },
         "rootDir": ".",
-        "typeRoots": ["../../../node_modules/@types"]
+        "typeRoots": ["../../node_modules/@types"],
+        "types": ["node"]
     },
     "exclude": ["node_modules", "dist"],
-    "include": ["cmd/**/*.ts", "src/**/*.ts"]
+    "include": ["routines/*.ts", "cmd/main.ts"]
 }

@@ -2,33 +2,18 @@
   "private": true,
   "name": "@portfolio/scripts-check",
   "type": "module",
-  "version": "0.0.0",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
   "bin": {
-    "check": "./cmd/main.ts"
+    "setup": "./dist/main.js"
   },
-  "files": [
-    "dist",
-    "src"
-  ],
   "scripts": {
     "build": "tsc --outDir dist",
+    "start": "node ./dist/main.js",
     "clean": "git clean -xdf .cache .turbo node_modules dist",
-    "dev": "tsc --watch --outDir dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "concurrently": "9.2.1"
   },
   "devDependencies": {
     "@portfolio/biome-config": "workspace:*",

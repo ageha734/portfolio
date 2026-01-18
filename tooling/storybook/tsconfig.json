@@ -7,7 +7,6 @@
             "~/*": ["./src/*"]
         },
         "rootDir": "./src",
-        "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
         "typeRoots": ["../../node_modules/@types"],
         "types": ["node"]
     },

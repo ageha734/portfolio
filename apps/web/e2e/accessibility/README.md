@@ -65,7 +65,7 @@ Ladleでのテストを実行するには、Ladleサーバーが起動してい�
 
 ```bash
 # Ladleサーバーを起動（別のターミナル）
-bun run dev:ui
+bun run studio
 
 # Ladleのテストを実行
 bun run ladle -- apps/web/e2e/accessibility

@@ -16,7 +16,7 @@
     "coverage": "vitest run --coverage",
     "deploy": "wrangler d1 deploy",
     "dev": "tsc --watch --outDir dist",
-    "dev:ui": "prisma studio --browser none",
+    "studio": "prisma studio --browser none",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "generate": "prisma generate",

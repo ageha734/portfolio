@@ -117,7 +117,7 @@ test("Ladle test", async ({ page }) => {
 
 ```bash
 # Ladleサーバーを起動
-bun run dev:ui
+bun run dstudio
 
 # 別のターミナルでPOMテストを実行
 bun run e2e:ladle

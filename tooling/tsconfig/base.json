@@ -3,20 +3,26 @@
     "compilerOptions": {
         "allowImportingTsExtensions": true,
         "allowJs": true,
+        "checkJs": true,
+        "disableSourceOfProjectReferenceRedirect": true,
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
+        "incremental": true,
         "isolatedModules": true,
+        "lib": ["ES2022"],
         "module": "ESNext",
         "moduleDetection": "force",
-        "moduleResolution": "bundler",
+        "moduleResolution": "Bundler",
         "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "noPropertyAccessFromIndexSignature": false,
+        "noUncheckedIndexedAccess": true,
         "noUnusedParameters": false,
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
         "target": "ES2022",
+        "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.json",
         "verbatimModuleSyntax": true
     }
 }
