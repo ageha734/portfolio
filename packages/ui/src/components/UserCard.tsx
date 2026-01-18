@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import { sanitizeHtml } from "../utils/sanitize";
+import { sanitizeHtml } from "../libs/sanitize";
 
 export interface UserCardProps {
     alt?: string;

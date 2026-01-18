@@ -1,4 +1,4 @@
-import { sanitizeHtml } from "@portfolio/ui/utils/sanitize";
+import { sanitizeHtml } from "@portfolio/ui";
 import classnames from "classnames";
 import { useRef, useState } from "react";
 import { data } from "~/shared/data/details";

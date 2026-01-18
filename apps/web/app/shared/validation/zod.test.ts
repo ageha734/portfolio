@@ -3,7 +3,7 @@ import { z } from "zod";
 import { emailSchema } from "./model/schemas";
 import { formatValidationError, safeParse } from "./zod";
 
-describe("Validation Utils", () => {
+describe("Validation", () => {
     describe("safeParse", () => {
         const testSchema = z.object({
             name: z.string().min(1),

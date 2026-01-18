@@ -1,4 +1,4 @@
-import { sanitizeHtml } from "@portfolio/ui/utils/sanitize";
+import { sanitizeHtml } from "@portfolio/ui";
 import type { MetaFunction } from "@remix-run/react";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderData } from "~/routes/api.portfolio.$slug";

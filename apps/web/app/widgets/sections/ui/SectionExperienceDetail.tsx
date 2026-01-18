@@ -1,4 +1,4 @@
-import { sanitizeHtml } from "@portfolio/ui/utils/sanitize";
+import { sanitizeHtml } from "@portfolio/ui";
 import { getTimeWorked } from "../lib/date-time";
 import type { SectionExperienceDetailProps } from "../model/types.d";
 
