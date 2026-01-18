@@ -3,7 +3,7 @@
   "name": "@portfolio/wiki",
   "type": "module",
   "scripts": {
-    "build": "docusaurus build",
+    "build": "NODE_OPTIONS='--no-warnings' node ../../node_modules/@docusaurus/core/bin/docusaurus.mjs build",
     "clean": "git clean -xdf .cache .turbo node_modules dist .docusaurus .wrangler",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler pages deploy ./build --project-name portfolio-wiki --branch master",
@@ -25,9 +25,8 @@
   "dependencies": {
     "@docusaurus/core": "3.9.2",
     "@docusaurus/preset-classic": "3.9.2",
+    "@docusaurus/theme-mermaid": "3.9.2",
     "@mdx-js/react": "3.1.1",
-    "@portfolio/auth": "workspace:*",
-    "@portfolio/db": "workspace:*",
     "prism-react-renderer": "2.4.1",
     "rehype-img-size": "1.0.1",
     "rehype-slug": "6.0.0"
@@ -38,7 +37,9 @@
     "@docusaurus/types": "3.9.2",
     "@mapbox/rehype-prism": "0.9.0",
     "@mdx-js/rollup": "3.1.1",
+    "@portfolio/auth": "workspace:*",
     "@portfolio/biome-config": "workspace:*",
+    "@portfolio/db": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
     "@proofdict/textlint-rule-proofdict": "3.1.2",
     "@types/prismjs": "1.26.5",

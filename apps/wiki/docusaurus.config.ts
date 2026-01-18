@@ -26,6 +26,24 @@ const config: Config = {
 
     staticDirectories: ["static"],
 
+    plugins: [
+        function excludePortfolioPackagesPlugin() {
+            return {
+                name: "exclude-portfolio-packages-plugin",
+                configureWebpack(config, isServer) {
+                    if (isServer) {
+                        return {
+                            externals: [
+                                /^@portfolio\//,
+                            ],
+                        };
+                    }
+                    return {};
+                },
+            };
+        },
+    ],
+
     presets: [
         [
             "classic",
@@ -33,7 +51,6 @@ const config: Config = {
                 docs: {
                     path: "./docs",
                     sidebarPath: "./sidebars.ts",
-                    editUrl: "https://github.com/ageha734/portfolio-docs/tree/master/docs/",
                 },
                 blog: false,
                 theme: {
@@ -42,6 +59,12 @@ const config: Config = {
             } satisfies Preset.Options,
         ],
     ],
+
+    themes: ["@docusaurus/theme-mermaid"],
+
+    markdown: {
+        mermaid: true,
+    },
 
     themeConfig: {
         image: "img/docusaurus-social-card.jpg",
