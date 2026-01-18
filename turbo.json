@@ -6,8 +6,7 @@
     "tasks": {
         "build": {
             "dependsOn": [
-                "^build",
-                "^generate"
+                "^build"
             ],
             "outputs": [
                 "build/**",
@@ -32,19 +31,16 @@
         "deploy": {
             "dependsOn": [
                 "^build"
-            ],
-            "outputs": []
+            ]
         },
         "dev": {
-            "dependsOn": [
-                "^studio"
-            ],
             "cache": false,
             "persistent": true
         },
         "e2e": {
             "dependsOn": [
-                "build"
+                "^build",
+                "^e2e"
             ],
             "env": [
                 "NODE_ENV",
@@ -56,31 +52,23 @@
             ]
         },
         "fmt": {
-            "dependsOn": [
-                "^fmt"
-            ],
-            "outputs": []
+            "cache": true
         },
         "fmt:check": {
-            "dependsOn": [
-                "^fmt:check"
-            ],
-            "outputs": []
+            "cache": true
         },
         "generate": {
             "cache": false
         },
         "lint": {
-            "dependsOn": [
-                "^lint"
-            ],
-            "outputs": []
+            "cache": true
         },
         "lint:fix": {
+            "cache": true
+        },
+        "studio": {
             "cache": false,
-            "dependsOn": [
-                "^lint:fix"
-            ]
+            "persistent": true
         },
         "test": {
             "dependsOn": [
@@ -95,8 +83,7 @@
             "dependsOn": [
                 "^build",
                 "^typecheck"
-            ],
-            "outputs": []
+            ]
         }
     }
 }
