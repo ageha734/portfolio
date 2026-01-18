@@ -88,17 +88,8 @@ function getDefaultPath(lintType: LintType, rootDir: string): string[] {
         case "md":
             return [join(rootDir, "apps/wiki/docs/")];
         case "shell": {
-            const scriptsDir = join(rootDir, "scripts");
             const dockerDir = join(rootDir, ".docker");
             const files: string[] = [];
-            try {
-                const scriptFiles = readdirSync(scriptsDir)
-                    .filter((f) => f.endsWith(".sh"))
-                    .map((f) => join(rootDir, "scripts", f));
-                files.push(...scriptFiles);
-            } catch {
-                // scripts directory not found
-            }
             try {
                 const dockerFiles = (readdirSync(dockerDir, { recursive: true }) as string[])
                     .filter((f) => f.endsWith(".sh"))
