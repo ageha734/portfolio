@@ -9,8 +9,8 @@
         },
         "rootDir": ".",
         "typeRoots": ["../../node_modules/@types"],
-        "types": ["node"]
+        "types": ["node", "bun"]
     },
     "exclude": ["node_modules", "dist"],
-    "include": ["cmd/main.ts"]
+    "include": ["cmd/main.ts", "routines/**/*.ts"]
 }

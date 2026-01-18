@@ -1,5 +1,35 @@
 #!/usr/bin/env bun
 
-import { runWorkspace } from "~/workspace";
+import { cac } from "cac";
+import { runWorkspace, SetupOptions } from "~/workspace";
 
-runWorkspace();
+const cli = cac("workspace");
+
+cli
+    .command("setup", "開発環境のセットアップを実行します")
+    .option("--env", "環境設定のみ実行")
+    .option("--install", "依存関係のインストールのみ実行")
+    .option("--schema", "Prismaスキーマの生成のみ実行")
+    .option("--docker", "Dockerイメージのビルドのみ実行")
+    .option("--migrate", "データベースマイグレーションのみ実行")
+    .option("--no-parallel", "並列実行を無効化")
+    .action(async (options) => {
+        const setupOptions: SetupOptions = {
+            env: options.env !== undefined,
+            install: options.install !== undefined,
+            schema: options.schema !== undefined,
+            docker: options.docker !== undefined,
+            migrate: options.migrate !== undefined,
+            parallel: !options["no-parallel"],
+        };
+        await runWorkspace(setupOptions);
+    });
+
+cli.command("*", "開発環境のセットアップを実行します").action(async () => {
+    await runWorkspace();
+});
+
+cli.help();
+cli.version("1.0.1");
+
+cli.parse();

@@ -1,0 +1,21 @@
+#!/usr/bin/env bun
+
+import { $ } from "bun";
+import { LoadingBar, logSection } from "./env";
+
+export async function installDependencies(rootDir: string): Promise<void> {
+    logSection("📦 依存関係のインストール");
+    const loadingBar = new LoadingBar("依存関係をインストールしています");
+    loadingBar.start();
+
+    try {
+        await $`bun install --ignore-scripts`.cwd(rootDir).quiet();
+        loadingBar.stop(true, "依存関係のインストールが完了しました");
+    } catch (error: any) {
+        loadingBar.stop(false, "依存関係のインストールに失敗しました");
+        if (process.env.DEBUG) {
+            console.error(error);
+        }
+        throw error;
+    }
+}
