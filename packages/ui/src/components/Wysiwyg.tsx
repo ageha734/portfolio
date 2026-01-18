@@ -1,7 +1,7 @@
 import Prism from "prismjs";
 import * as React from "react";
 import "prismjs/plugins/line-numbers/prism-line-numbers";
-import { sanitizeHtml } from "~/libs/sanitize";
+import { sanitizeHtml } from "../libs/sanitize.js";
 
 export interface WysiwygProps {
     content: string;

@@ -3,6 +3,7 @@
     "extends": ["@portfolio/tsconfig/react.json", "@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
         "baseUrl": ".",
+        "emitDeclarationOnly": false,
         "paths": {
             "~/*": ["./src/*"]
         },

@@ -13,8 +13,8 @@ export function usePosts() {
                 setLoading(true);
                 setError(null);
                 const response = await api.posts.listPosts();
-                const data = response.data as Post[];
-                setPosts(data || []);
+                const data = Array.isArray(response) ? response : response.data || [];
+                setPosts(data);
             } catch (err) {
                 const error = err instanceof Error ? err : new Error("Failed to fetch posts");
                 setError(error);

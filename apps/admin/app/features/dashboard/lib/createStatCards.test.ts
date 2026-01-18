@@ -50,8 +50,8 @@ describe("createStatCards", () => {
 
         const cards = createStatCards(stats);
 
-        expect(cards[0].icon).toBeDefined();
-        expect(typeof cards[0].icon).toBe("function");
+        expect(cards[0]?.icon).toBeDefined();
+        expect(typeof cards[0]?.icon).toBe("function");
     });
 
     test("should handle zero values", () => {
@@ -64,9 +64,9 @@ describe("createStatCards", () => {
 
         const cards = createStatCards(stats);
 
-        expect(cards[0].value).toBe(0);
-        expect(cards[1].value).toBe(0);
-        expect(cards[2].value).toBe(0);
-        expect(cards[3].value).toBe(0);
+        expect(cards[0]?.value).toBe(0);
+        expect(cards[1]?.value).toBe(0);
+        expect(cards[2]?.value).toBe(0);
+        expect(cards[3]?.value).toBe(0);
     });
 });

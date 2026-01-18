@@ -68,7 +68,7 @@ export function PortfoliosList() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Button variant="ghost" size="icon" asChild>
-                                            <Link to={`/portfolios/${portfolio.id}/edit`}>
+                                            <Link to={`/portfolios/${portfolio.id}/edit` as any}>
                                                 <Edit className="h-4 w-4" />
                                             </Link>
                                         </Button>

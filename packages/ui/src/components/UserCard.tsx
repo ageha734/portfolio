@@ -1,5 +1,5 @@
 import classnames from "classnames";
-import { sanitizeHtml } from "~/libs/sanitize";
+import { sanitizeHtml } from "../libs/sanitize.js";
 
 export interface UserCardProps {
     alt?: string;

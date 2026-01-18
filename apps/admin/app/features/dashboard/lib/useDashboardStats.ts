@@ -23,8 +23,8 @@ export function useDashboardStats() {
                     api.portfolios.listPortfolios(),
                 ]);
 
-                const postsData = postsResponse.data || [];
-                const portfoliosData = portfoliosResponse.data || [];
+                const postsData = Array.isArray(postsResponse) ? postsResponse : postsResponse.data || [];
+                const portfoliosData = Array.isArray(portfoliosResponse) ? portfoliosResponse : portfoliosResponse.data || [];
 
                 setStats({
                     posts: Array.isArray(postsData) ? postsData.length : 0,

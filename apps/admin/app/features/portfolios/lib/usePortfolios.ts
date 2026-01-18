@@ -13,8 +13,8 @@ export function usePortfolios() {
                 setLoading(true);
                 setError(null);
                 const response = await api.portfolios.listPortfolios();
-                const data = response.data as Portfolio[];
-                setPortfolios(data || []);
+                const data = Array.isArray(response) ? response : response.data || [];
+                setPortfolios(data);
             } catch (err) {
                 const error = err instanceof Error ? err : new Error("Failed to fetch portfolios");
                 setError(error);

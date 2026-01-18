@@ -68,7 +68,7 @@ export function PostsList() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Button variant="ghost" size="icon" asChild>
-                                            <Link to={`/posts/${post.id}/edit`}>
+                                            <Link to={`/posts/${post.id}/edit` as any}>
                                                 <Edit className="h-4 w-4" />
                                             </Link>
                                         </Button>
