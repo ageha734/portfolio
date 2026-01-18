@@ -112,7 +112,26 @@ function buildTestCoverageCommands(sourceFilesWithTests) {
 const config = {
     ".github/**/*.yml": (filenames) =>
         filenames.flatMap((f) => [`bun run fmt:actions:check -- ${f}`, `bun run lint:actions:check -- ${f}`]),
-    "*.{ts,tsx,js,jsx}": (filenames) => {
+    "*.{ts,tsx}": (filenames) => {
+        const filteredFilenames = filterFilenames(filenames);
+        const sourceFiles = getSourceFiles(filteredFilenames);
+        const sourceFilesWithTests = getSourceFilesWithTests(sourceFiles);
+        const hasTsFiles = filteredFilenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
+
+        const { workspaceGroups, rootFiles } = groupFilesByWorkspace(filteredFilenames);
+
+        const commands = [
+            ...buildFormatLintCommands(workspaceGroups, rootFiles),
+            ...buildTestCoverageCommands(sourceFilesWithTests),
+        ];
+
+        if (hasTsFiles) {
+            commands.push("turbo run typecheck");
+        }
+
+        return commands;
+    },
+    "*.config.js": (filenames) => {
         const filteredFilenames = filterFilenames(filenames);
         const sourceFiles = getSourceFiles(filteredFilenames);
         const sourceFilesWithTests = getSourceFilesWithTests(sourceFiles);
