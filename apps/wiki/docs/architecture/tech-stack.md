@@ -81,7 +81,7 @@
 
 ### Build Tools
 
-- **Vite** (v5.4.0): ビルドツール
+- **Vite** (v6.1.0): ビルドツール
 
   - 高速なHMR（Hot Module Replacement）
   - 最適化されたバンドル

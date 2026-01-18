@@ -17,7 +17,7 @@ const config = {
             typescript: "5.9.3",
         },
         vite: {
-            vite: "5.4.0",
+            vite: "6.1.0",
             "@vitejs/plugin-react": "5.1.2",
         },
         vitest: {
