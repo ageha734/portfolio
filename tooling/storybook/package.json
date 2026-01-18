@@ -34,6 +34,7 @@
     "@storybook/addon-links": "8.6.14",
     "@storybook/react": "8.6.14",
     "@storybook/react-vite": "8.6.14",
+    "@storybook/test": "8.6.14",
     "@storybook/theming": "8.6.14",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@portfolio/biome-config": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
+    "storybook": "8.6.14",
     "typescript": "5.9.3"
   }
 }
