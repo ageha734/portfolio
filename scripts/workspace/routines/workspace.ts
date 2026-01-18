@@ -264,7 +264,7 @@ async function buildDockerImages(rootDir: string): Promise<void> {
     await startMySQLContainer(rootDir);
 }
 
-export async function runSetup(): Promise<void> {
+export async function runWorkspace(): Promise<void> {
     const rootDir = findRootDir();
 
     console.log("🚀 開発環境のセットアップを開始します...\n");

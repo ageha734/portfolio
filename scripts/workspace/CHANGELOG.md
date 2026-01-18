@@ -1,4 +1,4 @@
-# @portfolio/scripts-setup
+# @portfolio/scripts-workspace
 
 ## 1.0.1
 

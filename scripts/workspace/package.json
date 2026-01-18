@@ -1,7 +1,7 @@
 {
   "private": true,
   "version": "1.0.1",
-  "name": "@portfolio/scripts-setup",
+  "name": "@portfolio/scripts-workspace",
   "type": "module",
   "scripts": {
     "build": "bun build cmd/main.ts --outdir dist/cmd --target node --format esm --external bun --minify && chmod +x dist/cmd/main.js",
@@ -21,6 +21,6 @@
     "typescript": "5.9.3"
   },
   "bin": {
-    "setup": "./dist/cmd/main.js"
+    "workspace": "./dist/cmd/main.js"
   }
 }
