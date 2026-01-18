@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { D1PostRepository } from "./post.repository";
-import type { Post } from "../domain/post";
+import type { Post } from "~/domain/post";
 import { createPrismaClient } from "@portfolio/db";
 
 // Mock Prisma client

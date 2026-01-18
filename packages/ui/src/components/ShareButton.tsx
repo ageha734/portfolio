@@ -1,4 +1,4 @@
-import { cn } from "../cn";
+import { cn } from "@portfolio/ui";
 import type { ShareButtonProps } from "./ShareButton.d";
 
 export const ShareButton = ({

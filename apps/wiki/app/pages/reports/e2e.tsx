@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ReportList, type ReportMetadata } from "../../components/ReportList";
+import { ReportList, type ReportMetadata } from "~/components/ReportList";
 
 export default function E2EReportsPage() {
     const [reports, setReports] = useState<Array<{ commitSha: string; metadata: ReportMetadata }>>([]);

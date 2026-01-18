@@ -1,6 +1,6 @@
 import { useLocation } from "@docusaurus/router";
 import { useEffect, useState } from "react";
-import { ReportList, type ReportMetadata } from "../../../components/ReportList";
+import { ReportList, type ReportMetadata } from "~/components/ReportList";
 
 export default function ReportsPage() {
     const location = useLocation();

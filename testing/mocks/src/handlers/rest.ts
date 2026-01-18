@@ -1,6 +1,6 @@
 import type { HttpHandler } from "msw";
 import { HttpResponse, http } from "msw";
-import type { Portfolio, Post } from "../types";
+import type { Portfolio, Post } from "~/types";
 
 const API_URL = process.env.API_URL || "http://localhost:8787";
 

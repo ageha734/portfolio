@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
 
-import { runEnv } from "../src/routines/env.js";
+import { runEnv } from "~/routines/env.js";
 
 runEnv();

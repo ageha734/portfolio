@@ -1,7 +1,7 @@
 import { createPrismaClient } from "@portfolio/db";
 import type { PrismaClient } from "@prisma/client";
 import { describe, expect, test, vi } from "vitest";
-import type { Portfolio } from "../domain/portfolio";
+import type { Portfolio } from "~/domain/portfolio";
 import { D1PortfolioRepository } from "./portfolio.repository";
 
 vi.mock("@portfolio/db", () => ({
