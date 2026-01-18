@@ -379,8 +379,10 @@ jobs:
           persist-credentials: false
       - name: Setup Go
         uses: ./.github/actions/setup-go
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-ts
       - name: Format check YAML
-        run: npm run fmt:actions:check
+        run: bun run fmt:actions:check
   run-lint-actions:
     needs: [detect-changes, run-format-actions]
     if: needs.detect-changes.outputs.actions == 'true'
@@ -398,7 +400,7 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
       - name: Lint GitHub Actions workflows
-        run: npm run lint:actions:check
+        run: bun run lint:actions:check
   run-format-shell:
     needs: [detect-changes]
     if: needs.detect-changes.outputs.shell == 'true'
@@ -413,8 +415,10 @@ jobs:
           persist-credentials: false
       - name: Setup Go
         uses: ./.github/actions/setup-go
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-ts
       - name: Format check shell scripts
-        run: npm run fmt:shell:check
+        run: bun run fmt:shell:check
   run-lint-shell:
     needs: [detect-changes, run-format-shell]
     if: needs.detect-changes.outputs.shell == 'true'
@@ -428,7 +432,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Lint shell scripts
-        run: npm run lint:shell:check
+        run: bun run lint:shell:check
   run-format-md:
     needs: [detect-changes]
     if: needs.detect-changes.outputs.docs == 'true'
@@ -444,7 +448,7 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
       - name: Format check Markdown
-        run: npm run fmt:md:check
+        run: bun run fmt:md:check
   run-lint-md:
     needs: [detect-changes, run-format-md]
     if: needs.detect-changes.outputs.docs == 'true'
@@ -460,7 +464,7 @@ jobs:
       - name: Setup Node.js
         uses: ./.github/actions/setup-ts
       - name: Lint Markdown files
-        run: npm run lint:md:check
+        run: bun run lint:md:check
   run-format-tsp:
     needs: [detect-changes]
     if: needs.detect-changes.outputs.tsp == 'true'

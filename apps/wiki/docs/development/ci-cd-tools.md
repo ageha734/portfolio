@@ -101,37 +101,37 @@
 
 12. **run-format-actions** (actions変更時)
     - GitHub Actionsワークフローのフォーマットチェック
-    - コマンド: `npm run fmt:actions:check`
+    - コマンド: `bun run fmt:actions:check`
     - タイムアウト: 5分
     - 依存: `detect-changes`
 
 13. **run-lint-actions** (actions変更時)
     - GitHub Actionsワークフローのリントチェック
-    - コマンド: `npm run lint:actions:check`
+    - コマンド: `bun run lint:actions:check`
     - タイムアウト: 10分
     - 依存: `detect-changes`, `run-format-actions`
 
 14. **run-format-shell** (shell変更時)
     - Shellスクリプトのフォーマットチェック
-    - コマンド: `npm run fmt:shell:check`
+    - コマンド: `bun run fmt:shell:check`
     - タイムアウト: 5分
     - 依存: `detect-changes`
 
 15. **run-lint-shell** (shell変更時)
     - Shellスクリプトのリントチェック
-    - コマンド: `npm run lint:shell:check`
+    - コマンド: `bun run lint:shell:check`
     - タイムアウト: 10分
     - 依存: `detect-changes`, `run-format-shell`
 
 16. **run-format-md** (docs変更時)
     - Markdownファイルのフォーマットチェック
-    - コマンド: `npm run fmt:md:check`
+    - コマンド: `bun run fmt:md:check`
     - タイムアウト: 5分
     - 依存: `detect-changes`
 
 17. **run-lint-md** (docs変更時)
     - Markdownファイルのリントチェック
-    - コマンド: `npm run lint:md:check`
+    - コマンド: `bun run lint:md:check`
     - タイムアウト: 10分
     - 依存: `detect-changes`, `run-format-md`
 
