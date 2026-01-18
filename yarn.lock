@@ -6641,7 +6641,6 @@
     "@portfolio/biome-config" "tooling/biome"
     "@portfolio/tsconfig" "tooling/tsconfig"
     "@portfolio/vitest-config" "tooling/vitest"
-    dotenv "17.2.3"
     prisma "5.22.0"
     typescript "5.9.3"
     vitest "3.2.4"

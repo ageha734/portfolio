@@ -6,6 +6,7 @@ export async function seedUser(prisma: PrismaClient) {
         where: { email: "admin@example.com" },
         update: {},
         create: {
+            id: "admin-user-1",
             name: "Admin User",
             email: "admin@example.com",
             bio: "Software developer and tech enthusiast",

@@ -50,7 +50,7 @@ node_modules
 .tanstack
 .docusaurus
 build
-dist
+apps/**/dist
 public/build
 functions/[[path]].js
 functions/[[path]].js.map
