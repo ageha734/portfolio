@@ -277,7 +277,7 @@ export async function runSetup(): Promise<void> {
     }
     console.log("✓ Bunがインストールされています\n");
 
-    const shouldSkipInstall = process.env.SKIP_INSTALL === "true" || process.env.npm_lifecycle_event === "prepare";
+    const shouldSkipInstall = process.env.SKIP_INSTALL === "true" || process.env.BUN_LIFECYCLE_EVENT === "prepare";
 
     try {
         await setupEnvFile(rootDir);

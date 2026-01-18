@@ -82,7 +82,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Format check TypeScript
         run: bun run fmt:ts:check
@@ -98,7 +98,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Lint TypeScript
         run: bun run lint:ts:check
@@ -114,7 +114,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Generate API client (if TypeSpec changed)
         if: needs.detect-changes.outputs.tsp == 'true'
@@ -135,7 +135,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Run knip
         run: bun run knip
@@ -151,7 +151,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Tests TypeScript
         run: bun run test
@@ -168,7 +168,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: true
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Coverage TypeScript
         run: bun run coverage
@@ -237,7 +237,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Download coverage artifact
         uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -336,7 +336,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Build application
         run: bun run build
@@ -352,7 +352,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Build application
         run: bun run build
@@ -379,7 +379,7 @@ jobs:
           persist-credentials: false
       - name: Setup Go
         uses: ./.github/actions/setup-go
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Format check YAML
         run: bun run fmt:actions:check
@@ -397,7 +397,7 @@ jobs:
           persist-credentials: false
       - name: Setup Go
         uses: ./.github/actions/setup-go
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Lint GitHub Actions workflows
         run: bun run lint:actions:check
@@ -415,7 +415,7 @@ jobs:
           persist-credentials: false
       - name: Setup Go
         uses: ./.github/actions/setup-go
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Format check shell scripts
         run: bun run fmt:shell:check
@@ -445,7 +445,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Format check Markdown
         run: bun run fmt:md:check
@@ -461,7 +461,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Lint Markdown files
         run: bun run lint:md:check
@@ -477,7 +477,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Format check TypeSpec
         run: |
@@ -495,7 +495,7 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
-      - name: Setup Node.js
+      - name: Setup Bun
         uses: ./.github/actions/setup-ts
       - name: Lint TypeSpec
         run: |
