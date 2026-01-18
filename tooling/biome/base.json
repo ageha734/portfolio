@@ -1,7 +1,25 @@
 {
     "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
-    "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": false },
+    "assist": {
+        "actions": {
+            "source": {
+                "organizeImports": "on"
+            }
+        }
+    },
+    "css": {
+        "formatter": {
+            "enabled": false
+        },
+        "linter": {
+            "enabled": false
+        },
+        "parser": {
+            "cssModules": true
+        }
+    },
     "files": {
+        "ignoreUnknown": true,
         "includes": [
             "**/*.{ts,tsx,js,jsx,json,jsonc}",
             "!!**/.turbo",
@@ -12,29 +30,42 @@
             "!!**/coverage",
             "!!**/results",
             "!!**/report"
-        ],
-        "ignoreUnknown": true
+        ]
     },
     "formatter": {
+        "attributePosition": "auto",
+        "bracketSpacing": true,
         "enabled": true,
-        "useEditorconfig": true,
         "formatWithErrors": false,
         "indentStyle": "space",
         "indentWidth": 4,
         "lineEnding": "lf",
         "lineWidth": 120,
-        "attributePosition": "auto",
-        "bracketSpacing": true
+        "useEditorconfig": true
     },
-    "assist": { "actions": { "source": { "organizeImports": "on" } } },
+    "javascript": {
+        "formatter": {
+            "arrowParentheses": "always",
+            "bracketSameLine": false,
+            "bracketSpacing": true,
+            "jsxQuoteStyle": "double",
+            "quoteProperties": "asNeeded",
+            "semicolons": "always",
+            "trailingCommas": "all"
+        }
+    },
+    "json": {
+        "formatter": {
+            "trailingCommas": "none"
+        }
+    },
     "linter": {
         "enabled": true,
         "rules": {
-            "recommended": false,
             "complexity": {
+                "noAdjacentSpacesInRegex": "error",
                 "noExtraBooleanCast": "error",
-                "noUselessCatch": "error",
-                "noAdjacentSpacesInRegex": "error"
+                "noUselessCatch": "error"
             },
             "correctness": {
                 "noConstAssign": "error",
@@ -59,8 +90,17 @@
                 "noUnusedVariables": "error",
                 "useIsNan": "error",
                 "useValidForDirection": "error",
-                "useYield": "error",
-                "useValidTypeof": "error"
+                "useValidTypeof": "error",
+                "useYield": "error"
+            },
+            "nursery": {
+                "useSortedClasses": "warn"
+            },
+            "recommended": false,
+            "style": {
+                "noUnusedTemplateLiteral": "warn",
+                "useConst": "error",
+                "useTemplate": "warn"
             },
             "suspicious": {
                 "noAssignInExpressions": "error",
@@ -85,57 +125,34 @@
                 "noShadowRestrictedNames": "error",
                 "noSparseArray": "error",
                 "noUnsafeNegation": "error",
-                "useGetterReturn": "error",
-                "noWith": "error"
-            },
-            "style": {
-                "noUnusedTemplateLiteral": "warn",
-                "useConst": "error",
-                "useTemplate": "warn"
-            },
-            "nursery": {
-                "useSortedClasses": "warn"
+                "noWith": "error",
+                "useGetterReturn": "error"
             }
-        }
-    },
-    "javascript": {
-        "formatter": {
-            "arrowParentheses": "always",
-            "bracketSameLine": false,
-            "bracketSpacing": true,
-            "jsxQuoteStyle": "double",
-            "quoteProperties": "asNeeded",
-            "semicolons": "always",
-            "trailingCommas": "all"
-        }
-    },
-    "json": {
-        "formatter": {
-            "trailingCommas": "none"
-        }
-    },
-    "css": {
-        "parser": {
-            "cssModules": true
-        },
-        "linter": {
-            "enabled": false
-        },
-        "formatter": {
-            "enabled": false
         }
     },
     "overrides": [
         {
-            "includes": ["**/package.json"],
             "formatter": {
                 "enabled": false
-            }
+            },
+            "includes": [
+                "**/package.json"
+            ]
         },
         {
-            "includes": ["**/*.test.*"],
+            "includes": [
+                "**/*.test.*"
+            ],
             "javascript": {
-                "globals": ["expect", "test", "describe", "beforeEach", "afterEach", "vi", "it"]
+                "globals": [
+                    "expect",
+                    "test",
+                    "describe",
+                    "beforeEach",
+                    "afterEach",
+                    "vi",
+                    "it"
+                ]
             },
             "linter": {
                 "rules": {
@@ -145,5 +162,10 @@
                 }
             }
         }
-    ]
+    ],
+    "vcs": {
+        "clientKind": "git",
+        "enabled": true,
+        "useIgnoreFile": false
+    }
 }

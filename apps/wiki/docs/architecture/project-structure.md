@@ -164,9 +164,9 @@ Tailwind Base Configです。
 TypeScript Base Configsです。
 
 - `base.json`: ベース設定
-- `react.json`: React用設定
-- `node.json`: Node.js用設定
-- `test.json`: テスト用設定
+- `react.json`: React用設定（`base.json`を継承）
+- `node.json`: Node.js用設定（`base.json`を継承）
+- `compiled-package.json`: ビルド用パッケージ設定（`base.json`を継承）
 
 ## FSDレイヤーの詳細説明（apps/web, apps/admin）
 

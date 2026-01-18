@@ -5912,7 +5912,7 @@
     typescript "5.9.3"
     vitest "3.2.4"
   dependencies:
-    axios "^1.7.9"
+    axios "1.7.9"
     zod "4.3.4"
 
 "@portfolio/auth@packages/auth":
@@ -5979,6 +5979,18 @@
     typescript "5.9.3"
   dependencies:
     "@playwright/test" "1.57.0"
+
+"@portfolio/scripts@scripts":
+  version "workspace:scripts"
+  resolved "workspace:scripts"
+  devDependencies:
+    "@portfolio/biome-config" "tooling/biome"
+    "@portfolio/tsconfig" "tooling/tsconfig"
+    "@types/bun" "1.3.5"
+    "@types/node" "25.0.3"
+    typescript "5.9.3"
+  dependencies:
+    concurrently "9.2.1"
 
 "@portfolio/storybook-config@tooling/storybook":
   version "workspace:tooling/storybook"
@@ -6093,7 +6105,7 @@
   devDependencies:
     "@portfolio/biome-config" "tooling/biome"
     "@portfolio/tsconfig" "tooling/tsconfig"
-    "@types/node" "22.10.5"
+    "@types/node" "25.0.3"
     typescript "5.9.3"
   dependencies:
     vite "5.4.0"
@@ -9714,13 +9726,6 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-17.0.45.tgz"
   integrity sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==
 
-"@types/node@22.10.5":
-  version "22.10.5"
-  resolved "https://registry.npmjs.org/@types/node/-/node-22.10.5.tgz"
-  integrity sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==
-  dependencies:
-    undici-types "~6.20.0"
-
 "@types/node@^22.0.0":
   version "22.19.3"
   resolved "https://registry.npmjs.org/@types/node/-/node-22.19.3.tgz"
@@ -10947,7 +10952,7 @@ axe-core@^4.10.3, axe-core@^4.2.0:
   resolved "https://registry.npmjs.org/axe-core/-/axe-core-4.11.0.tgz"
   integrity sha512-ilYanEU8vxxBexpJd8cWM4ElSQq4QctCLKih0TSfjIfCQTeyH/6zVrmIJfLPrKTKJRbiG+cfnZbQIjAlJmF1jQ==
 
-axios@1.7.9, axios@^1.7.9:
+axios@1.7.9:
   version "1.7.9"
   resolved "https://registry.npmjs.org/axios/-/axios-1.7.9.tgz"
   integrity sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==
@@ -25981,11 +25986,6 @@ undici@7.14.0:
   version "7.14.0"
   resolved "https://registry.npmjs.org/undici/-/undici-7.14.0.tgz"
   integrity sha512-Vqs8HTzjpQXZeXdpsfChQTlafcMQaaIwnGwLam1wudSSjlJeQ3bw1j+TLPePgrCnCpUXx7Ba5Pdpf5OBih62NQ==
-
-undici-types@~6.20.0:
-  version "6.20.0"
-  resolved "https://registry.npmjs.org/undici-types/-/undici-types-6.20.0.tgz"
-  integrity sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==
 
 undici-types@~6.21.0:
   version "6.21.0"

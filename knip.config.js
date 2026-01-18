@@ -22,7 +22,7 @@ const config = {
         "packages/**/*.{ts,tsx}",
         "tooling/**/*.{ts,tsx}",
         "testing/**/*.{ts,tsx}",
-        "scripts/*.ts",
+        "scripts/**/*.{ts,tsx}",
     ],
     ignore: [
         "build/**",
@@ -47,7 +47,7 @@ const config = {
         "@docusaurus/tsconfig",
         "@docusaurus/types",
     ],
-    ignoreBinaries: ["wrangler", "playwright", "docusaurus", "storybook", "tsp", "orval"],
+    ignoreBinaries: ["wrangler", "playwright", "docusaurus", "storybook", "tsp", "orval", "check", "env", "setup"],
     workspaces: {
         "apps/web": {
             remix: {

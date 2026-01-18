@@ -1,41 +1,41 @@
 {
-    "private": true,
-    "name": "@portfolio/auth",
-    "type": "module",
-    "types": "./dist/index.d.ts",
-    "exports": {
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        }
-    },
-    "scripts": {
-        "build": "tsc --outDir dist",
-        "clean": "git clean -xdf .cache .turbo node_modules dist",
-        "coverage": "vitest run --coverage",
-        "dev": "tsc --watch --outDir dist",
-        "fmt": "biome format --write .",
-        "fmt:check": "biome format .",
-        "generate": "bunx dotenv-cli -e ../../.env -- bunx @better-auth/cli generate --config script/auth-cli.ts --output ../db/src/auth-schema.ts",
-        "lint": "biome lint .",
-        "lint:fix": "biome lint --write .",
-        "test": "vitest run",
-        "typecheck": "tsc --noEmit"
-    },
-    "dependencies": {
-        "@portfolio/db": "workspace:*",
-        "better-auth": "1.4.11",
-        "zod": "4.3.4"
-    },
-    "devDependencies": {
-        "@better-auth/cli": "1.4.11",
-        "@cloudflare/workers-types": "4.20260101.0",
-        "@portfolio/biome-config": "workspace:*",
-        "@portfolio/tsconfig": "workspace:*",
-        "@portfolio/vitest-config": "workspace:*",
-        "dotenv": "17.2.3",
-        "typescript": "5.9.3",
-        "vitest": "3.2.4"
-    },
-    "main": "./dist/index.js"
+  "private": true,
+  "name": "@portfolio/auth",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "clean": "git clean -xdf .cache .turbo node_modules dist",
+    "coverage": "vitest run --coverage",
+    "dev": "tsc --watch --outDir dist",
+    "fmt": "biome format --write .",
+    "fmt:check": "biome format .",
+    "generate": "bunx dotenv-cli -e ../../.env -- bunx @better-auth/cli generate --config script/auth-cli.ts --output ../db/src/auth-schema.ts",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@portfolio/db": "workspace:*",
+    "better-auth": "1.4.11",
+    "zod": "4.3.4"
+  },
+  "devDependencies": {
+    "@better-auth/cli": "1.4.11",
+    "@cloudflare/workers-types": "4.20260101.0",
+    "@portfolio/biome-config": "workspace:*",
+    "@portfolio/tsconfig": "workspace:*",
+    "@portfolio/vitest-config": "workspace:*",
+    "dotenv": "17.2.3",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  }
 }

@@ -2,7 +2,7 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": ["@portfolio/tsconfig/node.json", "@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
-        "typeRoots": ["../../node_modules"],
+        "typeRoots": ["../../node_modules/@types"],
         "rootDir": "./src",
         "paths": {
             "~/*": ["./src/*"]

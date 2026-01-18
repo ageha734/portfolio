@@ -3,12 +3,12 @@
     "extends": "@portfolio/tsconfig/node.json",
     "compilerOptions": {
         "baseUrl": ".",
-        "outDir": "./dist",
-        "rootDir": ".",
+        "rootDir": "./src",
         "paths": {
             "~/*": ["./src/*"]
         },
-        "typeRoots": ["../../node_modules"],
+        "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
+        "typeRoots": ["../../node_modules/@types"],
         "types": ["@cloudflare/workers-types", "vitest/globals"]
     },
     "include": ["app/**/*", "src/**/*"],

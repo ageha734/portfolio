@@ -1,58 +1,98 @@
 {
     "$schema": "https://turbo.build/schema.json",
-    "globalDependencies": ["**/.env.*local"],
+    "globalDependencies": [
+        "**/.env.*local"
+    ],
     "tasks": {
-        "generate": {
+        "build": {
+            "dependsOn": [
+                "^build"
+            ],
+            "outputs": [
+                "build/**",
+                "dist/**"
+            ]
+        },
+        "clean": {
             "cache": false
         },
-        "build": {
-            "dependsOn": ["^build"],
-            "outputs": ["build/**", "dist/**"]
+        "coverage": {
+            "dependsOn": [
+                "^build"
+            ],
+            "env": [
+                "NODE_ENV",
+                "CI"
+            ],
+            "outputs": [
+                ".coverage/**"
+            ]
+        },
+        "deploy": {
+            "dependsOn": [
+                "^build"
+            ],
+            "outputs": []
         },
         "dev": {
             "cache": false,
             "persistent": true
         },
-        "lint": {
-            "dependsOn": ["^lint"],
-            "outputs": []
-        },
-        "lint:fix": {
-            "dependsOn": ["^lint:fix"],
-            "cache": false
+        "e2e": {
+            "dependsOn": [
+                "build"
+            ],
+            "env": [
+                "NODE_ENV",
+                "CI"
+            ],
+            "outputs": [
+                ".results/**",
+                ".reports/**"
+            ]
         },
         "fmt": {
-            "dependsOn": ["^fmt"],
+            "dependsOn": [
+                "^fmt"
+            ],
             "outputs": []
         },
         "fmt:check": {
-            "dependsOn": ["^fmt:check"],
+            "dependsOn": [
+                "^fmt:check"
+            ],
             "outputs": []
         },
-        "typecheck": {
-            "dependsOn": ["^build", "^typecheck"],
+        "generate": {
+            "cache": false
+        },
+        "lint": {
+            "dependsOn": [
+                "^lint"
+            ],
             "outputs": []
+        },
+        "lint:fix": {
+            "cache": false,
+            "dependsOn": [
+                "^lint:fix"
+            ]
         },
         "test": {
-            "dependsOn": ["^build"],
-            "env": ["NODE_ENV", "CI"]
+            "dependsOn": [
+                "^build"
+            ],
+            "env": [
+                "NODE_ENV",
+                "CI"
+            ]
         },
-        "coverage": {
-            "dependsOn": ["^build"],
-            "outputs": [".coverage/**"],
-            "env": ["NODE_ENV", "CI"]
-        },
-        "e2e": {
-            "dependsOn": ["build"],
-            "outputs": [".results/**", ".reports/**"],
-            "env": ["NODE_ENV", "CI"]
-        },
-        "deploy": {
-            "dependsOn": ["^build"],
+        "typecheck": {
+            "dependsOn": [
+                "^build",
+                "^typecheck"
+            ],
             "outputs": []
-        },
-        "clean": {
-            "cache": false
         }
     }
 }

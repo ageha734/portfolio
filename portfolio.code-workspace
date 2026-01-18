@@ -29,10 +29,6 @@
 			"path": "apps/api"
 		},
 		{
-			"name": "wiki",
-			"path": "apps/wiki"
-		},
-		{
 			"name": "root",
 			"path": "."
 		}

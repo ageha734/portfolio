@@ -2,12 +2,14 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "extends": ["@portfolio/tsconfig/node.json", "@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
-        "typeRoots": ["../../node_modules"],
-        "types": ["@cloudflare/workers-types"],
+        "baseUrl": ".",
         "rootDir": "./src",
         "paths": {
             "~/*": ["./src/*"]
-        }
+        },
+        "tsBuildInfoFile": "./node_modules/.tsbuildinfo",
+        "typeRoots": ["../../node_modules/@types"],
+        "types": ["@cloudflare/workers-types", "vitest/globals"]
     },
     "include": ["src/**/*", "prisma/**/*"],
     "exclude": ["node_modules", "dist"]

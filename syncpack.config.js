@@ -6,6 +6,8 @@ const config = {
         "packages/*/package.json",
         "testing/*/package.json",
         "tooling/*/package.json",
+        "scripts/*/package.json",
+        "generators/package.json",
     ],
     dependencyTypes: ["dev", "peer", "prod"],
     semverGroups: [
