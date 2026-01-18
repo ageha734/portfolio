@@ -4,7 +4,7 @@
   "name": "@portfolio/wiki",
   "type": "module",
   "scripts": {
-    "build": "NODE_OPTIONS='--no-warnings' node ../../node_modules/@docusaurus/core/bin/docusaurus.mjs build",
+    "build": "docusaurus build",
     "clean": "git clean -xdf .cache .turbo node_modules build dist .docusaurus .wrangler",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler pages deploy ./build --project-name portfolio-wiki --branch master",

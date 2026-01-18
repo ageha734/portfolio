@@ -2,6 +2,14 @@
     "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
     "extends": ["@portfolio/biome-config/base"],
     "files": {
-        "includes": ["!!**/.docusaurus", "!!.wrangler", "!!docs", "!!design", "!!reference", "!!reports"]
+        "includes": [
+            "!!**/.docusaurus",
+            "!!.wrangler",
+            "!!docs",
+            "!!design",
+            "!!reference",
+            "!!reports",
+            "!!worker-configuration.d.ts"
+        ]
     }
 }

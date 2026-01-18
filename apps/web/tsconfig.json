@@ -1,13 +1,15 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": ["@portfolio/tsconfig/react.json"],
+    "extends": ["@portfolio/tsconfig/base.json"],
     "compilerOptions": {
         "baseUrl": ".",
+        "jsx": "react-jsx",
+        "lib": ["DOM", "DOM.Iterable", "ES2022"],
         "paths": {
             "~/*": ["./app/*"]
         },
         "types": ["@cloudflare/workers-types", "vitest/globals"]
     },
-    "exclude": ["node_modules", "dist"],
-    "include": ["app/**/*", ".storybook", "vite.config.ts", "env.d.ts", "functions/**/*"]
+    "exclude": ["node_modules", "dist", ".docusaurus", "functions"],
+    "include": ["app/**/*", "docusaurus.config.ts", "sidebars.ts"]
 }

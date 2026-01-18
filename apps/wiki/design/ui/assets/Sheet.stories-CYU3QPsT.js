@@ -1,0 +1,24 @@
+import{j as e}from"./jsx-runtime-Cf8x2fCZ.js";import{B as y}from"./Button-BuSOFvrD.js";import{u as D,v as O,w as H,x as N,c as i,y as I,X as L,a as B,z as b,D as T,O as _}from"./Sheet-CYqYGPDf.js";import"./browser-BXStHV7s.js";import"./index-AQoCTVwo.js";import"./prism-line-numbers-DUFXGfi-.js";import{r}from"./index-DNOpAUGJ.js";/* empty css                 */import"./index-yBjzXJbu.js";import"./index-DTBCUgpQ.js";import"./_commonjsHelpers-Cpj98o6Y.js";import"./index-URNu9FD0.js";const p=D,v=O,R=H,m=r.forwardRef(({className:t,...s},o)=>e.jsx(_,{className:i("data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/80 data-[state=closed]:animate-out data-[state=open]:animate-in",t),...s,ref:o}));m.displayName=_.displayName;const V=B("fixed z-50 gap-4 bg-background p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500",{variants:{side:{top:"inset-x-0 top-0 border-b data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",bottom:"inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",left:"inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",right:"inset-y-0 right-0 h-full w-3/4 border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm"}},defaultVariants:{side:"right"}}),d=r.forwardRef(({side:t="right",className:s,children:o,...C},w)=>e.jsxs(R,{children:[e.jsx(m,{}),e.jsxs(N,{ref:w,className:i(V({side:t}),s),...C,children:[o,e.jsxs(I,{className:"absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary",children:[e.jsx(L,{className:"h-4 w-4"}),e.jsx("span",{className:"sr-only",children:"Close"})]})]})]}));d.displayName=N.displayName;const l=({className:t,...s})=>e.jsx("div",{className:i("flex flex-col space-y-2 text-center sm:text-left",t),...s});l.displayName="SheetHeader";const c=r.forwardRef(({className:t,...s},o)=>e.jsx(b,{ref:o,className:i("font-semibold text-foreground text-lg",t),...s}));c.displayName=b.displayName;const h=r.forwardRef(({className:t,...s},o)=>e.jsx(T,{ref:o,className:i("text-muted-foreground text-sm",t),...s}));h.displayName=T.displayName;m.__docgenInfo={description:"",methods:[]};d.__docgenInfo={description:"",methods:[],props:{side:{defaultValue:{value:'"right"',computed:!1},required:!1}},composes:["VariantProps"]};l.__docgenInfo={description:"",methods:[],displayName:"SheetHeader"};c.__docgenInfo={description:"",methods:[]};h.__docgenInfo={description:"",methods:[]};const Q={title:"components/Sheet",component:p},a=()=>e.jsxs(p,{children:[e.jsx(v,{asChild:!0,children:e.jsx(y,{children:"Open Sheet"})}),e.jsxs(d,{children:[e.jsxs(l,{children:[e.jsx(c,{children:"Sheet Title"}),e.jsx(h,{children:"This is a sheet description."})]}),e.jsx("div",{className:"mt-4",children:e.jsx("p",{children:"Sheet content goes here."})})]})]}),n=()=>e.jsxs(p,{children:[e.jsx(v,{asChild:!0,children:e.jsx(y,{children:"Open Left Sheet"})}),e.jsx(d,{side:"left",children:e.jsxs(l,{children:[e.jsx(c,{children:"Left Sheet"}),e.jsx(h,{children:"This sheet opens from the left."})]})})]});a.__docgenInfo={description:"",methods:[],displayName:"Default"};n.__docgenInfo={description:"",methods:[],displayName:"LeftSide"};var f,S,u;a.parameters={...a.parameters,docs:{...(f=a.parameters)==null?void 0:f.docs,source:{originalSource:`() => <Sheet>
+        <SheetTrigger asChild>
+            <Button>Open Sheet</Button>
+        </SheetTrigger>
+        <SheetContent>
+            <SheetHeader>
+                <SheetTitle>Sheet Title</SheetTitle>
+                <SheetDescription>This is a sheet description.</SheetDescription>
+            </SheetHeader>
+            <div className="mt-4">
+                <p>Sheet content goes here.</p>
+            </div>
+        </SheetContent>
+    </Sheet>`,...(u=(S=a.parameters)==null?void 0:S.docs)==null?void 0:u.source}}};var g,x,j;n.parameters={...n.parameters,docs:{...(g=n.parameters)==null?void 0:g.docs,source:{originalSource:`() => <Sheet>
+        <SheetTrigger asChild>
+            <Button>Open Left Sheet</Button>
+        </SheetTrigger>
+        <SheetContent side="left">
+            <SheetHeader>
+                <SheetTitle>Left Sheet</SheetTitle>
+                <SheetDescription>This sheet opens from the left.</SheetDescription>
+            </SheetHeader>
+        </SheetContent>
+    </Sheet>`,...(j=(x=n.parameters)==null?void 0:x.docs)==null?void 0:j.source}}};const U=["Default","LeftSide"];export{a as Default,n as LeftSide,U as __namedExportsOrder,Q as default};

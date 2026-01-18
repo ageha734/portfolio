@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:ui": "turbo run build:ui",
     "changeset": "changeset",
     "check": "concurrently -n fmt,lint,type,test,knip -c \"blue,green,yellow,magenta,cyan\" \"bun run fmt:check\" \"bun run lint\" \"bun run typecheck\" \"bun run test\" \"bun run knip\"",
     "clean": "turbo run clean && git clean -xdf .cache .turbo node_modules",
@@ -30,7 +31,7 @@
     "lint:ts:check": "turbo run lint",
     "lint:ts:fix": "turbo run lint:fix",
     "lint:ws:check": "sherif",
-    "nuke": "bun run clean && rm -rf bun.lock yarn.lock && bun install",
+    "nuke": "bun run clean && git clean -xdf bun.lock yarn.lock && bun install && bun run setup",
     "prepare": "workspace setup",
     "release": "changeset publish",
     "setup": "concurrently -m 1 --kill-others-on-fail -n generate,build,setup -c \"green,yellow,blue\" \"bun run generate\" \"bun run build\" \"bun run prepare\"",

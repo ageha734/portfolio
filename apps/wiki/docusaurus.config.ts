@@ -63,6 +63,90 @@ const config: Config = {
                 },
             };
         },
+        function fixPostCSSPlugin() {
+            return {
+                name: "fix-postcss-plugin",
+                configureWebpack(config, isServer) {
+                    if (!isServer) {
+                        const miniCssExtractPlugin = config.plugins?.find(
+                            (plugin) =>
+                                plugin?.constructor?.name === "MiniCssExtractPlugin",
+                        );
+                        if (miniCssExtractPlugin && miniCssExtractPlugin.options) {
+                            miniCssExtractPlugin.options.ignoreOrder = true;
+                        }
+
+                        // Fix PostCSS loader to filter out postcss-modules-local-by-default plugin
+                        const rules = config.module?.rules;
+                        if (rules) {
+                            for (const rule of rules) {
+                                if (
+                                    rule &&
+                                    typeof rule === "object" &&
+                                    "oneOf" in rule &&
+                                    Array.isArray(rule.oneOf)
+                                ) {
+                                    for (const oneOfRule of rule.oneOf) {
+                                        if (
+                                            oneOfRule &&
+                                            typeof oneOfRule === "object" &&
+                                            Array.isArray(oneOfRule.use)
+                                        ) {
+                                            for (const useItem of oneOfRule.use) {
+                                                if (
+                                                    typeof useItem === "object" &&
+                                                    useItem !== null &&
+                                                    "loader" in useItem &&
+                                                    typeof useItem.loader === "string" &&
+                                                    useItem.loader.includes("postcss-loader")
+                                                ) {
+                                                    if (!useItem.options) {
+                                                        useItem.options = {};
+                                                    }
+                                                    const options = useItem.options as {
+                                                        postcssOptions?: {
+                                                            plugins?: unknown[];
+                                                        };
+                                                    };
+                                                    if (!options.postcssOptions) {
+                                                        options.postcssOptions = {};
+                                                    }
+                                                    if (!options.postcssOptions.plugins) {
+                                                        options.postcssOptions.plugins = [];
+                                                    }
+                                                    // Filter out postcss-modules-local-by-default plugin
+                                                    if (Array.isArray(options.postcssOptions.plugins)) {
+                                                        options.postcssOptions.plugins =
+                                                            options.postcssOptions.plugins.filter(
+                                                                (plugin: unknown) => {
+                                                                    if (
+                                                                        typeof plugin === "object" &&
+                                                                        plugin !== null &&
+                                                                        "postcssPlugin" in plugin
+                                                                    ) {
+                                                                        return (
+                                                                            (plugin as {
+                                                                                postcssPlugin?: string;
+                                                                            }).postcssPlugin !==
+                                                                            "postcss-modules-local-by-default"
+                                                                        );
+                                                                    }
+                                                                    return true;
+                                                                },
+                                                            );
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return config;
+                },
+            };
+        },
     ],
 
     presets: [

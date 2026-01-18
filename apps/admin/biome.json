@@ -2,6 +2,13 @@
     "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
     "extends": ["@portfolio/biome-config/base"],
     "files": {
-        "includes": ["!!.tanstack", "!!.wrangler", "!!public"]
+        "includes": [
+            "!!.tanstack",
+            "!!.wrangler",
+            "!!public",
+            "!!dist",
+            "!!app/routeTree.gen.tsx",
+            "!!worker-configuration.d.ts"
+        ]
     }
 }

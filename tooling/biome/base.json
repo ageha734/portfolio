@@ -19,18 +19,7 @@
         }
     },
     "files": {
-        "ignoreUnknown": true,
-        "includes": [
-            "**/*.{ts,tsx,js,jsx,json,jsonc}",
-            "!!**/.turbo",
-            "!!**/dist",
-            "!!**/build",
-            "!!**/node_modules",
-            "!!**/target",
-            "!!**/coverage",
-            "!!**/results",
-            "!!**/report"
-        ]
+        "ignoreUnknown": true
     },
     "formatter": {
         "attributePosition": "auto",

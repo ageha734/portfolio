@@ -1,12 +1,13 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "extends": ["@portfolio/tsconfig/react.json"],
+    "extends": ["@portfolio/tsconfig/base.json"],
     "compilerOptions": {
         "baseUrl": ".",
+        "jsx": "react-jsx",
+        "lib": ["DOM", "DOM.Iterable", "ES2022"],
         "paths": {
             "~/*": ["./app/*"]
-        },
-        "skipLibCheck": true
+        }
     },
     "exclude": ["node_modules", "dist", ".tanstack", "../../packages/api/dist/generated"],
     "include": ["app/**/*", ".storybook", "vite.config.ts", "env.d.ts", "functions/**/*"]
