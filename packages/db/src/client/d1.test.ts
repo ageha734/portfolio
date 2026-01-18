@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { createPrismaClient } from "./client";
+import { createPrismaClient } from "./d1";
 
 describe("createPrismaClient", () => {
     test("should create Prisma client with D1 adapter for production", () => {
