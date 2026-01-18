@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "accessibility": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/accessibility/report:/work/docs/playwright/report e2e bunx playwright test --config=playwright.storybook.config.ts e2e/accessibility",
-    "build": "remix vite:build",
+    "build": "bun run with-env remix vite:build",
     "build:ui": "storybook build -o ../wiki/design/web",
     "clean": "git clean -xdf .cache .turbo node_modules dist .wrangler",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler pages deploy ./build --project-name portfolio-web --branch master",
-    "dev": "remix vite:dev",
+    "dev": "bun run with-env remix vite:dev",
     "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
@@ -23,7 +23,8 @@
     "studio": "storybook dev -p 16011 --no-open",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "visual": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/visual/report:/work/docs/playwright/report e2e bunx playwright test --config=playwright.storybook.config.ts e2e/storybook/visual"
+    "visual": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/visual/report:/work/docs/playwright/report e2e bunx playwright test --config=playwright.storybook.config.ts e2e/storybook/visual",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@fireworks-js/react": "2.10.8",
@@ -71,6 +72,7 @@
     "@vitejs/plugin-react": "5.1.2",
     "@vitest/coverage-v8": "3.2.4",
     "@vitest/ui": "3.2.4",
+    "dotenv": "17.2.3",
     "jsdom": "27.4.0",
     "playwright": "1.57.0",
     "react-router-dom": "7.11.0",

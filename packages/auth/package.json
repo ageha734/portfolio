@@ -18,11 +18,12 @@
     "dev": "tsc --watch --outDir dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
-    "generate": "bunx dotenv-cli -e ../../.env -- bunx @better-auth/cli generate --config better.config.ts --output ../db/src/auth.ts",
+    "generate": "bun run with-env better-auth generate --config better.config.ts --output ../db/prisma/schema/auth.prisma --yes",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@portfolio/db": "workspace:*",
@@ -35,7 +36,6 @@
     "@portfolio/biome-config": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
     "@portfolio/vitest-config": "workspace:*",
-    "dotenv": "17.2.3",
     "typescript": "5.9.3",
     "vitest": "3.2.4"
   }

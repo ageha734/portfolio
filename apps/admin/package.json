@@ -4,11 +4,11 @@
   "name": "@portfolio/admin",
   "type": "module",
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "bun run with-env vite build",
     "clean": "git clean -xdf .cache .turbo node_modules dist .tanstack .wrangler",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler pages deploy ./build --project-name portfolio-admin --branch master",
-    "dev": "vite",
+    "dev": "bun run with-env vite",
     "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
@@ -16,7 +16,8 @@
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@portfolio/api": "workspace:*",
@@ -40,6 +41,7 @@
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "@vitejs/plugin-react": "5.1.2",
+    "dotenv": "17.2.3",
     "react-router": "7.11.0",
     "typescript": "5.9.3",
     "vite": "6.1.0",

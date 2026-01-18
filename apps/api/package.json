@@ -9,11 +9,11 @@
   },
   "main": "./src/index.ts",
   "scripts": {
-    "build": "wrangler deploy --dry-run",
+    "build": "bun run with-env wrangler deploy --dry-run",
     "clean": "git clean -xdf .cache .turbo node_modules dist .wrangler",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler deploy",
-    "dev": "wrangler dev",
+    "dev": "bun run with-env wrangler dev",
     "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
@@ -21,7 +21,8 @@
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@portfolio/api": "workspace:*",
@@ -35,6 +36,7 @@
     "@portfolio/biome-config": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
     "@portfolio/vitest-config": "workspace:*",
+    "dotenv": "17.2.3",
     "typescript": "5.9.3",
     "vite": "6.1.0",
     "vitest": "3.2.4",

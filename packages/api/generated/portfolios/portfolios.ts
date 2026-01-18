@@ -4,36 +4,42 @@
  * Portfolio API
  * OpenAPI spec version: 0.0.0
  */
-import type { Portfolio, PortfoliosListPortfolios200, PortfoliosListPortfoliosParams } from "../api.schemas";
+import type {
+  Portfolio,
+  PortfoliosListPortfolios200,
+  PortfoliosListPortfoliosParams
+} from '../api.schemas';
 
-import { customInstance } from ".././mutator";
+import { customInstance } from '.././mutator';
+
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getPortfolios = () => {
-    /**
-     * @summary Get a portfolio by slug
-     */
-    const portfoliosGetPortfolioBySlug = (
-        slug: string,
-        options?: SecondParameter<typeof customInstance<Portfolio>>,
-    ) => {
-        return customInstance<Portfolio>({ url: `/api/portfolio/${slug}`, method: "GET" }, options);
-    };
-    /**
-     * @summary Get all portfolios
-     */
-    const portfoliosListPortfolios = (
-        params?: PortfoliosListPortfoliosParams,
-        options?: SecondParameter<typeof customInstance<PortfoliosListPortfolios200>>,
-    ) => {
-        return customInstance<PortfoliosListPortfolios200>({ url: `/api/portfolios`, method: "GET", params }, options);
-    };
-    return { portfoliosGetPortfolioBySlug, portfoliosListPortfolios };
-};
-export type PortfoliosGetPortfolioBySlugResult = NonNullable<
-    Awaited<ReturnType<ReturnType<typeof getPortfolios>["portfoliosGetPortfolioBySlug"]>>
->;
-export type PortfoliosListPortfoliosResult = NonNullable<
-    Awaited<ReturnType<ReturnType<typeof getPortfolios>["portfoliosListPortfolios"]>>
->;
+
+  export const getPortfolios = () => {
+/**
+ * @summary Get a portfolio by slug
+ */
+const portfoliosGetPortfolioBySlug = (
+    slug: string,
+ options?: SecondParameter<typeof customInstance<Portfolio>>,) => {
+      return customInstance<Portfolio>(
+      {url: `/api/portfolio/${slug}`, method: 'GET'
+    },
+      options);
+    }
+  /**
+ * @summary Get all portfolios
+ */
+const portfoliosListPortfolios = (
+    params?: PortfoliosListPortfoliosParams,
+ options?: SecondParameter<typeof customInstance<PortfoliosListPortfolios200>>,) => {
+      return customInstance<PortfoliosListPortfolios200>(
+      {url: `/api/portfolios`, method: 'GET',
+        params
+    },
+      options);
+    }
+  return {portfoliosGetPortfolioBySlug,portfoliosListPortfolios}};
+export type PortfoliosGetPortfolioBySlugResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>['portfoliosGetPortfolioBySlug']>>>
+export type PortfoliosListPortfoliosResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>['portfoliosListPortfolios']>>>
