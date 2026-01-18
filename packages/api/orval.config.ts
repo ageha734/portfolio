@@ -3,16 +3,16 @@ import type { Config } from "orval";
 const config: Config = {
     api: {
         input: {
-            target: "../../apps/wiki/reference/openapi.yaml",
+            target: "openapi.yaml",
         },
         output: {
-            target: "./src/generated/api.ts",
+            target: "./generated/api.ts",
             client: "axios",
             httpClient: "axios",
             mode: "tags-split",
             override: {
                 mutator: {
-                    path: "./src/generated/mutator.ts",
+                    path: "./generated/mutator.ts",
                     name: "customInstance",
                 },
             },

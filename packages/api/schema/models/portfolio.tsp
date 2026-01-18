@@ -1,6 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi3";
-import "./common.tsp";
+import "./asset.tsp";
 
 model PortfolioContent {
     html: string;

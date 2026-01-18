@@ -1,0 +1,282 @@
+openapi: 3.0.0
+info:
+  title: Portfolio API
+  version: 0.0.0
+tags:
+  - name: Posts
+  - name: Portfolios
+paths:
+  /api/portfolio/{slug}:
+    get:
+      operationId: Portfolios_getPortfolioBySlug
+      summary: Get a portfolio by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Portfolio'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Portfolios
+  /api/portfolios:
+    get:
+      operationId: Portfolios_listPortfolios
+      summary: Get all portfolios
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Portfolio'
+                  - type: object
+                    required:
+                      - data
+                      - meta
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Portfolio'
+                      meta:
+                        $ref: '#/components/schemas/PaginationMeta'
+      tags:
+        - Portfolios
+  /api/post/{slug}:
+    get:
+      operationId: Posts_getPostBySlug
+      summary: Get a post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Posts
+  /api/posts:
+    get:
+      operationId: Posts_listPosts
+      summary: Get all posts
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Post'
+                  - type: object
+                    required:
+                      - data
+                      - meta
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Post'
+                      meta:
+                        $ref: '#/components/schemas/PaginationMeta'
+      tags:
+        - Posts
+components:
+  schemas:
+    Asset:
+      type: object
+      required:
+        - url
+      properties:
+        url:
+          type: string
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+        details: {}
+    PaginationMeta:
+      type: object
+      required:
+        - page
+        - perPage
+        - total
+        - totalPages
+      properties:
+        page:
+          type: integer
+          format: int32
+        perPage:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+    Portfolio:
+      type: object
+      required:
+        - title
+        - slug
+        - company
+        - date
+        - current
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        company:
+          type: string
+        date:
+          type: string
+        current:
+          type: boolean
+        overview:
+          type: string
+        description:
+          type: string
+        content:
+          $ref: '#/components/schemas/PortfolioContent'
+        thumbnailTemp:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+        intro:
+          type: string
+    PortfolioContent:
+      type: object
+      required:
+        - html
+      properties:
+        html:
+          type: string
+    Post:
+      type: object
+      required:
+        - id
+        - title
+        - slug
+        - date
+        - content
+        - imageTemp
+        - tags
+        - sticky
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        slug:
+          type: string
+        date:
+          type: string
+        description:
+          type: string
+        content:
+          $ref: '#/components/schemas/PostContent'
+        imageTemp:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        sticky:
+          type: boolean
+        intro:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+    PostContent:
+      type: object
+      required:
+        - html
+      properties:
+        html:
+          type: string
+        raw: {}
+servers:
+  - url: https://api.example.com
+    variables: {}
+  - url: http://localhost:8787
+    variables: {}

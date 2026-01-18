@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { assetSchema } from "./common";
+import { assetSchema } from "./shared";
 
 export const portfolioContentSchema = z.object({
     html: z.string(),

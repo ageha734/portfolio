@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { assetSchema, enumValueSchema, tagSchema, typeInfoSchema, urlSchema } from "./common";
+import { assetSchema, enumValueSchema, tagSchema, typeInfoSchema, urlSchema } from "./shared";
 
-describe("Common Zod Schemas", () => {
+describe("Shared Zod Schemas", () => {
     describe("urlSchema", () => {
         test("should validate valid URL", () => {
             expect(urlSchema.safeParse("https://example.com").success).toBe(true);
