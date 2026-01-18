@@ -1,12 +1,28 @@
 #!/usr/bin/env bun
 
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join, resolve } from "node:path";
 import { $ } from "bun";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const rootDir = resolve(__dirname, "..");
+function findRootDir(startDir: string = process.cwd()): string {
+    let currentDir = resolve(startDir);
+    const root = resolve("/");
+
+    while (currentDir !== root) {
+        const packageJsonPath = join(currentDir, "package.json");
+        const turboJsonPath = join(currentDir, "turbo.json");
+
+        if (existsSync(packageJsonPath) && existsSync(turboJsonPath)) {
+            return currentDir;
+        }
+
+        currentDir = resolve(currentDir, "..");
+    }
+
+    return process.cwd();
+}
+
+const rootDir = findRootDir();
 
 async function checkBunInstalled(): Promise<boolean> {
     try {
@@ -38,6 +54,10 @@ async function setupEnvFile(): Promise<void> {
 }
 
 async function installDependencies(): Promise<void> {
+    if (process.env.SKIP_INSTALL === "true") {
+        console.log("⏭️  SKIP_INSTALLが設定されているため、依存関係のインストールをスキップします");
+        return;
+    }
     console.log("📦 依存関係をインストールしています...");
     try {
         await $`bun install`.cwd(rootDir);
