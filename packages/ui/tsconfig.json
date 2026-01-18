@@ -8,7 +8,8 @@
         },
         "rootDir": "./src",
         "typeRoots": ["../../node_modules/@types"],
-        "types": ["node"]
+        "lib": ["DOM", "DOM.Iterable", "ES2022"],
+        "types": []
     },
     "exclude": ["node_modules", "dist", ".storybook"],
     "include": ["src/**/*.ts", "src/**/*.tsx"]

@@ -35,6 +35,9 @@
             "outputs": []
         },
         "dev": {
+            "dependsOn": [
+                "^studio"
+            ],
             "cache": false,
             "persistent": true
         },

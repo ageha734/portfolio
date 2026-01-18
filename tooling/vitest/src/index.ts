@@ -23,11 +23,11 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
 
     return defineConfig({
         plugins: [
-            react(),
+            react() as any,
             tsconfigPaths({
                 root,
                 projects: tsconfigPath ? [tsconfigPath] : undefined,
-            }),
+            }) as any,
         ],
         resolve: {
             alias: {

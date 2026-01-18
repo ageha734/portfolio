@@ -8,7 +8,8 @@
         },
         "rootDir": "./src",
         "typeRoots": ["../../node_modules/@types"],
-        "types": ["node"]
+        "types": ["node"],
+        "lib": ["DOM", "ES2022"]
     },
     "exclude": ["node_modules", "dist"],
     "include": ["src/**/*.ts"]

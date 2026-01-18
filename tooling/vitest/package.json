@@ -29,6 +29,7 @@
       "default": "./dist/setup.js"
     }
   },
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc --outDir dist",
     "clean": "git clean -xdf .cache .turbo node_modules dist",

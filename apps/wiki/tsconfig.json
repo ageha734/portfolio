@@ -7,6 +7,6 @@
             "~/*": ["./app/*"]
         }
     },
-    "exclude": ["node_modules", "dist", ".docusaurus"],
-    "include": ["app/**/*", "docusaurus.config.ts", "sidebars.ts", "functions/**/*"]
+    "exclude": ["node_modules", "dist", ".docusaurus", "functions"],
+    "include": ["app/**/*", "docusaurus.config.ts", "sidebars.ts"]
 }
