@@ -1,7 +1,7 @@
 {
   "private": true,
-  "version": "1.0.1",
-  "name": "@portfolio/testing-mocks",
+  "version": "0.0.1",
+  "name": "@portfolio/changelog-config",
   "type": "module",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -10,6 +10,7 @@
       "default": "./dist/index.js"
     }
   },
+  "main": "./dist/index.js",
   "scripts": {
     "build": "tsc --outDir dist",
     "clean": "git clean -xdf .cache .turbo node_modules dist",
@@ -21,7 +22,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "msw": "2.12.7"
+    "@changesets/get-github-info": "0.5.0",
+    "@changesets/types": "6.1.0"
   },
   "devDependencies": {
     "@portfolio/biome-config": "workspace:*",

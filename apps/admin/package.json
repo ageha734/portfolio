@@ -1,5 +1,6 @@
 {
   "private": true,
+  "version": "1.0.1",
   "name": "@portfolio/admin",
   "type": "module",
   "scripts": {

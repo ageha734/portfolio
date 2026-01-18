@@ -1,15 +1,16 @@
 {
   "private": true,
+  "version": "1.0.1",
   "name": "@portfolio/scripts-env",
   "type": "module",
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "bun build cmd/main.ts --outdir dist/cmd --target node --format esm --external bun --minify && chmod +x dist/cmd/main.js",
     "clean": "git clean -xdf .cache .turbo node_modules dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
-    "start": "node ./dist/main.js",
+    "start": "node ./dist/cmd/main.js",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -20,6 +21,6 @@
     "typescript": "5.9.3"
   },
   "bin": {
-    "env": "./dist/main.js"
+    "env": "./dist/cmd/main.js"
   }
 }

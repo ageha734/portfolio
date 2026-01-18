@@ -2,12 +2,6 @@ import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 import { themes as prismThemes } from "prism-react-renderer";
 
-// Polyfill require.resolveWeak for Docusaurus build
-if (typeof require !== "undefined" && typeof require.resolveWeak !== "function") {
-    // @ts-expect-error - Adding polyfill to require
-    require.resolveWeak = require.resolve.bind(require);
-}
-
 const config: Config = {
     title: "Tech Docs",
     tagline: "Documentation for tech projects",
@@ -45,6 +39,27 @@ const config: Config = {
                         };
                     }
                     return {};
+                },
+            };
+        },
+        function polyfillRequireResolveWeak() {
+            return {
+                name: "polyfill-require-resolve-weak",
+                configureWebpack(config, isServer) {
+                    if (isServer && typeof require !== "undefined") {
+                        const originalRequire = require;
+                        if (!originalRequire.resolveWeak) {
+                            // @ts-expect-error - Adding polyfill to require
+                            originalRequire.resolveWeak = function (id: string) {
+                                try {
+                                    return originalRequire.resolve(id);
+                                } catch {
+                                    return id;
+                                }
+                            };
+                        }
+                    }
+                    return config;
                 },
             };
         },

@@ -27,7 +27,7 @@ import {
 } from "~/shared/config/settings";
 import { useIntro } from "~/shared/hooks/lib/useIntro";
 import { usePageTracking } from "~/shared/hooks/lib/usePageTracking";
-import tailwind from "~/tailwind.css";
+import tailwind from "~/tailwind.css?url";
 import type { ErrorProps } from "~/widgets/error";
 import { ErrorPage } from "~/widgets/error";
 import { Footer, FooterMobile } from "~/widgets/footer";

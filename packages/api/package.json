@@ -1,5 +1,6 @@
 {
   "private": true,
+  "version": "1.0.1",
   "name": "@portfolio/api",
   "type": "module",
   "types": "./dist/src/index.d.ts",
@@ -16,13 +17,13 @@
       "types": "./dist/generated/mutator.d.ts",
       "import": "./dist/generated/mutator.js"
     },
-    "./generated/posts/posts": {
-      "types": "./dist/generated/posts/posts.d.ts",
-      "import": "./dist/generated/posts/posts.js"
-    },
     "./generated/portfolios/portfolios": {
       "types": "./dist/generated/portfolios/portfolios.d.ts",
       "import": "./dist/generated/portfolios/portfolios.js"
+    },
+    "./generated/posts/posts": {
+      "types": "./dist/generated/posts/posts.d.ts",
+      "import": "./dist/generated/posts/posts.js"
     }
   },
   "main": "./dist/src/index.js",
