@@ -12,7 +12,7 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc --outDir dist",
-    "clean": "git clean -xdf .cache .turbo node_modules",
+    "clean": "git clean -xdf .cache .turbo node_modules dist",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler d1 deploy",
     "dev": "tsc --watch --outDir dist",
