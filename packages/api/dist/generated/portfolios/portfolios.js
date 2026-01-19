@@ -15,5 +15,14 @@ export const getPortfolios = () => {
             params
         }, options);
     };
-    return { portfoliosGetPortfolioBySlug, portfoliosListPortfolios };
+    /**
+   * @summary Upload an image for a portfolio
+   */
+    const portfoliosUploadPortfolioImage = (portfolioId, portfoliosUploadPortfolioImageBody, options) => {
+        return customInstance({ url: `/api/portfolios/${portfolioId}/images`, method: 'POST',
+            headers: { 'Content-Type': 'application/octet-stream', },
+            data: portfoliosUploadPortfolioImageBody
+        }, options);
+    };
+    return { portfoliosGetPortfolioBySlug, portfoliosListPortfolios, portfoliosUploadPortfolioImage };
 };
