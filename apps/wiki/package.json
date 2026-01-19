@@ -4,10 +4,10 @@
   "name": "@portfolio/wiki",
   "type": "module",
   "scripts": {
-    "build": "docusaurus build",
-    "clean": "git clean -xdf .cache .turbo node_modules build dist .docusaurus .wrangler",
+    "build": "bun --bun astro build",
+    "clean": "git clean -xdf .cache .turbo node_modules build dist .astro .wrangler",
     "coverage": "vitest run --coverage",
-    "deploy": "wrangler pages deploy ./build --project-name portfolio-wiki --branch master",
+    "deploy": "wrangler pages deploy ./dist --project-name portfolio-wiki --branch master",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "fmt:md": "remark . --output",
@@ -19,35 +19,29 @@
     "lint:md:fix": "markdownlint-cli2 --fix .",
     "lint:textlint": "textlint .",
     "lint:textlint:fix": "textlint --fix .",
-    "studio": "docusaurus start --no-open --port 13000",
+    "studio": "bun --bun astro dev --port 13000",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "astro check && tsc --noEmit"
   },
   "dependencies": {
-    "@docusaurus/core": "3.9.2",
-    "@docusaurus/preset-classic": "3.9.2",
-    "@docusaurus/theme-mermaid": "3.9.2",
-    "@mdx-js/react": "3.1.1",
-    "prism-react-renderer": "2.4.1",
-    "rehype-img-size": "1.0.1",
-    "rehype-slug": "6.0.0"
+    "@astrojs/check": "0.9.4",
+    "@astrojs/cloudflare": "12.2.1",
+    "@astrojs/starlight": "0.31.1",
+    "astro": "5.1.5",
+    "hast-util-to-string": "3.0.1",
+    "sharp": "0.33.5",
+    "unist-util-visit": "5.0.0",
+    "zod": "3.24.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.9.2",
-    "@docusaurus/tsconfig": "3.9.2",
-    "@docusaurus/types": "3.9.2",
-    "@mapbox/rehype-prism": "0.9.0",
-    "@mdx-js/rollup": "3.1.1",
     "@portfolio/auth": "workspace:*",
     "@portfolio/biome-config": "workspace:*",
     "@portfolio/db": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
     "@proofdict/textlint-rule-proofdict": "3.1.2",
-    "@types/prismjs": "1.26.5",
     "markdownlint-cli2": "0.20.0",
     "remark-cli": "12.0.1",
     "remark-frontmatter": "5.0.0",
-    "remark-mdx-frontmatter": "5.2.0",
     "remark-preset-lint-markdown-style-guide": "6.0.1",
     "remark-stringify": "11.0.0",
     "textlint": "15.5.0",
@@ -61,18 +55,7 @@
     "textlint-rule-preset-ja-technical-writing": "12.0.2",
     "textlint-rule-preset-jtf-style": "3.0.3",
     "textlint-rule-spellcheck-tech-word": "5.0.0",
-    "typescript": "5.9.3"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "typescript": "5.9.3",
+    "wrangler": "4.20.0"
   }
 }
