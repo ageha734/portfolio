@@ -11,6 +11,5 @@
         "types": ["node"],
         "lib": ["DOM", "ES2022"]
     },
-    "exclude": ["node_modules", "dist"],
     "include": ["src/**/*.ts"]
 }
