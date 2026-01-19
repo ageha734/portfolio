@@ -3,7 +3,7 @@ import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 import mermaid from "astro-mermaid";
-import { cpSync } from "node:fs";
+import { cpSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import type { AstroIntegration } from "astro";
 
@@ -13,12 +13,18 @@ function copyStaticAssets(): AstroIntegration {
 		hooks: {
 			"astro:build:done": ({ dir }) => {
 				const outDir = dir.pathname;
-				cpSync(resolve("design/ui"), resolve(outDir, "design"), {
-					recursive: true,
-				});
-				cpSync(resolve("design/web"), resolve(outDir, "storybook"), {
-					recursive: true,
-				});
+				const uiDesignPath = resolve("design/ui");
+				if (existsSync(uiDesignPath)) {
+					cpSync(uiDesignPath, resolve(outDir, "design"), {
+						recursive: true,
+					});
+				}
+				const webDesignPath = resolve("design/web");
+				if (existsSync(webDesignPath)) {
+					cpSync(webDesignPath, resolve(outDir, "storybook"), {
+						recursive: true,
+					});
+				}
 				cpSync(resolve("reference"), resolve(outDir, "reference"), {
 					recursive: true,
 				});
