@@ -3,13 +3,13 @@ export declare function seedPortfolios(prisma: PrismaClient): Promise<{
     id: string;
     createdAt: Date;
     updatedAt: Date;
-    company: string;
+    slug: string;
+    title: string;
     date: Date;
     description: string | null;
-    title: string;
-    slug: string;
     content: string | null;
     intro: string | null;
+    company: string;
     current: boolean;
     overview: string | null;
     thumbnailTemp: string | null;

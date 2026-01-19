@@ -4,14 +4,14 @@
  * Portfolio API
  * OpenAPI spec version: 0.0.0
  */
-import type { Portfolio, PortfoliosListPortfolios200, PortfoliosListPortfoliosParams } from "../api.schemas";
-import { customInstance } from ".././mutator";
+import type { Portfolio, PortfoliosListPortfolios200, PortfoliosListPortfoliosParams } from '../api.schemas';
+import { customInstance } from '.././mutator';
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 export declare const getPortfolios: () => {
     portfoliosGetPortfolioBySlug: (slug: string, options?: SecondParameter<typeof customInstance<Portfolio>>) => Promise<Portfolio>;
     portfoliosListPortfolios: (params?: PortfoliosListPortfoliosParams, options?: SecondParameter<typeof customInstance<PortfoliosListPortfolios200>>) => Promise<PortfoliosListPortfolios200>;
 };
-export type PortfoliosGetPortfolioBySlugResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>["portfoliosGetPortfolioBySlug"]>>>;
-export type PortfoliosListPortfoliosResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>["portfoliosListPortfolios"]>>>;
+export type PortfoliosGetPortfolioBySlugResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>['portfoliosGetPortfolioBySlug']>>>;
+export type PortfoliosListPortfoliosResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>['portfoliosListPortfolios']>>>;
 export {};
 //# sourceMappingURL=portfolios.d.ts.map

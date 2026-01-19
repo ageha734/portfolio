@@ -6,10 +6,10 @@ export declare function seedPosts(prisma: PrismaClient, tags: {
     id: string;
     createdAt: Date;
     updatedAt: Date;
+    slug: string;
+    title: string;
     date: Date;
     description: string | null;
-    title: string;
-    slug: string;
     content: string;
     contentRaw: string | null;
     imageTemp: string;
