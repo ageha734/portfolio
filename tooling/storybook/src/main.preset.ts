@@ -1,10 +1,6 @@
 import type { StorybookConfig } from "@storybook/react-vite";
-import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mergeConfig } from "vite";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 export interface StorybookMainPresetOptions {
     stories: string[];
@@ -48,9 +44,9 @@ function filterRemixPlugins(plugins: unknown[]): unknown[] {
 }
 
 export function createStorybookMainPreset(options: StorybookMainPresetOptions): StorybookConfig {
-    const { stories, rootDir = process.cwd(), additionalAliases = {}, additionalAddons = [] } = options;
+    const { stories, additionalAliases = {}, additionalAddons = [] } = options;
 
-    const sentryNodeStubPath = resolve(__dirname, "./sentry-node-stub.ts");
+    const sentryNodeStubPath = fileURLToPath(new URL("./helper/sentry-stub.js", import.meta.url));
 
     const config: StorybookConfig = {
         stories,

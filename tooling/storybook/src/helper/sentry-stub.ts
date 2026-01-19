@@ -4,7 +4,7 @@ export function init(_options?: unknown) {
 export function captureException(_exception: unknown, _hint?: unknown): string | null {
     return null;
 }
-export function captureMessage(_message: string, _level?: SeverityLevel | unknown): string | null {
+export function captureMessage(_message: string, _level?: "debug" | "info" | "warning" | "error"): string | null {
     return null;
 }
 export function setUser(_user: unknown) {
@@ -19,11 +19,11 @@ export function setTag(_key: string, _value: string) {
 export function setTags(_tags: Record<string, string>) {
     void 0;
 }
-export function addBreadcrumb(_breadcrumb: Breadcrumb) {
+export function addBreadcrumb(_breadcrumb: unknown) {
     void 0;
 }
-export function withScope<T>(callback: (scope: Scope) => T): T {
-    const mockScope = {} as Scope;
+export function withScope<T>(callback: (scope: unknown) => T): T {
+    const mockScope = {} as unknown;
     return callback(mockScope);
 }
 export function close() {
@@ -41,12 +41,6 @@ export function onUncaughtExceptionIntegration(_options?: { exitEvenIfOtherHandl
 export function onUnhandledRejectionIntegration(_options?: { mode?: "warn" | "none" }) {
     return {};
 }
-
-export type SeverityLevel = "debug" | "info" | "warning" | "error";
-export type Breadcrumb = unknown;
-export type Scope = unknown;
-export type ErrorEvent = unknown;
-export type EventHint = unknown;
 
 export default {
     init,

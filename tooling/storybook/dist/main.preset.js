@@ -1,8 +1,5 @@
-import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mergeConfig } from "vite";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 function getPluginName(plugin) {
     if (typeof plugin === "object" && plugin !== null && "name" in plugin) {
         const nameValue = plugin.name;
@@ -34,8 +31,8 @@ function filterRemixPlugins(plugins) {
     return plugins.filter((plugin) => !shouldExcludeRemixPlugin(plugin));
 }
 export function createStorybookMainPreset(options) {
-    const { stories, rootDir = process.cwd(), additionalAliases = {}, additionalAddons = [] } = options;
-    const sentryNodeStubPath = resolve(__dirname, "./sentry-node-stub.ts");
+    const { stories, additionalAliases = {}, additionalAddons = [] } = options;
+    const sentryNodeStubPath = fileURLToPath(new URL("./helper/sentry-stub.js", import.meta.url));
     const config = {
         stories,
         addons: [
