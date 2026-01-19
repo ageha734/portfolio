@@ -81,6 +81,14 @@ export class CachedPortfolioRepository implements PortfolioRepository {
 		return portfolio;
 	}
 
+	async addImage(portfolioId: string, imageUrl: string): Promise<void> {
+		await this.dbRepository.addImage(portfolioId, imageUrl);
+		const portfolio = await this.dbRepository.findById(portfolioId);
+		if (portfolio) {
+			await this.invalidateCache(portfolio.slug, portfolioId);
+		}
+	}
+
 	async invalidateCache(slug?: string, id?: string): Promise<void> {
 		await this.cacheService.delete(this.getCacheKey("findAll"));
 

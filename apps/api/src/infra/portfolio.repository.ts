@@ -85,4 +85,14 @@ export class PortfolioRepositoryImpl implements PortfolioRepository {
             updatedAt: portfolio.updatedAt,
         };
     }
+
+    async addImage(portfolioId: string, imageUrl: string): Promise<void> {
+        const prisma = createPrismaClient({ databaseUrl: this.databaseUrl });
+        await prisma.portfolioImage.create({
+            data: {
+                portfolioId,
+                url: imageUrl,
+            },
+        });
+    }
 }

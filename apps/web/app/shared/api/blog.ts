@@ -2,6 +2,8 @@ import type { LoaderFunction } from "@remix-run/cloudflare";
 import type { Post } from "~/entities/blog";
 import { createApiClient } from "~/shared/lib/api";
 
+export type { Post } from "~/entities/blog";
+
 export type LoaderData = {
     posts: Post[];
     tags: string[];

@@ -4,7 +4,7 @@
  * 使用方法:
  * - Node.js環境（Vitestなど）: `import { server } from "@portfolio/testing-mocks"`
  * - ブラウザ環境（Storybookなど）: `import { worker } from "@portfolio/testing-mocks/browser"`
- * - ハンドラーのみ: `import { graphcmsHandlers } from "@portfolio/testing-mocks"`
+ * - ハンドラーのみ: `import { restHandlers } from "@portfolio/testing-mocks"`
  */
 
 export { default as workerDefault, worker } from "./browser";

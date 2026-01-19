@@ -1,4 +1,5 @@
 import type { Context } from "hono";
+import type { R2Bucket } from "@cloudflare/workers-types";
 import { AppError, ErrorCodes } from "@portfolio/log";
 import { getLogger, getMetrics } from "~/lib/logger";
 import { DIContainer } from "~/di/container";
@@ -99,6 +100,73 @@ export async function getPortfolioBySlug(c: Context) {
         metrics.httpRequestDuration.observe({ method: "GET", route: "/api/portfolios/:slug", status: String(appError.httpStatus) }, duration);
         metrics.httpRequestTotal.inc({ method: "GET", route: "/api/portfolios/:slug", status: String(appError.httpStatus) });
         metrics.httpRequestErrors.inc({ method: "GET", route: "/api/portfolios/:slug", status: String(appError.httpStatus) });
+
+        return c.json(appError.toJSON(), appError.httpStatus);
+    }
+}
+
+export async function uploadPortfolioImage(c: Context) {
+    const databaseUrl = c.env.DATABASE_URL;
+    const redisUrl = c.env.REDIS_URL;
+    const portfolioId = c.req.param("portfolioId");
+    const r2Bucket = c.env.R2_BUCKET as R2Bucket | undefined;
+    const r2PublicUrl = c.env.R2_PUBLIC_URL as string | undefined;
+    const logger = getLogger();
+    const metrics = getMetrics();
+    const startTime = Date.now();
+
+    if (!portfolioId) {
+        const validationError = AppError.fromCode(ErrorCodes.VALIDATION_MISSING_FIELD, "Portfolio ID is required", {
+            metadata: { field: "portfolioId" },
+        });
+        metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "400" });
+        return c.json(validationError.toJSON(), validationError.httpStatus);
+    }
+
+    if (!r2Bucket || !r2PublicUrl) {
+        const configError = AppError.fromCode(ErrorCodes.INTERNAL_SERVER_ERROR, "R2 bucket not configured", {
+            metadata: { route: "/api/portfolios/:portfolioId/images" },
+        });
+        metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "500" });
+        return c.json(configError.toJSON(), configError.httpStatus);
+    }
+
+    try {
+        const formData = await c.req.formData();
+        const imageFile = formData.get("image") as File | null;
+
+        if (!imageFile) {
+            const validationError = AppError.fromCode(ErrorCodes.VALIDATION_MISSING_FIELD, "Image file is required", {
+                metadata: { field: "image" },
+            });
+            metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "400" });
+            return c.json(validationError.toJSON(), validationError.httpStatus);
+        }
+
+        const container = new DIContainer(databaseUrl, redisUrl, r2Bucket, r2PublicUrl);
+        const useCase = container.getUploadPortfolioImageUseCase();
+        const result = await useCase.execute(portfolioId, imageFile);
+
+        const duration = (Date.now() - startTime) / 1000;
+        metrics.httpRequestDuration.observe({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "200" }, duration);
+        metrics.httpRequestTotal.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "200" });
+
+        return c.json(result);
+    } catch (error) {
+        const duration = (Date.now() - startTime) / 1000;
+        const appError = error instanceof AppError
+            ? error
+            : AppError.fromCode(ErrorCodes.INTERNAL_SERVER_ERROR, "Failed to upload image", {
+                  metadata: { route: "/api/portfolios/:portfolioId/images", portfolioId },
+                  originalError: error instanceof Error ? error : new Error(String(error)),
+              });
+
+        logger.logError(appError, { route: "/api/portfolios/:portfolioId/images", method: "POST", portfolioId });
+        metrics.errorsTotal.inc({ category: appError.category, code: appError.code });
+        metrics.errorsByCode.inc({ code: appError.code, category: appError.category });
+        metrics.httpRequestDuration.observe({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: String(appError.httpStatus) }, duration);
+        metrics.httpRequestTotal.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: String(appError.httpStatus) });
+        metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: String(appError.httpStatus) });
 
         return c.json(appError.toJSON(), appError.httpStatus);
     }

@@ -1,50 +1,76 @@
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { loader } from "./[sitemap.xml]";
+import type { Post } from "~/entities/blog";
+import type { Portfolio } from "~/entities/portfolio";
 
-vi.mock("~/shared/api/graphcms", () => ({
-    fetchFromGraphCMS: vi.fn(),
-}));
-
-vi.mock("~/shared/api/queries/getSitemap", () => ({
-    getSitemap: "query { portfolios { slug } posts { slug } }",
+vi.mock("~/shared/lib/api", () => ({
+    createApiClient: vi.fn(),
 }));
 
 describe("[sitemap.xml] loader", () => {
-    beforeEach(() => {
+    const mockApiClient = {
+        portfolios: {
+            listPortfolios: vi.fn(),
+        },
+        posts: {
+            listPosts: vi.fn(),
+        },
+    };
+
+    beforeEach(async () => {
         vi.clearAllMocks();
+        const { createApiClient } = await import("~/shared/lib/api");
+        vi.mocked(createApiClient).mockReturnValue(
+            mockApiClient as unknown as ReturnType<typeof import("~/shared/lib/api").createApiClient>,
+        );
     });
 
     test("should generate sitemap.xml with routes", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [
-                        {
-                            slug: "test-portfolio",
-                            date: "2023-01-01",
-                            title: "Test Portfolio",
-                        },
-                    ],
-                    posts: [
-                        {
-                            slug: "test-post",
-                            date: "2023-01-01",
-                            title: "Test Post",
-                        },
-                    ],
+        const mockPortfolios: Portfolio[] = [
+            {
+                id: "1",
+                slug: "test-portfolio",
+                date: "2023-01-01",
+                title: "Test Portfolio",
+                company: "Test Company",
+                current: false,
+            },
+        ];
+        const mockPosts: Post[] = [
+            {
+                id: "1",
+                slug: "test-post",
+                date: "2023-01-01",
+                title: "Test Post",
+                content: {
+                    html: "Test content",
                 },
-            }),
-        };
+                imageTemp: "",
+                sticky: false,
+                tags: [],
+                createdAt: "2023-01-01",
+                updatedAt: "2023-01-01",
+            },
+        ];
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: mockPortfolios } as never);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
-        const args = {} as LoaderFunctionArgs;
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
+
         const result = await loader(args);
 
         expect(result).toBeInstanceOf(Response);
-        const text = await result.text();
+        const text = await (result as Response).text();
         expect(text).toContain("<urlset");
         expect(text).toContain("</urlset>");
         expect(text).toContain("/blog");
@@ -52,103 +78,127 @@ describe("[sitemap.xml] loader", () => {
     });
 
     test("should include portfolio URLs", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [
-                        {
-                            slug: "test-portfolio",
-                            date: "2023-01-01",
-                            title: "Test Portfolio",
-                        },
-                    ],
-                    posts: [],
+        const mockPortfolios: Portfolio[] = [
+            {
+                id: "1",
+                slug: "test-portfolio",
+                date: "2023-01-01",
+                title: "Test Portfolio",
+                company: "Test Company",
+                current: false,
+            },
+        ];
+
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: mockPortfolios } as never);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: [] } as never);
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {} as LoaderFunctionArgs;
         const result = await loader(args);
-        const text = await result.text();
+        const text = await (result as Response).text();
 
         expect(text).toContain("/portfolio/test-portfolio");
     });
 
     test("should include post URLs", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [],
-                    posts: [
-                        {
-                            slug: "test-post",
-                            date: "2023-01-01",
-                            title: "Test Post",
-                        },
-                    ],
+        const mockPosts: Post[] = [
+            {
+                id: "1",
+                slug: "test-post",
+                date: "2023-01-01",
+                title: "Test Post",
+                content: {
+                    html: "Test content",
                 },
-            }),
-        };
+                imageTemp: "",
+                sticky: false,
+                tags: [],
+            },
+        ];
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: [] } as never);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
-        const args = {} as LoaderFunctionArgs;
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
+
         const result = await loader(args);
-        const text = await result.text();
+        expect(result).toBeInstanceOf(Response);
+        const text = await (result as Response).text();
 
         expect(text).toContain("/blog/test-post");
     });
 
     test("should set correct Content-Type header", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [],
-                    posts: [],
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: [] } as never);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: [] } as never);
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {} as LoaderFunctionArgs;
         const result = await loader(args);
+        expect(result).toBeInstanceOf(Response);
 
-        expect(result.headers.get("Content-Type")).toBe("application/xml");
+        expect((result as Response).headers.get("Content-Type")).toBe("application/xml");
     });
 
     test("should handle empty portfolios and posts", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [],
-                    posts: [],
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: [] } as never);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: [] } as never);
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {} as LoaderFunctionArgs;
         const result = await loader(args);
-        const text = await result.text();
+        expect(result).toBeInstanceOf(Response);
+        const text = await (result as Response).text();
 
         expect(text).toContain("<urlset");
         expect(text).toContain("</urlset>");
     });
 
-    test("should handle fetchFromGraphCMS error", async () => {
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockRejectedValue(new Error("Network error"));
+    test("should handle API error", async () => {
+        mockApiClient.portfolios.listPortfolios.mockRejectedValue(new Error("Network error"));
 
-        const args = {} as LoaderFunctionArgs;
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow("Network error");
+        await expect(loader(args)).rejects.toThrow();
     });
 });

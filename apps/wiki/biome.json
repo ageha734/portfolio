@@ -3,7 +3,7 @@
     "extends": ["@portfolio/biome-config/base"],
     "files": {
         "includes": [
-            "!!**/.docusaurus",
+            "!!.astro",
             "!!.wrangler",
             "!!docs",
             "!!design",

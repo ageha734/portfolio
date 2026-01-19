@@ -1,22 +1,29 @@
 import { expect, test, describe, vi, beforeEach } from "vitest";
 import { loader } from "./api.blog.$slug";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import type { Post } from "./api.blog.$slug";
 
-vi.mock("~/shared/api/graphcms", () => ({
-    fetchFromGraphCMS: vi.fn(),
-}));
-
-vi.mock("~/shared/api/queries/getPost", () => ({
-    getPost: "query getPost($slug: String!) { post(where: { slug: $slug }) { id } }",
+vi.mock("~/shared/lib/api", () => ({
+    createApiClient: vi.fn(),
 }));
 
 describe("api.blog.$slug", () => {
-    beforeEach(() => {
+    const mockApiClient = {
+        posts: {
+            getPostBySlug: vi.fn(),
+        },
+    };
+
+    beforeEach(async () => {
         vi.clearAllMocks();
+        const { createApiClient } = await import("~/shared/lib/api");
+        vi.mocked(createApiClient).mockReturnValue(
+            mockApiClient as unknown as ReturnType<typeof import("~/shared/lib/api").createApiClient>,
+        );
     });
 
     test("should return post data for valid slug", async () => {
-        const mockPost = {
+        const mockPost: Post = {
             content: {
                 raw: {},
                 html: "<p>Test content</p>",
@@ -29,22 +36,22 @@ describe("api.blog.$slug", () => {
             tags: ["Technical"],
             title: "Test Post",
             updatedAt: "2023-01-01T00:00:00Z",
+            id: "1",
+            slug: "test-post",
+            sticky: false,
         };
 
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    post: mockPost,
-                },
-            }),
-        };
-
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockApiClient.posts.getPostBySlug.mockResolvedValue({ data: mockPost } as never);
 
         const args = {
+            request: new Request("https://example.com"),
             params: { slug: "test-post" },
-        } as LoaderFunctionArgs;
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
         const result = await loader(args);
         const jsonResult = await (result as Response).json();
@@ -54,62 +61,61 @@ describe("api.blog.$slug", () => {
 
     test("should throw 400 for invalid slug", async () => {
         const args = {
+            request: new Request("https://example.com"),
             params: { slug: "invalid_slug" },
-        } as LoaderFunctionArgs;
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow();
+        await expect(loader(args)).rejects.toThrow("Invalid slug parameter");
     });
 
     test("should throw 404 when post is not found", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    post: null,
-                },
-            }),
-        };
-
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockApiClient.posts.getPostBySlug.mockResolvedValue({ data: null } as never);
 
         const args = {
+            request: new Request("https://example.com"),
             params: { slug: "non-existent-post" },
-        } as LoaderFunctionArgs;
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
         await expect(loader(args)).rejects.toThrow();
     });
 
     test("should throw 400 when slug is missing", async () => {
         const args = {
+            request: new Request("https://example.com"),
             params: {},
-        } as LoaderFunctionArgs;
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
+
+        await expect(loader(args)).rejects.toThrow("Invalid slug parameter");
+    });
+
+    test("should handle API error", async () => {
+        mockApiClient.posts.getPostBySlug.mockRejectedValue(new Error("Network error"));
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: { slug: "test-post" },
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
         await expect(loader(args)).rejects.toThrow();
-    });
-
-    test("should handle fetchFromGraphCMS error", async () => {
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockRejectedValue(new Error("Network error"));
-
-        const args = {
-            params: { slug: "test-post" },
-        } as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow("Network error");
-    });
-
-    test("should handle json parsing error", async () => {
-        const mockResponse = {
-            json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
-        };
-
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {
-            params: { slug: "test-post" },
-        } as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow("Invalid JSON");
     });
 });

@@ -1,173 +1,132 @@
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import * as graphcmsModule from "~/shared/api/graphcms";
+import type { Post } from "~/entities/blog";
 import type { LoaderData } from "./blog";
 import { loader } from "./blog";
 
-vi.mock("~/shared/api/queries/getPosts", () => ({
-    getPosts: "query { posts { id } }",
+vi.mock("~/shared/lib/api", () => ({
+    createApiClient: vi.fn(),
 }));
 
 describe("blog api", () => {
-    const mockFetchFromGraphCMS = vi.spyOn(graphcmsModule, "fetchFromGraphCMS");
+    const mockApiClient = {
+        posts: {
+            listPosts: vi.fn(),
+        },
+    };
 
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.clearAllMocks();
+        const { createApiClient } = await import("~/shared/lib/api");
+        vi.mocked(createApiClient).mockReturnValue(
+            mockApiClient as unknown as ReturnType<typeof import("~/shared/lib/api").createApiClient>,
+        );
     });
 
     test("should return posts and tags", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    posts: [
-                        {
-                            id: "1",
-                            title: "Test Post",
-                            slug: "test-post",
-                            date: "2023-01-01",
-                            content: { html: "<p>Test</p>" },
-                            tags: ["Technical"],
-                            sticky: false,
-                            imageTemp: "",
-                        },
-                    ],
-                    __type: {
-                        enumValues: [{ name: "Technical" }, { name: "DIY" }],
-                    },
+        const mockPosts: Post[] = [
+            {
+                id: "1",
+                title: "Test Post",
+                slug: "test-post",
+                date: "2023-01-01",
+                content: {
+                    html: "Test content",
                 },
-            }),
-        };
+                tags: ["Technical"],
+                sticky: false,
+                imageTemp: "",
+                createdAt: "2023-01-01",
+                updatedAt: "2023-01-01",
+            },
+        ];
 
-        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
-        const args = {} as LoaderFunctionArgs;
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
+
         const result = await loader(args);
 
         expect(result).toBeDefined();
         const jsonResult = await (result as Response).json();
         expect((jsonResult as LoaderData).posts).toBeInstanceOf(Array);
         expect((jsonResult as LoaderData).tags).toBeInstanceOf(Array);
+        expect((jsonResult as LoaderData).tags).toEqual(["Technical"]);
     });
 
     test("should throw 404 if no posts found", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    posts: [],
-                    __type: {
-                        enumValues: [],
-                    },
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: [] } as never);
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
-
-        const args = {} as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow();
-    });
-
-    test("should handle null posts data", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    posts: null,
-                    __type: {
-                        enumValues: [],
-                    },
-                },
-            }),
-        };
-
-        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
-
-        const args = {} as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow();
-    });
-
-    test("should handle null enumValues data", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    posts: [
-                        {
-                            id: "1",
-                            title: "Test Post",
-                            slug: "test-post",
-                            date: "2023-01-01",
-                            content: { html: "<p>Test</p>" },
-                            tags: ["Technical"],
-                            sticky: false,
-                            imageTemp: "",
-                        },
-                    ],
-                    __type: {
-                        enumValues: null,
-                    },
-                },
-            }),
-        };
-
-        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
-
-        const args = {} as LoaderFunctionArgs;
-        const result = await loader(args);
-        const jsonResult = await (result as Response).json();
-
-        expect((jsonResult as LoaderData).tags).toEqual([]);
+        await expect(loader(args)).rejects.toThrow("Blog posts not found");
     });
 
     test("should sort tags alphabetically", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    posts: [
-                        {
-                            id: "1",
-                            title: "Test Post",
-                            slug: "test-post",
-                            date: "2023-01-01",
-                            content: { html: "<p>Test</p>" },
-                            tags: ["Technical"],
-                            sticky: false,
-                            imageTemp: "",
-                        },
-                    ],
-                    __type: {
-                        enumValues: [{ name: "DIY" }, { name: "Technical" }, { name: "Blog" }],
-                    },
+        const mockPosts: Post[] = [
+            {
+                id: "1",
+                title: "Test Post",
+                slug: "test-post",
+                date: "2023-01-01",
+                content: {
+                    html: "Test content",
                 },
-            }),
-        };
+                tags: ["Technical", "DIY", "Blog"],
+                sticky: false,
+                imageTemp: "",
+                createdAt: "2023-01-01",
+                updatedAt: "2023-01-01",
+            },
+        ];
 
-        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
+        mockApiClient.posts.listPosts.mockResolvedValue({ data: mockPosts } as never);
 
-        const args = {} as LoaderFunctionArgs;
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
+
         const result = await loader(args);
         const jsonResult = await (result as Response).json();
 
         expect((jsonResult as LoaderData).tags).toEqual(["Blog", "DIY", "Technical"]);
     });
 
-    test("should handle fetchFromGraphCMS error", async () => {
-        mockFetchFromGraphCMS.mockRejectedValue(new Error("Network error"));
+    test("should handle API error", async () => {
+        mockApiClient.posts.listPosts.mockRejectedValue(new Error("Network error"));
 
-        const args = {} as LoaderFunctionArgs;
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow("Network error");
-    });
-
-    test("should handle json parsing error", async () => {
-        const mockResponse = {
-            json: vi.fn().mockRejectedValue(new Error("Invalid JSON")),
-        };
-
-        mockFetchFromGraphCMS.mockResolvedValue(mockResponse as unknown as Response);
-
-        const args = {} as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow("Invalid JSON");
+        await expect(loader(args)).rejects.toThrow();
     });
 });

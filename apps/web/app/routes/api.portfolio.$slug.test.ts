@@ -1,22 +1,29 @@
 import { expect, test, describe, vi, beforeEach } from "vitest";
 import { loader } from "./api.portfolio.$slug";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import type { Portfolio } from "./api.portfolio.$slug";
 
-vi.mock("~/shared/api/graphcms", () => ({
-    fetchFromGraphCMS: vi.fn(),
-}));
-
-vi.mock("~/shared/api/queries/getPortfolio", () => ({
-    getPortfolioBySlug: "query portfolios($slug: String!) { portfolios(where: { slug: $slug }) { id } }",
+vi.mock("~/shared/lib/api", () => ({
+    createApiClient: vi.fn(),
 }));
 
 describe("api.portfolio.$slug", () => {
-    beforeEach(() => {
+    const mockApiClient = {
+        portfolios: {
+            getPortfolioBySlug: vi.fn(),
+        },
+    };
+
+    beforeEach(async () => {
         vi.clearAllMocks();
+        const { createApiClient } = await import("~/shared/lib/api");
+        vi.mocked(createApiClient).mockReturnValue(
+            mockApiClient as unknown as ReturnType<typeof import("~/shared/lib/api").createApiClient>,
+        );
     });
 
     test("should return portfolio data for valid slug", async () => {
-        const mockPortfolio = {
+        const mockPortfolio: Portfolio = {
             company: "Test Company",
             content: {
                 html: "<p>Test content</p>",
@@ -26,22 +33,23 @@ describe("api.portfolio.$slug", () => {
             intro: "Test intro",
             slug: "test-portfolio",
             title: "Test Portfolio",
+            date: "2023-01-01",
+            current: false,
+            createdAt: "2023-01-01",
+            updatedAt: "2023-01-01",
         };
 
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [mockPortfolio],
-                },
-            }),
-        };
-
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockApiClient.portfolios.getPortfolioBySlug.mockResolvedValue({ data: mockPortfolio } as never);
 
         const args = {
+            request: new Request("https://example.com"),
             params: { slug: "test-portfolio" },
-        } as LoaderFunctionArgs;
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
         const result = await loader(args);
         const jsonResult = await (result as Response).json();
@@ -51,88 +59,61 @@ describe("api.portfolio.$slug", () => {
 
     test("should throw 400 for invalid slug", async () => {
         const args = {
+            request: new Request("https://example.com"),
             params: { slug: "invalid_slug" },
-        } as LoaderFunctionArgs;
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow();
+        await expect(loader(args)).rejects.toThrow("Invalid slug parameter");
     });
 
     test("should throw 404 when portfolio is not found", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [],
-                },
-            }),
-        };
-
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
+        mockApiClient.portfolios.getPortfolioBySlug.mockResolvedValue({ data: null } as never);
 
         const args = {
+            request: new Request("https://example.com"),
             params: { slug: "non-existent-portfolio" },
-        } as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow();
-    });
-
-    test("should throw 404 when multiple portfolios found", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [
-                        { id: "1", slug: "test", title: "Test 1" },
-                        { id: "2", slug: "test", title: "Test 2" },
-                    ],
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
-
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {
-            params: { slug: "test" },
-        } as LoaderFunctionArgs;
+            },
+        } as unknown as LoaderFunctionArgs;
 
         await expect(loader(args)).rejects.toThrow();
     });
 
     test("should throw 400 when slug is missing", async () => {
         const args = {
+            request: new Request("https://example.com"),
             params: {},
-        } as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow();
-    });
-
-    test("should handle null portfolios data", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: null,
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {
-            params: { slug: "test-portfolio" },
-        } as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow();
+        await expect(loader(args)).rejects.toThrow("Invalid slug parameter");
     });
 
-    test("should handle fetchFromGraphCMS error", async () => {
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockRejectedValue(new Error("Network error"));
+    test("should handle API error", async () => {
+        mockApiClient.portfolios.getPortfolioBySlug.mockRejectedValue(new Error("Network error"));
 
         const args = {
+            request: new Request("https://example.com"),
             params: { slug: "test-portfolio" },
-        } as LoaderFunctionArgs;
+            context: {
+                cloudflare: {
+                    env: {},
+                },
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow("Network error");
+        await expect(loader(args)).rejects.toThrow();
     });
 });

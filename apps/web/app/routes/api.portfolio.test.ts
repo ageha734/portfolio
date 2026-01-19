@@ -3,44 +3,53 @@ import { loader } from "./api.portfolio";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import type { Portfolio } from "./api.portfolio";
 
-vi.mock("~/shared/api/graphcms", () => ({
-    fetchFromGraphCMS: vi.fn(),
-}));
-
-vi.mock("~/shared/api/queries/getPortfolios", () => ({
-    getPortfolios: "query { portfolios { id } }",
+vi.mock("~/shared/lib/api", () => ({
+    createApiClient: vi.fn(),
 }));
 
 describe("api.portfolio route", () => {
-    beforeEach(() => {
+    const mockApiClient = {
+        portfolios: {
+            listPortfolios: vi.fn(),
+        },
+    };
+
+    beforeEach(async () => {
         vi.clearAllMocks();
+        const { createApiClient } = await import("~/shared/lib/api");
+        vi.mocked(createApiClient).mockReturnValue(
+            mockApiClient as unknown as ReturnType<typeof import("~/shared/lib/api").createApiClient>,
+        );
     });
 
     test("should return portfolio items", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [
-                        {
-                            id: "1",
-                            title: "Test Portfolio",
-                            slug: "test-portfolio",
-                            company: "Test Company",
-                            current: false,
-                            date: new Date("2023-01-01"),
-                            images: [],
-                            overview: "Test overview",
-                            thumbnailTemp: "",
-                        },
-                    ],
+        const mockPortfolios: Portfolio[] = [
+            {
+                id: "1",
+                title: "Test Portfolio",
+                slug: "test-portfolio",
+                company: "Test Company",
+                current: false,
+                date: "2023-01-01",
+                overview: "Test overview",
+                thumbnailTemp: "",
+                createdAt: "2023-01-01",
+                updatedAt: "2023-01-01",
+            },
+        ];
+
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: mockPortfolios } as never);
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {} as LoaderFunctionArgs;
         const result = await loader(args);
 
         expect(result).toBeDefined();
@@ -50,45 +59,34 @@ describe("api.portfolio route", () => {
     });
 
     test("should throw 404 if no portfolios found", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: [],
+        mockApiClient.portfolios.listPortfolios.mockResolvedValue({ data: [] } as never);
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
+            },
+        } as unknown as LoaderFunctionArgs;
 
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {} as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow();
+        await expect(loader(args)).rejects.toThrow("Portfolio items not found");
     });
 
-    test("should handle null portfolios data", async () => {
-        const mockResponse = {
-            json: vi.fn().mockResolvedValue({
-                data: {
-                    portfolios: null,
+    test("should handle API error", async () => {
+        mockApiClient.portfolios.listPortfolios.mockRejectedValue(new Error("Network error"));
+
+        const args = {
+            request: new Request("https://example.com"),
+            params: {},
+            context: {
+                cloudflare: {
+                    env: {},
                 },
-            }),
-        };
-
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockResolvedValue(mockResponse);
-
-        const args = {} as LoaderFunctionArgs;
+            },
+        } as unknown as LoaderFunctionArgs;
 
         await expect(loader(args)).rejects.toThrow();
-    });
-
-    test("should handle fetchFromGraphCMS error", async () => {
-        const { fetchFromGraphCMS } = await import("~/shared/api/graphcms");
-        (fetchFromGraphCMS as any).mockRejectedValue(new Error("Network error"));
-
-        const args = {} as LoaderFunctionArgs;
-
-        await expect(loader(args)).rejects.toThrow("Network error");
     });
 });

@@ -3,6 +3,7 @@ import "@typespec/openapi3";
 import "../models/portfolio.tsp";
 import "../models/paginated-response.tsp";
 import "../models/error-response.tsp";
+import "../models/asset.tsp";
 
 using TypeSpec.Http;
 
@@ -23,6 +24,23 @@ namespace Api.Portfolios {
     op getPortfolioBySlug(@path slug: string): {
         @statusCode statusCode: 200;
         @body body: Portfolio;
+    } | {
+        @statusCode statusCode: 404;
+        @body body: ErrorResponse;
+    };
+
+    @post
+    @route("/portfolios/{portfolioId}/images")
+    @summary("Upload an image for a portfolio")
+    op uploadPortfolioImage(
+        @path portfolioId: string,
+        @body body: bytes,
+    ): {
+        @statusCode statusCode: 200;
+        @body body: Asset;
+    } | {
+        @statusCode statusCode: 400;
+        @body body: ErrorResponse;
     } | {
         @statusCode statusCode: 404;
         @body body: ErrorResponse;
