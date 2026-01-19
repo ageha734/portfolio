@@ -247,21 +247,15 @@
       "name": "@portfolio/db",
       "version": "1.0.1",
       "dependencies": {
-        "@prisma/adapter-d1": "5.22.0",
         "@prisma/client": "5.22.0",
       },
       "devDependencies": {
-        "@cloudflare/workers-types": "4.20260101.0",
         "@portfolio/biome-config": "tooling/biome",
         "@portfolio/tsconfig": "tooling/tsconfig",
         "@portfolio/vitest-config": "tooling/vitest",
         "prisma": "5.22.0",
         "typescript": "5.9.3",
         "vitest": "3.2.4",
-        "wrangler": "4.54.0",
-      },
-      "peerDependencies": {
-        "wrangler": "4.54.0",
       },
     },
     "packages/ui": {
@@ -1435,7 +1429,7 @@
 
     "@portfolio/cms": ["@portfolio/cms@workspace:apps/api", { "dependencies": { "@portfolio/api": "packages/api", "@portfolio/auth": "packages/auth", "@portfolio/db": "packages/db", "hono": "4.6.11" }, "devDependencies": { "@cloudflare/vite-plugin": "1.12.3", "@cloudflare/workers-types": "4.20260101.0", "@portfolio/biome-config": "tooling/biome", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/vitest-config": "tooling/vitest", "dotenv": "17.2.3", "typescript": "5.9.3", "vite": "6.1.0", "vitest": "3.2.4", "wrangler": "4.54.0" }, "peerDependencies": { "wrangler": "4.54.0" } }],
 
-    "@portfolio/db": ["@portfolio/db@workspace:packages/db", { "dependencies": { "@prisma/adapter-d1": "5.22.0", "@prisma/client": "5.22.0" }, "devDependencies": { "@cloudflare/workers-types": "4.20260101.0", "@portfolio/biome-config": "tooling/biome", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/vitest-config": "tooling/vitest", "prisma": "5.22.0", "typescript": "5.9.3", "vitest": "3.2.4", "wrangler": "4.54.0" }, "peerDependencies": { "wrangler": "4.54.0" } }],
+    "@portfolio/db": ["@portfolio/db@workspace:packages/db", { "dependencies": { "@prisma/client": "5.22.0" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/vitest-config": "tooling/vitest", "prisma": "5.22.0", "typescript": "5.9.3", "vitest": "3.2.4" } }],
 
     "@portfolio/generators": ["@portfolio/generators@workspace:generators", { "dependencies": { "plop": "4.0.1" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome", "@portfolio/tsconfig": "tooling/tsconfig", "@types/node": "25.0.3", "typescript": "5.9.3" } }],
 
@@ -1469,13 +1463,9 @@
 
     "@portfolio/wiki": ["@portfolio/wiki@workspace:apps/wiki", { "dependencies": { "@astrojs/check": "0.9.4", "@astrojs/cloudflare": "12.2.1", "@astrojs/react": "3.6.2", "@astrojs/starlight": "0.31.1", "@portfolio/ui": "packages/ui", "@portfolio/validation": "packages/validation", "astro": "5.1.5", "astro-mermaid": "1.0.0", "hast-util-to-string": "3.0.1", "mermaid": "11.0.0", "react": "18.3.1", "react-dom": "18.3.1", "sharp": "0.33.5", "unist-util-visit": "5.0.0", "zod": "3.24.1" }, "devDependencies": { "@portfolio/auth": "packages/auth", "@portfolio/biome-config": "tooling/biome", "@portfolio/db": "packages/db", "@portfolio/tsconfig": "tooling/tsconfig", "@proofdict/textlint-rule-proofdict": "3.1.2", "markdownlint-cli2": "0.20.0", "remark-cli": "12.0.1", "remark-frontmatter": "5.0.0", "remark-preset-lint-markdown-style-guide": "6.0.1", "remark-stringify": "11.0.0", "textlint": "15.5.0", "textlint-filter-rule-allowlist": "4.0.0", "textlint-rule-ja-hiragana-daimeishi": "1.0.0", "textlint-rule-ja-hiragana-fukushi": "1.3.0", "textlint-rule-ja-hiragana-hojodoushi": "1.1.0", "textlint-rule-ja-hiragana-keishikimeishi": "1.1.0", "textlint-rule-ja-no-orthographic-variants": "2.0.0", "textlint-rule-no-mixed-zenkaku-and-hankaku-alphabet": "1.0.1", "textlint-rule-preset-ja-technical-writing": "12.0.2", "textlint-rule-preset-jtf-style": "3.0.3", "textlint-rule-spellcheck-tech-word": "5.0.0", "typescript": "5.9.3", "wrangler": "4.20.0" } }],
 
-    "@prisma/adapter-d1": ["@prisma/adapter-d1@5.22.0", "", { "dependencies": { "@cloudflare/workers-types": "4.20240614.0", "@prisma/driver-adapter-utils": "5.22.0" } }, "sha512-sI1tRkvd0F+0Xde7La4FfW9dMEmY/lEnc0EkBc0eOs4AkJu1mJrXBmQorojrEPI0ys6MNVZao8cQoq/Nnyh9jg=="],
-
     "@prisma/client": ["@prisma/client@5.22.0", "", { "peerDependencies": { "prisma": "*" }, "optionalPeers": ["prisma"] }, "sha512-M0SVXfyHnQREBKxCgyo7sffrKttwE6R8PMq330MIUF0pTwjUhLbW84pFDlf06B27XyCR++VtjugEnIHdr07SVA=="],
 
     "@prisma/debug": ["@prisma/debug@5.22.0", "", {}, "sha512-AUt44v3YJeggO2ZU5BkXI7M4hu9BF2zzH2iF2V5pyXT/lRTyWiElZ7It+bRH1EshoMRxHgpYg4VB6rCM+mG5jQ=="],
-
-    "@prisma/driver-adapter-utils": ["@prisma/driver-adapter-utils@5.22.0", "", { "dependencies": { "@prisma/debug": "5.22.0" } }, "sha512-Y8msGZl9unmVflXoqdxTejv99UD02Gp4VoIvkyw+YxNUIj7nRz35O7yf5D87qNmTiPMGCS1WjUucG9ZuNq8+tw=="],
 
     "@prisma/engines": ["@prisma/engines@5.22.0", "", { "dependencies": { "@prisma/debug": "5.22.0", "@prisma/engines-version": "5.22.0-44.605197351a3c8bdd595af2d2a9bc3025bca48ea2", "@prisma/fetch-engine": "5.22.0", "@prisma/get-platform": "5.22.0" } }, "sha512-UNjfslWhAt06kVL3CjkuYpHAWSO6L4kDCVPegV6itt7nD1kSJavd3vhgAEhjglLJJKEdJ7oIqDJ+yHk6qO8gPA=="],
 
@@ -6270,8 +6260,6 @@
     "@portfolio/wiki/wrangler": ["wrangler@4.20.0", "", { "dependencies": { "@cloudflare/kv-asset-handler": "0.4.0", "@cloudflare/unenv-preset": "2.3.2", "blake3-wasm": "2.1.5", "esbuild": "0.25.4", "miniflare": "4.20250604.1", "path-to-regexp": "6.3.0", "unenv": "2.0.0-rc.17", "workerd": "1.20250604.0" }, "optionalDependencies": { "fsevents": "~2.3.2" }, "peerDependencies": { "@cloudflare/workers-types": "^4.20250604.0" }, "optionalPeers": ["@cloudflare/workers-types"], "bin": { "wrangler": "bin/wrangler.js", "wrangler2": "bin/wrangler.js" } }, "sha512-gxMLaSnYp3VLdGPZu4fc/9UlB7PnSVwni25v32NM9szG2yTt+gx5RunWzmoLplplIfEMkBuV3wA47vccNu7zcA=="],
 
     "@portfolio/wiki/zod": ["zod@3.24.1", "", {}, "sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A=="],
-
-    "@prisma/adapter-d1/@cloudflare/workers-types": ["@cloudflare/workers-types@4.20240614.0", "", {}, "sha512-fnV3uXD1Hpq5EWnY7XYb+smPcjzIoUFiZpTSV/Tk8qKL3H+w6IqcngZwXQBZ/2U/DwYkDilXHW3FfPhnyD7FZA=="],
 
     "@prisma/instrumentation/@opentelemetry/instrumentation": ["@opentelemetry/instrumentation@0.208.0", "", { "dependencies": { "@opentelemetry/api-logs": "0.208.0", "import-in-the-middle": "^2.0.0", "require-in-the-middle": "^8.0.0" }, "peerDependencies": { "@opentelemetry/api": "^1.3.0" } }, "sha512-Eju0L4qWcQS+oXxi6pgh7zvE2byogAkcsVv0OjHF/97iOz1N/aKE6etSGowYkie+YA1uo6DNwdSxaaNnLvcRlA=="],
 

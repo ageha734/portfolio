@@ -1,3 +1,9 @@
+generator markdown {
+  provider = "prisma-markdown"
+  output   = "../../../../docs/database/erd.md"
+  title    = "データベース設計書"
+}
+
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["prismaSchemaFolder"]

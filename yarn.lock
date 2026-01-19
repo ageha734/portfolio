@@ -2204,11 +2204,6 @@
   resolved "https://registry.npmjs.org/@cloudflare/workerd-windows-64/-/workerd-windows-64-1.20251210.0.tgz"
   integrity sha512-Uaz6/9XE+D6E7pCY4OvkCuJHu7HcSDzeGcCGY1HLhojXhHd7yL52c3yfiyJdS8hPatiAa0nn5qSI/42+aTdDSw==
 
-"@cloudflare/workers-types@4.20240614.0":
-  version "4.20240614.0"
-  resolved "https://registry.npmjs.org/@cloudflare/workers-types/-/workers-types-4.20240614.0.tgz"
-  integrity sha512-fnV3uXD1Hpq5EWnY7XYb+smPcjzIoUFiZpTSV/Tk8qKL3H+w6IqcngZwXQBZ/2U/DwYkDilXHW3FfPhnyD7FZA==
-
 "@cloudflare/workers-types@4.20260101.0", "@cloudflare/workers-types@>=4", "@cloudflare/workers-types@^4.0.0", "@cloudflare/workers-types@^4.20250109.0", "@cloudflare/workers-types@^4.20250408.0", "@cloudflare/workers-types@^4.20250604.0", "@cloudflare/workers-types@^4.20250902.0", "@cloudflare/workers-types@^4.20251210.0":
   version "4.20260101.0"
   resolved "https://registry.npmjs.org/@cloudflare/workers-types/-/workers-types-4.20260101.0.tgz"
@@ -5354,16 +5349,13 @@
   version "workspace:packages/db"
   resolved "workspace:packages/db"
   devDependencies:
-    "@cloudflare/workers-types" "4.20260101.0"
     "@portfolio/biome-config" "tooling/biome"
     "@portfolio/tsconfig" "tooling/tsconfig"
     "@portfolio/vitest-config" "tooling/vitest"
     prisma "5.22.0"
     typescript "5.9.3"
     vitest "3.2.4"
-    wrangler "4.54.0"
   dependencies:
-    "@prisma/adapter-d1" "5.22.0"
     "@prisma/client" "5.22.0"
 
 "@portfolio/generators@generators":
@@ -5679,14 +5671,6 @@
     unist-util-visit "5.0.0"
     zod "3.24.1"
 
-"@prisma/adapter-d1@5.22.0":
-  version "5.22.0"
-  resolved "https://registry.npmjs.org/@prisma/adapter-d1/-/adapter-d1-5.22.0.tgz"
-  integrity sha512-sI1tRkvd0F+0Xde7La4FfW9dMEmY/lEnc0EkBc0eOs4AkJu1mJrXBmQorojrEPI0ys6MNVZao8cQoq/Nnyh9jg==
-  dependencies:
-    "@cloudflare/workers-types" "4.20240614.0"
-    "@prisma/driver-adapter-utils" "5.22.0"
-
 "@prisma/client@*", "@prisma/client@5.22.0", "@prisma/client@^5.0.0 || ^6.0.0 || ^7.0.0", "@prisma/client@^5.22.0":
   version "5.22.0"
   resolved "https://registry.npmjs.org/@prisma/client/-/client-5.22.0.tgz"
@@ -5696,13 +5680,6 @@
   version "5.22.0"
   resolved "https://registry.npmjs.org/@prisma/debug/-/debug-5.22.0.tgz"
   integrity sha512-AUt44v3YJeggO2ZU5BkXI7M4hu9BF2zzH2iF2V5pyXT/lRTyWiElZ7It+bRH1EshoMRxHgpYg4VB6rCM+mG5jQ==
-
-"@prisma/driver-adapter-utils@5.22.0":
-  version "5.22.0"
-  resolved "https://registry.npmjs.org/@prisma/driver-adapter-utils/-/driver-adapter-utils-5.22.0.tgz"
-  integrity sha512-Y8msGZl9unmVflXoqdxTejv99UD02Gp4VoIvkyw+YxNUIj7nRz35O7yf5D87qNmTiPMGCS1WjUucG9ZuNq8+tw==
-  dependencies:
-    "@prisma/debug" "5.22.0"
 
 "@prisma/engines@5.22.0":
   version "5.22.0"
@@ -12705,12 +12682,12 @@ devlop@^1.0.0, devlop@^1.1.0:
   dependencies:
     dequal "^2.0.0"
 
-devtools-protocol@*, devtools-protocol@0.0.1467305:
+devtools-protocol@0.0.1467305:
   version "0.0.1467305"
   resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.1467305.tgz"
   integrity sha512-LxwMLqBoPPGpMdRL4NkLFRNy3QLp6Uqa7GNp1v6JaBheop2QrB9Q7q0A/q/CYYP9sBfZdHOyszVx4gc9zyk7ow==
 
-devtools-protocol@0.0.1534754:
+devtools-protocol@*, devtools-protocol@0.0.1534754:
   version "0.0.1534754"
   resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.1534754.tgz"
   integrity sha512-26T91cV5dbOYnXdJi5qQHoTtUoNEqwkHcAyu/IKtjIAxiEqPMrDiRkDOPWVsGfNZGmlQVHQbZRSjD8sxagWVsQ==

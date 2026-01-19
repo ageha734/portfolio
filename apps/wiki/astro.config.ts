@@ -73,6 +73,10 @@ export default defineConfig({
 					],
 				},
 				{
+					label: "Database",
+					autogenerate: { directory: "database" },
+				},
+				{
 					label: "Prompts",
 					link: "/prompts/",
 				},
