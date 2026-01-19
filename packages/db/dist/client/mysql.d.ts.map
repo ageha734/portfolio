@@ -1,1 +1,0 @@
-{"version":3,"file":"mysql.d.ts","sourceRoot":"","sources":["../../src/client/mysql.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAE,MAAM,gBAAgB,CAAC;AAE9C,MAAM,WAAW,yBAAyB;IACzC,WAAW,CAAC,EAAE,MAAM,CAAC;CACrB;AAID,wBAAgB,kBAAkB,CACjC,OAAO,GAAE,yBAA8B,GACrC,YAAY,CAgBd;AAED,MAAM,MAAM,gBAAgB,GAAG,UAAU,CAAC,OAAO,kBAAkB,CAAC,CAAC"}

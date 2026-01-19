@@ -6,6 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
+    "clean": "git clean -xdf .cache .turbo node_modules dist",
     "config:set": "pulumi config set",
     "config:set-secret": "pulumi config set --secret",
     "destroy": "pulumi destroy",

@@ -1,1 +1,0 @@
-const t="Matthew Scholta",o=`The online portfolio of ${t}, a Software Engineer!`,a=`${t} - A Software Engineer`;new Date().getFullYear();const e="https://github.com/visormatt",n="https://linkedin.com/in/MatthewScholta",s="https://twitter.com/visormatt";export{n as S,e as a,s as b,a as c,o as d};
