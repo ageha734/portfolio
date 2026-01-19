@@ -1,3 +1,4 @@
+import cloudflare from "@astrojs/cloudflare";
 import starlight from "@astrojs/starlight";
 import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
@@ -28,6 +29,8 @@ function copyStaticAssets(): AstroIntegration {
 
 export default defineConfig({
 	site: "https://wiki.ageha734.jp",
+	output: "static",
+	adapter: cloudflare(),
 	integrations: [
 		react(),
 		mermaid({

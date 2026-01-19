@@ -1,6 +1,6 @@
 name = "portfolio-wiki"
 compatibility_date = "2025-11-17"
-pages_build_output_dir = "./build"
+pages_build_output_dir = "./dist"
 
 [[d1_databases]]
 binding = "DB"
