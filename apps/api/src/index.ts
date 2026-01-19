@@ -26,6 +26,14 @@ app.use("*", async (c, next) => {
 	return next();
 });
 
+app.get("/health", (c) => {
+	return c.json({
+		status: "ok",
+		version: c.env.APP_VERSION || "unknown",
+		environment: c.env.NODE_ENV,
+	});
+});
+
 app.route("/api", restRouter);
 
 export default app;
