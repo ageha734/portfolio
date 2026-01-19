@@ -1,4 +1,4 @@
-import * as grafana from "@pulumi/grafana";
+import * as grafana from "@pulumiverse/grafana";
 import * as pulumi from "@pulumi/pulumi";
 import type { InfraConfig } from "../config";
 
@@ -33,8 +33,8 @@ export interface GrafanaAlertConfig {
 
 export interface GrafanaOutputs {
 	stack?: grafana.cloud.Stack;
-	dashboards: Record<string, grafana.Dashboard>;
-	folders: Record<string, grafana.Folder>;
+	dashboards: Record<string, grafana.oss.Dashboard>;
+	folders: Record<string, grafana.oss.Folder>;
 }
 
 /**
@@ -45,11 +45,11 @@ export function createGrafanaResources(
 	stackConfig: GrafanaStackConfig,
 	dashboards: GrafanaDashboardConfig[] = [],
 ): GrafanaOutputs {
-	const createdDashboards: Record<string, grafana.Dashboard> = {};
-	const createdFolders: Record<string, grafana.Folder> = {};
+	const createdDashboards: Record<string, grafana.oss.Dashboard> = {};
+	const createdFolders: Record<string, grafana.oss.Folder> = {};
 
 	// Create folder for portfolio dashboards
-	const portfolioFolder = new grafana.Folder("grafana-folder-portfolio", {
+	const portfolioFolder = new grafana.oss.Folder("grafana-folder-portfolio", {
 		title: "Portfolio",
 	});
 	createdFolders["portfolio"] = portfolioFolder;
@@ -57,7 +57,7 @@ export function createGrafanaResources(
 	// Create dashboards
 	for (const dashboard of dashboards) {
 		const resourceName = `grafana-dashboard-${dashboard.title.toLowerCase().replace(/\s+/g, "-")}`;
-		createdDashboards[resourceName] = new grafana.Dashboard(resourceName, {
+		createdDashboards[resourceName] = new grafana.oss.Dashboard(resourceName, {
 			folder: portfolioFolder.uid,
 			configJson: dashboard.configJson,
 		});

@@ -144,18 +144,20 @@ export function createWorkers(
 		if (worker.routes) {
 			for (let i = 0; i < worker.routes.length; i++) {
 				const route = worker.routes[i];
-				const routeResourceName = `${resourceName}-route-${i}`;
-				createdRoutes[routeResourceName] = new cloudflare.WorkersRoute(
-					routeResourceName,
-					{
-						zoneId: route.zoneId || zoneId,
-						pattern: route.pattern,
-						scriptName: workerScript.name,
-					},
-					{
-						dependsOn: [workerScript],
-					},
-				);
+				if (route) {
+					const routeResourceName = `${resourceName}-route-${i}`;
+					createdRoutes[routeResourceName] = new cloudflare.WorkersRoute(
+						routeResourceName,
+						{
+							zoneId: route.zoneId || zoneId,
+							pattern: route.pattern,
+							scriptName: workerScript.name,
+						},
+						{
+							dependsOn: [workerScript],
+						},
+					);
+				}
 			}
 		}
 
