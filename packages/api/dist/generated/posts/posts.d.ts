@@ -4,14 +4,14 @@
  * Portfolio API
  * OpenAPI spec version: 0.0.0
  */
-import type { Post, PostsListPosts200, PostsListPostsParams } from '../api.schemas';
-import { customInstance } from '.././mutator';
+import type { Post, PostsListPosts200, PostsListPostsParams } from "../api.schemas";
+import { customInstance } from ".././mutator";
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 export declare const getPosts: () => {
     postsGetPostBySlug: (slug: string, options?: SecondParameter<typeof customInstance<Post>>) => Promise<Post>;
     postsListPosts: (params?: PostsListPostsParams, options?: SecondParameter<typeof customInstance<PostsListPosts200>>) => Promise<PostsListPosts200>;
 };
-export type PostsGetPostBySlugResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPosts>['postsGetPostBySlug']>>>;
-export type PostsListPostsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPosts>['postsListPosts']>>>;
+export type PostsGetPostBySlugResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPosts>["postsGetPostBySlug"]>>>;
+export type PostsListPostsResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPosts>["postsListPosts"]>>>;
 export {};
 //# sourceMappingURL=posts.d.ts.map
