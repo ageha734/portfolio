@@ -1,11 +1,11 @@
 import { createPrismaClient } from "@portfolio/db";
 import type { Portfolio, PortfolioRepository } from "~/domain/portfolio";
 
-export class D1PortfolioRepository implements PortfolioRepository {
-    constructor(private readonly db: D1Database) {}
+export class PortfolioRepositoryImpl implements PortfolioRepository {
+    constructor(private readonly databaseUrl?: string) {}
 
     async findAll(): Promise<Portfolio[]> {
-        const prisma = createPrismaClient({ d1: this.db });
+        const prisma = createPrismaClient({ databaseUrl: this.databaseUrl });
         const portfolios = await prisma.portfolio.findMany({
             orderBy: { date: "desc" },
             include: {
@@ -31,7 +31,7 @@ export class D1PortfolioRepository implements PortfolioRepository {
     }
 
     async findBySlug(slug: string): Promise<Portfolio | null> {
-        const prisma = createPrismaClient({ d1: this.db });
+        const prisma = createPrismaClient({ databaseUrl: this.databaseUrl });
         const portfolio = await prisma.portfolio.findUnique({
             where: { slug },
             include: {
@@ -59,7 +59,7 @@ export class D1PortfolioRepository implements PortfolioRepository {
     }
 
     async findById(id: string): Promise<Portfolio | null> {
-        const prisma = createPrismaClient({ d1: this.db });
+        const prisma = createPrismaClient({ databaseUrl: this.databaseUrl });
         const portfolio = await prisma.portfolio.findUnique({
             where: { id },
             include: {

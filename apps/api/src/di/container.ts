@@ -1,18 +1,17 @@
-import type { D1Database } from "@cloudflare/workers-types";
-import { D1PortfolioRepository } from "~/infra/portfolio.repository";
-import { D1PostRepository } from "~/infra/post.repository";
+import { PortfolioRepositoryImpl } from "~/infra/portfolio.repository";
+import { PostRepositoryImpl } from "~/infra/post.repository";
 import { GetPortfolioBySlugUseCase } from "~/usecase/getPortfolioBySlug";
 import { GetPortfoliosUseCase } from "~/usecase/getPortfolios";
 import { GetPostBySlugUseCase } from "~/usecase/getPostBySlug";
 import { GetPostsUseCase } from "~/usecase/getPosts";
 
 export class DIContainer {
-    private readonly postRepository: D1PostRepository;
-    private readonly portfolioRepository: D1PortfolioRepository;
+    private readonly postRepository: PostRepositoryImpl;
+    private readonly portfolioRepository: PortfolioRepositoryImpl;
 
-    constructor(readonly db: D1Database) {
-        this.postRepository = new D1PostRepository(db);
-        this.portfolioRepository = new D1PortfolioRepository(db);
+    constructor(readonly databaseUrl?: string) {
+        this.postRepository = new PostRepositoryImpl(databaseUrl);
+        this.portfolioRepository = new PortfolioRepositoryImpl(databaseUrl);
     }
 
     getPostRepository() {

@@ -2,13 +2,10 @@ import type { Context } from "hono";
 import { DIContainer } from "~/di/container";
 
 export async function getPosts(c: Context) {
-    const db = c.env.DB;
-    if (!db) {
-        return c.json({ error: "Database not available" }, 500);
-    }
+    const databaseUrl = c.env.DATABASE_URL;
 
     try {
-        const container = new DIContainer(db);
+        const container = new DIContainer(databaseUrl);
         const useCase = container.getGetPostsUseCase();
         const posts = await useCase.execute();
 
@@ -30,18 +27,15 @@ export async function getPosts(c: Context) {
 }
 
 export async function getPostBySlug(c: Context) {
-    const db = c.env.DB;
-    if (!db) {
-        return c.json({ error: "Database not available" }, 500);
-    }
-
+    const databaseUrl = c.env.DATABASE_URL;
     const slug = c.req.param("slug");
+
     if (!slug) {
         return c.json({ error: "Invalid slug" }, 400);
     }
 
     try {
-        const container = new DIContainer(db);
+        const container = new DIContainer(databaseUrl);
         const useCase = container.getGetPostBySlugUseCase();
         const post = await useCase.execute(slug);
 

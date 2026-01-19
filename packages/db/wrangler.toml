@@ -1,8 +1,0 @@
-name = "portfolio-db"
-compatibility_date = "2025-11-17"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "portfolio"
-database_id = "your-database-id-here"
-preview_database_id = "your-preview-database-id-here"

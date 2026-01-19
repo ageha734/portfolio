@@ -1,4 +1,3 @@
-import type { D1Database } from "@cloudflare/workers-types";
 import { createPrismaClient } from "@portfolio/db";
 import type { BetterAuthOptions, BetterAuthPlugin } from "better-auth";
 import { betterAuth } from "better-auth";
@@ -11,7 +10,6 @@ export interface InitAuthOptions<TExtraPlugins extends BetterAuthPlugin[] = []> 
     secret: string | undefined;
     googleClientId: string;
     googleClientSecret: string;
-    d1?: D1Database;
     databaseUrl?: string;
     extraPlugins?: TExtraPlugins;
 }
@@ -20,7 +18,6 @@ export function initAuth<TExtraPlugins extends BetterAuthPlugin[] = []>(
     options: InitAuthOptions<TExtraPlugins>,
 ): ReturnType<typeof betterAuth> {
     const prisma = createPrismaClient({
-        d1: options.d1,
         databaseUrl: options.databaseUrl,
     });
 

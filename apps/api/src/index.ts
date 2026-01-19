@@ -1,9 +1,9 @@
-import type { D1Database } from "@cloudflare/workers-types";
 import { Hono } from "hono";
 import { restRouter } from "./interface/rest";
 
 type Env = {
-    DB: D1Database;
+	DATABASE_URL: string;
+	NODE_ENV: string;
 };
 
 const app = new Hono<{ Bindings: Env }>();

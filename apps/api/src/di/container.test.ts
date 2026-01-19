@@ -2,32 +2,30 @@ import { describe, expect, test } from "vitest";
 import { DIContainer } from "./container";
 
 describe("DIContainer", () => {
+    const testDatabaseUrl = "mysql://user:password@localhost:3306/portfolio";
+
     test("should create container instance", () => {
-        const mockD1 = {} as D1Database;
-        const container = new DIContainer(mockD1);
+        const container = new DIContainer(testDatabaseUrl);
 
         expect(container).toBeDefined();
     });
 
     test("should return post repository", () => {
-        const mockD1 = {} as D1Database;
-        const container = new DIContainer(mockD1);
+        const container = new DIContainer(testDatabaseUrl);
 
         const repository = container.getPostRepository();
         expect(repository).toBeDefined();
     });
 
     test("should return portfolio repository", () => {
-        const mockD1 = {} as D1Database;
-        const container = new DIContainer(mockD1);
+        const container = new DIContainer(testDatabaseUrl);
 
         const repository = container.getPortfolioRepository();
         expect(repository).toBeDefined();
     });
 
     test("should return use cases", () => {
-        const mockD1 = {} as D1Database;
-        const container = new DIContainer(mockD1);
+        const container = new DIContainer(testDatabaseUrl);
 
         expect(container.getGetPostsUseCase()).toBeDefined();
         expect(container.getGetPostBySlugUseCase()).toBeDefined();

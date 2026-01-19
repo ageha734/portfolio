@@ -1,11 +1,11 @@
 import { createPrismaClient } from "@portfolio/db";
 import type { Post, PostRepository } from "~/domain/post";
 
-export class D1PostRepository implements PostRepository {
-    constructor(private readonly db: D1Database) {}
+export class PostRepositoryImpl implements PostRepository {
+    constructor(private readonly databaseUrl?: string) {}
 
     async findAll(): Promise<Post[]> {
-        const prisma = createPrismaClient({ d1: this.db });
+        const prisma = createPrismaClient({ databaseUrl: this.databaseUrl });
         const posts = await prisma.post.findMany({
             orderBy: { date: "desc" },
             include: {
@@ -36,7 +36,7 @@ export class D1PostRepository implements PostRepository {
     }
 
     async findBySlug(slug: string): Promise<Post | null> {
-        const prisma = createPrismaClient({ d1: this.db });
+        const prisma = createPrismaClient({ databaseUrl: this.databaseUrl });
         const post = await prisma.post.findUnique({
             where: { slug },
             include: {
@@ -69,7 +69,7 @@ export class D1PostRepository implements PostRepository {
     }
 
     async findById(id: string): Promise<Post | null> {
-        const prisma = createPrismaClient({ d1: this.db });
+        const prisma = createPrismaClient({ databaseUrl: this.databaseUrl });
         const post = await prisma.post.findUnique({
             where: { id },
             include: {

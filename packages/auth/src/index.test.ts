@@ -1,4 +1,3 @@
-import type { D1Database } from "@cloudflare/workers-types";
 import { describe, expect, test, vi } from "vitest";
 import { initAuth } from "./index";
 
@@ -44,22 +43,7 @@ describe("initAuth", () => {
         expect(auth).toBeDefined();
     });
 
-    test("should initialize auth with D1Database for production", () => {
-        const mockD1 = {} as D1Database;
-
-        const auth = initAuth({
-            baseUrl: "http://localhost:3000",
-            productionUrl: "http://localhost:3000",
-            secret: "test-secret",
-            googleClientId: "test-google-client-id",
-            googleClientSecret: "test-google-client-secret",
-            d1: mockD1,
-        });
-
-        expect(auth).toBeDefined();
-    });
-
-    test("should initialize auth with databaseUrl for development", () => {
+    test("should initialize auth with databaseUrl", () => {
         const auth = initAuth({
             baseUrl: "http://localhost:3000",
             productionUrl: "http://localhost:3000",
