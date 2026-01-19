@@ -51,37 +51,30 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 ```
 
-## GraphQLクエリ
+## APIクライアント
 
-### GraphCMSとの連携
+### TypeSpecでAPI型を定義
 
 - TypeSpecでAPI型を定義
-- 型安全なクエリを実行
+- OrvalでTypeScriptクライアントを自動生成
+- 型安全なAPI呼び出し
 
 ```typescript
-// ✅ Good: shared/api/graphcms.ts
-export const getPost = async (slug: string) => {
-    const query = `
-        query GetPost($slug: String!) {
-            post(where: { slug: $slug }) {
-                title
-                content
-                date
-            }
-        }
-    `;
+// ✅ Good: shared/lib/api.ts
+import { createApiClient } from "~/shared/lib/api";
 
-    const response = await fetch(GRAPHQL_ENDPOINT, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${GRAPHQL_TOKEN}`,
-        },
-        body: JSON.stringify({ query, variables: { slug } }),
-    });
+export const loader = async (args: LoaderFunctionArgs) => {
+    const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
+    const api = createApiClient(apiUrl);
 
-    const { data } = await response.json();
-    return data.post;
+    const response = await api.posts.getPostBySlug(slug);
+    const post = response.data;
+
+    if (!post) {
+        throw new Response("Not Found", { status: 404 });
+    }
+
+    return json({ post });
 };
 ```
 

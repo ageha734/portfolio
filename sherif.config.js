@@ -52,12 +52,12 @@ const config = {
             "@remix-run/react": "2.17.2",
             "@remix-run/dev": "2.17.2",
         },
-        docusaurus: {
-            "@docusaurus/core": "3.9.2",
-            "@docusaurus/preset-classic": "3.9.2",
-            "@docusaurus/module-type-aliases": "3.9.2",
-            "@docusaurus/tsconfig": "3.9.2",
-            "@docusaurus/types": "3.9.2",
+        astro: {
+            astro: "5.1.5",
+            "@astrojs/check": "0.9.4",
+            "@astrojs/cloudflare": "12.2.1",
+            "@astrojs/react": "3.6.2",
+            "@astrojs/starlight": "0.31.1",
         },
         tanstack: {
             "@tanstack/react-router": "1.147.3",

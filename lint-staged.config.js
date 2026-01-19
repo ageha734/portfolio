@@ -19,7 +19,7 @@ function filterFilenames(filenames) {
         .filter(
             (f) =>
                 !f.includes("worker-configuration.d.ts") &&
-                !f.includes("/.docusaurus/") &&
+                !f.includes("/.astro/") &&
                 !f.includes("/.turbo/") &&
                 !f.includes("/.tanstack/") &&
                 !f.includes("/.wrangler/") &&

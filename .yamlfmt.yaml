@@ -6,9 +6,9 @@ formatter:
   trim_trailing_whitespace: true
   preserve_line_breaks: false
 exclude:
+  - .astro/**
   - .cache/**
   - .coverage/**
-  - .docusaurus/**
   - .results/**
   - .turbo/**
   - .wrangler/**

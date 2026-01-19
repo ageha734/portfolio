@@ -142,7 +142,7 @@ wrangler deploy
 
 ### apps/wiki のデプロイ
 
-Docusaurusを使用したドキュメントサイトをGitHub Pagesにデプロイします。
+Astro + Starlightを使用したドキュメントサイトをCloudflare Pagesにデプロイします。
 
 #### 前提条件
 

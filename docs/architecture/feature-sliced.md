@@ -44,7 +44,6 @@ FSDは、アプリケーションを次のレイヤーに分割します。
 
 - 複数のfeaturesやentitiesを組み合わせた複合コンポーネント
 - ページ固有の大きなUIセクション
-- 例: `Footer`, `Navbar`, `Hero`, `Sections`
 
 各ウィジェットは次の構造を持ちます。
 
@@ -65,7 +64,6 @@ widget-name/
 
 - 特定のユースケースに特化したコンポーネント
 - ビジネスロジックを含む
-- 例: `BlogPreview`, `PortfolioPreview`, `ShareButton`, `Tracking`
 
 各フィーチャーは次の構造を持ちます。
 
@@ -86,7 +84,6 @@ feature-name/
 
 - ビジネスエンティティの型定義
 - エンティティ固有のロジック
-- 例: `Blog`, `Portfolio`, `User`
 
 各エンティティは次の構造を持ちます。
 
@@ -177,57 +174,6 @@ TypeScriptのパスエイリアスが設定されており、`~`プレフィッ�
 
 - コンポーネント名に`.test.tsx`を追加: `BlogPreview.test.tsx`
 - スナップショットテスト: `BlogPreview.test.tsx.snap`
-
-## 実装例
-
-### Widget の実装例
-
-```typescript
-// app/widgets/hero/ui/Hero.tsx
-import { HeroProps } from '../model/types';
-import { ShareButton } from '~/features/share-button';
-
-export const Hero = ({ title, description }: HeroProps) => {
-  return (
-    <section>
-      <h1>{title}</h1>
-      <p>{description}</p>
-      <ShareButton />
-    </section>
-  );
-};
-```
-
-### Feature の実装例
-
-```typescript
-// app/features/blog-preview/ui/BlogPreview.tsx
-import { Blog } from '~/entities/blog';
-import { BlogPreviewProps } from '../model/types';
-import { formatDate } from '../lib/formatDate';
-
-export const BlogPreview = ({ blog }: BlogPreviewProps) => {
-  return (
-    <article>
-      <h2>{blog.title}</h2>
-      <time>{formatDate(blog.publishedAt)}</time>
-    </article>
-  );
-};
-```
-
-### Entity の実装例
-
-```typescript
-// app/entities/blog/model/types.ts
-export interface Blog {
-  id: string;
-  title: string;
-  content: string;
-  publishedAt: Date;
-  slug: string;
-}
-```
 
 ## 参考資料
 

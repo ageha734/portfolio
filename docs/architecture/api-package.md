@@ -78,58 +78,6 @@ apps/web                                  apps/admin
 (フロントエンド)                           (管理画面)
 ```
 
-## 使用方法
-
-### インストール
-
-```bash
-bun add @portfolio/api
-```
-
-### 基本的な使い方
-
-```typescript
-import { posts, portfolios } from "@portfolio/api";
-
-// 投稿一覧を取得
-const allPosts = await posts.list();
-
-// ページネーション付き
-const paginatedPosts = await posts.list({ page: 1, perPage: 10 });
-
-// タグでフィルタリング
-const taggedPosts = await posts.list({ tag: "typescript" });
-
-// 単一の投稿を取得
-const post = await posts.getBySlug("my-post-slug");
-
-// ポートフォリオ一覧を取得
-const allPortfolios = await portfolios.list();
-
-// 単一のポートフォリオを取得
-const portfolio = await portfolios.getBySlug("my-project");
-```
-
-### 型のインポート
-
-```typescript
-import type { Post, Portfolio, PaginationMeta } from "@portfolio/api";
-
-function displayPost(post: Post) {
-    console.log(post.title);
-}
-```
-
-### 個別クライアントのインポート
-
-```typescript
-// Posts クライアントのみ
-import { posts } from "@portfolio/api/clients/posts";
-
-// Portfolios クライアントのみ
-import { portfolios } from "@portfolio/api/clients/portfolios";
-```
-
 ## API クライアント
 
 ### Posts
@@ -179,14 +127,3 @@ endpoints/                        ├── getPosts.ts
 ```
 
 **重要**: `packages/api` の TypeSpec スキーマは `apps/api` の REST インターフェースと一致する必要があります。
-
-## Package Exports
-
-```json
-{
-  ".": "./dist/src/index.js",
-  "./clients": "./dist/src/clients/index.js",
-  "./clients/posts": "./dist/src/clients/posts.js",
-  "./clients/portfolios": "./dist/src/clients/portfolios.js",
-  "./schemas": "./dist/generated/api.schemas.js"
-}

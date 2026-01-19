@@ -12,21 +12,33 @@ title: "Project Structure"
 │   ├── web/                      # Remix + Cloudflare Pages
 │   ├── api/                      # Hono + Cloudflare Workers + D1
 │   ├── admin/                    # React + Vite + Tanstack Router
-│   └── wiki/                     # Docusaurus
+│   └── wiki/                     # Astro + Starlight
 ├── packages/                     # 共通パッケージ層
 │   ├── ui/                       # Design System
 │   ├── api/                      # API定義統合
 │   ├── db/                       # Database (Prisma + D1)
-│   └── auth/                     # Better-auth共通設定
+│   ├── auth/                     # Better-auth共通設定
+│   ├── cache/                    # Redis クライアント
+│   ├── log/                      # ロガー (Sentry, Prometheus)
+│   └── validation/               # Zod バリデーションスキーマ
 ├── tooling/                      # 開発ツール設定
 │   ├── storybook/                # Storybook共通設定
-│   ├── config/                   # 各種ツールのBase Config
 │   ├── biome/                    # Biome Base Config
 │   ├── tailwind/                 # Tailwind Base Config
-│   └── tsconfig/                 # TypeScript Base Configs
+│   ├── tsconfig/                 # TypeScript Base Configs
+│   ├── vite/                     # Vite設定
+│   ├── vitest/                   # Vitest設定
+│   ├── playwright/               # Playwright設定
+│   └── changelog/                # チャンゲログ生成
+├── infra/                        # インフラストラクチャ (Pulumi)
 ├── testing/                      # テストユーティリティ
+│   ├── mocks/                    # MSW モックハンドラー
+│   └── vitest/                   # Vitest テストユーティリティ
 ├── generators/                   # Scaffolding Templates
 └── scripts/                      # 運用スクリプト
+    ├── check/                    # チェックスクリプト
+    ├── env/                      # 環境変数管理
+    └── workspace/               # ワークスペース管理
 ```
 
 ## アプリケーション層 (`apps/`)
@@ -54,14 +66,14 @@ CMS APIです。Domain-Driven Design (DDD) を採用しています。
 
 **構造:**
 
-- `app/`: DDDルート（`src/`は使用しない）
+- `src/`: DDDルート
   - `usecase/`: Application Rules
-  - `service/`: Domain Services
   - `domain/`: Enterprise Rules（Model, Repo I/F）
-  - `infra/`: Frameworks（D1, Repo Impl）
+  - `infra/`: Frameworks（D1, Repo Impl, Cache）
   - `interface/`: Adapters（REST Handlers, Middleware）
-  - `pkg/`: Shared internal packages
+  - `lib/`: Shared internal utilities
   - `di/`: Dependency Injection
+- `e2e/`: Playwright E2Eテスト
 
 詳細は [`domain-driven.md`](./domain-driven.md) を参照してください。
 
@@ -83,17 +95,19 @@ CMS APIです。Domain-Driven Design (DDD) を採用しています。
 
 詳細は [`feature-sliced.md`](./feature-sliced.md) を参照してください。
 
-### apps/wiki (Docusaurus)
+### apps/wiki (Astro + Starlight)
 
 Wiki & Reportsサイトです。
 
 **構造:**
 
-- `docs/`: Markdownドキュメント
-- `app/`: Custom Root
-  - `pages/`: カスタムページ
-  - `components/`: カスタムコンポーネント
-- `static/reports/`: CI生成のE2E/Coverage HTMLレポート
+- `docs/`: Markdownドキュメント（Starlightコンテンツコレクション）
+- `src/`: ソースコード
+  - `content.config.ts`: コンテンツコレクション設定
+  - `styles/`: カスタムスタイル
+- `design/`: デザインアセット（Storybookビルド成果物など）
+- `reference/`: APIリファレンス
+- `reports/`: CI生成のE2E/Coverage HTMLレポート
 
 ## パッケージ層 (`packages/`)
 
@@ -137,8 +151,38 @@ Better-auth共通設定パッケージです。
 **構造:**
 
 - `src/`: ソースコード
-  - `config.ts`: Better-auth設定
-  - `index.ts`: エクスポート
+  - `index.ts`: Better-auth設定とエクスポート
+
+### packages/cache
+
+Redis クライアントパッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `client/`: Redis クライアント実装
+
+### packages/log
+
+ロガーパッケージです（Sentry、Prometheus統合）。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `logger/`: ロガー実装
+  - `sentry/`: Sentry クライアント
+  - `prometheus/`: Prometheus メトリクス
+  - `errors/`: エラーハンドリング
+
+### packages/validation
+
+Zod バリデーションスキーマパッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `schemas/`: Zod スキーマ定義
+  - `lib/`: バリデーションユーティリティ
 
 ## ツール設定層 (`tooling/`)
 
@@ -146,12 +190,12 @@ Better-auth共通設定パッケージです。
 
 Storybook共通設定基盤です。
 
-### tooling/config
+**構造:**
 
-各種ツールのBase Configです。
-
-- `vite/`: Vite設定
-- `vitest/`: Vitest設定
+- `src/`: ソースコード
+  - `main.preset.ts`: Storybook メイン設定
+  - `preview.preset.tsx`: Storybook プレビュー設定
+  - `theme.ts`: テーマ設定
 
 ### tooling/biome
 
@@ -161,14 +205,58 @@ Biome Base Configです。
 
 Tailwind Base Configです。
 
+**構造:**
+
+- `src/`: ソースコード
+  - `postcss-config.js`: PostCSS設定
+  - `theme.css`: テーマ定義
+
 ### tooling/tsconfig
 
 TypeScript Base Configsです。
 
 - `base.json`: ベース設定
-- `react.json`: React用設定（`base.json`を継承）
-- `node.json`: Node.js用設定（`base.json`を継承）
 - `compiled-package.json`: ビルド用パッケージ設定（`base.json`を継承）
+
+### tooling/vite
+
+Vite設定パッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `index.ts`: Vite設定エクスポート
+
+### tooling/vitest
+
+Vitest設定パッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `index.ts`: Vitest設定エクスポート
+  - `setup.ts`: テストセットアップ
+  - `mocks.ts`: モック設定
+  - `msw.ts`: MSW設定
+  - `render.tsx`: テストレンダリングユーティリティ
+
+### tooling/playwright
+
+Playwright設定パッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `index.ts`: Playwright設定エクスポート
+
+### tooling/changelog
+
+チャンゲログ生成パッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `index.ts`: チャンゲログ生成ロジック
 
 ## FSDレイヤーの詳細説明（apps/web, apps/admin）
 
@@ -179,13 +267,9 @@ FSDの各レイヤーの詳細については、[`feature-sliced.md`](./feature-
 全体で再利用可能なリソースを配置します。
 
 - **ui/**: 汎用UIコンポーネント（Button、Inputなど）
-
 - **api/**: APIクライアント、Orval生成クライアント設定など
-
 - **config/**: 設定ファイル（定数、i18n設定など）
-
 - **hooks/**: カスタムReactフック
-
 - **validation/**: バリデーションスキーマ（Zodなど）
 
 **重要**: `utils`というディレクトリ名は**厳格に禁止**されています。
@@ -212,3 +296,79 @@ FSDの各レイヤーの詳細については、[`feature-sliced.md`](./feature-
 - スナップショットテスト: `BlogPreview.test.tsx.snap`
 
 詳細なコーディング規約は [`../development/coding-standards.md`](../development/coding-standards.md) を参照してください。
+
+## インフラストラクチャ層 (`infra/`)
+
+### infra
+
+Pulumiを使用したインフラストラクチャ管理です。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `resources/`: リソース定義
+    - `databases.ts`: データベースリソース
+    - `dns.ts`: DNS設定
+    - `observability.ts`: 監視設定
+    - `pages.ts`: Cloudflare Pages設定
+    - `workers.ts`: Cloudflare Workers設定
+  - `config.ts`: 設定管理
+  - `index.ts`: エントリーポイント
+
+## テストユーティリティ層 (`testing/`)
+
+### testing/mocks
+
+MSW モックハンドラーパッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `handlers/`: MSW ハンドラー定義
+  - `server.ts`: サーバーサイドモック
+  - `browser.ts`: ブラウザサイドモック
+
+### testing/vitest
+
+Vitest テストユーティリティパッケージです。
+
+**構造:**
+
+- `src/`: ソースコード
+  - `render.tsx`: テストレンダリングユーティリティ
+  - `index.ts`: エクスポート
+
+## スクリプト層 (`scripts/`)
+
+### scripts/check
+
+コード品質チェックスクリプトです。
+
+**構造:**
+
+- `cmd/`: CLI エントリーポイント
+- `routines/`: チェックルーチン
+
+### scripts/env
+
+環境変数管理スクリプトです。
+
+**構造:**
+
+- `cmd/`: CLI エントリーポイント
+- `routines/`: 環境変数管理ルーチン
+
+### scripts/workspace
+
+ワークスペース管理スクリプトです。
+
+**構造:**
+
+- `cmd/`: CLI エントリーポイント
+- `routines/`: ワークスペース管理ルーチン
+  - `docker.ts`: Docker管理
+  - `env.ts`: 環境変数管理
+  - `install.ts`: 依存関係インストール
+  - `migrate.ts`: データベースマイグレーション
+  - `schema.ts`: スキーマ管理
+  - `workspace.ts`: ワークスペース操作

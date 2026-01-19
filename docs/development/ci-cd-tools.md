@@ -174,11 +174,11 @@ title: "CI/CDツール"
    - タイムアウト: 5分
 
 2. **run-deploy-docs**
-   - Docusaurusドキュメントのビルドとデプロイ
+   - Astro + Starlightドキュメントのビルドとデプロイ
    - 環境: `github-pages`
    - ステップ:
-     - Docusaurusのビルド (`bun run build`)
-     - GitHub Pagesへのデプロイ
+     - Astroのビルド (`bun run build`)
+     - Cloudflare Pagesへのデプロイ
    - タイムアウト: 15分
    - 依存: `detect-changes`
    - 実行条件:
@@ -310,7 +310,7 @@ sequenceDiagram
         Detect->>Detect: パスフィルタリング<br/>(docs/storybook/swagger)
 
         alt docs変更時 or workflow_dispatch
-            Detect->>DeployDocs: Docusaurusビルド&デプロイ
+            Detect->>DeployDocs: Astro + Starlightビルド&デプロイ
         end
 
         alt storybook変更時
@@ -379,7 +379,7 @@ Renovateは依存関係の自動更新を管理するツールです。
 - **グループ化**: 関連するパッケージをまとめて更新
   - Remix関連パッケージ
   - Radix UIパッケージ
-  - Docusaurusパッケージ
+  - Astro/Starlightパッケージ
   - TypeScript関連パッケージ
   - 開発依存関係
 - **自動マージ**: マイナー・パッチバージョンの更新は自動マージ可能

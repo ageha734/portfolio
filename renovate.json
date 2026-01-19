@@ -66,9 +66,9 @@
             ]
         },
         {
-            "groupName": "docusaurus",
+            "groupName": "astro",
             "matchPackagePatterns": [
-                "^@docusaurus/"
+                "^@astrojs/"
             ]
         }
     ],

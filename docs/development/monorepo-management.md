@@ -14,7 +14,7 @@ title: "モノレポ管理ガイド"
 │   ├── web/          # Remix + Cloudflare Pages
 │   ├── api/          # Hono + Cloudflare Workers
 │   ├── admin/        # React + Vite
-│   └── wiki/         # Docusaurus
+│   └── wiki/         # Astro + Starlight
 ├── packages/          # 共通パッケージ層
 │   ├── ui/           # Design System
 │   ├── api/          # API定義統合

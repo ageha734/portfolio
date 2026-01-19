@@ -9,7 +9,7 @@ const config = {
         "apps/**/vitest.config.ts",
         "apps/**/playwright.config.ts",
         "apps/**/playwright.storybook.config.ts",
-        "apps/**/docusaurus.config.ts",
+        "apps/**/astro.config.ts",
         "packages/**/src/**/*.{ts,tsx}",
         "packages/**/index.ts",
         "tooling/**/*.{ts,tsx}",
@@ -28,6 +28,7 @@ const config = {
         "build/**",
         "dist/**",
         "node_modules/**",
+        ".astro/**",
         ".cache/**",
         ".turbo/**",
         ".wrangler/**",
@@ -43,11 +44,8 @@ const config = {
         "@types/prismjs",
         "@types/react",
         "@types/react-dom",
-        "@docusaurus/module-type-aliases",
-        "@docusaurus/tsconfig",
-        "@docusaurus/types",
     ],
-    ignoreBinaries: ["wrangler", "playwright", "docusaurus", "storybook", "tsp", "orval", "check", "env", "setup"],
+    ignoreBinaries: ["wrangler", "playwright", "storybook", "tsp", "orval", "check", "env", "setup"],
     workspaces: {
         "apps/web": {
             remix: {
@@ -55,8 +53,8 @@ const config = {
             },
         },
         "apps/wiki": {
-            docusaurus: {
-                config: "docusaurus.config.ts",
+            astro: {
+                config: "astro.config.ts",
             },
         },
         "packages/ui": {

@@ -15,18 +15,17 @@ DDDは次のアプリケーションで採用されています。
 
 DDDは、アプリケーションを次のレイヤーに分割します。
 
-### app/ (DDD Root)
+### src/ (DDD Root)
 
-すべてのレイヤーは`app/`ディレクトリ配下に配置されます。
+すべてのレイヤーは`src/`ディレクトリ配下に配置されます。
 
 ```text
-app/
+src/
 ├── usecase/          # Application Rules (ユースケース層)
-├── service/          # Domain Services (ドメインサービス層)
 ├── domain/           # Enterprise Rules (ドメイン層)
 ├── infra/            # Frameworks (インフラストラクチャ層)
 ├── interface/        # Adapters (インターフェース層)
-├── pkg/              # Shared internal packages
+├── lib/              # Shared internal utilities
 └── di/               # Dependency Injection
 ```
 
@@ -46,27 +45,10 @@ usecase/
 
 **例:**
 
-- `usecase/blog/createBlog.ts`
-- `usecase/blog/getBlogBySlug.ts`
-- `usecase/portfolio/listPortfolios.ts`
-
-### service/ (Domain Services)
-
-ドメインロジックで、単一のエンティティに属さない処理を実装します。
-
-- 複数のエンティティにまたがるビジネスロジック
-- ドメインの概念を表現するサービス
-- エンティティの責務を超えた処理
-
-```text
-service/
-└── <サービス名>.ts
-```
-
-**例:**
-
-- `service/blogService.ts`: ブログ関連のドメインロジック
-- `service/portfolioService.ts`: ポートフォリオ関連のドメインロジック
+- `usecase/getPostBySlug.ts`
+- `usecase/getPosts.ts`
+- `usecase/getPortfolioBySlug.ts`
+- `usecase/getPortfolios.ts`
 
 ### domain/ (Enterprise Rules)
 
@@ -85,11 +67,6 @@ domain/
     └── repository.ts           # リポジトリインターフェース
 ```
 
-**例:**
-
-- `domain/blog/model/entity.ts`: Blogエンティティ
-- `domain/blog/repository.ts`: BlogRepositoryインターフェース
-
 ### infra/ (Frameworks)
 
 外部システムとの接続を実装します。
@@ -100,14 +77,12 @@ domain/
 
 ```text
 infra/
-└── <ドメイン名>/
-    └── repository/
-        └── d1Repository.ts    # D1実装
+├── <ドメイン名>/
+│   ├── repository.ts         # Repository実装
+│   └── cached-<ドメイン名>.repository.ts  # キャッシュ付きRepository実装
+├── cache.service.ts          # キャッシュサービス
+└── ...
 ```
-
-**例:**
-
-- `infra/blog/repository/d1BlogRepository.ts`: D1を使ったBlogRepositoryの実装
 
 ### interface/ (Adapters)
 
@@ -118,34 +93,23 @@ infra/
 
 ```text
 interface/
-├── trpc/
-│   ├── routers/
-│   │   ├── blog.ts
-│   │   └── portfolio.ts
-│   └── root.ts
+├── rest/
+│   ├── posts.ts              # Posts RESTハンドラー
+│   └── portfolios.ts         # Portfolios RESTハンドラー
 └── middleware/
-    ├── auth.ts
-    └── errorHandler.ts
+    └── auth.ts               # 認証ミドルウェア
 ```
 
-**例:**
+### lib/ (Shared Internal Utilities)
 
-- `interface/rest/blog.ts`: ブログ関連のRESTハンドラー
-- `interface/middleware/auth.ts`: 認証ミドルウェア
-
-### pkg/ (Shared Internal Packages)
-
-アプリケーション内で共有されるパッケージを配置します。
+アプリケーション内で共有されるユーティリティを配置します。
 
 - 共通ユーティリティ
-- 共有型定義
-- 内部ライブラリ
+- ロガー実装
 
 ```text
-pkg/
-├── logger/
-├── validator/
-└── types/
+lib/
+└── logger.ts
 ```
 
 ### di/ (Dependency Injection)
@@ -166,139 +130,31 @@ DDDの依存関係ルールに従い、外側のレイヤーから内側のレ�
 
 **許可される依存関係:**
 
-- ✅ `interface/` → `usecase/`, `service/`, `domain/`, `pkg/`
-- ✅ `usecase/` → `service/`, `domain/`, `pkg/`
-- ✅ `service/` → `domain/`, `pkg/`
-- ✅ `infra/` → `domain/`, `pkg/`
-- ✅ `domain/` → `pkg/`（可能な限り最小限に）
+- ✅ `interface/` → `usecase/`, `domain/`, `lib/`, `di/`
+- ✅ `usecase/` → `domain/`, `lib/`
+- ✅ `infra/` → `domain/`, `lib/`
+- ✅ `domain/` → `lib/`（可能な限り最小限に）
+- ✅ `di/` → すべてのレイヤー（依存性注入のため）
 
 **禁止される依存関係:**
 
-- ❌ `domain/` → `usecase/`, `service/`, `infra/`, `interface/`
-- ❌ `service/` → `usecase/`, `infra/`, `interface/`
+- ❌ `domain/` → `usecase/`, `infra/`, `interface/`
 - ❌ `usecase/` → `infra/`, `interface/`
-- ❌ `infra/` → `usecase/`, `service/`, `interface/`
+- ❌ `infra/` → `usecase/`, `interface/`
 - ❌ 内側のレイヤーから外側のレイヤーへの依存（循環依存の防止）
 
 ## ディレクトリ構造のルール
 
 ### アプリケーション層 (`apps/api`)
 
-- **必須**: `app/`ディレクトリをソースルートとして使用します
-- **禁止**: `src/`ディレクトリは使用しません
-- 例: `apps/api/app/`
+- **必須**: `src/`ディレクトリをソースルートとして使用します
+- **禁止**: `app/`ディレクトリは使用しません
+- 例: `apps/api/src/`
 
 ### 命名規則
 
 - **重要**: `utils`というディレクトリ名は**厳格に禁止**されています
 - 代わりに`lib`、`shared`、`infra`、または具体的な名前を使用してください
-
-## 実装例
-
-### Domain Layer の実装例
-
-```typescript
-// app/domain/blog/model/entity.ts
-export class Blog {
-  constructor(
-    public readonly id: string,
-    public readonly title: string,
-    public readonly content: string,
-    public readonly publishedAt: Date,
-    public readonly slug: string,
-  ) {}
-
-  static create(props: CreateBlogProps): Blog {
-    // ビジネスルールの検証
-    if (!props.title || props.title.length === 0) {
-      throw new Error('Title is required');
-    }
-    return new Blog(
-      generateId(),
-      props.title,
-      props.content,
-      new Date(),
-      generateSlug(props.title),
-    );
-  }
-}
-
-// app/domain/blog/repository.ts
-export interface BlogRepository {
-  findById(id: string): Promise<Blog | null>;
-  findBySlug(slug: string): Promise<Blog | null>;
-  save(blog: Blog): Promise<void>;
-  delete(id: string): Promise<void>;
-}
-```
-
-### Infrastructure Layer の実装例
-
-```typescript
-// app/infra/blog/repository/d1BlogRepository.ts
-import { BlogRepository } from '~/domain/blog/repository';
-import { Blog } from '~/domain/blog/model/entity';
-import { getD1Database } from '~/infra/database';
-
-export class D1BlogRepository implements BlogRepository {
-  async findById(id: string): Promise<Blog | null> {
-    const db = getD1Database();
-    const result = await db
-      .prepare('SELECT * FROM blogs WHERE id = ?')
-      .bind(id)
-      .first<BlogRow>();
-
-    return result ? this.toDomain(result) : null;
-  }
-
-  private toDomain(row: BlogRow): Blog {
-    return new Blog(
-      row.id,
-      row.title,
-      row.content,
-      new Date(row.published_at),
-      row.slug,
-    );
-  }
-}
-```
-
-### Use Case Layer の実装例
-
-```typescript
-// app/usecase/blog/createBlog.ts
-import { BlogRepository } from '~/domain/blog/repository';
-import { Blog } from '~/domain/blog/model/entity';
-
-export class CreateBlogUseCase {
-  constructor(private blogRepository: BlogRepository) {}
-
-  async execute(props: CreateBlogProps): Promise<Blog> {
-    const blog = Blog.create(props);
-    await this.blogRepository.save(blog);
-    return blog;
-  }
-}
-```
-
-### Interface Layer の実装例
-
-```typescript
-// app/interface/rest/blog.ts
-import type { Context } from "hono";
-import { CreateBlogUseCase } from '~/usecase/blog/createBlog';
-import { getBlogRepository } from '~/di/container';
-
-export const blogRouter = router({
-  create: publicProcedure
-    .input(createBlogSchema)
-    .mutation(async ({ input }) => {
-      const repository = getBlogRepository();
-      const useCase = new CreateBlogUseCase(repository);
-      return await useCase.execute(input);
-    }),
-});
-```
 
 ## 参考資料
 
