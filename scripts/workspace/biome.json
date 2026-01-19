@@ -5,6 +5,6 @@
         "includes": ["!!.cache", "!!.turbo", "!!dist"]
     },
     "javascript": {
-        "globals": ["$"]
+        "globals": ["$", "Bun"]
     }
 }

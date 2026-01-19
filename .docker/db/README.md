@@ -7,6 +7,14 @@
 - **Dockerfile**: MySQL 8.0のDockerイメージ定義
 - **my.cnf**: MySQL設定ファイル（パフォーマンスとログ設定）
 - **init.sql**: データベース初期化スクリプト
+- **seed/**: シードデータ用SQLファイル（開発環境用のサンプルデータ）
+  - `02-seed-user.sql`: ユーザーデータ
+  - `03-seed-tags.sql`: タグデータ
+  - `04-seed-posts.sql`: 投稿データ
+  - `05-seed-post-tags.sql`: 投稿とタグの関連データ
+  - `06-seed-portfolios.sql`: ポートフォリオデータ
+  - `07-seed-user-experiences.sql`: ユーザー経験データ
+  - `08-seed-user-socials.sql`: ユーザーソーシャルデータ
 - **.dockerignore**: Dockerビルド時に除外するファイル
 - **scripts/backup.sh**: データベースバックアップスクリプト
 - **scripts/restore.sh**: データベースリストアスクリプト

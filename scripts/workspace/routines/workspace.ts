@@ -10,7 +10,7 @@ import { installDependencies } from "./install";
 import { runDatabaseMigrations } from "./migrate";
 import { generatePrismaSchema } from "./schema";
 
-function findRootDir(startDir: string = process.cwd()): string {
+export function findRootDir(startDir: string = process.cwd()): string {
     let currentDir = resolve(startDir);
     const root = resolve("/");
 

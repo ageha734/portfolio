@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
 import { cac } from "cac";
-import { runWorkspace, SetupOptions } from "~/workspace";
+import { findRootDir, runWorkspace, type SetupOptions } from "~/workspace";
+import { runSeed } from "~/seed";
 
 const cli = cac("workspace");
 
@@ -25,7 +26,15 @@ cli
         await runWorkspace(setupOptions);
     });
 
+cli
+    .command("seed", "シードデータを投入します")
+    .action(async () => {
+        const rootDir = findRootDir();
+        await runSeed(rootDir);
+    });
+
 cli.command("*", "開発環境のセットアップを実行します").action(async () => {
+    const { runWorkspace } = await import("~/workspace");
     await runWorkspace();
 });
 

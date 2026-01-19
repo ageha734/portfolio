@@ -81,7 +81,7 @@ async function runMySQLMigration(rootDir: string): Promise<void> {
     writeFileSync(schemaPath, mysqlSchema);
 
     try {
-        await $`DATABASE_URL=${mysqlUrl} bun run push`.cwd(dbDir).quiet();
+        await $`DATABASE_URL=${mysqlUrl} bun run deploy`.cwd(dbDir).quiet();
         loadingBar.stop(true, "データベースマイグレーションが完了しました");
     } catch (error: unknown) {
         handleMigrationError(error, loadingBar);
