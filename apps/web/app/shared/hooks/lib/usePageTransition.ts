@@ -1,3 +1,4 @@
+import { getLogger } from "~/lib/logger";
 import { useNavigate } from "@remix-run/react";
 import { BASE_URL } from "~/shared/config/settings";
 
@@ -11,12 +12,13 @@ interface DocumentWithTransition extends Document {
 
 export const usePageTransition = () => {
     const navigate = useNavigate();
+    const logger = getLogger();
 
     const isBrowser = globalThis.window !== undefined;
     const doc = document as DocumentWithTransition;
     const isSupported = isBrowser && typeof doc.createDocumentTransition === "function";
 
-    console.log(" 💬 ~ isSupported", isSupported);
+    logger.debug("Page transition support", { isSupported });
 
     const transition = async (path: string) => {
         alert(` 💬 ~ isSupported ${isSupported}`);

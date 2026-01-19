@@ -1,9 +1,13 @@
 import { createRedisClient } from "@portfolio/cache";
+import { ErrorCodes, AppError } from "@portfolio/log";
+import { getLogger, getMetrics } from "~/lib/logger";
 import type { Redis } from "ioredis";
 
 export class CacheService {
 	private redis: Redis | null = null;
 	private readonly ttl: number;
+	private readonly logger = getLogger();
+	private readonly metrics = getMetrics();
 
 	constructor(
 		private readonly redisUrl?: string,
@@ -24,7 +28,12 @@ export class CacheService {
 			});
 			return this.redis;
 		} catch (error) {
-			console.warn("Redis接続に失敗しました。DBから直接読み取ります:", error);
+			const appError = AppError.fromCode(ErrorCodes.CACHE_CONNECTION_ERROR, "Redis接続に失敗しました。DBから直接読み取ります", {
+				metadata: { redisUrl: this.redisUrl },
+				originalError: error instanceof Error ? error : new Error(String(error)),
+			});
+			this.logger.warn(appError.message, { error: appError });
+			this.metrics.cacheOperations.inc({ operation: "connect", status: "error" });
 			return null;
 		}
 	}
@@ -42,17 +51,26 @@ export class CacheService {
 	async get<T>(key: string): Promise<T | null> {
 		const redis = this.getRedis();
 		if (!redis) {
+			this.metrics.cacheMisses.inc({ key });
 			return null;
 		}
 
 		try {
 			const value = await redis.get(key);
 			if (!value) {
+				this.metrics.cacheMisses.inc({ key });
 				return null;
 			}
+			this.metrics.cacheHits.inc({ key });
 			return JSON.parse(value, this.reviver.bind(this)) as T;
 		} catch (error) {
-			console.warn(`Redis取得エラー (key: ${key}):`, error);
+			const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, `Redis取得エラー (key: ${key})`, {
+				metadata: { key, operation: "get" },
+				originalError: error instanceof Error ? error : new Error(String(error)),
+			});
+			this.logger.warn(appError.message, { error: appError });
+			this.metrics.cacheOperations.inc({ operation: "get", status: "error" });
+			this.metrics.cacheMisses.inc({ key });
 			return null;
 		}
 	}
@@ -66,8 +84,14 @@ export class CacheService {
 		try {
 			const ttl = ttlSeconds ?? this.ttl;
 			await redis.setex(key, ttl, JSON.stringify(value));
+			this.metrics.cacheOperations.inc({ operation: "set", status: "success" });
 		} catch (error) {
-			console.warn(`Redis書き込みエラー (key: ${key}):`, error);
+			const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, `Redis書き込みエラー (key: ${key})`, {
+				metadata: { key, operation: "set", ttl },
+				originalError: error instanceof Error ? error : new Error(String(error)),
+			});
+			this.logger.warn(appError.message, { error: appError });
+			this.metrics.cacheOperations.inc({ operation: "set", status: "error" });
 		}
 	}
 
@@ -79,8 +103,14 @@ export class CacheService {
 
 		try {
 			await redis.del(key);
+			this.metrics.cacheOperations.inc({ operation: "delete", status: "success" });
 		} catch (error) {
-			console.warn(`Redis削除エラー (key: ${key}):`, error);
+			const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, `Redis削除エラー (key: ${key})`, {
+				metadata: { key, operation: "delete" },
+				originalError: error instanceof Error ? error : new Error(String(error)),
+			});
+			this.logger.warn(appError.message, { error: appError });
+			this.metrics.cacheOperations.inc({ operation: "delete", status: "error" });
 		}
 	}
 
@@ -95,8 +125,14 @@ export class CacheService {
 			if (keys.length > 0) {
 				await redis.del(...keys);
 			}
+			this.metrics.cacheOperations.inc({ operation: "deletePattern", status: "success" });
 		} catch (error) {
-			console.warn(`Redisパターン削除エラー (pattern: ${pattern}):`, error);
+			const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, `Redisパターン削除エラー (pattern: ${pattern})`, {
+				metadata: { pattern, operation: "deletePattern" },
+				originalError: error instanceof Error ? error : new Error(String(error)),
+			});
+			this.logger.warn(appError.message, { error: appError });
+			this.metrics.cacheOperations.inc({ operation: "deletePattern", status: "error" });
 		}
 	}
 
@@ -104,8 +140,14 @@ export class CacheService {
 		if (this.redis) {
 			try {
 				await this.redis.quit();
+				this.metrics.cacheOperations.inc({ operation: "close", status: "success" });
 			} catch (error) {
-				console.warn("Redis切断エラー:", error);
+				const appError = AppError.fromCode(ErrorCodes.CACHE_CONNECTION_ERROR, "Redis切断エラー", {
+					metadata: { operation: "close" },
+					originalError: error instanceof Error ? error : new Error(String(error)),
+				});
+				this.logger.warn(appError.message, { error: appError });
+				this.metrics.cacheOperations.inc({ operation: "close", status: "error" });
 			}
 			this.redis = null;
 		}

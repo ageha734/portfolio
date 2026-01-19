@@ -1,5 +1,6 @@
 import { RemixBrowser } from "@remix-run/react";
-import * as Sentry from "@sentry/remix";
+import { AppError, ErrorCodes } from "@portfolio/log";
+import { getLogger, initLogger } from "~/lib/logger";
 import { StrictMode, startTransition } from "react";
 import { hydrateRoot } from "react-dom/client";
 import {
@@ -11,6 +12,13 @@ import {
     XSTATE_INSPECTOR_ENABLED,
 } from "~/shared/config/settings";
 
+if (SENTRY_DSN !== "__undefined__") {
+    initLogger({
+        SENTRY_DSN,
+        NODE_ENV: SENTRY_ENVIRONMENT,
+    });
+}
+
 async function initXStateInspector() {
     if (XSTATE_INSPECTOR_ENABLED) {
         try {
@@ -19,20 +27,13 @@ async function initXStateInspector() {
                 iframe: false,
             });
         } catch (error) {
-            console.warn("Failed to load XState inspector:", error);
+            const logger = getLogger();
+            const appError = AppError.fromCode(ErrorCodes.EXTERNAL_API_ERROR, "Failed to load XState inspector", {
+                originalError: error instanceof Error ? error : new Error(String(error)),
+            });
+            logger.warn(appError.message, { error: appError });
         }
     }
-}
-
-if (SENTRY_DSN !== "__undefined__") {
-    Sentry.init({
-        dsn: SENTRY_DSN,
-        environment: SENTRY_ENVIRONMENT,
-        tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
-        replaysSessionSampleRate: SENTRY_REPLAY_SAMPLE_RATE,
-        replaysOnErrorSampleRate: SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE,
-        integrations: [Sentry.replayIntegration()],
-    });
 }
 
 function hydrate() {
@@ -59,5 +60,6 @@ if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/worker.js");
     });
 } else {
-    console.warn("Service workers are not supported in this browser.");
+    const logger = getLogger();
+    logger.warn("Service workers are not supported in this browser.");
 }

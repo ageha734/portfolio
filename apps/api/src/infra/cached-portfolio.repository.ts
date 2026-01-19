@@ -1,3 +1,5 @@
+import { ErrorCodes, AppError } from "@portfolio/log";
+import { getLogger } from "~/lib/logger";
 import type { Portfolio, PortfolioRepository } from "~/domain/portfolio";
 import { CacheService } from "./cache.service";
 import { PortfolioRepositoryImpl } from "./portfolio.repository";
@@ -5,6 +7,7 @@ import { PortfolioRepositoryImpl } from "./portfolio.repository";
 export class CachedPortfolioRepository implements PortfolioRepository {
 	private readonly cacheService: CacheService;
 	private readonly dbRepository: PortfolioRepositoryImpl;
+	private readonly logger = getLogger();
 
 	constructor(databaseUrl?: string, redisUrl?: string) {
 		this.cacheService = new CacheService(redisUrl);
@@ -26,7 +29,11 @@ export class CachedPortfolioRepository implements PortfolioRepository {
 		const portfolios = await this.dbRepository.findAll();
 
 		this.cacheService.set(cacheKey, portfolios).catch((error) => {
-			console.warn("Redis書き込みエラー（findAll）:", error);
+			const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, "Redis書き込みエラー（findAll）", {
+				metadata: { method: "findAll", cacheKey },
+				originalError: error instanceof Error ? error : new Error(String(error)),
+			});
+			this.logger.warn(appError.message, { error: appError });
 		});
 
 		return portfolios;
@@ -63,7 +70,11 @@ export class CachedPortfolioRepository implements PortfolioRepository {
 
 		if (portfolio) {
 			this.cacheService.set(cacheKey, portfolio).catch((error) => {
-				console.warn("Redis書き込みエラー（findById）:", error);
+				const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, "Redis書き込みエラー（findById）", {
+					metadata: { method: "findById", cacheKey, id },
+					originalError: error instanceof Error ? error : new Error(String(error)),
+				});
+				this.logger.warn(appError.message, { error: appError });
 			});
 		}
 

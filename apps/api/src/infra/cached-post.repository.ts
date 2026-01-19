@@ -1,3 +1,5 @@
+import { ErrorCodes, AppError } from "@portfolio/log";
+import { getLogger } from "~/lib/logger";
 import type { Post, PostRepository } from "~/domain/post";
 import { CacheService } from "./cache.service";
 import { PostRepositoryImpl } from "./post.repository";
@@ -5,6 +7,7 @@ import { PostRepositoryImpl } from "./post.repository";
 export class CachedPostRepository implements PostRepository {
 	private readonly cacheService: CacheService;
 	private readonly dbRepository: PostRepositoryImpl;
+	private readonly logger = getLogger();
 
 	constructor(databaseUrl?: string, redisUrl?: string) {
 		this.cacheService = new CacheService(redisUrl);
@@ -44,7 +47,11 @@ export class CachedPostRepository implements PostRepository {
 
 		if (post) {
 			this.cacheService.set(cacheKey, post).catch((error) => {
-				console.warn("Redis書き込みエラー（findBySlug）:", error);
+				const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, "Redis書き込みエラー（findBySlug）", {
+					metadata: { method: "findBySlug", cacheKey, slug },
+					originalError: error instanceof Error ? error : new Error(String(error)),
+				});
+				this.logger.warn(appError.message, { error: appError });
 			});
 		}
 
@@ -63,7 +70,11 @@ export class CachedPostRepository implements PostRepository {
 
 		if (post) {
 			this.cacheService.set(cacheKey, post).catch((error) => {
-				console.warn("Redis書き込みエラー（findById）:", error);
+				const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, "Redis書き込みエラー（findById）", {
+					metadata: { method: "findById", cacheKey, id },
+					originalError: error instanceof Error ? error : new Error(String(error)),
+				});
+				this.logger.warn(appError.message, { error: appError });
 			});
 		}
 

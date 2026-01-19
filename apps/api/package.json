@@ -29,6 +29,7 @@
     "@portfolio/auth": "workspace:*",
     "@portfolio/cache": "workspace:*",
     "@portfolio/db": "workspace:*",
+    "@portfolio/log": "workspace:*",
     "hono": "4.6.11"
   },
   "devDependencies": {

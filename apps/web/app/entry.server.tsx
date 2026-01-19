@@ -1,21 +1,15 @@
-/**
- * By default, Remix will handle generating the HTTP Response for you.
- * You are free to delete this file if you'd like to, but if you ever want it revealed again, you can run `npx remix reveal` ✨
- * For more information, see https://remix.run/file-conventions/entry.server
- */
-
 import type { EntryContext } from "@remix-run/cloudflare";
 import { RemixServer } from "@remix-run/react";
-import * as Sentry from "@sentry/remix";
+import { AppError, ErrorCodes } from "@portfolio/log";
+import { getLogger, initLogger } from "~/lib/logger";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
 import { SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_TRACES_SAMPLE_RATE } from "~/shared/config/settings";
 
 if (SENTRY_DSN !== "__undefined__") {
-    Sentry.init({
-        dsn: SENTRY_DSN,
-        environment: SENTRY_ENVIRONMENT,
-        tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+    initLogger({
+        SENTRY_DSN,
+        NODE_ENV: SENTRY_ENVIRONMENT,
     });
 }
 
@@ -26,13 +20,16 @@ async function handleRequest(
     remixContext: EntryContext,
 ) {
     let statusCode = responseStatusCode;
+    const logger = getLogger();
     const body = await renderToReadableStream(<RemixServer context={remixContext} url={request.url} />, {
         signal: request.signal,
         onError(error: unknown) {
-            console.error(error);
-            if (SENTRY_DSN !== "__undefined__") {
-                Sentry.captureException(error);
-            }
+            const appError = error instanceof AppError
+                ? error
+                : AppError.fromCode(ErrorCodes.INTERNAL_SERVER_ERROR, "Server rendering error", {
+                      originalError: error instanceof Error ? error : new Error(String(error)),
+                  });
+            logger.logError(appError, { url: request.url });
             statusCode = 500;
         },
     });

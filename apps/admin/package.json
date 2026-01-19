@@ -22,6 +22,7 @@
   "dependencies": {
     "@portfolio/api": "workspace:*",
     "@portfolio/cms": "workspace:*",
+    "@portfolio/log": "workspace:*",
     "@portfolio/ui": "workspace:*",
     "@tanstack/react-router": "1.147.3",
     "axios": "1.7.9",

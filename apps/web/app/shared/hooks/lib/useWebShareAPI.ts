@@ -1,3 +1,5 @@
+import { AppError, ErrorCodes } from "@portfolio/log";
+import { getLogger } from "~/lib/logger";
 import { SITE_DESCRIPTION, SITE_TITLE } from "~/shared/config/constants";
 
 export interface UseWebShareAPI {
@@ -14,6 +16,7 @@ export interface UseWebShareAPI {
  */
 export const useWebShareAPI = (): UseWebShareAPI => {
     const isAvailable = globalThis.window !== undefined && !!navigator.share;
+    const logger = getLogger();
 
     const data: ShareData = {
         text: SITE_DESCRIPTION,
@@ -29,7 +32,11 @@ export const useWebShareAPI = (): UseWebShareAPI => {
             if (!gtag) return;
             gtag("event", "share", { method: "Web Share" });
         } catch (error) {
-            console.error("Web Share error", error);
+            const appError = AppError.fromCode(ErrorCodes.EXTERNAL_API_ERROR, "Web Share error", {
+                metadata: { url },
+                originalError: error instanceof Error ? error : new Error(String(error)),
+            });
+            logger.error(appError.message, appError, { url });
         }
     };
 

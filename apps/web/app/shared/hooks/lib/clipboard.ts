@@ -1,22 +1,31 @@
+import { AppError, ErrorCodes } from "@portfolio/log";
+import { getLogger } from "~/lib/logger";
+
 /**
  * @name copyTextToClipboard
  * @description Copies text to clipboard using the modern Clipboard API.
  * Requires HTTPS or localhost for security reasons.
  */
 export const copyTextToClipboard = (text: string) => {
-    console.log("📋 copy text to Clipboard", text);
+    const logger = getLogger();
+    logger.debug("Copy text to Clipboard", { text });
 
     if (!navigator.clipboard) {
-        console.error("Clipboard API is not available. This feature requires a secure context (HTTPS or localhost).");
+        const appError = AppError.fromCode(ErrorCodes.EXTERNAL_API_ERROR, "Clipboard API is not available. This feature requires a secure context (HTTPS or localhost).");
+        logger.warn(appError.message);
         return;
     }
 
     navigator.clipboard.writeText(text).then(
         () => {
-            console.log("Copied to clipboard ✅");
+            logger.debug("Copied to clipboard", { text });
         },
         (err) => {
-            console.error("Could not copy text:", err);
+            const appError = AppError.fromCode(ErrorCodes.EXTERNAL_API_ERROR, "Could not copy text", {
+                metadata: { text },
+                originalError: err instanceof Error ? err : new Error(String(err)),
+            });
+            logger.error(appError.message, appError);
         },
     );
 };

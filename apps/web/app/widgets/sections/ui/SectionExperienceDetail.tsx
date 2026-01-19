@@ -1,3 +1,4 @@
+import { getLogger } from "~/lib/logger";
 import { sanitizeHtml } from "@portfolio/ui";
 import { getTimeWorked } from "../lib/date-time";
 import type { SectionExperienceDetailProps } from "../model/types.d";
@@ -5,12 +6,13 @@ import type { SectionExperienceDetailProps } from "../model/types.d";
 export const SectionExperienceDetail = (props: SectionExperienceDetailProps) => {
     const { experience } = props;
     const { company, companyUrl, date, dateRange, description, highlights, image, title } = experience;
+    const logger = getLogger();
 
     const start = dateRange ? dateRange[0] : new Date();
     const stop = dateRange?.[1] ?? new Date();
     const _length = getTimeWorked(start, stop);
 
-    console.log(`Worked at ${company} for`, _length);
+    logger.debug(`Worked at ${company} for`, { company, length: _length });
 
     return (
         <div className="flex flex-col gap-10 md:flex-row" key={title}>
