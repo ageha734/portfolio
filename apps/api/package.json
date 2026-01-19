@@ -27,6 +27,7 @@
   "dependencies": {
     "@portfolio/api": "workspace:*",
     "@portfolio/auth": "workspace:*",
+    "@portfolio/cache": "workspace:*",
     "@portfolio/db": "workspace:*",
     "hono": "4.6.11"
   },

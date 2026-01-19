@@ -3,9 +3,10 @@ import { DIContainer } from "~/di/container";
 
 export async function getPortfolios(c: Context) {
     const databaseUrl = c.env.DATABASE_URL;
+    const redisUrl = c.env.REDIS_URL;
 
     try {
-        const container = new DIContainer(databaseUrl);
+        const container = new DIContainer(databaseUrl, redisUrl);
         const useCase = container.getGetPortfoliosUseCase();
         const portfolios = await useCase.execute();
 
@@ -28,6 +29,7 @@ export async function getPortfolios(c: Context) {
 
 export async function getPortfolioBySlug(c: Context) {
     const databaseUrl = c.env.DATABASE_URL;
+    const redisUrl = c.env.REDIS_URL;
     const slug = c.req.param("slug");
 
     if (!slug) {
@@ -35,7 +37,7 @@ export async function getPortfolioBySlug(c: Context) {
     }
 
     try {
-        const container = new DIContainer(databaseUrl);
+        const container = new DIContainer(databaseUrl, redisUrl);
         const useCase = container.getGetPortfolioBySlugUseCase();
         const portfolio = await useCase.execute(slug);
 
