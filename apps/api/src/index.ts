@@ -1,6 +1,7 @@
 import { Hono } from "hono";
+import { createPrismaClient } from "@portfolio/db";
 import { restRouter } from "./interface/rest";
-import { initLogger } from "./lib/logger";
+import { getLogger, initLogger } from "./lib/logger";
 
 type Env = {
 	DATABASE_URL: string;
@@ -26,12 +27,27 @@ app.use("*", async (c, next) => {
 	return next();
 });
 
-app.get("/health", (c) => {
-	return c.json({
+app.get("/health", async (c) => {
+	const health = {
 		status: "ok",
 		version: c.env.APP_VERSION || "unknown",
 		environment: c.env.NODE_ENV,
-	});
+		database: "unknown" as "ok" | "error" | "unknown",
+	};
+
+	try {
+		const prisma = createPrismaClient({ databaseUrl: c.env.DATABASE_URL });
+		await prisma.$queryRaw`SELECT 1`;
+		health.database = "ok";
+	} catch (error) {
+		const errorInstance = error instanceof Error ? error : new Error(String(error));
+		getLogger().error("Database health check failed", errorInstance);
+		health.database = "error";
+		health.status = "degraded";
+	}
+
+	const statusCode = health.status === "ok" ? 200 : 503;
+	return c.json(health, statusCode);
 });
 
 app.route("/api", restRouter);
