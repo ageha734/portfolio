@@ -1,7 +1,7 @@
 name = "portfolio-api"
 compatibility_date = "2025-11-17"
+compatibility_flags = ["nodejs_compat"]
 main = "src/index.ts"
 
 [vars]
 NODE_ENV = "development"
-# DATABASE_URL is set via Cloudflare dashboard secrets

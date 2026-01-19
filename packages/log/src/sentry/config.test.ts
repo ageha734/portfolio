@@ -8,9 +8,9 @@ describe("initSentry", () => {
     let setTagsSpy: ReturnType<typeof vi.spyOn>;
 
     beforeEach(() => {
-        initSpy = vi.spyOn(Sentry, "init").mockImplementation(() => {});
-        consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-        setTagsSpy = vi.spyOn(Sentry, "setTags").mockImplementation(() => {});
+        initSpy = vi.spyOn(Sentry, "init" as never).mockImplementation(() => undefined);
+        consoleWarnSpy = vi.spyOn(console, "warn" as never).mockImplementation(() => {});
+        setTagsSpy = vi.spyOn(Sentry, "setTags" as never).mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -133,7 +133,7 @@ describe("initSentry", () => {
 
 describe("closeSentry", () => {
     it("Sentryをクローズできる", async () => {
-        const closeSpy = vi.spyOn(Sentry, "close").mockResolvedValue(undefined);
+        const closeSpy = vi.spyOn(Sentry, "close").mockResolvedValue(true);
         await closeSentry();
         expect(closeSpy).toHaveBeenCalled();
     });

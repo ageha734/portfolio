@@ -25,11 +25,22 @@ export default mergeConfig(
     baseConfig,
     defineConfig({
         assetsInclude: ["**/*.glb", "**/*.hdr", "**/*.glsl"],
+        ssr: {
+            external: ["@sentry/node"],
+        },
         build: {
             assetsInlineLimit: 1024,
             target: "es2022",
             rollupOptions: {
-                external: (id) => id === "@xstate/inspect",
+                external: (id) => {
+                    if (id === "@xstate/inspect") {
+                        return true;
+                    }
+                    if (id === "@sentry/node" || id.startsWith("@sentry/node/")) {
+                        return true;
+                    }
+                    return false;
+                },
             },
         },
         optimizeDeps: {

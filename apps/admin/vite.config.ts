@@ -23,4 +23,17 @@ export default defineConfig({
             "~": resolve(__dirname, "./app"),
         },
     },
+    ssr: {
+        external: ["@sentry/node"],
+    },
+    build: {
+        rollupOptions: {
+            external: (id) => {
+                if (id === "@sentry/node" || id.startsWith("@sentry/node/")) {
+                    return true;
+                }
+                return false;
+            },
+        },
+    },
 });

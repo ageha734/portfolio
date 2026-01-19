@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { PrometheusClient } from "./client";
 import { CommonMetrics } from "./metrics";
 import { ErrorCodes } from "../errors/error-codes";
@@ -19,30 +19,32 @@ describe("CommonMetrics", () => {
             expect(metrics.httpRequestErrors).toBeDefined();
         });
 
-        it("HTTPリクエストの総数を記録できる", () => {
+        it("HTTPリクエストの総数を記録できる", async () => {
             metrics.httpRequestTotal.inc({ method: "GET", route: "/api/users", status: "200" });
-            expect(metrics.httpRequestTotal.get().values[0]?.value).toBe(1);
+            const result = await metrics.httpRequestTotal.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("HTTPリクエストの処理時間を記録できる", () => {
+        it("HTTPリクエストの処理時間を記録できる", async () => {
             metrics.httpRequestDuration.observe(
                 { method: "GET", route: "/api/users", status: "200" },
                 0.123,
             );
-            const values = metrics.httpRequestDuration.get().values;
-            expect(values.length).toBeGreaterThan(0);
+            const result = await metrics.httpRequestDuration.get();
+            expect(result.values.length).toBeGreaterThan(0);
         });
 
-        it("HTTPリクエストエラーを記録できる", () => {
+        it("HTTPリクエストエラーを記録できる", async () => {
             metrics.httpRequestErrors.inc({ method: "GET", route: "/api/users", status: "500" });
-            expect(metrics.httpRequestErrors.get().values[0]?.value).toBe(1);
+            const result = await metrics.httpRequestErrors.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("複数のHTTPリクエストを記録できる", () => {
+        it("複数のHTTPリクエストを記録できる", async () => {
             metrics.httpRequestTotal.inc({ method: "GET", route: "/api/users", status: "200" });
             metrics.httpRequestTotal.inc({ method: "POST", route: "/api/users", status: "201" });
-            const values = metrics.httpRequestTotal.get().values;
-            expect(values.length).toBe(2);
+            const result = await metrics.httpRequestTotal.get();
+            expect(result.values.length).toBe(2);
         });
     });
 
@@ -52,24 +54,26 @@ describe("CommonMetrics", () => {
             expect(metrics.errorsByCode).toBeDefined();
         });
 
-        it("エラーの総数を記録できる", () => {
+        it("エラーの総数を記録できる", async () => {
             metrics.errorsTotal.inc({ category: "AUTH", code: ErrorCodes.AUTH_INVALID_TOKEN });
-            expect(metrics.errorsTotal.get().values[0]?.value).toBe(1);
+            const result = await metrics.errorsTotal.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("エラーコード別のエラー数を記録できる", () => {
+        it("エラーコード別のエラー数を記録できる", async () => {
             metrics.errorsByCode.inc({
                 code: ErrorCodes.AUTH_INVALID_TOKEN,
                 category: "AUTH",
             });
-            expect(metrics.errorsByCode.get().values[0]?.value).toBe(1);
+            const result = await metrics.errorsByCode.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("複数のエラーを記録できる", () => {
+        it("複数のエラーを記録できる", async () => {
             metrics.errorsTotal.inc({ category: "AUTH", code: ErrorCodes.AUTH_INVALID_TOKEN });
             metrics.errorsTotal.inc({ category: "VALIDATION", code: ErrorCodes.VALIDATION_MISSING_FIELD });
-            const values = metrics.errorsTotal.get().values;
-            expect(values.length).toBe(2);
+            const result = await metrics.errorsTotal.get();
+            expect(result.values.length).toBe(2);
         });
     });
 
@@ -80,27 +84,29 @@ describe("CommonMetrics", () => {
             expect(metrics.dbConnections).toBeDefined();
         });
 
-        it("データベースクエリの実行時間を記録できる", () => {
+        it("データベースクエリの実行時間を記録できる", async () => {
             metrics.dbQueryDuration.observe({ operation: "SELECT", table: "users" }, 0.05);
-            const values = metrics.dbQueryDuration.get().values;
-            expect(values.length).toBeGreaterThan(0);
+            const result = await metrics.dbQueryDuration.get();
+            expect(result.values.length).toBeGreaterThan(0);
         });
 
-        it("データベースクエリの総数を記録できる", () => {
+        it("データベースクエリの総数を記録できる", async () => {
             metrics.dbQueryTotal.inc({ operation: "SELECT", table: "users" });
-            expect(metrics.dbQueryTotal.get().values[0]?.value).toBe(1);
+            const result = await metrics.dbQueryTotal.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("データベース接続数を記録できる", () => {
+        it("データベース接続数を記録できる", async () => {
             metrics.dbConnections.set({ state: "active" }, 5);
-            expect(metrics.dbConnections.get().values[0]?.value).toBe(5);
+            const result = await metrics.dbConnections.get();
+            expect(result.values[0]?.value).toBe(5);
         });
 
-        it("複数のデータベース操作を記録できる", () => {
+        it("複数のデータベース操作を記録できる", async () => {
             metrics.dbQueryTotal.inc({ operation: "SELECT", table: "users" });
             metrics.dbQueryTotal.inc({ operation: "INSERT", table: "posts" });
-            const values = metrics.dbQueryTotal.get().values;
-            expect(values.length).toBe(2);
+            const result = await metrics.dbQueryTotal.get();
+            expect(result.values.length).toBe(2);
         });
     });
 
@@ -111,26 +117,29 @@ describe("CommonMetrics", () => {
             expect(metrics.cacheOperations).toBeDefined();
         });
 
-        it("キャッシュヒット数を記録できる", () => {
+        it("キャッシュヒット数を記録できる", async () => {
             metrics.cacheHits.inc({ key: "user:123" });
-            expect(metrics.cacheHits.get().values[0]?.value).toBe(1);
+            const result = await metrics.cacheHits.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("キャッシュミス数を記録できる", () => {
+        it("キャッシュミス数を記録できる", async () => {
             metrics.cacheMisses.inc({ key: "user:123" });
-            expect(metrics.cacheMisses.get().values[0]?.value).toBe(1);
+            const result = await metrics.cacheMisses.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("キャッシュ操作を記録できる", () => {
+        it("キャッシュ操作を記録できる", async () => {
             metrics.cacheOperations.inc({ operation: "get", status: "success" });
-            expect(metrics.cacheOperations.get().values[0]?.value).toBe(1);
+            const result = await metrics.cacheOperations.get();
+            expect(result.values[0]?.value).toBe(1);
         });
 
-        it("複数のキャッシュ操作を記録できる", () => {
+        it("複数のキャッシュ操作を記録できる", async () => {
             metrics.cacheOperations.inc({ operation: "get", status: "success" });
             metrics.cacheOperations.inc({ operation: "set", status: "success" });
-            const values = metrics.cacheOperations.get().values;
-            expect(values.length).toBe(2);
+            const result = await metrics.cacheOperations.get();
+            expect(result.values.length).toBe(2);
         });
     });
 

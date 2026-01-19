@@ -1,7 +1,8 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import * as Sentry from "@sentry/node";
 import { SentryClient, sentryClient } from "./client";
-import { AppError, ErrorCodes } from "../errors";
+import { AppError } from "../errors/app-error";
+import { ErrorCodes } from "../errors/error-codes";
 
 describe("SentryClient", () => {
     let captureExceptionSpy: ReturnType<typeof vi.spyOn>;
@@ -15,14 +16,14 @@ describe("SentryClient", () => {
     let client: SentryClient;
 
     beforeEach(() => {
-        captureExceptionSpy = vi.spyOn(Sentry, "captureException").mockReturnValue("event-id");
-        captureMessageSpy = vi.spyOn(Sentry, "captureMessage").mockReturnValue("event-id");
-        setUserSpy = vi.spyOn(Sentry, "setUser").mockImplementation(() => {});
-        setContextSpy = vi.spyOn(Sentry, "setContext").mockImplementation(() => {});
-        setTagSpy = vi.spyOn(Sentry, "setTag").mockImplementation(() => {});
-        setTagsSpy = vi.spyOn(Sentry, "setTags").mockImplementation(() => {});
-        addBreadcrumbSpy = vi.spyOn(Sentry, "addBreadcrumb").mockImplementation(() => {});
-        withScopeSpy = vi.spyOn(Sentry, "withScope").mockImplementation((callback) => {
+        captureExceptionSpy = vi.spyOn(Sentry, "captureException" as never).mockReturnValue("event-id" as never);
+        captureMessageSpy = vi.spyOn(Sentry, "captureMessage" as never).mockReturnValue("event-id" as never);
+        setUserSpy = vi.spyOn(Sentry, "setUser" as never).mockImplementation(() => {});
+        setContextSpy = vi.spyOn(Sentry, "setContext" as never).mockImplementation(() => {});
+        setTagSpy = vi.spyOn(Sentry, "setTag" as never).mockImplementation(() => {});
+        setTagsSpy = vi.spyOn(Sentry, "setTags" as never).mockImplementation(() => {});
+        addBreadcrumbSpy = vi.spyOn(Sentry, "addBreadcrumb" as never).mockImplementation(() => {});
+        withScopeSpy = vi.spyOn(Sentry, "withScope" as never).mockImplementation(((callback: (scope: Sentry.Scope) => void) => {
             const mockScope = {
                 setTag: vi.fn(),
                 setTags: vi.fn(),
@@ -31,7 +32,7 @@ describe("SentryClient", () => {
                 addBreadcrumb: vi.fn(),
             };
             callback(mockScope as unknown as Sentry.Scope);
-        });
+        }) as never);
         client = new SentryClient();
     });
 
@@ -67,7 +68,7 @@ describe("SentryClient", () => {
         });
 
         it("nullが返された場合、undefinedを返す", () => {
-            captureExceptionSpy.mockReturnValue(null);
+            captureExceptionSpy.mockReturnValue(null as never);
             const error = new Error("test error");
             const eventId = client.captureError(error);
             expect(eventId).toBeUndefined();
@@ -104,7 +105,7 @@ describe("SentryClient", () => {
         });
 
         it("nullが返された場合、undefinedを返す", () => {
-            captureMessageSpy.mockReturnValue(null);
+            captureMessageSpy.mockReturnValue(null as never);
             const eventId = client.captureMessage("test message");
             expect(eventId).toBeUndefined();
         });
