@@ -1,9 +1,40 @@
 import starlight from "@astrojs/starlight";
+import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
+import mermaid from "astro-mermaid";
+import { cpSync } from "node:fs";
+import { resolve } from "node:path";
+import type { AstroIntegration } from "astro";
+
+function copyStaticAssets(): AstroIntegration {
+	return {
+		name: "copy-static-assets",
+		hooks: {
+			"astro:build:done": ({ dir }) => {
+				const outDir = dir.pathname;
+				cpSync(resolve("design/ui"), resolve(outDir, "design"), {
+					recursive: true,
+				});
+				cpSync(resolve("design/web"), resolve(outDir, "storybook"), {
+					recursive: true,
+				});
+				cpSync(resolve("reference"), resolve(outDir, "reference"), {
+					recursive: true,
+				});
+			},
+		},
+	};
+}
 
 export default defineConfig({
 	site: "https://wiki.ageha734.jp",
 	integrations: [
+		react(),
+		mermaid({
+			theme: "default",
+			autoTheme: true,
+		}),
+		copyStaticAssets(),
 		starlight({
 			title: "Portfolio Docs",
 			defaultLocale: "root",
@@ -41,6 +72,26 @@ export default defineConfig({
 				{
 					label: "Prompts",
 					link: "/prompts/",
+				},
+				{
+					label: "References",
+					items: [
+						{
+							label: "API Reference",
+							link: "/reference/",
+							attrs: { target: "_blank" },
+						},
+						{
+							label: "UI Components",
+							link: "/design/",
+							attrs: { target: "_blank" },
+						},
+						{
+							label: "Web Storybook",
+							link: "/storybook/",
+							attrs: { target: "_blank" },
+						},
+					],
 				},
 			],
 			customCss: ["./src/styles/custom.css"],

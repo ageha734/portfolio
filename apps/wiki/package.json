@@ -26,9 +26,16 @@
   "dependencies": {
     "@astrojs/check": "0.9.4",
     "@astrojs/cloudflare": "12.2.1",
+    "@astrojs/react": "3.6.2",
     "@astrojs/starlight": "0.31.1",
+    "@portfolio/ui": "workspace:*",
+    "@portfolio/validation": "workspace:*",
     "astro": "5.1.5",
+    "astro-mermaid": "1.0.0",
     "hast-util-to-string": "3.0.1",
+    "mermaid": "11.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "sharp": "0.33.5",
     "unist-util-visit": "5.0.0",
     "zod": "3.24.1"
