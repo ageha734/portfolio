@@ -1,0 +1,1 @@
+{"version":3,"file":"config.d.ts","sourceRoot":"","sources":["../../src/prometheus/config.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,QAAQ,EAAE,MAAM,aAAa,CAAC;AAEvC,MAAM,WAAW,gBAAgB;IAC7B,QAAQ,CAAC,EAAE,QAAQ,CAAC;IACpB,aAAa,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,MAAM,CAAC,CAAC;CAC1C;AAED,wBAAgB,wBAAwB,CAAC,MAAM,GAAE,gBAAqB,GAAG,QAAQ,CAQhF"}

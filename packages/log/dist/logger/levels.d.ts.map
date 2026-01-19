@@ -1,0 +1,1 @@
+{"version":3,"file":"levels.d.ts","sourceRoot":"","sources":["../../src/logger/levels.ts"],"names":[],"mappings":"AAAA,oBAAY,QAAQ;IAChB,KAAK,UAAU;IACf,IAAI,SAAS;IACb,IAAI,SAAS;IACb,KAAK,UAAU;CAClB;AAED,eAAO,MAAM,gBAAgB,EAAE,MAAM,CAAC,QAAQ,EAAE,MAAM,CAKrD,CAAC;AAEF,wBAAgB,eAAe,CAAC,MAAM,EAAE,QAAQ,EAAE,MAAM,EAAE,QAAQ,GAAG,MAAM,CAE1E"}
