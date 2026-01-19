@@ -2,7 +2,7 @@
 
 import { existsSync, readdirSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { $, spawn } from "bun";
+import { $ } from "bun";
 
 type CheckType = "lint" | "fmt" | "test" | "coverage";
 type LintType = "ts" | "tsp" | "md" | "shell" | "actions" | "textlint";
@@ -359,7 +359,7 @@ async function runActionsCommand(
     if (checkType === "fmt") {
         const args = isFix ? [] : ["-lint"];
         args.push("-gitignore_excludes", ...files);
-        const proc = spawn(["go", "run", "github.com/google/yamlfmt/cmd/yamlfmt@v0.20.0", ...args], {
+        const proc = Bun.spawn(["go", "run", "github.com/google/yamlfmt/cmd/yamlfmt@v0.20.0", ...args], {
             stdout: "inherit",
             stderr: "inherit",
         });
@@ -370,13 +370,13 @@ async function runActionsCommand(
         return;
     }
 
-    const actionlintProc = spawn(["go", "run", "github.com/rhysd/actionlint/cmd/actionlint@v1.7.9"], {
+    const actionlintProc = Bun.spawn(["go", "run", "github.com/rhysd/actionlint/cmd/actionlint@v1.7.9"], {
         stdout: "inherit",
         stderr: "inherit",
     });
 
     const ghalintArgs = ["go", "run", "github.com/suzuki-shunsuke/ghalint/cmd/ghalint@v1.5.4", "run", ...files];
-    const ghalintProc = spawn(ghalintArgs, {
+    const ghalintProc = Bun.spawn(ghalintArgs, {
         stdout: "inherit",
         stderr: "inherit",
     });
