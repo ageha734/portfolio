@@ -33,10 +33,12 @@ function copyStaticAssets(): AstroIntegration {
 	};
 }
 
+const isPreview = process.argv.includes("preview");
+
 export default defineConfig({
 	site: "https://wiki.ageha734.jp",
 	output: "static",
-	adapter: cloudflare(),
+	adapter: isPreview ? undefined : cloudflare(),
 	integrations: [
 		react(),
 		mermaid({
