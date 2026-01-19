@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "version": "1.0.1",
+  "name": "@portfolio/cache",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "clean": "git clean -xdf .cache .turbo node_modules dist",
+    "coverage": "vitest run --coverage",
+    "dev": "tsc --watch --outDir dist",
+    "fmt": "biome format --write .",
+    "fmt:check": "biome format .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --write .",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "ioredis": "5.4.1"
+  },
+  "devDependencies": {
+    "@portfolio/biome-config": "workspace:*",
+    "@portfolio/tsconfig": "workspace:*",
+    "@portfolio/vitest-config": "workspace:*",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  }
+}

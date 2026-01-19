@@ -1,0 +1,17 @@
+.git
+.gitignore
+.gitattributes
+*.md
+!README.md
+.vscode
+.idea
+*.swp
+*.swo
+*~
+*.log
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+.cache
+.turbo

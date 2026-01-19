@@ -3845,6 +3845,11 @@
   resolved "https://registry.npmjs.org/@inquirer/type/-/type-4.0.3.tgz"
   integrity sha512-cKZN7qcXOpj1h+1eTTcGDVLaBIHNMT1Rz9JqJP5MnEJ0JhgVWllx7H/tahUp5YEK1qaByH2Itb8wLG/iScD5kw==
 
+"@ioredis/commands@^1.1.1":
+  version "1.5.0"
+  resolved "https://registry.npmjs.org/@ioredis/commands/-/commands-1.5.0.tgz"
+  integrity sha512-eUgLqrMf8nJkZxT24JvVRrQya1vZkQh8BBeYNwGDqa5I0VUi8ACx7uFvAaLxintokpTenkK6DASvo/bvNbBGow==
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz"
@@ -5313,6 +5318,18 @@
   version "workspace:tooling/biome"
   resolved "workspace:tooling/biome"
 
+"@portfolio/cache@packages/cache":
+  version "workspace:packages/cache"
+  resolved "workspace:packages/cache"
+  devDependencies:
+    "@portfolio/biome-config" "tooling/biome"
+    "@portfolio/tsconfig" "tooling/tsconfig"
+    "@portfolio/vitest-config" "tooling/vitest"
+    typescript "5.9.3"
+    vitest "3.2.4"
+  dependencies:
+    ioredis "5.4.1"
+
 "@portfolio/changelog-config@tooling/changelog":
   version "workspace:tooling/changelog"
   resolved "workspace:tooling/changelog"
@@ -5353,6 +5370,7 @@
     "@portfolio/tsconfig" "tooling/tsconfig"
     "@portfolio/vitest-config" "tooling/vitest"
     prisma "5.22.0"
+    prisma-markdown "^4.0.0"
     typescript "5.9.3"
     vitest "3.2.4"
   dependencies:
@@ -5671,7 +5689,7 @@
     unist-util-visit "5.0.0"
     zod "3.24.1"
 
-"@prisma/client@*", "@prisma/client@5.22.0", "@prisma/client@^5.0.0 || ^6.0.0 || ^7.0.0", "@prisma/client@^5.22.0":
+"@prisma/client@*", "@prisma/client@5.22.0", "@prisma/client@>= 7.0.0", "@prisma/client@^5.0.0 || ^6.0.0 || ^7.0.0", "@prisma/client@^5.22.0":
   version "5.22.0"
   resolved "https://registry.npmjs.org/@prisma/client/-/client-5.22.0.tgz"
   integrity sha512-M0SVXfyHnQREBKxCgyo7sffrKttwE6R8PMq330MIUF0pTwjUhLbW84pFDlf06B27XyCR++VtjugEnIHdr07SVA==
@@ -5680,6 +5698,16 @@
   version "5.22.0"
   resolved "https://registry.npmjs.org/@prisma/debug/-/debug-5.22.0.tgz"
   integrity sha512-AUt44v3YJeggO2ZU5BkXI7M4hu9BF2zzH2iF2V5pyXT/lRTyWiElZ7It+bRH1EshoMRxHgpYg4VB6rCM+mG5jQ==
+
+"@prisma/debug@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.npmjs.org/@prisma/debug/-/debug-7.2.0.tgz"
+  integrity sha512-YSGTiSlBAVJPzX4ONZmMotL+ozJwQjRmZweQNIq/ER0tQJKJynNkRB3kyvt37eOfsbMCXk3gnLF6J9OJ4QWftw==
+
+"@prisma/dmmf@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.npmjs.org/@prisma/dmmf/-/dmmf-7.2.0.tgz"
+  integrity sha512-w+hAFGH34+Ed+y7AhK3FL6ExwPu5Ym2uyadqlTEn8yyXereHRD8qO9tQfgTIJuUqF0G2JZXBVrNuqvRVVvSZdg==
 
 "@prisma/engines@5.22.0":
   version "5.22.0"
@@ -5704,6 +5732,20 @@
     "@prisma/debug" "5.22.0"
     "@prisma/engines-version" "5.22.0-44.605197351a3c8bdd595af2d2a9bc3025bca48ea2"
     "@prisma/get-platform" "5.22.0"
+
+"@prisma/generator@7.2.0":
+  version "7.2.0"
+  resolved "https://registry.npmjs.org/@prisma/generator/-/generator-7.2.0.tgz"
+  integrity sha512-EucIFLF/aGmXB2qrjPhjGnL2E0urFuYg1o1+DzFLecoJzZtpRD+nJQt9ZbxKSU6a7PjX3KROOzAEPb3ItaAATA==
+
+"@prisma/generator-helper@^7.0.0":
+  version "7.2.0"
+  resolved "https://registry.npmjs.org/@prisma/generator-helper/-/generator-helper-7.2.0.tgz"
+  integrity sha512-PTz/2mrLlj6ITgvEeubEe+CoSt5GsyFI+3xqnBS27h2r4fYFA6i1TLKjIq8m82GZERN9J/Awwdjw90hdAQSOHg==
+  dependencies:
+    "@prisma/debug" "7.2.0"
+    "@prisma/dmmf" "7.2.0"
+    "@prisma/generator" "7.2.0"
 
 "@prisma/get-platform@5.22.0":
   version "5.22.0"
@@ -11533,7 +11575,7 @@ clsx@2.1.1, clsx@^2.0.0, clsx@^2.1.1:
   resolved "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz"
   integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
-cluster-key-slot@1.1.2:
+cluster-key-slot@1.1.2, cluster-key-slot@^1.1.0:
   version "1.1.2"
   resolved "https://registry.npmjs.org/cluster-key-slot/-/cluster-key-slot-1.1.2.tgz"
   integrity sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==
@@ -12600,6 +12642,11 @@ delayed-stream@~1.0.0:
   resolved "https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz"
   integrity sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==
 
+denque@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/denque/-/denque-2.1.0.tgz"
+  integrity sha512-HVQE3AAb/pxF8fQAoiqpvg9i3evqug3hoiwakOyZAwJm+6vZehbkYXZ0l4JxS+I3QxM97v5aaRNhj8v5oBhekw==
+
 depd@2.0.0, depd@^2.0.0, depd@~2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/depd/-/depd-2.0.0.tgz"
@@ -12682,12 +12729,12 @@ devlop@^1.0.0, devlop@^1.1.0:
   dependencies:
     dequal "^2.0.0"
 
-devtools-protocol@0.0.1467305:
+devtools-protocol@*, devtools-protocol@0.0.1467305:
   version "0.0.1467305"
   resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.1467305.tgz"
   integrity sha512-LxwMLqBoPPGpMdRL4NkLFRNy3QLp6Uqa7GNp1v6JaBheop2QrB9Q7q0A/q/CYYP9sBfZdHOyszVx4gc9zyk7ow==
 
-devtools-protocol@*, devtools-protocol@0.0.1534754:
+devtools-protocol@0.0.1534754:
   version "0.0.1534754"
   resolved "https://registry.npmjs.org/devtools-protocol/-/devtools-protocol-0.0.1534754.tgz"
   integrity sha512-26T91cV5dbOYnXdJi5qQHoTtUoNEqwkHcAyu/IKtjIAxiEqPMrDiRkDOPWVsGfNZGmlQVHQbZRSjD8sxagWVsQ==
@@ -15777,6 +15824,21 @@ intl-messageformat@^10.5.3:
     "@formatjs/icu-messageformat-parser" "2.11.4"
     tslib "^2.8.0"
 
+ioredis@5.4.1, ioredis@^5.4.2:
+  version "5.4.1"
+  resolved "https://registry.npmjs.org/ioredis/-/ioredis-5.4.1.tgz"
+  integrity sha512-2YZsvl7jopIa1gaePkeMtd9rAcSjOOjPtpcLlOeusyO+XH2SK5ZcT+UCrElPP+WVIInh2TzeI4XW9ENaSLVVHA==
+  dependencies:
+    "@ioredis/commands" "^1.1.1"
+    cluster-key-slot "^1.1.0"
+    debug "^4.3.4"
+    denque "^2.1.0"
+    lodash.defaults "^4.2.0"
+    lodash.isarguments "^3.1.0"
+    redis-errors "^1.2.0"
+    redis-parser "^3.0.0"
+    standard-as-callback "^2.1.0"
+
 ip-address@^10.0.1:
   version "10.1.0"
   resolved "https://registry.npmjs.org/ip-address/-/ip-address-10.1.0.tgz"
@@ -17215,6 +17277,11 @@ lodash.debounce@^4.0.8:
   resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
   integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
 
+lodash.defaults@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.npmjs.org/lodash.defaults/-/lodash.defaults-4.2.0.tgz"
+  integrity sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==
+
 lodash.escape@^4.0.1:
   version "4.0.1"
   resolved "https://registry.npmjs.org/lodash.escape/-/lodash.escape-4.0.1.tgz"
@@ -17224,6 +17291,11 @@ lodash.flattendeep@^4.4.0:
   version "4.4.0"
   resolved "https://registry.npmjs.org/lodash.flattendeep/-/lodash.flattendeep-4.4.0.tgz"
   integrity sha512-uHaJFihxmJcEX3kT4I23ABqKKalJ/zDrDg0lsFtc1h+3uw49SIJ5beyhx5ExVRti3AvKoOJngIj7xz3oylPdWQ==
+
+lodash.isarguments@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz"
+  integrity sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==
 
 lodash.isempty@^4.4.0:
   version "4.4.0"
@@ -21209,7 +21281,7 @@ printable-characters@^1.0.42:
   resolved "https://registry.npmjs.org/printable-characters/-/printable-characters-1.0.42.tgz"
   integrity sha512-dKp+C4iXWK4vVYZmYSd0KBH5F/h1HoZRsbJ82AVKRO3PEo8L4lBS/vLwhVtpwwuYcoIsVY+1JYKR268yn480uQ==
 
-prisma@*, prisma@5.22.0, "prisma@^5.0.0 || ^6.0.0 || ^7.0.0":
+prisma@*, prisma@5.22.0, "prisma@>= 7.0.0", "prisma@^5.0.0 || ^6.0.0 || ^7.0.0":
   version "5.22.0"
   resolved "https://registry.npmjs.org/prisma/-/prisma-5.22.0.tgz"
   integrity sha512-vtpjW3XuYCSnMsNVBjLMNkTj6OZbudcPPTPYHqX0CJfpcdWciI1dM8uHETwmDxxiqEwCIE6WvXucWUetJgfu/A==
@@ -21217,6 +21289,13 @@ prisma@*, prisma@5.22.0, "prisma@^5.0.0 || ^6.0.0 || ^7.0.0":
     fsevents "2.3.3"
   dependencies:
     "@prisma/engines" "5.22.0"
+
+prisma-markdown@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/prisma-markdown/-/prisma-markdown-4.0.0.tgz"
+  integrity sha512-QtyRRv/m0sc1a9xTrsFe+wDX1oqU2Le/v3bjklujG4Zc4Dpe5SbVlkhV2E6PevKaMxjvxGvYsYM4u8Ppx9qoeQ==
+  dependencies:
+    "@prisma/generator-helper" "^7.0.0"
 
 prismjs@~1.27.0:
   version "1.27.0"
@@ -21954,6 +22033,18 @@ redis@4.7.1:
     "@redis/json" "1.0.7"
     "@redis/search" "1.2.0"
     "@redis/time-series" "1.1.0"
+
+redis-errors@^1.0.0, redis-errors@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/redis-errors/-/redis-errors-1.2.0.tgz"
+  integrity sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==
+
+redis-parser@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/redis-parser/-/redis-parser-3.0.0.tgz"
+  integrity sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==
+  dependencies:
+    redis-errors "^1.0.0"
 
 redoc@2.0.0:
   version "2.0.0"
@@ -24286,6 +24377,11 @@ stacktracey@^2.1.8:
   dependencies:
     as-table "^1.0.36"
     get-source "^2.0.12"
+
+standard-as-callback@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npmjs.org/standard-as-callback/-/standard-as-callback-2.1.0.tgz"
+  integrity sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==
 
 statuses@^2.0.1, statuses@^2.0.2, statuses@~2.0.1, statuses@~2.0.2:
   version "2.0.2"

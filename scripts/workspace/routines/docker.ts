@@ -88,10 +88,42 @@ async function buildE2EImageWithoutLoadingBar(rootDir: string, e2eDockerfilePath
     }
 }
 
+async function buildRedisImageWithLoadingBar(rootDir: string, cacheDockerfilePath: string, cacheDir: string): Promise<void> {
+    const loadingBar = new LoadingBar("Redis Dockerイメージをビルドしています");
+    loadingBar.start();
+    try {
+        await $`docker build -t cache -f ${cacheDockerfilePath} ${cacheDir}`.cwd(rootDir).quiet();
+        loadingBar.stop(true, "Redis Dockerイメージのビルドが完了しました");
+    } catch (error) {
+        loadingBar.stop(false, "Redis Dockerイメージのビルドに失敗しました");
+        throw error;
+    }
+}
+
+async function buildRedisImageWithoutLoadingBar(rootDir: string, cacheDockerfilePath: string, cacheDir: string): Promise<void> {
+    logSubStep("Redis Dockerイメージをビルドしています...", "info");
+    try {
+        await $`docker build -t cache -f ${cacheDockerfilePath} ${cacheDir}`.cwd(rootDir).quiet();
+        logSubStep("Redis Dockerイメージのビルドが完了しました", "success");
+    } catch (error) {
+        logSubStep("Redis Dockerイメージのビルドに失敗しました", "warning");
+        throw error;
+    }
+}
+
 async function checkMySQLReady(containerName: string, mysqlRootPassword: string): Promise<boolean> {
     try {
         const result = await $`docker exec -e MYSQL_PWD=${mysqlRootPassword} ${containerName} mysqladmin ping -h localhost -u root`.quiet();
         return result.exitCode === 0;
+    } catch {
+        return false;
+    }
+}
+
+async function checkRedisReady(containerName: string, redisPassword: string): Promise<boolean> {
+    try {
+        const result = await $`docker exec ${containerName} redis-cli -a ${redisPassword} ping`.quiet();
+        return result.stdout.toString().trim() === "PONG";
     } catch {
         return false;
     }
@@ -138,6 +170,39 @@ async function waitForMySQL(containerName: string, useLoadingBar = true, maxAtte
     }
 }
 
+async function waitForRedisLoop(containerName: string, redisPassword: string, maxAttempts: number): Promise<boolean> {
+    for (let i = 0; i < maxAttempts; i++) {
+        const isReady = await checkRedisReady(containerName, redisPassword);
+        if (isReady) {
+            return true;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    return false;
+}
+
+async function waitForRedis(containerName: string, useLoadingBar = true, maxAttempts = 30): Promise<boolean> {
+    const redisPassword = process.env.REDIS_PASSWORD || "password";
+    const loadingBar = useLoadingBar ? new LoadingBar("Redisの起動を待機しています") : null;
+
+    if (loadingBar) {
+        loadingBar.start();
+    }
+
+    try {
+        const isReady = await waitForRedisLoop(containerName, redisPassword, maxAttempts);
+        if (isReady) {
+            stopLoadingBar(loadingBar, true, "Redisが起動しました");
+            return true;
+        }
+        stopLoadingBar(loadingBar, false, "Redisの起動確認がタイムアウトしました");
+        return false;
+    } catch {
+        stopLoadingBar(loadingBar, false, "Redisの起動確認に失敗しました");
+        return false;
+    }
+}
+
 async function handleExistingContainer(containerName: string, rootDir: string, useLoadingBar: boolean): Promise<void> {
     const isRunning = await checkContainerRunning(containerName);
     if (isRunning) {
@@ -171,6 +236,36 @@ async function createAndStartContainer(containerName: string, rootDir: string, u
     const isReady = await waitForMySQL(containerName, useLoadingBar);
     if (!isReady) {
         logSubStep("MySQLの起動確認がタイムアウトしました", "warning");
+    }
+}
+
+async function handleExistingRedisContainer(containerName: string, rootDir: string, useLoadingBar: boolean): Promise<void> {
+    const isRunning = await checkContainerRunning(containerName);
+    if (isRunning) {
+        logSubStep("Redisコンテナは既に起動しています", "success");
+        await waitForRedis(containerName, useLoadingBar);
+        return;
+    }
+
+    logSubStep("Redisコンテナを起動しています...", "info");
+    await $`docker start ${containerName}`.cwd(rootDir).quiet();
+    await waitForRedis(containerName, useLoadingBar);
+}
+
+async function createAndStartRedisContainer(containerName: string, rootDir: string, useLoadingBar: boolean): Promise<void> {
+    logSubStep("Redisコンテナを作成して起動しています...", "info");
+    const redisPassword = process.env.REDIS_PASSWORD || "password";
+    await $`docker run -d \
+        --name ${containerName} \
+        -p 6379:6379 \
+        -e REDIS_PASSWORD=${redisPassword} \
+        -v cache-data:/data \
+        cache`.cwd(rootDir).quiet();
+    logSubStep("Redisコンテナが起動しました", "success");
+
+    const isReady = await waitForRedis(containerName, useLoadingBar);
+    if (!isReady) {
+        logSubStep("Redisの起動確認がタイムアウトしました", "warning");
     }
 }
 
@@ -215,6 +310,47 @@ async function startMySQLContainer(rootDir: string, useLoadingBar = true): Promi
     }
 }
 
+async function startRedisContainer(rootDir: string, useLoadingBar = true): Promise<void> {
+    const containerName = "cache";
+    const cacheDir = join(rootDir, ".docker/cache");
+    const cacheDockerfilePath = join(cacheDir, "Dockerfile");
+
+    if (!existsSync(cacheDockerfilePath)) {
+        logSubStep("Redis Dockerfileが見つかりません", "warning");
+        return;
+    }
+
+    try {
+        const dockerInstalled = await checkDockerInstalled();
+        if (!dockerInstalled) {
+            logSubStep("Dockerがインストールされていません", "warning");
+            return;
+        }
+
+        const imageExists = await checkImageExists("cache");
+        if (imageExists) {
+            logSubStep("Redis Dockerイメージは既に存在します", "success");
+        } else if (useLoadingBar) {
+            await buildRedisImageWithLoadingBar(rootDir, cacheDockerfilePath, cacheDir);
+        } else {
+            await buildRedisImageWithoutLoadingBar(rootDir, cacheDockerfilePath, cacheDir);
+        }
+
+        const containerExists = await checkContainerExists(containerName);
+        if (containerExists) {
+            await handleExistingRedisContainer(containerName, rootDir, useLoadingBar);
+            return;
+        }
+
+        await createAndStartRedisContainer(containerName, rootDir, useLoadingBar);
+    } catch (error) {
+        logSubStep("Redisコンテナの起動に失敗しました", "warning");
+        if (process.env.DEBUG) {
+            console.error(error);
+        }
+    }
+}
+
 export async function buildDockerImages(rootDir: string, useLoadingBar = true): Promise<void> {
     logSection("🐳 Dockerイメージのビルド");
     const e2eDockerfilePath = join(rootDir, ".docker/e2e/Dockerfile");
@@ -238,4 +374,5 @@ export async function buildDockerImages(rootDir: string, useLoadingBar = true): 
     }
 
     await startMySQLContainer(rootDir, useLoadingBar);
+    await startRedisContainer(rootDir, useLoadingBar);
 }
