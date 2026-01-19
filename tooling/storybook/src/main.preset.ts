@@ -1,6 +1,10 @@
 import type { StorybookConfig } from "@storybook/react-vite";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { mergeConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export interface StorybookMainPresetOptions {
     stories: string[];
@@ -46,6 +50,8 @@ function filterRemixPlugins(plugins: unknown[]): unknown[] {
 export function createStorybookMainPreset(options: StorybookMainPresetOptions): StorybookConfig {
     const { stories, rootDir = process.cwd(), additionalAliases = {}, additionalAddons = [] } = options;
 
+    const sentryNodeStubPath = resolve(__dirname, "./sentry-node-stub.ts");
+
     const config: StorybookConfig = {
         stories,
         addons: [
@@ -62,7 +68,7 @@ export function createStorybookMainPreset(options: StorybookMainPresetOptions): 
         core: {
             disableTelemetry: true,
         },
-        async viteFinal(config) {
+        viteFinal(config) {
             const filteredPlugins = filterRemixPlugins(config.plugins || []);
 
             return mergeConfig(
@@ -71,16 +77,14 @@ export function createStorybookMainPreset(options: StorybookMainPresetOptions): 
                     plugins: filteredPlugins,
                 },
                 {
-                    plugins: [
-                        tsconfigPaths({
-                            root: rootDir,
-                            ignoreConfigErrors: true,
-                        }),
-                    ],
                     resolve: {
                         alias: {
                             ...additionalAliases,
+                            "@sentry/node": sentryNodeStubPath,
                         },
+                    },
+                    optimizeDeps: {
+                        exclude: ["@sentry/node"],
                     },
                     server: {
                         watch: {
