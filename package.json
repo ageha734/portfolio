@@ -7,7 +7,7 @@
     "check": "concurrently -n fmt,lint,type,test,knip -c \"blue,green,yellow,magenta,cyan\" \"bun run fmt:check\" \"bun run lint\" \"bun run typecheck\" \"bun run test\" \"bun run knip\"",
     "clean": "turbo run clean && git clean -xdf .cache .turbo node_modules",
     "coverage": "turbo run coverage",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev --concurrency=20",
     "e2e": "turbo run e2e",
     "fmt": "concurrently -n turbo,shell,actions,pkg -c \"blue,green,yellow,magenta\" \"bun run fmt:ts:fix\" \"bun run fmt:shell:fix\" \"bun run fmt:actions:fix\" \"bun run fmt:pkg:fix\"",
     "fmt:actions:check": "check --check-type=fmt --lint-type=actions",
