@@ -5,6 +5,9 @@ const config = {
         "packages/*/package.json",
         "tooling/*/package.json",
         "testing/*/package.json",
+        "scripts/*/package.json",
+        "generators/package.json",
+        "infra/package.json",
     ],
     rules: {
         react: {

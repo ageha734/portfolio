@@ -15,7 +15,7 @@ const config = {
         "tooling/**/*.{ts,tsx}",
         "testing/**/*.{ts,tsx}",
         "generators/**/*.{ts,tsx}",
-        "scripts/**/*.{ts,tsx}",
+        "scripts/**/*.{ts,tsx}"
     ],
     project: [
         "apps/**/*.{ts,tsx}",

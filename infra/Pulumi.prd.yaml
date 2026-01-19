@@ -1,0 +1,5 @@
+config:
+  portfolio-infra:environment: prd
+  # Production secrets should be set via CLI:
+  # pulumi config set --secret cloudflare:apiToken <token>
+  # etc.

@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 
 function getWorkspaceDir(filePath) {
-    const workspacePatterns = [/^apps\/([^/]+)/, /^packages\/([^/]+)/, /^tooling\/([^/]+)/, /^testing\/([^/]+)/, /^scripts\/([^/]+)/];
+    const workspacePatterns = [/^apps\/([^/]+)/, /^packages\/([^/]+)/, /^tooling\/([^/]+)/, /^testing\/([^/]+)/, /^scripts\/([^/]+)/, /^generators\/([^/]+)/, /^infra\/([^/]+)/];
 
     for (const pattern of workspacePatterns) {
         const match = filePath.match(pattern);

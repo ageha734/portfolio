@@ -8,6 +8,7 @@ const config = {
         "tooling/*/package.json",
         "scripts/*/package.json",
         "generators/package.json",
+        "infra/package.json",
     ],
     dependencyTypes: ["dev", "peer", "prod"],
     semverGroups: [
