@@ -73,6 +73,44 @@ paths:
                         $ref: '#/components/schemas/PaginationMeta'
       tags:
         - Portfolios
+  /api/portfolios/{portfolioId}/images:
+    post:
+      operationId: Portfolios_uploadPortfolioImage
+      summary: Upload an image for a portfolio
+      parameters:
+        - name: portfolioId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '400':
+          description: The server could not understand the request due to invalid syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: The server cannot find the requested resource.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Portfolios
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
   /api/post/{slug}:
     get:
       operationId: Posts_getPostBySlug

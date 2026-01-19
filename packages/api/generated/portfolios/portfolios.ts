@@ -5,6 +5,7 @@
  * OpenAPI spec version: 0.0.0
  */
 import type {
+  Asset,
   Portfolio,
   PortfoliosListPortfolios200,
   PortfoliosListPortfoliosParams
@@ -40,6 +41,21 @@ const portfoliosListPortfolios = (
     },
       options);
     }
-  return {portfoliosGetPortfolioBySlug,portfoliosListPortfolios}};
+  /**
+ * @summary Upload an image for a portfolio
+ */
+const portfoliosUploadPortfolioImage = (
+    portfolioId: string,
+    portfoliosUploadPortfolioImageBody: Blob,
+ options?: SecondParameter<typeof customInstance<Asset>>,) => {
+      return customInstance<Asset>(
+      {url: `/api/portfolios/${portfolioId}/images`, method: 'POST',
+      headers: {'Content-Type': 'application/octet-stream', },
+      data: portfoliosUploadPortfolioImageBody
+    },
+      options);
+    }
+  return {portfoliosGetPortfolioBySlug,portfoliosListPortfolios,portfoliosUploadPortfolioImage}};
 export type PortfoliosGetPortfolioBySlugResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>['portfoliosGetPortfolioBySlug']>>>
 export type PortfoliosListPortfoliosResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>['portfoliosListPortfolios']>>>
+export type PortfoliosUploadPortfolioImageResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getPortfolios>['portfoliosUploadPortfolioImage']>>>
