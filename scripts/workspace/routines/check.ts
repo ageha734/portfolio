@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
 
 import { $ } from "bun";
+import { existsSync } from "node:fs";
 import { createInterface } from "node:readline";
 import pc from "picocolors";
-import { logSection, logStep } from "./env";
+import { LoadingBar, logSection, logStep } from "./env";
 
 interface CommandInfo {
     name: string;
@@ -13,12 +14,37 @@ interface CommandInfo {
     required: boolean;
 }
 
-async function checkCommandInstalled(command: string): Promise<boolean> {
+async function checkCommandInstalled(command: string): Promise<{ installed: boolean; inPath: boolean }> {
+    const originalPath = process.env.PATH || "";
+    let commandToRun = command;
+    let pathToAdd = "";
+    let inPath = true;
+
+    if (command === "pulumi") {
+        const homeDir = process.env.HOME || process.env.USERPROFILE || "~";
+        const pulumiBinDir = `${homeDir}/.pulumi/bin`;
+        const pulumiBinPath = `${pulumiBinDir}/pulumi`;
+
+        if (existsSync(pulumiBinPath)) {
+            if (!originalPath.includes(pulumiBinDir)) {
+                inPath = false;
+            }
+            commandToRun = pulumiBinPath;
+        } else if (existsSync(pulumiBinDir)) {
+            pathToAdd = `${pulumiBinDir}:`;
+            process.env.PATH = `${pathToAdd}${originalPath}`;
+        } else {
+            return { installed: false, inPath: false };
+        }
+        process.env.PULUMI_HOME = `${homeDir}/.pulumi`;
+    }
+
     try {
-        await $`${command} --version`.quiet();
-        return true;
+        const versionFlag = command === "pulumi" ? "version" : "--version";
+        await $`${commandToRun} ${versionFlag}`.quiet();
+        return { installed: true, inPath };
     } catch {
-        return false;
+        return { installed: false, inPath: false };
     }
 }
 
@@ -32,7 +58,8 @@ async function promptUser(question: string): Promise<boolean> {
         rl.question(question, (answer) => {
             rl.close();
             const normalized = answer.trim().toLowerCase();
-            resolve(normalized === "y" || normalized === "yes" || normalized === "はい");
+            const result = normalized === "y" || normalized === "yes" || normalized === "はい";
+            resolve(result);
         });
     });
 }
@@ -45,7 +72,7 @@ async function installNode(): Promise<void> {
         logStep("", "シェルを再起動するか、以下のコマンドを実行してください:", "info");
         console.log(pc.dim(String.raw`    export NVM_DIR="$HOME/.nvm"`));
         console.log(pc.dim(String.raw`    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"`));
-        console.log(pc.dim("    nvm install --lts"));
+        console.log(pc.dim(String.raw`    nvm install --lts`));
         console.log();
         console.log(pc.yellow("  注意: nodeのインストールにはシェルの再起動が必要です。"));
     } catch (error) {
@@ -55,62 +82,158 @@ async function installNode(): Promise<void> {
 }
 
 async function installDocker(): Promise<void> {
-    logStep("", "Dockerをインストールしています...", "info");
+    if (process.platform === "darwin") {
+        logStep("", "macOSではDocker Desktopが必要です。get.docker.comスクリプトはサポートされていません", "warning");
+        logStep("", "Docker Desktopをインストールしてください: https://www.docker.com/products/docker-desktop", "info");
+        throw new Error("macOSではDocker Desktopが必要です。get.docker.comスクリプトはサポートされていません");
+    }
+
+    const loadingBar = new LoadingBar("Dockerをインストールしています...");
+    loadingBar.start();
     try {
-        await $`curl -fsSL https://get.docker.com/ | sh`.quiet();
-        logStep("", "Dockerのインストールが完了しました", "success");
+        const installResult = await $`curl -fsSL https://get.docker.com/ | sh`.quiet();
+
+        if (installResult.exitCode !== 0) {
+            loadingBar.stop(false);
+            throw new Error("Dockerのインストールに失敗しました");
+        }
+        loadingBar.stop(true, "Dockerのインストールが完了しました");
     } catch (error) {
+        loadingBar.stop(false);
         logStep("", "Dockerのインストールに失敗しました", "error");
         throw error;
     }
 }
 
-async function installDoppler(): Promise<void> {
-    logStep("", "Doppler CLIをインストールしています...", "info");
+async function checkGpgAvailable(): Promise<boolean> {
     try {
-        const archResult = await $`uname -m`.quiet();
-        const arch = archResult.stdout.toString().trim() === "arm64" ? "arm64" : "amd64";
-        await $`curl -Ls --tlsv1.2 --proto "=https" -o /tmp/doppler.tar.gz https://cli.doppler.com/download/darwin/${arch}`.quiet();
-        await $`tar -xzf /tmp/doppler.tar.gz -C /tmp`.quiet();
-        await $`sudo mv /tmp/doppler /usr/local/bin/doppler`.quiet();
-        await $`rm /tmp/doppler.tar.gz`.quiet();
-        logStep("", "Doppler CLIのインストールが完了しました", "success");
+        await $`which gpg`.quiet();
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+async function installDoppler(): Promise<void> {
+    const gpgAvailable = await checkGpgAvailable();
+    if (!gpgAvailable) {
+        logStep("", "Doppler CLIのインストールにはGnuPGが必要です。gpgが見つかりません", "error");
+        logStep("", "GnuPGをインストールしてください:", "info");
+        if (process.platform === "darwin") {
+            console.log(pc.dim("    brew install gnupg"));
+        } else {
+            console.log(pc.dim("    apt-get install gnupg  # Debian/Ubuntu"));
+            console.log(pc.dim("    yum install gnupg       # RHEL/CentOS"));
+        }
+        throw new Error("Doppler CLIのインストールにはGnuPGが必要です。gpgが見つかりません");
+    }
+
+    const loadingBar = new LoadingBar("Doppler CLIをインストールしています...");
+    loadingBar.start();
+    try {
+        const homeDir = process.env.HOME || process.env.USERPROFILE || "~";
+        const localBinDir = `${homeDir}/.local/bin`;
+        await $`mkdir -p ${localBinDir}`.quiet();
+
+        const installResult = await $`bash -c "curl -Ls --tlsv1.2 --proto '=https' --retry 3 https://cli.doppler.com/install.sh | sh -s -- --install-path ${localBinDir}"`.quiet();
+
+        if (installResult.exitCode !== 0) {
+            const errorOutput = installResult.stderr.toString() || installResult.stdout.toString();
+            loadingBar.stop(false);
+            throw new Error(`インストールに失敗しました: ${errorOutput}`);
+        }
+        loadingBar.stop(true, "Doppler CLIのインストールが完了しました");
+        logStep("", `Doppler CLIは ${localBinDir} にインストールされました`, "info");
+        logStep("", "PATHに追加するには、シェル設定ファイルに以下を追加してください:", "info");
+        console.log(pc.dim(String.raw`    export PATH="$HOME/.local/bin:$PATH"`));
     } catch (error) {
+        loadingBar.stop(false);
         logStep("", "Doppler CLIのインストールに失敗しました", "error");
+        if (error instanceof Error) {
+            console.error(pc.dim(`  エラー: ${error.message}`));
+        }
         throw error;
     }
 }
 
 async function installCodex(): Promise<void> {
-    logStep("", "Codex CLIをGitHubリリースからインストールしています...", "info");
+    const loadingBar = new LoadingBar("Codex CLIをインストールしています...");
+    loadingBar.start();
     try {
         const releaseResponse = await fetch("https://api.github.com/repos/openai/codex/releases/latest");
+
         if (!releaseResponse.ok) {
+            loadingBar.stop(false);
             throw new Error(`GitHub APIエラー: ${releaseResponse.status}`);
         }
+
         const releaseData = (await releaseResponse.json()) as {
             tag_name: string;
             assets: Array<{ name: string; browser_download_url: string }>;
         };
+
         const archResult = await $`uname -m`.quiet();
-        const arch = archResult.stdout.toString().trim() === "arm64" ? "aarch64" : "x86_64";
+        const archRaw = archResult.stdout.toString().trim();
+        const arch = archRaw === "arm64" ? "aarch64" : "x86_64";
+
         const assetName = `codex-${arch}-apple-darwin.tar.gz`;
+
         const asset = releaseData.assets.find((a) => a.name === assetName);
+
         if (!asset) {
+            loadingBar.stop(false);
             throw new Error(`アセットが見つかりません: ${assetName}`);
         }
-        logStep("", `バージョン ${releaseData.tag_name} をダウンロードしています...`, "info");
+
         const downloadPath = `/tmp/${assetName}`;
-        await $`curl -fsSL -o ${downloadPath} ${asset.browser_download_url}`.quiet();
-        await $`tar -xzf ${downloadPath} -C /tmp`.quiet();
-        await $`sudo mv /tmp/codex /usr/local/bin/codex`.quiet();
-        await $`sudo chmod +x /usr/local/bin/codex`.quiet();
+
+        const downloadResult = await $`curl -fsSL -o ${downloadPath} ${asset.browser_download_url}`.quiet();
+
+        if (downloadResult.exitCode !== 0) {
+            loadingBar.stop(false);
+            throw new Error("ダウンロードに失敗しました");
+        }
+
+        const extractResult = await $`tar -xzf ${downloadPath} -C /tmp`.quiet();
+
+        if (extractResult.exitCode !== 0) {
+            loadingBar.stop(false);
+            throw new Error(`解凍に失敗しました: ${extractResult.stderr.toString()}`);
+        }
+
+        const extractedFileName = `codex-${arch}-apple-darwin`;
+        const extractedPath = `/tmp/${extractedFileName}`;
+
+        const checkResult = await $`test -f ${extractedPath}`.quiet();
+
+        if (checkResult.exitCode !== 0) {
+            loadingBar.stop(false);
+            throw new Error(`解凍後のcodexバイナリが見つかりません: ${extractedPath}`);
+        }
+
+        const homeDir = process.env.HOME || process.env.USERPROFILE || "~";
+        const localBinDir = `${homeDir}/.local/bin`;
+        await $`mkdir -p ${localBinDir}`.quiet();
+
+        const moveResult = await $`mv ${extractedPath} ${localBinDir}/codex`.quiet();
+
+        if (moveResult.exitCode !== 0) {
+            loadingBar.stop(false);
+            throw new Error("インストールに失敗しました");
+        }
+
+        await $`chmod +x ${localBinDir}/codex`.quiet();
         await $`rm ${downloadPath}`.quiet();
-        logStep("", `Codex CLI ${releaseData.tag_name} のインストールが完了しました`, "success");
+
+        loadingBar.stop(true, `Codex CLI ${releaseData.tag_name} のインストールが完了しました`);
+        logStep("", `Codex CLIは ${localBinDir} にインストールされました`, "info");
+        logStep("", "PATHに追加するには、シェル設定ファイルに以下を追加してください:", "info");
+        console.log(pc.dim(String.raw`    export PATH="$HOME/.local/bin:$PATH"`));
     } catch (error) {
+        loadingBar.stop(false);
         logStep("", "Codex CLIのインストールに失敗しました", "error");
         if (error instanceof Error) {
-            logStep("", error.message, "error");
+            console.error(pc.dim(`  エラー: ${error.message}`));
         }
         throw error;
     }
@@ -118,12 +241,30 @@ async function installCodex(): Promise<void> {
 
 async function installCommand(commandInfo: CommandInfo): Promise<void> {
     if (typeof commandInfo.installScript === "string") {
-        logStep("", `${commandInfo.name}をインストールしています...`, "info");
+        const loadingBar = new LoadingBar(`${commandInfo.name}をインストールしています...`);
+        loadingBar.start();
         try {
-            await $`${commandInfo.installScript}`.quiet();
-            logStep("", `${commandInfo.name}のインストールが完了しました`, "success");
+            const result = await $`bash -c ${commandInfo.installScript}`.quiet();
+
+            if (result.exitCode !== 0) {
+                const errorOutput = result.stderr.toString() || result.stdout.toString();
+                loadingBar.stop(false);
+                logStep("", `${commandInfo.name}のインストールに失敗しました`, "error");
+                if (errorOutput) {
+                    console.error(pc.dim(`  エラー出力: ${errorOutput.trim()}`));
+                }
+                throw new Error(`インストールスクリプトが終了コード ${result.exitCode} で終了しました`);
+            }
+            loadingBar.stop(true, `${commandInfo.name}のインストールが完了しました`);
         } catch (error) {
+            loadingBar.stop(false);
             logStep("", `${commandInfo.name}のインストールに失敗しました`, "error");
+            if (error instanceof Error) {
+                console.error(pc.dim(`  エラー: ${error.message}`));
+            }
+            if (process.env.DEBUG) {
+                console.error(error);
+            }
             throw error;
         }
     } else {
@@ -190,36 +331,87 @@ const COMMANDS: CommandInfo[] = [
     },
 ];
 
-async function handleCommandInstallation(commandInfo: CommandInfo, isOptional: boolean): Promise<void> {
-    const isInstalled = await checkCommandInstalled(commandInfo.checkCommand);
-    if (isInstalled) {
-        logStep("", `${commandInfo.name}がインストールされています`, "success");
+function showPathWarning(commandName: string): void {
+    if (commandName !== "pulumi") {
         return;
     }
 
+    const homeDir = process.env.HOME || process.env.USERPROFILE || "~";
+    logStep("", "PATHに追加するには、シェル設定ファイルに以下を追加してください:", "info");
+    const shell = process.env.SHELL || "";
+    if (shell.includes("fish")) {
+        console.log(pc.dim(String.raw`    fish_add_path ${homeDir}/.pulumi/bin`));
+    } else {
+        console.log(pc.dim(String.raw`    export PATH="$HOME/.pulumi/bin:$PATH"`));
+    }
+}
+
+function handleInstalledCommand(commandInfo: CommandInfo, inPath: boolean, isAlreadyInstalled: boolean): void {
+    const statusMessage = isAlreadyInstalled
+        ? `${commandInfo.name}がインストールされています`
+        : `${commandInfo.name}のインストールが確認されました`;
+
+    if (inPath) {
+        logStep("", statusMessage, "success");
+    } else {
+        const warningMessage = isAlreadyInstalled
+            ? `${commandInfo.name}がインストールされていますが、PATHに含まれていません`
+            : `${commandInfo.name}のインストールが確認されましたが、PATHに含まれていません`;
+        logStep("", warningMessage, "warning");
+        showPathWarning(commandInfo.name);
+    }
+}
+
+async function handleInstallationPrompt(commandInfo: CommandInfo, isOptional: boolean): Promise<boolean> {
     const optionalText = isOptional ? "（オプション）" : "";
     const message = `${commandInfo.name}がインストールされていません${optionalText}。インストールしますか？ (y/n): `;
+
     const shouldInstall = await promptUser(message);
+
     if (!shouldInstall) {
         const skipStatus = isOptional ? "info" : "warning";
         logStep("", `${commandInfo.name}のインストールをスキップしました`, skipStatus);
-        return;
+        return false;
     }
 
+    return true;
+}
+
+async function performInstallation(commandInfo: CommandInfo): Promise<void> {
     try {
         await installCommand(commandInfo);
-        const verifyInstalled = await checkCommandInstalled(commandInfo.checkCommand);
-        if (verifyInstalled) {
-            logStep("", `${commandInfo.name}のインストールが確認されました`, "success");
+        const { installed, inPath } = await checkCommandInstalled(commandInfo.checkCommand);
+
+        if (installed) {
+            handleInstalledCommand(commandInfo, inPath, false);
         } else {
             logStep("", `${commandInfo.name}のインストール後、コマンドが見つかりません。シェルを再起動してください`, "warning");
         }
     } catch (error) {
         logStep("", `${commandInfo.name}のインストールに失敗しました`, "error");
+        if (error instanceof Error) {
+            console.error(pc.dim(`  エラー: ${error.message}`));
+        }
         if (process.env.DEBUG) {
             console.error(error);
         }
     }
+}
+
+async function handleCommandInstallation(commandInfo: CommandInfo, isOptional: boolean): Promise<void> {
+    const { installed, inPath } = await checkCommandInstalled(commandInfo.checkCommand);
+
+    if (installed) {
+        handleInstalledCommand(commandInfo, inPath, true);
+        return;
+    }
+
+    const shouldInstall = await handleInstallationPrompt(commandInfo, isOptional);
+    if (!shouldInstall) {
+        return;
+    }
+
+    await performInstallation(commandInfo);
 }
 
 async function processCommands(commands: CommandInfo[], isOptional: boolean): Promise<void> {
@@ -229,6 +421,9 @@ async function processCommands(commands: CommandInfo[], isOptional: boolean): Pr
     }
 
     for (const commandInfo of commands) {
+        if (!commandInfo) {
+            continue;
+        }
         await handleCommandInstallation(commandInfo, isOptional);
     }
 }

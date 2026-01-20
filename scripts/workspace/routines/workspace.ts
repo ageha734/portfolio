@@ -9,6 +9,7 @@ import { logStep, setupEnvFile } from "./env";
 import { installDependencies } from "./install";
 import { runDatabaseMigrations } from "./migrate";
 import { generatePrismaSchema } from "./schema";
+import { checkAndInstallCommands } from "./check";
 
 export function findRootDir(startDir: string = process.cwd()): string {
     let currentDir = resolve(startDir);
@@ -167,6 +168,8 @@ export async function runWorkspace(options: SetupOptions = {}): Promise<void> {
     logStep("", "Bunがインストールされています", "success");
 
     try {
+        await checkAndInstallCommands();
+
         if (resolved.runEnv) {
             await setupEnvFile(rootDir);
         }

@@ -11,6 +11,7 @@
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "start": "node ./dist/cmd/main.js",
+    "test": "E2E_TEST=true vitest run",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -20,7 +21,8 @@
     "@types/node": "25.0.3",
     "cac": "6.7.14",
     "picocolors": "1.1.1",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^2.1.8"
   },
   "bin": {
     "workspace": "./dist/cmd/main.js"
