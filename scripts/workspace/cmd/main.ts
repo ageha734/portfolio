@@ -3,6 +3,7 @@
 import { cac } from "cac";
 import { findRootDir, runWorkspace, type SetupOptions } from "~/workspace";
 import { runSeed } from "~/seed";
+import { checkAndInstallCommands } from "~/check";
 
 const cli = cac("workspace");
 
@@ -31,6 +32,12 @@ cli
     .action(async () => {
         const rootDir = findRootDir();
         await runSeed(rootDir);
+    });
+
+cli
+    .command("check", "必要なコマンドのインストール確認と対話的インストールを実行します")
+    .action(async () => {
+        await checkAndInstallCommands();
     });
 
 cli.command("*", "開発環境のセットアップを実行します").action(async () => {
