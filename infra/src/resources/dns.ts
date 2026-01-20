@@ -5,7 +5,7 @@ import { getProjectName } from "../config";
 
 export interface DnsRecordConfig {
 	name: string;
-	type: "A" | "AAAA" | "CNAME" | "TXT" | "MX" | "SRV";
+	type: "A" | "AAAA" | "CNAME";
 	content: string | pulumi.Output<string>;
 	ttl?: number;
 	proxied?: boolean;
