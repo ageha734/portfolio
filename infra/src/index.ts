@@ -1,74 +1,55 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getConfig, getDopplerSecrets, useDoppler } from "./config";
+import { getDopplerSecrets, getConfig } from "./config";
 import {
-	createDatabases,
-	createObservability,
-	createPortfolioDnsRecords,
-	createPortfolioApiWorker,
-	createPortfolioPagesProjects,
-	getCloudflareEnvVars,
+	TIDB_ALLOWED_REGIONS,
 	TIDB_SERVERLESS_RECOMMENDATIONS,
-} from "./resources";
+	createPortfolioTiDBConfig,
+} from "./resources/databases";
+import { createPortfolioRedisConfig } from "./resources/cache";
+import { createPortfolioDnsRecords } from "./resources/dns";
+import { createObservability } from "./resources/observability";
+import { createPortfolioPagesProjects } from "./resources/pages";
+import { getCloudflareEnvVars } from "./resources/secrets";
+import { createPortfolioApiWorker } from "./resources/workers";
 
-// ============================================================================
-// Configuration
-// ============================================================================
 const config = getConfig();
 
-// Doppler からシークレットを取得（有効な場合）
-const dopplerSecrets = useDoppler ? getDopplerSecrets() : undefined;
+const dopplerSecrets = getDopplerSecrets();
 
-// secrets.ts の SecretsOutputs["secrets"] 型に変換
-const secrets = dopplerSecrets
-	? {
-			DATABASE_URL: dopplerSecrets.DATABASE_URL,
-			REDIS_URL: dopplerSecrets.REDIS_URL,
-			CLOUDFLARE_API_TOKEN: dopplerSecrets.CLOUDFLARE_API_TOKEN,
-			CLOUDFLARE_ACCOUNT_ID: dopplerSecrets.CLOUDFLARE_ACCOUNT_ID,
-			CLOUDFLARE_ZONE_ID: dopplerSecrets.CLOUDFLARE_ZONE_ID,
-			TIDB_PUBLIC_KEY: pulumi.output(""),
-			TIDB_PRIVATE_KEY: pulumi.output(""),
-			TIDB_PROJECT_ID: pulumi.output(""),
-			TIDB_HOST: dopplerSecrets.TIDB_HOST,
-			REDIS_API_KEY: pulumi.output(""),
-			REDIS_SECRET_KEY: pulumi.output(""),
-			GRAFANA_API_KEY: dopplerSecrets.GRAFANA_API_KEY,
-			GRAFANA_ORG_SLUG: dopplerSecrets.GRAFANA_ORG_SLUG,
-			SENTRY_AUTH_TOKEN: dopplerSecrets.SENTRY_AUTH_TOKEN,
-			SENTRY_ORG: dopplerSecrets.SENTRY_ORG,
-			SENTRY_DSN: dopplerSecrets.SENTRY_DSN,
-			BETTER_AUTH_SECRET: dopplerSecrets.BETTER_AUTH_SECRET,
-			GOOGLE_CLIENT_ID: dopplerSecrets.GOOGLE_CLIENT_ID,
-			GOOGLE_CLIENT_SECRET: dopplerSecrets.GOOGLE_CLIENT_SECRET,
-		}
-	: undefined;
+const secrets = {
+	DATABASE_URL: dopplerSecrets.DATABASE_URL,
+	REDIS_URL: dopplerSecrets.REDIS_URL,
+	CLOUDFLARE_API_TOKEN: dopplerSecrets.CLOUDFLARE_API_TOKEN,
+	CLOUDFLARE_ACCOUNT_ID: dopplerSecrets.CLOUDFLARE_ACCOUNT_ID,
+	CLOUDFLARE_ZONE_ID: dopplerSecrets.CLOUDFLARE_ZONE_ID,
+	TIDB_HOST: dopplerSecrets.TIDB_HOST,
+	GRAFANA_API_KEY: dopplerSecrets.GRAFANA_API_KEY,
+	GRAFANA_ORG_SLUG: dopplerSecrets.GRAFANA_ORG_SLUG,
+	SENTRY_AUTH_TOKEN: dopplerSecrets.SENTRY_AUTH_TOKEN,
+	SENTRY_ORG: dopplerSecrets.SENTRY_ORG,
+	SENTRY_DSN: dopplerSecrets.SENTRY_DSN,
+	BETTER_AUTH_SECRET: dopplerSecrets.BETTER_AUTH_SECRET,
+	GOOGLE_CLIENT_ID: dopplerSecrets.GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET: dopplerSecrets.GOOGLE_CLIENT_SECRET,
+};
 
-// ============================================================================
-// Databases (TiDB Cloud Serverless & Redis Cloud)
-// ============================================================================
-// TiDB: AWS Tokyo (ap-northeast-1), Serverless Free Tier
-// Redis: AWS Tokyo (ap-northeast-1), Free Tier 30MB
-const databases = createDatabases(secrets);
+const tidb = createPortfolioTiDBConfig(secrets);
+const redis = createPortfolioRedisConfig(secrets);
 
-// Export database connection strings
-export const tidbConnectionString = databases.tidb.connectionString;
-export const tidbHost = databases.tidb.host;
-export const redisConnectionString = databases.redis.connectionString;
+export const tidbConnectionString = tidb.connectionString;
+export const tidbHost = tidb.host;
+export const redisConnectionString = redis.connectionString;
 
-// Export TiDB cluster info
 export const tidbClusterInfo = {
-	name: databases.tidb.clusterConfig.name,
-	cloudProvider: databases.tidb.clusterConfig.cloudProvider,
-	region: databases.tidb.clusterConfig.region,
-	database: databases.tidb.clusterConfig.database,
+	name: tidb.clusterConfig.name,
+	cloudProvider: tidb.clusterConfig.cloudProvider,
+	region: tidb.clusterConfig.region,
+	database: tidb.clusterConfig.database,
 	tier: "Serverless",
+	allowedRegions: TIDB_ALLOWED_REGIONS,
 	recommendations: TIDB_SERVERLESS_RECOMMENDATIONS,
 };
 
-// ============================================================================
-// Cloudflare DNS Records
-// ============================================================================
-// IMPORTANT: Only creates records defined here. Existing records are NOT modified.
 const dnsRecords = createPortfolioDnsRecords(config);
 
 export const dnsRecordIds = pulumi.output(dnsRecords.records).apply((records) =>
@@ -77,12 +58,9 @@ export const dnsRecordIds = pulumi.output(dnsRecords.records).apply((records) =>
 	),
 );
 
-// ============================================================================
-// Cloudflare Pages Projects
-// ============================================================================
 const pagesProjects = createPortfolioPagesProjects(config, {
-	databaseUrl: databases.tidb.connectionString,
-	redisUrl: databases.redis.connectionString,
+	databaseUrl: tidb.connectionString,
+	redisUrl: redis.connectionString,
 });
 
 export const pagesProjectNames = pulumi
@@ -101,12 +79,9 @@ export const pagesDomainNames = pulumi
 		),
 	);
 
-// ============================================================================
-// Cloudflare Workers
-// ============================================================================
 const workers = createPortfolioApiWorker(config, {
-	databaseUrl: databases.tidb.connectionString,
-	redisUrl: databases.redis.connectionString,
+	databaseUrl: tidb.connectionString,
+	redisUrl: redis.connectionString,
 });
 
 export const workerScriptNames = pulumi
@@ -125,9 +100,6 @@ export const workerDomainNames = pulumi
 		),
 	);
 
-// ============================================================================
-// Observability (Grafana Cloud & Sentry)
-// ============================================================================
 const observability = createObservability(config);
 
 export const grafanaFolderUids = pulumi
@@ -150,16 +122,12 @@ export const grafanaDashboardUids = pulumi
 	);
 
 export const sentryDsn = observability.sentry.dsn;
-export const sentryProjectSlugs = observability.sentry.projects.map(
-	(p) => p.slug,
+export const sentryTeamSlug = observability.sentry.team.slug;
+export const sentryProjectSlugs = Object.fromEntries(
+	Object.entries(observability.sentry.projects).map(([key, project]) => [key, project.slug]),
 );
 
-// ============================================================================
-// Doppler Integration Info
-// ============================================================================
 export const dopplerInfo = {
-	enabled: useDoppler,
-	// Doppler CLI commands for local development
 	commands: {
 		downloadEnv: "doppler secrets download --no-file --format env > .env",
 		runDev: "doppler run -- bun run dev",
@@ -167,31 +135,21 @@ export const dopplerInfo = {
 	},
 };
 
-// ============================================================================
-// Cloudflare Environment Variables (for Workers/Pages)
-// ============================================================================
-// These can be injected via Doppler -> Pulumi -> Cloudflare
-export const cloudflareEnvVars = secrets
-	? getCloudflareEnvVars(secrets)
-	: undefined;
+export const cloudflareEnvVars = getCloudflareEnvVars(secrets);
 
-// ============================================================================
-// Summary
-// ============================================================================
 export const summary = {
 	environment: config.environment,
 	domain: config.cloudflare.domain,
-	secretsManagement: useDoppler ? "Doppler" : "Pulumi Config",
+	secretsManagement: "Doppler",
 	databases: {
 		tidb: {
 			type: "Serverless",
 			cloudProvider: "AWS",
-			region: "ap-northeast-1 (Tokyo)",
+			region: "ap-northeast-1",
 		},
 		redis: {
-			name: databases.redis.config.databaseName,
-			cloudProvider: "AWS",
-			region: "ap-northeast-1 (Tokyo)",
+			name: redis.database.name,
+			subscription: redis.subscription.name,
 		},
 	},
 	cloudflare: {

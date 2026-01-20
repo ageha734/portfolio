@@ -1,39 +1,16 @@
 import * as pulumi from "@pulumi/pulumi";
-import type { InfraConfig } from "../config";
+import { getProjectName } from "../config";
 import type { SecretsOutputs } from "./secrets";
 
-/**
- * TiDB Cloud Serverless Configuration
- *
- * TiDB Serverless は AWS Tokyo (ap-northeast-1) リージョンで利用可能
- * 接続情報は Doppler で一元管理
- *
- * @see https://docs.pingcap.com/tidbcloud/select-cluster-tier#serverless
- */
+export const TIDB_ALLOWED_REGIONS = ["ap-northeast-1"] as const;
 
-// TiDB Serverless の利用可能リージョン
-export const TIDB_SERVERLESS_REGIONS = {
-	AWS: [
-		"ap-northeast-1", // Tokyo
-		"ap-southeast-1", // Singapore
-		"eu-central-1", // Frankfurt
-		"us-east-1", // N. Virginia
-		"us-west-2", // Oregon
-	],
-	GCP: [
-		"us-central1",
-		"us-east1",
-		"europe-west1",
-		"asia-southeast1",
-	],
-} as const;
+export type TiDBAllowedRegion = (typeof TIDB_ALLOWED_REGIONS)[number];
 
 export interface TiDBServerlessConfig {
 	name: string;
-	cloudProvider: "AWS" | "GCP";
-	region: string;
+	cloudProvider: "AWS";
+	region: TiDBAllowedRegion;
 	database: string;
-	// Serverless spending limit (0 = free tier)
 	spendingLimitMonthly?: number;
 }
 
@@ -43,12 +20,14 @@ export interface TiDBOutputs {
 	host: pulumi.Output<string>;
 }
 
-/**
- * TiDB Serverless 接続設定
- *
- * Doppler から DATABASE_URL を取得するか、
- * 個別の認証情報から接続文字列を生成
- */
+function validateTiDBRegion(region: string): asserts region is TiDBAllowedRegion {
+	if (!TIDB_ALLOWED_REGIONS.includes(region as TiDBAllowedRegion)) {
+		throw new Error(
+			`TiDB region "${region}" is not allowed. Allowed regions: ${TIDB_ALLOWED_REGIONS.join(", ")}`,
+		);
+	}
+}
+
 export function createTiDBServerlessConfig(
 	clusterConfig: TiDBServerlessConfig,
 	secrets?: {
@@ -58,18 +37,18 @@ export function createTiDBServerlessConfig(
 		host?: pulumi.Output<string>;
 	},
 ): TiDBOutputs {
-	// Doppler から DATABASE_URL が提供されている場合はそれを使用
+	validateTiDBRegion(clusterConfig.region);
+
 	if (secrets?.databaseUrl) {
 		return {
 			clusterConfig,
 			connectionString: secrets.databaseUrl,
-			host: secrets.host || pulumi.output(`gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`),
+			host: secrets.host ?? pulumi.output(`gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`),
 		};
 	}
 
-	// 個別の認証情報から接続文字列を生成
-	const host = secrets?.host || pulumi.output(`gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`);
-	const connectionString = pulumi.interpolate`mysql://${secrets?.user || ""}:${secrets?.password || ""}@${host}:4000/${clusterConfig.database}?sslaccept=strict`;
+	const host = secrets?.host ?? pulumi.output(`gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`);
+	const connectionString = pulumi.interpolate`mysql://${secrets?.user ?? ""}:${secrets?.password ?? ""}@${host}:4000/${clusterConfig.database}?sslaccept=strict`;
 
 	return {
 		clusterConfig,
@@ -78,22 +57,21 @@ export function createTiDBServerlessConfig(
 	};
 }
 
-/**
- * Portfolio TiDB Serverless configuration
- *
- * リージョン: AWS Tokyo (ap-northeast-1)
- * プラン: Serverless (Free Tier)
- */
 export function createPortfolioTiDBConfig(
 	secrets?: SecretsOutputs["secrets"],
 ): TiDBOutputs {
+	const config = new pulumi.Config();
+	const projectName = getProjectName();
+	const region = "ap-northeast-1";
+	const databaseName = config.get("tidbDatabase") || projectName.split("-").pop() || "portfolio";
+
 	return createTiDBServerlessConfig(
 		{
-			name: "portfolio-db",
+			name: `${projectName}-db`,
 			cloudProvider: "AWS",
-			region: "ap-northeast-1", // Tokyo
-			database: "portfolio",
-			spendingLimitMonthly: 0, // Free tier
+			region: region,
+			database: databaseName,
+			spendingLimitMonthly: 0,
 		},
 		secrets
 			? {
@@ -104,28 +82,19 @@ export function createPortfolioTiDBConfig(
 	);
 }
 
-/**
- * TiDB Serverless クラスタ作成時の推奨設定
- *
- * TiDB Cloud Console で手動作成する場合の参考情報
- */
 export const TIDB_SERVERLESS_RECOMMENDATIONS = {
-	// Tokyo リージョンでの推奨設定
 	tokyo: {
 		cloudProvider: "AWS",
 		region: "ap-northeast-1",
 		tier: "Serverless",
-		// Free tier 制限
 		freeTierLimits: {
 			rowStorageGiB: 5,
-			requestUnitsPerMonth: 50_000_000, // 5000万 RU/月
+			requestUnitsPerMonth: 50_000_000,
 		},
 	},
-	// 接続設定
 	connection: {
 		port: 4000,
 		sslMode: "VERIFY_IDENTITY",
-		// 接続プーリング推奨設定
 		pooling: {
 			minConnections: 1,
 			maxConnections: 10,
@@ -133,108 +102,3 @@ export const TIDB_SERVERLESS_RECOMMENDATIONS = {
 		},
 	},
 };
-
-/**
- * Redis Cloud Configuration
- *
- * 接続情報は Doppler で一元管理
- */
-
-export interface RedisCloudConfig {
-	subscriptionName: string;
-	databaseName: string;
-	cloudProvider: "AWS" | "GCP" | "AZURE";
-	region: string;
-	memoryLimitInGb?: number;
-	dataEvictionPolicy?:
-		| "noeviction"
-		| "allkeys-lru"
-		| "volatile-lru"
-		| "allkeys-random"
-		| "volatile-random"
-		| "volatile-ttl"
-		| "volatile-lfu"
-		| "allkeys-lfu";
-	replication?: boolean;
-	dataPersistence?:
-		| "none"
-		| "aof-every-write"
-		| "aof-every-1-second"
-		| "snapshot-every-1-hour"
-		| "snapshot-every-6-hours"
-		| "snapshot-every-12-hours";
-}
-
-export interface RedisOutputs {
-	config: RedisCloudConfig;
-	connectionString: pulumi.Output<string>;
-}
-
-/**
- * Redis Cloud 接続設定
- *
- * Doppler から REDIS_URL を取得
- */
-export function createRedisCloudConfig(
-	redisConfig: RedisCloudConfig,
-	secrets?: {
-		redisUrl?: pulumi.Output<string>;
-	},
-): RedisOutputs {
-	// Doppler から REDIS_URL が提供されている場合はそれを使用
-	const connectionString =
-		secrets?.redisUrl || pulumi.output("");
-
-	return {
-		config: redisConfig,
-		connectionString,
-	};
-}
-
-/**
- * Portfolio Redis Cloud configuration
- *
- * リージョン: AWS Tokyo (ap-northeast-1)
- * プラン: Free Tier (30MB)
- */
-export function createPortfolioRedisConfig(
-	secrets?: SecretsOutputs["secrets"],
-): RedisOutputs {
-	return createRedisCloudConfig(
-		{
-			subscriptionName: "portfolio-subscription",
-			databaseName: "portfolio-cache",
-			cloudProvider: "AWS",
-			region: "ap-northeast-1", // Tokyo
-			memoryLimitInGb: 0.03, // 30MB - Free tier
-			dataEvictionPolicy: "volatile-lru",
-			replication: false,
-			dataPersistence: "none",
-		},
-		secrets
-			? {
-					redisUrl: secrets.REDIS_URL,
-				}
-			: undefined,
-	);
-}
-
-/**
- * Combined database outputs
- */
-export interface DatabasesOutputs {
-	tidb: TiDBOutputs;
-	redis: RedisOutputs;
-}
-
-/**
- * Doppler からシークレットを取得してデータベース設定を作成
- */
-export function createDatabases(
-	secrets?: SecretsOutputs["secrets"],
-): DatabasesOutputs {
-	return {
-		tidb: createPortfolioTiDBConfig(secrets),
-		redis: createPortfolioRedisConfig(secrets),
-	};
-}

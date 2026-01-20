@@ -1,10 +1,8 @@
-import * as grafana from "@pulumiverse/grafana";
 import * as pulumi from "@pulumi/pulumi";
+import * as grafana from "@pulumiverse/grafana";
+import * as sentry from "@pulumiverse/sentry";
 import type { InfraConfig } from "../config";
-
-/**
- * Grafana Cloud Resources
- */
+import { getProjectName } from "../config";
 
 export interface GrafanaStackConfig {
 	name: string;
@@ -37,9 +35,6 @@ export interface GrafanaOutputs {
 	folders: Record<string, grafana.oss.Folder>;
 }
 
-/**
- * Create Grafana Cloud stack and resources
- */
 export function createGrafanaResources(
 	config: InfraConfig,
 	stackConfig: GrafanaStackConfig,
@@ -47,18 +42,18 @@ export function createGrafanaResources(
 ): GrafanaOutputs {
 	const createdDashboards: Record<string, grafana.oss.Dashboard> = {};
 	const createdFolders: Record<string, grafana.oss.Folder> = {};
+	const projectName = getProjectName();
+	const folderTitle = projectName.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
 
-	// Create folder for portfolio dashboards
-	const portfolioFolder = new grafana.oss.Folder("grafana-folder-portfolio", {
-		title: "Portfolio",
+	const projectFolder = new grafana.oss.Folder(`grafana-folder-${projectName}`, {
+		title: folderTitle,
 	});
-	createdFolders["portfolio"] = portfolioFolder;
+	createdFolders[projectName] = projectFolder;
 
-	// Create dashboards
 	for (const dashboard of dashboards) {
-		const resourceName = `grafana-dashboard-${dashboard.title.toLowerCase().replace(/\s+/g, "-")}`;
+		const resourceName = `grafana-dashboard-${dashboard.title.toLowerCase().replaceAll(/\s+/g, "-")}`;
 		createdDashboards[resourceName] = new grafana.oss.Dashboard(resourceName, {
-			folder: portfolioFolder.uid,
+			folder: projectFolder.uid,
 			configJson: dashboard.configJson,
 		});
 	}
@@ -69,18 +64,18 @@ export function createGrafanaResources(
 	};
 }
 
-/**
- * Portfolio Grafana dashboards
- */
 export function createPortfolioGrafanaResources(
 	config: InfraConfig,
 ): GrafanaOutputs {
+	const projectName = getProjectName();
+	const projectDisplayName = projectName.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+
 	const dashboards: GrafanaDashboardConfig[] = [
 		{
 			title: "API Performance",
 			configJson: JSON.stringify({
-				title: "Portfolio API Performance",
-				uid: "portfolio-api-perf",
+				title: `${projectDisplayName} API Performance`,
+				uid: `${projectName}-api-perf`,
 				panels: [
 					{
 						id: 1,
@@ -114,8 +109,8 @@ export function createPortfolioGrafanaResources(
 		{
 			title: "Database Metrics",
 			configJson: JSON.stringify({
-				title: "Portfolio Database Metrics",
-				uid: "portfolio-db-metrics",
+				title: `${projectDisplayName} Database Metrics`,
+				uid: `${projectName}-db-metrics`,
 				panels: [
 					{
 						id: 1,
@@ -139,145 +134,69 @@ export function createPortfolioGrafanaResources(
 	return createGrafanaResources(
 		config,
 		{
-			name: "portfolio",
+			name: projectName,
 			slug: config.grafana.stackSlug,
-			description: "Portfolio project monitoring",
+			description: `${projectDisplayName} project monitoring`,
 		},
 		dashboards,
 	);
 }
 
-/**
- * Sentry Configuration
- *
- * Note: Sentry doesn't have an official Pulumi provider.
- * We provide configuration for API-based management.
- */
-
-export interface SentryProjectConfig {
-	name: string;
-	slug: string;
-	platform:
-		| "javascript"
-		| "javascript-nextjs"
-		| "javascript-react"
-		| "node"
-		| "node-hono"
-		| "node-cloudflare-workers";
-	team: string;
-}
-
-export interface SentryAlertConfig {
-	name: string;
-	conditions: Array<{
-		id: string;
-		interval?: string;
-		value?: number;
-	}>;
-	actions: Array<{
-		id: string;
-		targetIdentifier?: string;
-		targetType?: string;
-	}>;
-	frequency?: number;
-}
 
 export interface SentryOutputs {
-	projects: SentryProjectConfig[];
-	alerts: SentryAlertConfig[];
+	team: sentry.SentryTeam;
+	projects: Record<string, sentry.SentryProject>;
 	dsn: pulumi.Output<string>;
 }
 
-/**
- * Generate Sentry configuration
- * The actual projects should be created via Sentry console or API
- */
-export function createSentryConfig(
-	config: InfraConfig,
-	projects: SentryProjectConfig[],
-	alerts: SentryAlertConfig[] = [],
-): SentryOutputs {
-	// Sentry DSN format
-	// https://key@org.ingest.sentry.io/project-id
-	const dsn = pulumi.interpolate`https://${config.sentry.authToken}@${config.sentry.org}.ingest.sentry.io/portfolio`;
+export function createPortfolioSentryConfig(config: InfraConfig): SentryOutputs {
+	const projectName = getProjectName();
+	const projectDisplayName = projectName.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+
+	const team = new sentry.SentryTeam(`${projectName}-team`, {
+		organization: config.sentry.org,
+		slug: projectName,
+		name: projectDisplayName,
+	});
+
+	const projects: Record<string, sentry.SentryProject> = {};
+
+	const webProject = new sentry.SentryProject(`${projectName}-web-project`, {
+		organization: config.sentry.org,
+		teams: [team.slug],
+		name: `${projectDisplayName} Web`,
+		slug: `${projectName}-web`,
+		platform: "javascript-nextjs",
+	});
+	projects["web"] = webProject;
+
+	const apiProject = new sentry.SentryProject(`${projectName}-api-project`, {
+		organization: config.sentry.org,
+		teams: [team.slug],
+		name: `${projectDisplayName} API`,
+		slug: `${projectName}-api`,
+		platform: "node",
+	});
+	projects["api"] = apiProject;
+
+	const adminProject = new sentry.SentryProject(`${projectName}-admin-project`, {
+		organization: config.sentry.org,
+		teams: [team.slug],
+		name: `${projectDisplayName} Admin`,
+		slug: `${projectName}-admin`,
+		platform: "javascript-react",
+	});
+	projects["admin"] = adminProject;
+
+	const dsn = pulumi.interpolate`https://${config.sentry.authToken}@${config.sentry.org}.ingest.sentry.io/${webProject.id}`;
 
 	return {
+		team,
 		projects,
-		alerts,
 		dsn,
 	};
 }
 
-/**
- * Portfolio Sentry configuration
- */
-export function createPortfolioSentryConfig(config: InfraConfig): SentryOutputs {
-	const projects: SentryProjectConfig[] = [
-		{
-			name: "Portfolio Web",
-			slug: "portfolio-web",
-			platform: "javascript-nextjs",
-			team: "portfolio",
-		},
-		{
-			name: "Portfolio API",
-			slug: "portfolio-api",
-			platform: "node-cloudflare-workers",
-			team: "portfolio",
-		},
-		{
-			name: "Portfolio Admin",
-			slug: "portfolio-admin",
-			platform: "javascript-react",
-			team: "portfolio",
-		},
-	];
-
-	const alerts: SentryAlertConfig[] = [
-		{
-			name: "High Error Rate",
-			conditions: [
-				{
-					id: "sentry.rules.conditions.event_frequency.EventFrequencyCondition",
-					interval: "1h",
-					value: 100,
-				},
-			],
-			actions: [
-				{
-					id: "sentry.mail.actions.NotifyEmailAction",
-					targetType: "Team",
-					targetIdentifier: "portfolio",
-				},
-			],
-			frequency: 60, // minutes
-		},
-		{
-			name: "Performance Degradation",
-			conditions: [
-				{
-					id: "sentry.rules.conditions.event_frequency.EventFrequencyPercentCondition",
-					interval: "1h",
-					value: 50, // 50% increase
-				},
-			],
-			actions: [
-				{
-					id: "sentry.mail.actions.NotifyEmailAction",
-					targetType: "Team",
-					targetIdentifier: "portfolio",
-				},
-			],
-			frequency: 120,
-		},
-	];
-
-	return createSentryConfig(config, projects, alerts);
-}
-
-/**
- * Combined observability outputs
- */
 export interface ObservabilityOutputs {
 	grafana: GrafanaOutputs;
 	sentry: SentryOutputs;

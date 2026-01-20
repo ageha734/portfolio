@@ -1,0 +1,6 @@
+config:
+  portfolio-infra:environment: rc
+  portfolio-infra:domain: rc.ageha734.jp
+  portfolio-infra:slug: portfolio
+  doppler:project: portfolio
+  doppler:config: rc

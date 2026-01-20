@@ -3,7 +3,7 @@ runtime:
   name: nodejs
   options:
     typescript: true
-description: Infrastructure as Code for Portfolio project - manages Cloudflare, TiDB, Redis, Grafana, and Sentry
+description: Infrastructure as Code for Portfolio
 config:
   pulumi:tags:
     value:

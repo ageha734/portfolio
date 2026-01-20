@@ -1,8 +1,9 @@
-import * as cloudflare from "@pulumi/cloudflare";
-import * as pulumi from "@pulumi/pulumi";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import * as pulumi from "@pulumi/pulumi";
+import * as cloudflare from "@pulumi/cloudflare";
 import type { InfraConfig } from "../config";
+import { getProjectName } from "../config";
 
 export interface WorkerConfig {
 	name: string;
@@ -30,9 +31,151 @@ export interface WorkersOutputs {
 	domains: Record<string, cloudflare.WorkersDomain>;
 }
 
-/**
- * Create Cloudflare Workers
- */
+interface WorkerBindings {
+	plainTextBindings?: cloudflare.types.input.WorkersScriptPlainTextBinding[];
+	secretTextBindings?: cloudflare.types.input.WorkersScriptSecretTextBinding[];
+	kvNamespaceBindings?: cloudflare.types.input.WorkersScriptKvNamespaceBinding[];
+	r2BucketBindings?: cloudflare.types.input.WorkersScriptR2BucketBinding[];
+	d1DatabaseBindings?: cloudflare.types.input.WorkersScriptD1DatabaseBinding[];
+}
+
+function getScriptContent(worker: WorkerConfig): string {
+	if (worker.scriptContent) {
+		return worker.scriptContent;
+	}
+	if (worker.scriptPath) {
+		return fs.readFileSync(
+			path.resolve(process.cwd(), worker.scriptPath),
+			"utf-8",
+		);
+	}
+	throw new Error(
+		`Worker ${worker.name}: either scriptPath or scriptContent must be provided`,
+	);
+}
+
+function buildWorkerBindings(worker: WorkerConfig): WorkerBindings {
+	const bindings: WorkerBindings = {};
+
+	if (!worker.bindings) {
+		return bindings;
+	}
+
+	if (worker.bindings.vars) {
+		bindings.plainTextBindings = Object.entries(worker.bindings.vars).map(
+			([name, text]) => ({ name, text }),
+		);
+	}
+
+	if (worker.bindings.secrets) {
+		bindings.secretTextBindings = Object.entries(worker.bindings.secrets).map(
+			([name, text]) => ({ name, text }),
+		);
+	}
+
+	if (worker.bindings.kvNamespaces) {
+		bindings.kvNamespaceBindings = worker.bindings.kvNamespaces.map((kv) => ({
+			name: kv.name,
+			namespaceId: kv.namespaceId,
+		}));
+	}
+
+	if (worker.bindings.r2Buckets) {
+		bindings.r2BucketBindings = worker.bindings.r2Buckets.map((r2) => ({
+			name: r2.name,
+			bucketName: r2.bucketName,
+		}));
+	}
+
+	if (worker.bindings.d1Databases) {
+		bindings.d1DatabaseBindings = worker.bindings.d1Databases.map((d1) => ({
+			name: d1.name,
+			databaseId: d1.databaseId,
+		}));
+	}
+
+	return bindings;
+}
+
+function createWorkerScript(
+	worker: WorkerConfig,
+	accountId: pulumi.Input<string>,
+	resourceName: string,
+): cloudflare.WorkersScript {
+	const content = getScriptContent(worker);
+	const bindings = buildWorkerBindings(worker);
+
+	return new cloudflare.WorkersScript(resourceName, {
+		accountId,
+		name: worker.name,
+		content,
+		module: true,
+		compatibilityDate: worker.compatibilityDate || "2025-01-01",
+		compatibilityFlags: worker.compatibilityFlags || ["nodejs_compat"],
+		...bindings,
+	});
+}
+
+function createWorkerRoutes(
+	worker: WorkerConfig,
+	workerScript: cloudflare.WorkersScript,
+	resourceName: string,
+	zoneId: pulumi.Input<string>,
+): Record<string, cloudflare.WorkersRoute> {
+	const routes: Record<string, cloudflare.WorkersRoute> = {};
+
+	if (!worker.routes) {
+		return routes;
+	}
+
+	for (let i = 0; i < worker.routes.length; i++) {
+		const route = worker.routes[i];
+		if (route) {
+			const routeResourceName = `${resourceName}-route-${i}`;
+			routes[routeResourceName] = new cloudflare.WorkersRoute(
+				routeResourceName,
+				{
+					zoneId: route.zoneId || zoneId,
+					pattern: route.pattern,
+					scriptName: workerScript.name,
+				},
+				{
+					dependsOn: [workerScript],
+				},
+			);
+		}
+	}
+
+	return routes;
+}
+
+function createWorkerDomain(
+	worker: WorkerConfig,
+	workerScript: cloudflare.WorkersScript,
+	resourceName: string,
+	accountId: pulumi.Input<string>,
+	domain: string,
+	zoneId: pulumi.Input<string>,
+): cloudflare.WorkersDomain | null {
+	if (!worker.customDomain) {
+		return null;
+	}
+
+	const domainResourceName = `${resourceName}-domain`;
+	return new cloudflare.WorkersDomain(
+		domainResourceName,
+		{
+			accountId,
+			hostname: `${worker.customDomain}.${domain}`,
+			service: workerScript.name,
+			zoneId,
+		},
+		{
+			dependsOn: [workerScript],
+		},
+	);
+}
+
 export function createWorkers(
 	config: InfraConfig,
 	workers: WorkerConfig[],
@@ -45,137 +188,22 @@ export function createWorkers(
 	for (const worker of workers) {
 		const resourceName = `worker-${worker.name}`;
 
-		// Get script content
-		let content: string;
-		if (worker.scriptContent) {
-			content = worker.scriptContent;
-		} else if (worker.scriptPath) {
-			content = fs.readFileSync(
-				path.resolve(process.cwd(), worker.scriptPath),
-				"utf-8",
-			);
-		} else {
-			throw new Error(
-				`Worker ${worker.name}: either scriptPath or scriptContent must be provided`,
-			);
-		}
-
-		// Build bindings
-		const plainTextBindings: cloudflare.types.input.WorkersScriptPlainTextBinding[] =
-			[];
-		const secretTextBindings: cloudflare.types.input.WorkersScriptSecretTextBinding[] =
-			[];
-		const kvNamespaceBindings: cloudflare.types.input.WorkersScriptKvNamespaceBinding[] =
-			[];
-		const r2BucketBindings: cloudflare.types.input.WorkersScriptR2BucketBinding[] =
-			[];
-		const d1DatabaseBindings: cloudflare.types.input.WorkersScriptD1DatabaseBinding[] =
-			[];
-
-		if (worker.bindings) {
-			// Plain text variables
-			if (worker.bindings.vars) {
-				for (const [name, text] of Object.entries(worker.bindings.vars)) {
-					plainTextBindings.push({ name, text });
-				}
-			}
-
-			// Secret variables
-			if (worker.bindings.secrets) {
-				for (const [name, text] of Object.entries(worker.bindings.secrets)) {
-					secretTextBindings.push({ name, text });
-				}
-			}
-
-			// KV Namespaces
-			if (worker.bindings.kvNamespaces) {
-				for (const kv of worker.bindings.kvNamespaces) {
-					kvNamespaceBindings.push({
-						name: kv.name,
-						namespaceId: kv.namespaceId,
-					});
-				}
-			}
-
-			// R2 Buckets
-			if (worker.bindings.r2Buckets) {
-				for (const r2 of worker.bindings.r2Buckets) {
-					r2BucketBindings.push({
-						name: r2.name,
-						bucketName: r2.bucketName,
-					});
-				}
-			}
-
-			// D1 Databases
-			if (worker.bindings.d1Databases) {
-				for (const d1 of worker.bindings.d1Databases) {
-					d1DatabaseBindings.push({
-						name: d1.name,
-						databaseId: d1.databaseId,
-					});
-				}
-			}
-		}
-
-		// Create Worker script
-		const workerScript = new cloudflare.WorkersScript(resourceName, {
-			accountId,
-			name: worker.name,
-			content,
-			module: true,
-			compatibilityDate: worker.compatibilityDate || "2025-01-01",
-			compatibilityFlags: worker.compatibilityFlags || ["nodejs_compat"],
-			plainTextBindings:
-				plainTextBindings.length > 0 ? plainTextBindings : undefined,
-			secretTextBindings:
-				secretTextBindings.length > 0 ? secretTextBindings : undefined,
-			kvNamespaceBindings:
-				kvNamespaceBindings.length > 0 ? kvNamespaceBindings : undefined,
-			r2BucketBindings:
-				r2BucketBindings.length > 0 ? r2BucketBindings : undefined,
-			d1DatabaseBindings:
-				d1DatabaseBindings.length > 0 ? d1DatabaseBindings : undefined,
-		});
-
+		const workerScript = createWorkerScript(worker, accountId, resourceName);
 		createdScripts[resourceName] = workerScript;
 
-		// Create routes
-		if (worker.routes) {
-			for (let i = 0; i < worker.routes.length; i++) {
-				const route = worker.routes[i];
-				if (route) {
-					const routeResourceName = `${resourceName}-route-${i}`;
-					createdRoutes[routeResourceName] = new cloudflare.WorkersRoute(
-						routeResourceName,
-						{
-							zoneId: route.zoneId || zoneId,
-							pattern: route.pattern,
-							scriptName: workerScript.name,
-						},
-						{
-							dependsOn: [workerScript],
-						},
-					);
-				}
-			}
-		}
+		const routes = createWorkerRoutes(worker, workerScript, resourceName, zoneId);
+		Object.assign(createdRoutes, routes);
 
-		// Create custom domain
-		if (worker.customDomain) {
-			const domainResourceName = `${resourceName}-domain`;
-			createdDomains[domainResourceName] = new cloudflare.WorkersDomain(
-				domainResourceName,
-				{
-					accountId,
-					hostname: `${worker.customDomain}.${domain}`,
-					service: workerScript.name,
-					zoneId,
-				},
-				{
-					dependsOn: [workerScript],
-				},
-			);
+		const workerDomain = createWorkerDomain(
+			worker,
+			workerScript,
+			resourceName,
+			accountId,
+			domain,
+			zoneId,
+		);
+		if (workerDomain) {
+			createdDomains[`${resourceName}-domain`] = workerDomain;
 		}
 	}
 
@@ -186,9 +214,6 @@ export function createWorkers(
 	};
 }
 
-/**
- * Portfolio API Worker configuration
- */
 export function createPortfolioApiWorker(
 	config: InfraConfig,
 	secrets: {
@@ -196,11 +221,10 @@ export function createPortfolioApiWorker(
 		redisUrl?: pulumi.Output<string>;
 	},
 ): WorkersOutputs {
+	const projectName = getProjectName();
 	const workers: WorkerConfig[] = [
 		{
-			name: "portfolio-api",
-			// Script will be deployed via wrangler in CI/CD
-			// This is just for infrastructure management
+			name: `${projectName}-api`,
 			scriptContent: `
 export default {
   async fetch(request, env, ctx) {

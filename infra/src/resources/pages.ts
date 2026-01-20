@@ -1,6 +1,7 @@
 import * as cloudflare from "@pulumi/cloudflare";
 import * as pulumi from "@pulumi/pulumi";
 import type { InfraConfig } from "../config";
+import { getProjectName } from "../config";
 
 export interface PagesProjectConfig {
 	name: string;
@@ -19,21 +20,17 @@ export interface PagesOutputs {
 	domains: Record<string, cloudflare.PagesDomain>;
 }
 
-/**
- * Create Cloudflare Pages projects
- */
 export function createPagesProjects(
 	config: InfraConfig,
 	projects: PagesProjectConfig[],
 ): PagesOutputs {
-	const { accountId, zoneId, domain } = config.cloudflare;
+	const { accountId, domain } = config.cloudflare;
 	const createdProjects: Record<string, cloudflare.PagesProject> = {};
 	const createdDomains: Record<string, cloudflare.PagesDomain> = {};
 
 	for (const project of projects) {
 		const resourceName = `pages-${project.name}`;
 
-		// Create Pages project
 		const pagesProject = new cloudflare.PagesProject(resourceName, {
 			accountId,
 			name: project.name,
@@ -64,7 +61,6 @@ export function createPagesProjects(
 
 		createdProjects[resourceName] = pagesProject;
 
-		// Create custom domain if specified
 		if (project.customDomain) {
 			const domainResourceName = `pages-domain-${project.name}`;
 			createdDomains[domainResourceName] = new cloudflare.PagesDomain(
@@ -87,9 +83,6 @@ export function createPagesProjects(
 	};
 }
 
-/**
- * Portfolio Pages projects configuration
- */
 export function createPortfolioPagesProjects(
 	config: InfraConfig,
 	secrets: {
@@ -97,9 +90,10 @@ export function createPortfolioPagesProjects(
 		redisUrl?: pulumi.Output<string>;
 	},
 ): PagesOutputs {
+	const projectName = getProjectName();
 	const projects: PagesProjectConfig[] = [
 		{
-			name: "portfolio-web",
+			name: `${projectName}-web`,
 			productionBranch: "master",
 			buildCommand: "bun run build",
 			destinationDir: "dist",
@@ -110,7 +104,7 @@ export function createPortfolioPagesProjects(
 			},
 		},
 		{
-			name: "portfolio-admin",
+			name: `${projectName}-admin`,
 			productionBranch: "master",
 			buildCommand: "bun run build",
 			destinationDir: "dist",
@@ -121,7 +115,7 @@ export function createPortfolioPagesProjects(
 			},
 		},
 		{
-			name: "portfolio-wiki",
+			name: `${projectName}-wiki`,
 			productionBranch: "master",
 			buildCommand: "bun run build",
 			destinationDir: "dist",
