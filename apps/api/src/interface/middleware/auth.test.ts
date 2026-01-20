@@ -1,44 +1,119 @@
-import type { Context } from "@portfolio/api";
-import { describe, expect, test, vi } from "vitest";
+import type { Context } from "hono";
+import { describe, expect, test, vi, beforeEach } from "vitest";
 import { authenticate } from "./auth";
 
+const mockGetSession = vi.fn();
+
 vi.mock("@portfolio/auth", () => ({
-    auth: {
+    initAuth: vi.fn(() => ({
         api: {
-            getSession: vi.fn(),
+            getSession: mockGetSession,
         },
-    },
+    })),
 }));
 
 describe("authenticate", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    test("should return null when BETTER_AUTH_SECRET is not set", async () => {
+        const mockContext = {
+            env: {
+                DATABASE_URL: "mysql://localhost:3306/test",
+            },
+            req: {
+                raw: {
+                    headers: new Headers(),
+                },
+            },
+        } as unknown as Context;
+
+        const result = await authenticate(mockContext);
+
+        expect(result).toBeNull();
+        expect(mockGetSession).not.toHaveBeenCalled();
+    });
+
     test("should return null when no session is available", async () => {
-        const mockContext: Context = {
-            db: {} as D1Database,
-        };
+        mockGetSession.mockResolvedValue(null);
+
+        const mockContext = {
+            env: {
+                DATABASE_URL: "mysql://localhost:3306/test",
+                BETTER_AUTH_SECRET: "test-secret",
+                BETTER_AUTH_URL: "http://localhost:8787",
+                GOOGLE_CLIENT_ID: "test-client-id",
+                GOOGLE_CLIENT_SECRET: "test-client-secret",
+            },
+            req: {
+                raw: {
+                    headers: new Headers(),
+                },
+            },
+        } as unknown as Context;
 
         const result = await authenticate(mockContext);
 
         expect(result).toBeNull();
+        expect(mockGetSession).toHaveBeenCalledWith({
+            headers: expect.any(Headers),
+        });
     });
 
-    test("should accept context with db", async () => {
-        const mockContext: Context = {
-            db: {} as D1Database,
-        };
+    test("should return userId when session is available", async () => {
+        mockGetSession.mockResolvedValue({
+            user: {
+                id: "user-123",
+                email: "test@example.com",
+            },
+            session: {
+                id: "session-123",
+            },
+        });
+
+        const mockContext = {
+            env: {
+                DATABASE_URL: "mysql://localhost:3306/test",
+                BETTER_AUTH_SECRET: "test-secret",
+                BETTER_AUTH_URL: "http://localhost:8787",
+                GOOGLE_CLIENT_ID: "test-client-id",
+                GOOGLE_CLIENT_SECRET: "test-client-secret",
+            },
+            req: {
+                raw: {
+                    headers: new Headers(),
+                },
+            },
+        } as unknown as Context;
 
         const result = await authenticate(mockContext);
 
-        expect(result).toBeNull();
+        expect(result).toEqual({ userId: "user-123" });
+        expect(mockGetSession).toHaveBeenCalledWith({
+            headers: expect.any(Headers),
+        });
     });
 
-    test("should accept context with optional user", async () => {
-        const mockContext: Context = {
-            db: {} as D1Database,
-            user: { id: "user-1" },
-        };
+    test("should use default baseUrl when BETTER_AUTH_URL is not set", async () => {
+        mockGetSession.mockResolvedValue(null);
 
-        const result = await authenticate(mockContext);
+        const mockContext = {
+            env: {
+                DATABASE_URL: "mysql://localhost:3306/test",
+                BETTER_AUTH_SECRET: "test-secret",
+                GOOGLE_CLIENT_ID: "test-client-id",
+                GOOGLE_CLIENT_SECRET: "test-client-secret",
+            },
+            req: {
+                raw: {
+                    headers: new Headers(),
+                },
+            },
+        } as unknown as Context;
 
-        expect(result).toBeNull();
+        await authenticate(mockContext);
+
+        expect(mockGetSession).toHaveBeenCalled();
     });
 });

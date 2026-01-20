@@ -9,6 +9,10 @@ type Env = {
 	NODE_ENV: string;
 	SENTRY_DSN?: string;
 	APP_VERSION?: string;
+	BETTER_AUTH_URL?: string;
+	BETTER_AUTH_SECRET?: string;
+	GOOGLE_CLIENT_ID?: string;
+	GOOGLE_CLIENT_SECRET?: string;
 };
 
 const app = new Hono<{ Bindings: Env }>();

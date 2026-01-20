@@ -1,4 +1,5 @@
 import type { Context } from "hono";
+import type { StatusCode } from "hono/utils/http-status";
 import type { R2Bucket } from "@cloudflare/workers-types";
 import { AppError, ErrorCodes } from "@portfolio/log";
 import { getLogger, getMetrics } from "~/lib/logger";
@@ -25,7 +26,7 @@ export async function getPortfolios(c: Context) {
             metrics.httpRequestDuration.observe({ method: "GET", route: "/api/portfolios", status: "404" }, duration);
             metrics.httpRequestTotal.inc({ method: "GET", route: "/api/portfolios", status: "404" });
             metrics.httpRequestErrors.inc({ method: "GET", route: "/api/portfolios", status: "404" });
-            return c.json(notFoundError.toJSON(), notFoundError.httpStatus);
+            return c.json(notFoundError.toJSON(), notFoundError.httpStatus as StatusCode);
         }
 
         return c.json(portfolios);
@@ -45,7 +46,7 @@ export async function getPortfolios(c: Context) {
         metrics.httpRequestTotal.inc({ method: "GET", route: "/api/portfolios", status: String(appError.httpStatus) });
         metrics.httpRequestErrors.inc({ method: "GET", route: "/api/portfolios", status: String(appError.httpStatus) });
 
-        return c.json(appError.toJSON(), appError.httpStatus);
+        return c.json(appError.toJSON(), appError.httpStatus as StatusCode);
     }
 }
 
@@ -62,7 +63,7 @@ export async function getPortfolioBySlug(c: Context) {
             metadata: { field: "slug" },
         });
         metrics.httpRequestErrors.inc({ method: "GET", route: "/api/portfolios/:slug", status: "400" });
-        return c.json(validationError.toJSON(), validationError.httpStatus);
+        return c.json(validationError.toJSON(), validationError.httpStatus as StatusCode);
     }
 
     try {
@@ -81,7 +82,7 @@ export async function getPortfolioBySlug(c: Context) {
             metrics.httpRequestDuration.observe({ method: "GET", route: "/api/portfolios/:slug", status: "404" }, duration);
             metrics.httpRequestTotal.inc({ method: "GET", route: "/api/portfolios/:slug", status: "404" });
             metrics.httpRequestErrors.inc({ method: "GET", route: "/api/portfolios/:slug", status: "404" });
-            return c.json(notFoundError.toJSON(), notFoundError.httpStatus);
+            return c.json(notFoundError.toJSON(), notFoundError.httpStatus as StatusCode);
         }
 
         return c.json(portfolio);
@@ -101,7 +102,7 @@ export async function getPortfolioBySlug(c: Context) {
         metrics.httpRequestTotal.inc({ method: "GET", route: "/api/portfolios/:slug", status: String(appError.httpStatus) });
         metrics.httpRequestErrors.inc({ method: "GET", route: "/api/portfolios/:slug", status: String(appError.httpStatus) });
 
-        return c.json(appError.toJSON(), appError.httpStatus);
+        return c.json(appError.toJSON(), appError.httpStatus as StatusCode);
     }
 }
 
@@ -120,7 +121,7 @@ export async function uploadPortfolioImage(c: Context) {
             metadata: { field: "portfolioId" },
         });
         metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "400" });
-        return c.json(validationError.toJSON(), validationError.httpStatus);
+        return c.json(validationError.toJSON(), validationError.httpStatus as StatusCode);
     }
 
     if (!r2Bucket || !r2PublicUrl) {
@@ -128,7 +129,7 @@ export async function uploadPortfolioImage(c: Context) {
             metadata: { route: "/api/portfolios/:portfolioId/images" },
         });
         metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "500" });
-        return c.json(configError.toJSON(), configError.httpStatus);
+        return c.json(configError.toJSON(), configError.httpStatus as StatusCode);
     }
 
     try {
@@ -140,7 +141,7 @@ export async function uploadPortfolioImage(c: Context) {
                 metadata: { field: "image" },
             });
             metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: "400" });
-            return c.json(validationError.toJSON(), validationError.httpStatus);
+            return c.json(validationError.toJSON(), validationError.httpStatus as StatusCode);
         }
 
         const container = new DIContainer(databaseUrl, redisUrl, r2Bucket, r2PublicUrl);
@@ -168,6 +169,6 @@ export async function uploadPortfolioImage(c: Context) {
         metrics.httpRequestTotal.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: String(appError.httpStatus) });
         metrics.httpRequestErrors.inc({ method: "POST", route: "/api/portfolios/:portfolioId/images", status: String(appError.httpStatus) });
 
-        return c.json(appError.toJSON(), appError.httpStatus);
+        return c.json(appError.toJSON(), appError.httpStatus as StatusCode);
     }
 }

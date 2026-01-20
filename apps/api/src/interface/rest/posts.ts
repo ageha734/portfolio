@@ -1,4 +1,5 @@
 import type { Context } from "hono";
+import type { StatusCode } from "hono/utils/http-status";
 import { AppError, ErrorCodes } from "@portfolio/log";
 import { getLogger, getMetrics } from "~/lib/logger";
 import { DIContainer } from "~/di/container";
@@ -24,7 +25,7 @@ export async function getPosts(c: Context) {
             metrics.httpRequestDuration.observe({ method: "GET", route: "/api/posts", status: "404" }, duration);
             metrics.httpRequestTotal.inc({ method: "GET", route: "/api/posts", status: "404" });
             metrics.httpRequestErrors.inc({ method: "GET", route: "/api/posts", status: "404" });
-            return c.json(notFoundError.toJSON(), notFoundError.httpStatus);
+            return c.json(notFoundError.toJSON(), notFoundError.httpStatus as StatusCode);
         }
 
         return c.json(posts);
@@ -44,7 +45,7 @@ export async function getPosts(c: Context) {
         metrics.httpRequestTotal.inc({ method: "GET", route: "/api/posts", status: String(appError.httpStatus) });
         metrics.httpRequestErrors.inc({ method: "GET", route: "/api/posts", status: String(appError.httpStatus) });
 
-        return c.json(appError.toJSON(), appError.httpStatus);
+        return c.json(appError.toJSON(), appError.httpStatus as StatusCode);
     }
 }
 
@@ -61,7 +62,7 @@ export async function getPostBySlug(c: Context) {
             metadata: { field: "slug" },
         });
         metrics.httpRequestErrors.inc({ method: "GET", route: "/api/posts/:slug", status: "400" });
-        return c.json(validationError.toJSON(), validationError.httpStatus);
+        return c.json(validationError.toJSON(), validationError.httpStatus as StatusCode);
     }
 
     try {
@@ -80,7 +81,7 @@ export async function getPostBySlug(c: Context) {
             metrics.httpRequestDuration.observe({ method: "GET", route: "/api/posts/:slug", status: "404" }, duration);
             metrics.httpRequestTotal.inc({ method: "GET", route: "/api/posts/:slug", status: "404" });
             metrics.httpRequestErrors.inc({ method: "GET", route: "/api/posts/:slug", status: "404" });
-            return c.json(notFoundError.toJSON(), notFoundError.httpStatus);
+            return c.json(notFoundError.toJSON(), notFoundError.httpStatus as StatusCode);
         }
 
         return c.json(post);
@@ -100,6 +101,6 @@ export async function getPostBySlug(c: Context) {
         metrics.httpRequestTotal.inc({ method: "GET", route: "/api/posts/:slug", status: String(appError.httpStatus) });
         metrics.httpRequestErrors.inc({ method: "GET", route: "/api/posts/:slug", status: String(appError.httpStatus) });
 
-        return c.json(appError.toJSON(), appError.httpStatus);
+        return c.json(appError.toJSON(), appError.httpStatus as StatusCode);
     }
 }

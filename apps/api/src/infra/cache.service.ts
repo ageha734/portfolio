@@ -81,8 +81,8 @@ export class CacheService {
 			return;
 		}
 
+		const ttl = ttlSeconds ?? this.ttl;
 		try {
-			const ttl = ttlSeconds ?? this.ttl;
 			await redis.setex(key, ttl, JSON.stringify(value));
 			this.metrics.cacheOperations.inc({ operation: "set", status: "success" });
 		} catch (error) {

@@ -18,14 +18,14 @@ export class UploadPortfolioImageUseCase {
         }
 
         if (!imageFile.type.startsWith("image/")) {
-            throw AppError.fromCode(ErrorCodes.VALIDATION_INVALID_VALUE, "File must be an image", {
+            throw AppError.fromCode(ErrorCodes.VALIDATION_INVALID_TYPE, "File must be an image", {
                 metadata: { contentType: imageFile.type },
             });
         }
 
         const maxSize = 10 * 1024 * 1024;
         if (imageFile.size > maxSize) {
-            throw AppError.fromCode(ErrorCodes.VALIDATION_INVALID_VALUE, "Image size must be less than 10MB", {
+            throw AppError.fromCode(ErrorCodes.VALIDATION_INVALID_TYPE, "Image size must be less than 10MB", {
                 metadata: { size: imageFile.size },
             });
         }
