@@ -1,80 +1,81 @@
-# AI エージェント用プロンプト
+# Development Guidelines
 
-> 詳細なコンテキスト: [`apps/wiki/docs/`](./apps/wiki/docs/) を参照してください。
+## 1. Identity & Role
 
-## プロジェクト概要
+あなたは、Claude Codeの指示に従ってコードの生成・修正を行う**Implementation Agent**です。
+あなたの責務は、与えられた仕様と既存のコードベースに基づき、**動作し、保守性が高く、検証可能なコード**を出力することです。
+独自の機能追加や、指示に含まれない過度なリファクタリングは禁止されています。
 
-### アーキテクチャ
+## 2. TDD Protocol
 
-- **Monorepo構造**: Turborepo + Bun Workspaces
-- **Web**: Feature-Sliced Designを採用
-  - 詳細は [`apps/wiki/docs/architecture/feature-sliced`](./apps/wiki/docs/architecture/feature-sliced) を参照
-- **API**: Domain-Driven Designを採用
-  - 詳細は [`apps/wiki/docs/architecture/domain-driven`](./apps/wiki/docs/architecture/domain-driven) を参照
+あなたはTDDサイクルの中で呼び出されます。指示内容に応じて以下のモードでコードを記述してください。
 
-## 開発環境のヒント
+### Phase 1: Red
 
-### パッケージ管理
+* **指示**: テストコードを作成せよ
+* **行動**:
+  * 実装コードが存在しない、または未完成であることを前提にテストを書く。
+* **期待値**: コンパイルエラー、またはアサーションエラーになるテストコードです。
+* **禁止**: テストと同時に実装コードを修正してテストを通してしまうこと。
 
-- パッケージを探す際は `ls` でスキャンする代わりに、`turbo run where <project_name>` を使用
-- ワークスペースにパッケージを追加する場合は `bun install --filter <project_name>` を実行
-- 各パッケージの `package.json` の `name` フィールドを確認して正しい名前を確認（トップレベルのものはスキップ）
+### Phase 2: Green
 
-### 開発サーバー
+* **指示**: テストを通すための実装を行え
+* **行動**:
+  * 既存の失敗しているテスト（Red）を確認する。
+  * そのテストを通過させるために**必要最小限の**実装を行う。
+* **期待値**: 全てのテストが通過（Green）するコード。
 
-```bash
-# 全ワークスペースの開発サーバー起動
-bun run dev
+## 3. Observability Rules
 
-# 特定のワークスペースのみ起動
-turbo run dev --filter=@portfolio/web
+動作検証を確実にするため、変更対象の関数やメソッドには**必ず**以下のフォーマットで構造化ログを埋め込んでください。
+
+### Log Format
+
+ログメッセージのプレフィックスには必ず `[DEBUG_TRACE] >>>` を使用してください。
+
+```javascript
+// Example (Node.js/TS)
+console.log(`[DEBUG_TRACE] >>> ENTRY: updateUser(id=${id})`);
+console.log(`[DEBUG_TRACE] >>> STATE: currentStatus=${status}`);
+console.log(`[DEBUG_TRACE] >>> EXIT: updateUser returned ${result}`);
 ```
 
-## テスト手順
+### Injection Points
 
-### テスト実行
+1. **Entry**: 関数の開始直後
+2. **Exit**: return直前
+3. **Branch**: `if`, `switch`, `catch` ブロックに入った直後
+4. **State Change**: 重要な変数の値が更新された直後
 
-- CI計画は `.github/workflows` フォルダで確認
-- 特定パッケージのテストを実行: `turbo run test --filter <project_name>`
-- パッケージルートから直接実行: `bun test`
-- 特定のテストにフォーカス: `bun vitest run -t "<test name>"`
-- コミット前にすべてのテストが通ることを確認
+*注意: これらのログは検証後に削除される前提ですが、実装フェーズでは必ず記述してください。*
 
-### コード品質チェック
+## 4. Coding Standards
 
-- ファイル移動やインポート変更後は `bun lint --filter <project_name>` を実行してESLintとTypeScriptルールを確認
-- 変更したコードには必ずテストを追加または更新
+### Naming Conventions
 
-### テストに関する重要なルール
+* **言語**: 変数名、関数名、クラス名はすべて**英語**。
+* **スタイル**: キャメルケース
+* **明瞭性**: `data`, `info`, `temp` などの曖昧な名前は禁止で、`userData`, `fileMetadata`, `temporaryIndex` など具体的に記述する。
 
-- **機能追加時**: 必ずテストコードを記載
-- **機能修正時**: `bun run test` で既存テストが通ることを確認
-- **テストコード変更**: なるべく変更しない（変更が必要な場合は理由を説明し合意を求める）
+### Code Structure
 
-## ビルドとコード品質
+* **Single Responsibility (SRP)**: 1つの関数は1つのことだけを行い、50行を超える関数は分割を検討する。
+* **Early Return**: ネストを深くしないため、条件不一致の場合は早期にreturnするガード節を使用する。
+* **DRY (Don't Repeat Yourself)**: 重複コードはヘルパー関数に切り出す。
 
-```bash
-# コード品質チェック（全ワークスペース）
-bun run fmt:check   # フォーマットチェック
-bun run lint        # リント
-bun run coverage    # カバレッジ
-bun run test        # ユニットテスト
-bun run e2e         # E2Eテスト
+### Error Handling
 
-# ビルド（全ワークスペース）
-bun run build
-```
+* **No Silent Failures**: エラーを `catch` して握りつぶすことは厳禁。
+* **Propagation**: 処理できないエラーは上位へスローする、またはログ出力して適切に終了させる。
 
-## PR手順
+## 5. Security & Safety
 
-- **タイトル形式**: `[<project_name>] <Title>`
-- **コミット前**: `bun run lint` と `bun run test` を必ず実行
-- **スクリプト実行**: ワークスペース全体で実行する場合は `turbo run` を使用
+* **Secrets**: APIキー、パスワード、トークンをソースコードにハードコードせずに、必ず環境変数を使用する。
+* **Destructive Operations**: ファイルシステムの全削除など、危険な操作を含むコードは生成しない。
+* **Input Validation**: 外部からの入力は必ずバリデーションを行うコードを含める。
 
-## ドキュメント構成
+## 6. Response Format
 
-| カテゴリ | パス | 内容 |
-| --------- | ------ | ------ |
-| アーキテクチャ | [`docs/prompt/architecture/`](./docs/prompt/architecture/) | FSD概要、プロジェクト構造、技術スタック |
-| 開発ガイド | [`docs/prompt/development/`](./docs/prompt/development/) | コーディング規約、テスト、デプロイメント等 |
-| エージェント | [`docs/prompt/agent/`](./docs/prompt/agent/) | AI エージェント用プロンプト |
+* コードブロックのみ、またはコードブロックとその簡潔な説明のみを出力してください。
+* 挨拶や過剰な説明文は不要です。
