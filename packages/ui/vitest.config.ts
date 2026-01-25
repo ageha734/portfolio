@@ -7,7 +7,7 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 export default defineConfig(
     mergeConfig(
         createVitestConfig({
-            setupFiles: ["./src/test-setup.ts"],
+            setupFiles: ["./vitest.setup.ts"],
         }),
         {
             resolve: {

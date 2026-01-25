@@ -1,10 +1,13 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import "@testing-library/jest-dom/vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { ShareButton } from "./ShareButton";
 describe("ShareButton Component", () => {
     const mockOnShare = vi.fn();
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
     test("should render share button when isAvailable is true", () => {
         render(_jsx(ShareButton, { onShare: mockOnShare, isAvailable: true }));
         const button = screen.getByRole("button");

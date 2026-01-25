@@ -39,8 +39,15 @@ export const ErrorCodes = {
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
 
 export function getErrorCategory(code: ErrorCode): ErrorCategory {
-    const prefix = code.split("_")[0];
-    return prefix as ErrorCategory;
+    if (code.startsWith("AUTH_")) return ErrorCategory.AUTHENTICATION;
+    if (code.startsWith("VALIDATION_")) return ErrorCategory.VALIDATION;
+    if (code.startsWith("NOT_FOUND_")) return ErrorCategory.NOT_FOUND;
+    if (code.startsWith("INTERNAL_")) return ErrorCategory.INTERNAL;
+    if (code.startsWith("EXTERNAL_")) return ErrorCategory.EXTERNAL;
+    if (code.startsWith("RATE_LIMIT_")) return ErrorCategory.RATE_LIMIT;
+    if (code.startsWith("DATABASE_")) return ErrorCategory.DATABASE;
+    if (code.startsWith("CACHE_")) return ErrorCategory.CACHE;
+    return ErrorCategory.INTERNAL;
 }
 
 export function getHttpStatusFromErrorCode(code: ErrorCode): number {

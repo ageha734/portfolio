@@ -36,8 +36,23 @@ export const ErrorCodes = {
     CACHE_OPERATION_ERROR: "CACHE_OPERATION_ERROR",
 };
 export function getErrorCategory(code) {
-    const prefix = code.split("_")[0];
-    return prefix;
+    if (code.startsWith("AUTH_"))
+        return ErrorCategory.AUTHENTICATION;
+    if (code.startsWith("VALIDATION_"))
+        return ErrorCategory.VALIDATION;
+    if (code.startsWith("NOT_FOUND_"))
+        return ErrorCategory.NOT_FOUND;
+    if (code.startsWith("INTERNAL_"))
+        return ErrorCategory.INTERNAL;
+    if (code.startsWith("EXTERNAL_"))
+        return ErrorCategory.EXTERNAL;
+    if (code.startsWith("RATE_LIMIT_"))
+        return ErrorCategory.RATE_LIMIT;
+    if (code.startsWith("DATABASE_"))
+        return ErrorCategory.DATABASE;
+    if (code.startsWith("CACHE_"))
+        return ErrorCategory.CACHE;
+    return ErrorCategory.INTERNAL;
 }
 export function getHttpStatusFromErrorCode(code) {
     const category = getErrorCategory(code);

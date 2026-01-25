@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Registry } from "prom-client";
-import * as promClient from "prom-client";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PrometheusClient } from "./client";
 describe("PrometheusClient", () => {
     let client;
@@ -181,13 +180,10 @@ describe("PrometheusClient", () => {
         });
     });
     describe("collectDefaultMetrics", () => {
-        it("デフォルトメトリクスの収集を開始できる", () => {
-            const collectSpy = vi.spyOn(promClient, "collectDefaultMetrics").mockImplementation(() => undefined);
+        it("デフォルトメトリクスの収集を開始できる", async () => {
             client.collectDefaultMetrics();
-            expect(collectSpy).toHaveBeenCalledWith({
-                register: client.getRegistry(),
-            });
-            collectSpy.mockRestore();
+            const metrics = await client.getMetrics();
+            expect(metrics).toContain("process_");
         });
     });
     describe("getRegistry", () => {

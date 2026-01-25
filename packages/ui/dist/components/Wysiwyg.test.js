@@ -8,6 +8,9 @@ vi.mock("prismjs", () => ({
         highlightAllUnder: vi.fn(),
     },
 }));
+vi.mock("../libs/sanitize.js", () => ({
+    sanitizeHtml: vi.fn((html) => html),
+}));
 describe("Wysiwyg Component", () => {
     beforeEach(() => {
         vi.clearAllMocks();

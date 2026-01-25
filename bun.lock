@@ -340,6 +340,7 @@
         "@portfolio/biome-config": "tooling/biome-config",
         "@portfolio/storybook-config": "tooling/storybook-config",
         "@portfolio/tailwind-config": "tooling/tailwind-config",
+        "@portfolio/testing-mocks": "testing/mocks",
         "@portfolio/tsconfig": "tooling/tsconfig",
         "@portfolio/vitest-config": "tooling/vitest-config",
         "@storybook/addon-a11y": "8.6.14",
@@ -423,7 +424,9 @@
       "name": "@portfolio/testing-mocks",
       "version": "1.0.1",
       "dependencies": {
+        "@testing-library/jest-dom": "6.6.3",
         "msw": "2.12.7",
+        "vitest": "3.2.4",
       },
       "devDependencies": {
         "@portfolio/biome-config": "tooling/biome-config",
@@ -1624,13 +1627,13 @@
 
     "@portfolio/tailwind-config": ["@portfolio/tailwind-config@workspace:tooling/tailwind-config", { "dependencies": { "@tailwindcss/postcss": "4.1.18", "postcss": "8.5.6", "tailwindcss": "4.1.18" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/tsconfig": "tooling/tsconfig", "@types/node": "25.0.3", "typescript": "5.9.3" } }],
 
-    "@portfolio/testing-mocks": ["@portfolio/testing-mocks@workspace:testing/mocks", { "dependencies": { "msw": "2.12.7" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/tsconfig": "tooling/tsconfig", "@types/node": "25.0.3", "typescript": "5.9.3" } }],
+    "@portfolio/testing-mocks": ["@portfolio/testing-mocks@workspace:testing/mocks", { "dependencies": { "@testing-library/jest-dom": "6.6.3", "msw": "2.12.7", "vitest": "3.2.4" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/tsconfig": "tooling/tsconfig", "@types/node": "25.0.3", "typescript": "5.9.3" } }],
 
     "@portfolio/testing-vitest": ["@portfolio/testing-vitest@workspace:testing/vitest", { "dependencies": { "@remix-run/react": "2.17.2", "@testing-library/react": "16.3.1", "react": "18.3.1", "vitest": "3.2.4" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/tsconfig": "tooling/tsconfig", "@types/node": "25.0.3", "typescript": "5.9.3" } }],
 
     "@portfolio/tsconfig": ["@portfolio/tsconfig@workspace:tooling/tsconfig", { "peerDependencies": { "typescript": "5.9.3" } }],
 
-    "@portfolio/ui": ["@portfolio/ui@workspace:packages/ui", { "dependencies": { "@radix-ui/react-dialog": "1.1.15", "@radix-ui/react-dropdown-menu": "2.1.16", "@radix-ui/react-navigation-menu": "1.2.14", "@radix-ui/react-separator": "1.1.8", "@radix-ui/react-slot": "1.2.4", "class-variance-authority": "0.7.1", "classnames": "2.5.1", "clsx": "2.1.1", "isomorphic-dompurify": "2.12.0", "lucide-react": "0.562.0", "prismjs": "1.30.0", "react": "18.3.1", "react-dom": "18.3.1", "tailwind-merge": "3.4.0", "zod": "4.3.4" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/storybook-config": "tooling/storybook-config", "@portfolio/tailwind-config": "tooling/tailwind-config", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/vitest-config": "tooling/vitest-config", "@storybook/addon-a11y": "8.6.14", "@storybook/addon-essentials": "8.6.14", "@storybook/addon-interactions": "8.6.14", "@storybook/addon-links": "8.6.14", "@storybook/blocks": "8.6.14", "@storybook/react": "8.6.14", "@storybook/react-vite": "8.6.14", "@storybook/test": "8.6.15", "@testing-library/jest-dom": "6.9.1", "@testing-library/react": "16.3.1", "@types/prismjs": "1.26.5", "@types/react": "18.3.12", "@types/react-dom": "18.3.1", "jsdom": "27.4.0", "react-router": "7.11.0", "storybook": "8.6.14", "typescript": "5.9.3", "vite": "6.1.0", "vitest": "3.2.4" }, "peerDependencies": { "react": "18.3.1", "react-dom": "18.3.1" } }],
+    "@portfolio/ui": ["@portfolio/ui@workspace:packages/ui", { "dependencies": { "@radix-ui/react-dialog": "1.1.15", "@radix-ui/react-dropdown-menu": "2.1.16", "@radix-ui/react-navigation-menu": "1.2.14", "@radix-ui/react-separator": "1.1.8", "@radix-ui/react-slot": "1.2.4", "class-variance-authority": "0.7.1", "classnames": "2.5.1", "clsx": "2.1.1", "isomorphic-dompurify": "2.12.0", "lucide-react": "0.562.0", "prismjs": "1.30.0", "react": "18.3.1", "react-dom": "18.3.1", "tailwind-merge": "3.4.0", "zod": "4.3.4" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/storybook-config": "tooling/storybook-config", "@portfolio/tailwind-config": "tooling/tailwind-config", "@portfolio/testing-mocks": "testing/mocks", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/vitest-config": "tooling/vitest-config", "@storybook/addon-a11y": "8.6.14", "@storybook/addon-essentials": "8.6.14", "@storybook/addon-interactions": "8.6.14", "@storybook/addon-links": "8.6.14", "@storybook/blocks": "8.6.14", "@storybook/react": "8.6.14", "@storybook/react-vite": "8.6.14", "@storybook/test": "8.6.15", "@testing-library/jest-dom": "6.9.1", "@testing-library/react": "16.3.1", "@types/prismjs": "1.26.5", "@types/react": "18.3.12", "@types/react-dom": "18.3.1", "jsdom": "27.4.0", "react-router": "7.11.0", "storybook": "8.6.14", "typescript": "5.9.3", "vite": "6.1.0", "vitest": "3.2.4" }, "peerDependencies": { "react": "18.3.1", "react-dom": "18.3.1" } }],
 
     "@portfolio/validation": ["@portfolio/validation@workspace:packages/validation", { "dependencies": { "zod": "4.3.4" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/vitest-config": "tooling/vitest-config", "typescript": "5.9.3", "vitest": "3.2.4" } }],
 
@@ -2256,7 +2259,7 @@
 
     "@testing-library/dom": ["@testing-library/dom@10.4.0", "", { "dependencies": { "@babel/code-frame": "^7.10.4", "@babel/runtime": "^7.12.5", "@types/aria-query": "^5.0.1", "aria-query": "5.3.0", "chalk": "^4.1.0", "dom-accessibility-api": "^0.5.9", "lz-string": "^1.5.0", "pretty-format": "^27.0.2" } }, "sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ=="],
 
-    "@testing-library/jest-dom": ["@testing-library/jest-dom@6.9.1", "", { "dependencies": { "@adobe/css-tools": "^4.4.0", "aria-query": "^5.0.0", "css.escape": "^1.5.1", "dom-accessibility-api": "^0.6.3", "picocolors": "^1.1.1", "redent": "^3.0.0" } }, "sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA=="],
+    "@testing-library/jest-dom": ["@testing-library/jest-dom@6.6.3", "", { "dependencies": { "@adobe/css-tools": "^4.4.0", "aria-query": "^5.0.0", "chalk": "^3.0.0", "css.escape": "^1.5.1", "dom-accessibility-api": "^0.6.3", "lodash": "^4.17.21", "redent": "^3.0.0" } }, "sha512-IteBhl4XqYNkM54f4ejhLRJiZNqcSCoXUOG2CPK7qbD322KjQozM4kHQOfkG2oln9b9HTYqs+Sae8vBATubxxA=="],
 
     "@testing-library/react": ["@testing-library/react@16.3.1", "", { "dependencies": { "@babel/runtime": "^7.12.5" }, "peerDependencies": { "@testing-library/dom": "^10.0.0", "@types/react": "^18.0.0 || ^19.0.0", "@types/react-dom": "^18.0.0 || ^19.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["@types/react", "@types/react-dom"] }, "sha512-gr4KtAWqIOQoucWYD/f6ki+j5chXfcPc74Col/6poTyqTmn7zRmodWahWRCp8tYd+GMqBonw6hstNzqjbs6gjw=="],
 
@@ -6642,6 +6645,12 @@
 
     "@poppinss/dumper/supports-color": ["supports-color@10.2.2", "", {}, "sha512-SS+jx45GF1QjgEXQx4NJZV9ImqmO2NPz5FNsIHrsDjh2YsHnawpan7SNQ1o8NuhrbHZy9AZhIoCUiCeaW/C80g=="],
 
+    "@portfolio/ui/@testing-library/jest-dom": ["@testing-library/jest-dom@6.9.1", "", { "dependencies": { "@adobe/css-tools": "^4.4.0", "aria-query": "^5.0.0", "css.escape": "^1.5.1", "dom-accessibility-api": "^0.6.3", "picocolors": "^1.1.1", "redent": "^3.0.0" } }, "sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA=="],
+
+    "@portfolio/vitest-config/@testing-library/jest-dom": ["@testing-library/jest-dom@6.9.1", "", { "dependencies": { "@adobe/css-tools": "^4.4.0", "aria-query": "^5.0.0", "css.escape": "^1.5.1", "dom-accessibility-api": "^0.6.3", "picocolors": "^1.1.1", "redent": "^3.0.0" } }, "sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA=="],
+
+    "@portfolio/web/@testing-library/jest-dom": ["@testing-library/jest-dom@6.9.1", "", { "dependencies": { "@adobe/css-tools": "^4.4.0", "aria-query": "^5.0.0", "css.escape": "^1.5.1", "dom-accessibility-api": "^0.6.3", "picocolors": "^1.1.1", "redent": "^3.0.0" } }, "sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA=="],
+
     "@prisma/engines/@prisma/debug": ["@prisma/debug@5.22.0", "", {}, "sha512-AUt44v3YJeggO2ZU5BkXI7M4hu9BF2zzH2iF2V5pyXT/lRTyWiElZ7It+bRH1EshoMRxHgpYg4VB6rCM+mG5jQ=="],
 
     "@prisma/fetch-engine/@prisma/debug": ["@prisma/debug@5.22.0", "", {}, "sha512-AUt44v3YJeggO2ZU5BkXI7M4hu9BF2zzH2iF2V5pyXT/lRTyWiElZ7It+bRH1EshoMRxHgpYg4VB6rCM+mG5jQ=="],
@@ -6899,6 +6908,8 @@
     "@testing-library/dom/aria-query": ["aria-query@5.3.0", "", { "dependencies": { "dequal": "^2.0.3" } }, "sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A=="],
 
     "@testing-library/dom/dom-accessibility-api": ["dom-accessibility-api@0.5.16", "", {}, "sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg=="],
+
+    "@testing-library/jest-dom/chalk": ["chalk@3.0.0", "", { "dependencies": { "ansi-styles": "^4.1.0", "supports-color": "^7.1.0" } }, "sha512-4D3B6Wf41KOYRFdszmDqMCGq5VV/uMAB273JILmO+3jAlh8X4qDtdtgCR3fxtbLEMzSx22QdhnDcJvu2u1fVwg=="],
 
     "@textlint/ast-tester/@textlint/ast-node-types": ["@textlint/ast-node-types@4.4.3", "", {}, "sha512-qi2jjgO6Tn3KNPGnm6B7p6QTEPvY95NFsIAaJuwbulur8iJUEenp1OnoUfiDaC/g2WPPEFkcfXpmnu8XEMFo2A=="],
 
@@ -8555,6 +8566,8 @@
     "@tailwindcss/oxide-wasm32-wasi/@napi-rs/wasm-runtime/@tybys/wasm-util": ["@tybys/wasm-util@0.10.1", "", { "dependencies": { "tslib": "^2.4.0" }, "bundled": true }, "sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg=="],
 
     "@tailwindcss/oxide-wasm32-wasi/@tybys/wasm-util/tslib": ["tslib@2.8.1", "", { "bundled": true }, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
+
+    "@testing-library/jest-dom/chalk/supports-color": ["supports-color@7.2.0", "", { "dependencies": { "has-flag": "^4.0.0" } }, "sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw=="],
 
     "@textlint/config-loader/@textlint/kernel/@textlint/ast-tester": ["@textlint/ast-tester@15.5.0", "", { "dependencies": { "@textlint/ast-node-types": "15.5.0", "debug": "^4.4.3" } }, "sha512-G/DhhuRETUVzRiZw2joZrEG52j2Lq9hY//ohVvxcFva9BI+NqYe4wyqg93QXYYg4jPDEgjX8yQ3CvdOlLvQvmA=="],
 

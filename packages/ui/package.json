@@ -47,6 +47,7 @@
     "@portfolio/biome-config": "workspace:*",
     "@portfolio/storybook-config": "workspace:*",
     "@portfolio/tailwind-config": "workspace:*",
+    "@portfolio/testing-mocks": "workspace:*",
     "@portfolio/tsconfig": "workspace:*",
     "@portfolio/vitest-config": "workspace:*",
     "@storybook/addon-a11y": "8.6.14",

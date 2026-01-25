@@ -1,8 +1,11 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import { UserCard } from "./UserCard";
+vi.mock("../libs/sanitize.js", () => ({
+    sanitizeHtml: vi.fn((html) => html),
+}));
 describe("UserCard Component", () => {
     const mockProps = {
         copy: "Test user description",

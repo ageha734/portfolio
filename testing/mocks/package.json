@@ -8,6 +8,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./setup": {
+      "types": "./dist/setup.d.ts",
+      "default": "./dist/setup.js"
     }
   },
   "scripts": {
@@ -21,7 +25,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "msw": "2.12.7"
+    "@testing-library/jest-dom": "6.6.3",
+    "msw": "2.12.7",
+    "vitest": "3.2.4"
   },
   "devDependencies": {
     "@portfolio/biome-config": "workspace:*",

@@ -98,8 +98,8 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
             setupFiles,
             testTimeout: 10000,
             passWithNoTests: true,
-            fileParallelism: false,
-            isolate: false,
+            fileParallelism: true,
+            isolate: true,
             pool: "threads",
             poolOptions: {
                 threads: {

@@ -8,12 +8,12 @@ describe("Separator Component", () => {
         const { container } = render(_jsx(Separator, {}));
         const separator = container.firstChild;
         expect(separator).toBeInTheDocument();
-        expect(separator).toHaveClass("h-[1px]", "w-full");
+        expect(separator).toHaveClass("h-px", "w-full");
     });
     test("should render vertical separator", () => {
         const { container } = render(_jsx(Separator, { orientation: "vertical" }));
         const separator = container.firstChild;
-        expect(separator).toHaveClass("h-full", "w-[1px]");
+        expect(separator).toHaveClass("h-full", "w-px");
     });
     test("should apply custom className", () => {
         const { container } = render(_jsx(Separator, { className: "custom-class" }));

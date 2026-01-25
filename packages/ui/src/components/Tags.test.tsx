@@ -28,7 +28,7 @@ describe("Tags Component", () => {
         render(<Tags classNameTag="custom-tag" tags={["tag1"]} />);
 
         const tag = screen.getByText("tag1");
-        expect(tag.parentElement).toHaveClass("custom-tag");
+        expect(tag).toHaveClass("custom-tag");
     });
 
     test("should handle empty tags array", () => {

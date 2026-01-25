@@ -22,7 +22,7 @@ describe("Tags Component", () => {
     test("should apply custom classNameTag", () => {
         render(_jsx(Tags, { classNameTag: "custom-tag", tags: ["tag1"] }));
         const tag = screen.getByText("tag1");
-        expect(tag.parentElement).toHaveClass("custom-tag");
+        expect(tag).toHaveClass("custom-tag");
     });
     test("should handle empty tags array", () => {
         const { container } = render(_jsx(Tags, { tags: [] }));
