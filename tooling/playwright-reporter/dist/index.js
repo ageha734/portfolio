@@ -1,83 +1,44 @@
 import { execSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import type { FullConfig, FullResult, Reporter, Suite, TestCase, TestResult } from "@playwright/test/reporter";
-
-export interface MonorepoReporterOptions {
-    outputDir?: string;
-    projectName?: string;
-    htmlOutputDir?: string;
-}
-
-interface ReportMetadata {
-    project: string;
-    timestamp: string;
-    commitSha: string;
-    branch: string;
-    runId?: string;
-    runNumber?: string;
-    workflow?: string;
-    event?: string;
-    reportType: "e2e";
-    summary: {
-        total: number;
-        passed: number;
-        failed: number;
-        skipped: number;
-        duration: number;
-    };
-}
-
-class MonorepoReporter implements Reporter {
-    private options: MonorepoReporterOptions;
-    private startTime: number = 0;
-    private testResults: Array<{ test: TestCase; result: TestResult }> = [];
-    private targetReportDir: string = "";
-    private config: FullConfig | null = null;
-
-    constructor(options: MonorepoReporterOptions = {}) {
+class MonorepoReporter {
+    options;
+    startTime = 0;
+    testResults = [];
+    targetReportDir = "";
+    config = null;
+    constructor(options = {}) {
         console.log("[DEBUG_TRACE] >>> ENTRY: MonorepoReporter.constructor");
         this.options = options;
         console.log(`[DEBUG_TRACE] >>> STATE: options=${JSON.stringify(options)}`);
         console.log("[DEBUG_TRACE] >>> EXIT: MonorepoReporter.constructor");
     }
-
-    onBegin(config: FullConfig, _suite: Suite) {
+    onBegin(config, _suite) {
         console.log("[DEBUG_TRACE] >>> ENTRY: MonorepoReporter.onBegin");
         this.startTime = Date.now();
         this.config = config;
-
         const projectName = this.options.projectName || this.getProjectName();
         const baseOutputDir = this.options.outputDir || "./.reports/playwright";
-
         console.log(`[DEBUG_TRACE] >>> STATE: projectName=${projectName}, baseOutputDir=${baseOutputDir}`);
-
         const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
         const commitSha = this.getCommitSha().substring(0, 8);
         const runDir = join(baseOutputDir, `${timestamp}-${commitSha}`);
-
         this.targetReportDir = resolve(runDir);
-
         console.log(`[DEBUG_TRACE] >>> STATE: targetReportDir=${this.targetReportDir}`);
         console.log("[DEBUG_TRACE] >>> EXIT: MonorepoReporter.onBegin");
     }
-
-    onTestBegin(_test: TestCase) {
+    onTestBegin(_test) {
         // No-op: HTML reporter handles this
     }
-
-    onTestEnd(test: TestCase, result: TestResult) {
+    onTestEnd(test, result) {
         this.testResults.push({ test, result });
     }
-
-    onEnd(_result: FullResult) {
+    onEnd(_result) {
         console.log("[DEBUG_TRACE] >>> ENTRY: MonorepoReporter.onEnd");
-
         if (!this.config || !this.targetReportDir) {
             console.log("[DEBUG_TRACE] >>> BRANCH: config or targetReportDir is missing");
             return Promise.resolve();
         }
-
         const projectName = this.options.projectName || this.getProjectName();
         const duration = Date.now() - this.startTime;
         const summary = {
@@ -87,25 +48,18 @@ class MonorepoReporter implements Reporter {
             skipped: this.testResults.filter((r) => r.result.status === "skipped").length,
             duration,
         };
-
         console.log(`[DEBUG_TRACE] >>> STATE: summary=${JSON.stringify(summary)}`);
-
         if (!existsSync(this.targetReportDir)) {
             console.log(`[DEBUG_TRACE] >>> STATE: creating targetReportDir=${this.targetReportDir}`);
             mkdirSync(this.targetReportDir, { recursive: true });
         }
-
         const htmlReportDir = resolve(this.options.htmlOutputDir || "./.results/playwright");
         console.log(`[DEBUG_TRACE] >>> STATE: htmlReportDir=${htmlReportDir}`);
-
         if (existsSync(htmlReportDir)) {
-            console.log(
-                `[DEBUG_TRACE] >>> STATE: copying HTML report from ${htmlReportDir} to ${this.targetReportDir}`,
-            );
+            console.log(`[DEBUG_TRACE] >>> STATE: copying HTML report from ${htmlReportDir} to ${this.targetReportDir}`);
             cpSync(htmlReportDir, this.targetReportDir, { recursive: true });
         }
-
-        const metadata: ReportMetadata = {
+        const metadata = {
             project: projectName,
             timestamp: new Date().toISOString(),
             commitSha: this.getCommitSha(),
@@ -117,17 +71,13 @@ class MonorepoReporter implements Reporter {
             reportType: "e2e",
             summary,
         };
-
         const metadataPath = join(this.targetReportDir, "metadata.json");
         writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), "utf-8");
-
         console.log(`[DEBUG_TRACE] >>> STATE: metadataPath=${metadataPath}`);
         console.log("[DEBUG_TRACE] >>> EXIT: MonorepoReporter.onEnd");
-
         return Promise.resolve();
     }
-
-    private getProjectName(): string {
+    getProjectName() {
         const cwd = process.cwd();
         if (cwd.includes("/apps/api")) {
             return "api";
@@ -140,22 +90,21 @@ class MonorepoReporter implements Reporter {
         }
         return "unknown";
     }
-
-    private getCommitSha(): string {
+    getCommitSha() {
         try {
             return execSync("git rev-parse HEAD", { encoding: "utf-8" }).trim();
-        } catch {
+        }
+        catch {
             return "unknown";
         }
     }
-
-    private getBranch(): string {
+    getBranch() {
         try {
             return execSync("git rev-parse --abbrev-ref HEAD", { encoding: "utf-8" }).trim();
-        } catch {
+        }
+        catch {
             return "unknown";
         }
     }
 }
-
 export default MonorepoReporter;
