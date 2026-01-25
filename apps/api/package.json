@@ -14,7 +14,7 @@
     "coverage": "vitest run --coverage",
     "deploy": "wrangler deploy --name portfolio-infra-api",
     "dev": "bun run with-env wrangler dev",
-    "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
+    "e2e": "docker run --rm -e CI=true -e APP_DIR=apps/api -v $(git rev-parse --show-toplevel):/work -w /work -v $(git rev-parse --show-toplevel)/node_modules:/work/node_modules -v $(git rev-parse --show-toplevel)/docs/playwright/report:/work/docs/playwright/report -v $(git rev-parse --show-toplevel)/docs/security/e2e:/work/docs/security/e2e e2e",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "generate": "wrangler types",

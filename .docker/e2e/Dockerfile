@@ -55,8 +55,16 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 SHELL ["/bin/bash", "-eux", "-o", "pipefail", "-c"]
 
-RUN groupadd --gid "${USER_GID}" "${USERNAME}" || true; \
-    useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /bin/bash --create-home "${USERNAME}" || true; \
+RUN if id -u "${USER_UID}" >/dev/null 2>&1; then \
+        EXISTING_USER=$(id -nu "${USER_UID}"); \
+        if [ "${EXISTING_USER}" != "${USERNAME}" ]; then \
+            userdel -r "${EXISTING_USER}" 2>/dev/null || true; \
+        fi; \
+    fi; \
+    if ! id -u "${USERNAME}" >/dev/null 2>&1; then \
+        groupadd --gid "${USER_GID}" "${USERNAME}" || true; \
+        useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /bin/bash --create-home "${USERNAME}" || exit 1; \
+    fi; \
     mkdir -p /work/.results /work/.reports /work/docs/playwright/report \
     && chown -R "${USER_UID}:${USER_GID}" /work/.results /work/.reports /work/docs \
     && chmod -R 775 /work/.results /work/.reports /work/docs

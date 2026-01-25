@@ -2,30 +2,60 @@
 set -eux -o pipefail
 
 WORK_DIR="${WORK_DIR:-/work}"
+APP_DIR="${APP_DIR:-}"
 REPORT_DIR="${REPORT_DIR:-/work/docs/security/e2e}"
 SKIP_BUILD="${SKIP_BUILD:-false}"
 SKIP_SECURITY_SCAN="${SKIP_SECURITY_SCAN:-false}"
 
 echo "🚀 Starting E2E test execution with security scanning"
 echo "Work directory: ${WORK_DIR}"
+echo "App directory: ${APP_DIR:-<not specified, using work directory>}"
 echo "Report directory: ${REPORT_DIR}"
 echo "Skip build: ${SKIP_BUILD}"
 echo "Skip security scan: ${SKIP_SECURITY_SCAN}"
 
+if [ -n "${APP_DIR}" ]; then
+	APP_PATH="${WORK_DIR}/${APP_DIR}"
+	if [ ! -d "${APP_PATH}" ]; then
+		echo "❌ Error: App directory not found: ${APP_PATH}" >&2
+		exit 1
+	fi
+else
+	APP_PATH="${WORK_DIR}"
+fi
+
 if [ "${SKIP_BUILD}" != "true" ]; then
 	echo ""
-	echo "📦 Step 1: Building application..."
-	cd "${WORK_DIR}" || exit 1
+	echo "📦 Step 1: Installing dependencies and building application..."
 
-	if [ ! -d "node_modules" ] || [ ! -f "node_modules/.bin/bun" ]; then
-		echo "Installing dependencies..."
-		bun install --frozen-lockfile || {
-			echo "❌ Error: Failed to install dependencies" >&2
-			exit 1
-		}
+	cd "${WORK_DIR}" || exit 1
+	
+	# Verify workspace directories exist
+	echo "Verifying workspace directories..."
+	for workspace_pattern in "apps" "packages" "tooling" "testing" "scripts"; do
+		if [ ! -d "${workspace_pattern}" ]; then
+			echo "⚠️  Warning: Workspace directory not found: ${workspace_pattern}" >&2
+		fi
+	done
+	
+	# Always run bun install to ensure workspace dependencies are resolved correctly
+	# Even if node_modules exists, workspace dependencies might not be properly linked
+	echo "Installing dependencies at monorepo root..."
+	if ! bun install --frozen-lockfile; then
+		echo "❌ Error: Failed to install dependencies" >&2
+		echo "Debug information:" >&2
+		echo "Current directory: $(pwd)" >&2
+		echo "Workspace directories:" >&2
+		ls -la "${WORK_DIR}" | grep -E "^d" | head -10 >&2
+		if [ -d "${WORK_DIR}/tooling" ]; then
+			echo "tooling directory contents:" >&2
+			ls -la "${WORK_DIR}/tooling" | head -10 >&2
+		fi
+		exit 1
 	fi
 
-	echo "Building application..."
+	echo "Building application in ${APP_PATH}..."
+	cd "${APP_PATH}" || exit 1
 	bun run build || {
 		echo "❌ Error: Application build failed" >&2
 		exit 1
@@ -62,7 +92,7 @@ if [ "${SKIP_SECURITY_SCAN}" != "true" ]; then
 	fi
 
 	echo "Running dependency vulnerability scan..."
-	cd "${WORK_DIR}" || exit 1
+	cd "${APP_PATH}" || exit 1
 	bun audit --json >"${REPORT_DIR}/bun-audit-report.json" 2>&1 || true
 	bun audit >"${REPORT_DIR}/bun-audit-report.txt" 2>&1 || true
 
@@ -81,11 +111,11 @@ fi
 
 echo ""
 echo "🧪 Step 3: Running E2E tests..."
-cd "${WORK_DIR}" || exit 1
+cd "${APP_PATH}" || exit 1
 
 if [ $# -eq 0 ]; then
 	echo "Running default E2E tests..."
-	exec bunx playwright test
+	exec bun x playwright test
 else
 	echo "Running custom command: $*"
 	exec "$@"
