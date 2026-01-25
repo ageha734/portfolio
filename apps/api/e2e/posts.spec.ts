@@ -40,7 +40,6 @@ test.describe("Posts API", () => {
     test("should return 400 for invalid slug format", async ({ request }) => {
         const response = await request.get(`${API_URL}/api/post/`);
 
-        // Should return error for invalid slug
         expect(response.status()).toBeGreaterThanOrEqual(400);
     });
 });

@@ -19,7 +19,7 @@ export default createPlaywrightConfig({
     baseURL: baseUrl,
     port: PORT,
     webServerCommand: process.env.CI ? "bun run start" : "bun run dev",
-    reportOutputDir: "../../wiki/reports/e2e/api",
+    reportOutputDir: "../wiki/reports/e2e/api",
     projectName: "api",
     projects: [
         {

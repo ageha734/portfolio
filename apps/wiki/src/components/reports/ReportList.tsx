@@ -6,19 +6,13 @@ interface ReportListProps {
 }
 
 export function ReportList({ projectName, reports }: ReportListProps) {
-    console.log("[DEBUG_TRACE] >>> ENTRY: ReportList render");
-    console.log(`[DEBUG_TRACE] >>> STATE: projectName=${projectName}, reports.length=${reports.length}`);
-
     if (reports.length === 0) {
-        console.log("[DEBUG_TRACE] >>> BRANCH: no reports found");
         return (
             <div className="not-content">
                 <p>このプロジェクトのレポートはまだありません。</p>
             </div>
         );
     }
-
-    console.log("[DEBUG_TRACE] >>> EXIT: ReportList render with reports");
 
     return (
         <div className="not-content">

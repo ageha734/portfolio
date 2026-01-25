@@ -29,37 +29,27 @@ interface ReportMetadata {
 }
 
 class MonorepoReporter implements Reporter {
-    private options: MonorepoReporterOptions;
-    private startTime: number = 0;
-    private testResults: Array<{ test: TestCase; result: TestResult }> = [];
-    private targetReportDir: string = "";
+    private readonly options: MonorepoReporterOptions;
+    private startTime = 0;
+    private readonly testResults: Array<{ test: TestCase; result: TestResult }> = [];
+    private targetReportDir = "";
     private config: FullConfig | null = null;
 
     constructor(options: MonorepoReporterOptions = {}) {
-        console.log("[DEBUG_TRACE] >>> ENTRY: MonorepoReporter.constructor");
         this.options = options;
-        console.log(`[DEBUG_TRACE] >>> STATE: options=${JSON.stringify(options)}`);
-        console.log("[DEBUG_TRACE] >>> EXIT: MonorepoReporter.constructor");
     }
 
     onBegin(config: FullConfig, _suite: Suite) {
-        console.log("[DEBUG_TRACE] >>> ENTRY: MonorepoReporter.onBegin");
         this.startTime = Date.now();
         this.config = config;
 
-        const projectName = this.options.projectName || this.getProjectName();
         const baseOutputDir = this.options.outputDir || "./.reports/playwright";
 
-        console.log(`[DEBUG_TRACE] >>> STATE: projectName=${projectName}, baseOutputDir=${baseOutputDir}`);
-
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const timestamp = new Date().toISOString().replaceAll(/[:.]/g, "-");
         const commitSha = this.getCommitSha().substring(0, 8);
         const runDir = join(baseOutputDir, `${timestamp}-${commitSha}`);
 
         this.targetReportDir = resolve(runDir);
-
-        console.log(`[DEBUG_TRACE] >>> STATE: targetReportDir=${this.targetReportDir}`);
-        console.log("[DEBUG_TRACE] >>> EXIT: MonorepoReporter.onBegin");
     }
 
     onTestBegin(_test: TestCase) {
@@ -71,10 +61,7 @@ class MonorepoReporter implements Reporter {
     }
 
     onEnd(_result: FullResult) {
-        console.log("[DEBUG_TRACE] >>> ENTRY: MonorepoReporter.onEnd");
-
         if (!this.config || !this.targetReportDir) {
-            console.log("[DEBUG_TRACE] >>> BRANCH: config or targetReportDir is missing");
             return Promise.resolve();
         }
 
@@ -88,20 +75,13 @@ class MonorepoReporter implements Reporter {
             duration,
         };
 
-        console.log(`[DEBUG_TRACE] >>> STATE: summary=${JSON.stringify(summary)}`);
-
         if (!existsSync(this.targetReportDir)) {
-            console.log(`[DEBUG_TRACE] >>> STATE: creating targetReportDir=${this.targetReportDir}`);
             mkdirSync(this.targetReportDir, { recursive: true });
         }
 
         const htmlReportDir = resolve(this.options.htmlOutputDir || "./.results/playwright");
-        console.log(`[DEBUG_TRACE] >>> STATE: htmlReportDir=${htmlReportDir}`);
 
         if (existsSync(htmlReportDir)) {
-            console.log(
-                `[DEBUG_TRACE] >>> STATE: copying HTML report from ${htmlReportDir} to ${this.targetReportDir}`,
-            );
             cpSync(htmlReportDir, this.targetReportDir, { recursive: true });
         }
 
@@ -120,9 +100,6 @@ class MonorepoReporter implements Reporter {
 
         const metadataPath = join(this.targetReportDir, "metadata.json");
         writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), "utf-8");
-
-        console.log(`[DEBUG_TRACE] >>> STATE: metadataPath=${metadataPath}`);
-        console.log("[DEBUG_TRACE] >>> EXIT: MonorepoReporter.onEnd");
 
         return Promise.resolve();
     }
