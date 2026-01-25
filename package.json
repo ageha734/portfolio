@@ -52,7 +52,6 @@
     "dotenv-cli": "11.0.0",
     "knip": "5.79.0",
     "lefthook": "2.0.13",
-    "lint-staged": "16.2.7",
     "renovate": "41.0.0",
     "sherif": "1.0.0",
     "syncpack": "13.0.4",

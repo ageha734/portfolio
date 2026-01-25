@@ -53,6 +53,12 @@
         "rules": {
             "complexity": {
                 "noAdjacentSpacesInRegex": "error",
+                "noExcessiveCognitiveComplexity": {
+                    "level": "error",
+                    "options": {
+                        "maxAllowedComplexity": 15
+                    }
+                },
                 "noExtraBooleanCast": "error",
                 "noUselessCatch": "error"
             },
@@ -74,6 +80,7 @@
                 "noUnreachableSuper": "error",
                 "noUnsafeFinally": "error",
                 "noUnsafeOptionalChaining": "error",
+                "noUnusedImports": "error",
                 "noUnusedLabels": "error",
                 "noUnusedPrivateClassMembers": "error",
                 "noUnusedVariables": "error",

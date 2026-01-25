@@ -1,8 +1,14 @@
 pre-commit:
+    skip:
+        - merge
+        - rebase
     parallel: true
     commands:
-        lint-staged:
-            run: bunx lint-staged
+        check-secrets:
+            run: bun scripts/check/dist/cmd/main.js secrets
+            tags: security
+        check-staged:
+            run: bun scripts/check/dist/cmd/main.js staged
             stage_fixed: true
 
 commit-msg:

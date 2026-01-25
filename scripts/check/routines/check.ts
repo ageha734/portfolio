@@ -1,8 +1,15 @@
-#!/usr/bin/env bun
-
 import { existsSync, readdirSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { $ } from "bun";
+
+declare const Bun: {
+    spawn: (args: string[], options?: { stdout?: "inherit" | "pipe"; stderr?: "inherit" | "pipe"; cwd?: string }) => {
+        exited: Promise<number>;
+        exitCode: number | null;
+        stdout: ReadableStream | null;
+        stderr: ReadableStream | null;
+    };
+};
 
 type CheckType = "lint" | "fmt" | "test" | "coverage";
 type LintType = "ts" | "tsp" | "md" | "shell" | "actions" | "textlint";
