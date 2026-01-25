@@ -85,7 +85,7 @@ export function createPagesProjects(
 
 export function createPortfolioPagesProjects(
 	config: InfraConfig,
-	secrets: {
+	_secrets: {
 		databaseUrl: pulumi.Output<string>;
 		redisUrl?: pulumi.Output<string>;
 	},

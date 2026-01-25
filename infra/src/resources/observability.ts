@@ -36,8 +36,8 @@ export interface GrafanaOutputs {
 }
 
 export function createGrafanaResources(
-	config: InfraConfig,
-	stackConfig: GrafanaStackConfig,
+	_config: InfraConfig,
+	_stackConfig: GrafanaStackConfig,
 	dashboards: GrafanaDashboardConfig[] = [],
 ): GrafanaOutputs {
 	const createdDashboards: Record<string, grafana.oss.Dashboard> = {};
