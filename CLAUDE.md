@@ -2,58 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Overview
-
-このプロジェクトは、案件獲得率向上を目的としたポートフォリオサイトです。
-TypeScript言語で実装され、以下のソフトウェアアーキテクチャに基づいた明確なレイヤー分離を採用しています。
-
-- Monorepo構造: Turborepo + Bun Workspaces
-  - 詳細は [`docs/architecture/monorepo-management`](./docs/architecture/monorepo-management) を参照してください。
-- **Frontend Application**: Feature-Sliced Designを採用しています。
-  詳細は [`docs/architecture/feature-sliced`](./docs/architecture/feature-sliced) を参照してください。
-- **Backend Application**: Domain-Driven Designを採用しています。
-  詳細は [`docs/architecture/domain-driven`](./docs/architecture/domain-driven) を参照してください。
-
-- **技術スタック**
-  - TypeScript 5.8+
-  - TypeSpec 1.20.0+
-  - TiDB Cloud (MySQL互換分散SQL)
-  - Redis Cloud(キャッシュ)
-  - Prisma (ORM)
-  - Sentry (エラートラッキング)
-  - Prometheus (メトリクス)
-  - **Frontend Application**:
-    - React 18.3.1+
-    - Remix 1.2.3+
-  - **Backend Application**:
-    - Hono 4.6.11+
-
-### Development Commands
-
-必ず以下のコマンドを実行してください。
-
-```bash
-# ワークスペース
-bun run build
-# または特定のパッケージ
-bun run build --filter=@portfolio/<package_name>
-
-# コード品質
-bun run fmt
-bun run lint
-bun run typecheck
-bun run coverage
-bun run test
-bun run e2e
-```
-
-## Optional
-
-| カテゴリ | パス | 内容 |
-| --------- | ------ | ------ |
-| ソフトウェアアーキテクチャ | [`docs/architecture/`](./docs/architecture/) | ソフトウェアアーキテクチャ概要、プロジェクト構造 |
-| 開発ガイド | [`docs/development/`](./docs/development/) | コーディング規約、テスト、デプロイメント等 |
-
 ## Role & Philosophy
 
 あなたは仕様駆動開発およびテスト駆動開発を厳格に遵守するシニアソフトウェアエンジニアです。

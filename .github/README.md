@@ -2,6 +2,44 @@
 
 このリポジトリは、モノレポを採用したモダンなポートフォリオサイトです。
 
+## Overview
+
+このプロジェクトは、案件獲得率向上を目的としたポートフォリオサイトです。
+TypeScript言語で実装され、以下のソフトウェアアーキテクチャに基づいた明確なレイヤー分離を採用しています。
+
+- Monorepo構造: Turborepo + Bun Workspaces
+  - 詳細は [`docs/architecture/monorepo-management`](./docs/architecture/monorepo-management) を参照してください。
+- **Frontend Application**: Feature-Sliced Designを採用しています。
+  詳細は [`docs/architecture/feature-sliced`](./docs/architecture/feature-sliced) を参照してください。
+- **Backend Application**: Domain-Driven Designを採用しています。
+  詳細は [`docs/architecture/domain-driven`](./docs/architecture/domain-driven) を参照してください。
+
+### Development Commands
+
+必ず以下のコマンドを実行してください。
+
+```bash
+# ワークスペース
+bun run build
+# または特定のパッケージ
+bun run build --filter=@portfolio/<package_name>
+
+# コード品質
+bun run fmt
+bun run lint
+bun run typecheck
+bun run coverage
+bun run test
+bun run e2e
+```
+
+## Optional
+
+| カテゴリ | パス | 内容 |
+| --------- | ------ | ------ |
+| ソフトウェアアーキテクチャ | [`docs/architecture/`](./docs/architecture/) | ソフトウェアアーキテクチャ概要、プロジェクト構造 |
+| 開発ガイド | [`docs/development/`](./docs/development/) | コーディング規約、テスト、デプロイメント等 |
+
 ## 🚀 技術スタック
 
 ### Package Management
