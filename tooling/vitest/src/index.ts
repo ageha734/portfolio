@@ -65,6 +65,11 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
                     singleFork: true,
                 },
             },
+            server: {
+                deps: {
+                    inline: ["@portfolio/**"],
+                },
+            },
         },
     });
 }
