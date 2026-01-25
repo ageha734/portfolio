@@ -1,5 +1,5 @@
 generator markdown {
-  provider = "prisma-markdown"
+  provider = "@portfolio/prisma-markdown"
   output   = "../../../../docs/database/erd.md"
   title    = "データベース設計書"
 }

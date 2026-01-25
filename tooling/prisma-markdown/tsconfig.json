@@ -6,9 +6,9 @@
         "paths": {
             "~/*": ["./src/*"]
         },
-        "rootDir": "./src",
+        "rootDir": ".",
         "typeRoots": ["../../node_modules/@types"],
         "types": ["node"]
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx"]
+    "include": ["cmd/main.ts", "src/**/*.ts"]
 }

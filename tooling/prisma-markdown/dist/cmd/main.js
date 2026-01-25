@@ -3,7 +3,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { generatorHandler } from "@prisma/generator-helper";
 import { PrismaMarkdown } from "~/markdown";
-const { version } = await import("../../package.json");
+const { version } = await import("../package.json");
 generatorHandler({
     onManifest: () => ({
         version,

@@ -5,7 +5,7 @@ import { generatorHandler } from "@prisma/generator-helper";
 import type { Config } from "~/config";
 import { PrismaMarkdown } from "~/markdown";
 
-const { version } = await import("../../package.json");
+const { version } = await import("../package.json");
 
 generatorHandler({
     onManifest: () => ({
