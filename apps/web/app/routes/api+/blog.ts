@@ -1,21 +1,6 @@
+import type { Post } from "@portfolio/api";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { createApiClient } from "~/shared/lib/api";
-
-export interface Post {
-    id: string;
-    title: string;
-    slug: string;
-    date: Date | string;
-    description?: string;
-    content: string;
-    contentRaw?: unknown;
-    imageTemp: string;
-    sticky: boolean;
-    intro?: string;
-    createdAt: Date | string;
-    updatedAt: Date | string;
-    tags: string[];
-}
 
 export type LoaderData = {
     posts: Post[];
@@ -30,19 +15,19 @@ export const loader: LoaderFunction = async (args) => {
     const api = createApiClient(apiUrl);
 
     const response = await api.posts.listPosts();
-    const posts = response.data as Post[];
+    const posts = Array.isArray(response.data) ? response.data : response.data.data;
 
     const tagSet = new Set<string>();
-    posts.forEach((post: Post) => {
-        post.tags.forEach((tag: string) => {
+    for (const post of posts) {
+        for (const tag of post.tags) {
             tagSet.add(tag);
-        });
-    });
+        }
+    }
     const tags = Array.from(tagSet).sort((a, b) => a.localeCompare(b));
 
     if (!posts.length) {
         throw new Response("Blog posts not found", { status: 404 });
     }
 
-    return Response.json({ posts, tags } as LoaderData);
+    return Response.json({ posts, tags } satisfies LoaderData);
 };

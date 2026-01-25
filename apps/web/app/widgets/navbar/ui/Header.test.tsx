@@ -26,7 +26,12 @@ vi.mock("@remix-run/react", async () => {
             prefetch?: string;
             onClick?: () => void;
         }) => (
-            <RouterLink to={to} {...props} prefetch={prefetch} onClick={onClick}>
+            <RouterLink
+                to={to}
+                {...props}
+                prefetch={prefetch as "intent" | "render" | "viewport" | undefined}
+                onClick={onClick}
+            >
                 {children}
             </RouterLink>
         ),

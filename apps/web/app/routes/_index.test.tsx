@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import Index, { meta } from "./_index";
 
 vi.mock("~/routes/api.qualities", () => ({
-    getQuote: vi.fn((value?: string) => {
+    getQuote: vi.fn((_value?: string) => {
         const quotes = ["A problem solver 🧩", "A creative thinker 🤔", "A team player 🤝"];
         return quotes[0];
     }),

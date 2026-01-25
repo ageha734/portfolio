@@ -11,15 +11,18 @@ import { createApiClient } from "~/shared/lib/api";
  * @description Generate a sitemap.xml for SEO purposes
  */
 export const loader: LoaderFunction = async (args) => {
-    const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
+    const apiUrl =
+        args.context.cloudflare && typeof args.context.cloudflare === "object" && "env" in args.context.cloudflare
+            ? (args.context.cloudflare.env as { VITE_API_URL?: string })?.VITE_API_URL
+            : undefined;
     const api = createApiClient(apiUrl);
 
     const [portfoliosResponse, postsResponse] = await Promise.all([
         api.portfolios.listPortfolios(),
         api.posts.listPosts(),
     ]);
-    const portfolios = portfoliosResponse.data as Portfolio[];
-    const posts = postsResponse.data as Post[];
+    const portfolios = Array.isArray(portfoliosResponse.data) ? portfoliosResponse.data : portfoliosResponse.data.data;
+    const posts = Array.isArray(postsResponse.data) ? postsResponse.data : postsResponse.data.data;
 
     const routes = ["/blog", "/portfolio", "/resume", "/uses"];
 

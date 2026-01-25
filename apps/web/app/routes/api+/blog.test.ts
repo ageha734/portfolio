@@ -1,7 +1,8 @@
 import "@testing-library/jest-dom/vitest";
+import type { Post } from "@portfolio/api";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import type { LoaderData, Post } from "./blog";
+import type { LoaderData } from "./blog";
 import { loader } from "./blog";
 
 vi.mock("~/shared/lib/api", () => ({

@@ -42,3 +42,19 @@ declare module "@mapbox/rehype-prism" {
     const rehypePrism: RehypePrism;
     export default rehypePrism;
 }
+
+declare module "@xstate/inspect" {
+    export interface InspectOptions {
+        iframe?: boolean | null;
+    }
+    export function inspect(options?: InspectOptions): void;
+}
+
+declare module "@mapbox/rehype-prism" {
+    type RehypePrismOptions = {
+        alias?: Record<string, string | string[]>;
+    };
+    type RehypePrism = (options?: RehypePrismOptions) => (tree: unknown) => void;
+    const rehypePrism: RehypePrism;
+    export default rehypePrism;
+}

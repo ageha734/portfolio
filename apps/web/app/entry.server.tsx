@@ -1,10 +1,10 @@
+import { AppError, ErrorCodes } from "@portfolio/log";
 import type { EntryContext } from "@remix-run/cloudflare";
 import { RemixServer } from "@remix-run/react";
-import { AppError, ErrorCodes } from "@portfolio/log";
-import { getLogger, initLogger } from "~/lib/logger";
 import { isbot } from "isbot";
 import { renderToReadableStream } from "react-dom/server";
-import { SENTRY_DSN, SENTRY_ENVIRONMENT, SENTRY_TRACES_SAMPLE_RATE } from "~/shared/config/settings";
+import { getLogger, initLogger } from "~/lib/logger";
+import { SENTRY_DSN, SENTRY_ENVIRONMENT } from "~/shared/config/settings";
 
 if (SENTRY_DSN !== "__undefined__") {
     initLogger({
@@ -24,11 +24,12 @@ async function handleRequest(
     const body = await renderToReadableStream(<RemixServer context={remixContext} url={request.url} />, {
         signal: request.signal,
         onError(error: unknown) {
-            const appError = error instanceof AppError
-                ? error
-                : AppError.fromCode(ErrorCodes.INTERNAL_SERVER_ERROR, "Server rendering error", {
-                      originalError: error instanceof Error ? error : new Error(String(error)),
-                  });
+            const appError =
+                error instanceof AppError
+                    ? error
+                    : AppError.fromCode(ErrorCodes.INTERNAL_SERVER_ERROR, "Server rendering error", {
+                          originalError: error instanceof Error ? error : new Error(String(error)),
+                      });
             logger.logError(appError, { url: request.url });
             statusCode = 500;
         },

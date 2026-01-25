@@ -37,6 +37,7 @@ describe("SectionTechnology Component", () => {
         const buttons = container.querySelectorAll("button");
         if (buttons.length > 0) {
             const firstButton = buttons[0];
+            if (!firstButton) return;
             const initialDescription = container.querySelector("blockquote")?.innerHTML;
 
             fireEvent.click(firstButton);
@@ -52,6 +53,7 @@ describe("SectionTechnology Component", () => {
         const buttons = container.querySelectorAll("button");
         if (buttons.length > 0) {
             const firstButton = buttons[0];
+            if (!firstButton) return;
 
             expect(firstButton).not.toHaveClass("active");
 

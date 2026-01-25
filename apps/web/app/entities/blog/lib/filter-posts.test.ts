@@ -26,8 +26,8 @@ describe("blog", () => {
 
         expect(result.diy.data).toHaveLength(1);
         expect(result.diy.featured).toHaveLength(1);
-        expect(result.diy.data[0].tags).toContain("DIY");
-        expect(result.diy.featured[0].tags).toContain("DIY");
+        expect(result.diy.data[0]?.tags).toContain("DIY");
+        expect(result.diy.featured[0]?.tags).toContain("DIY");
     });
 
     test("should filter posts by Technical tag", () => {
@@ -41,8 +41,8 @@ describe("blog", () => {
 
         expect(result.technical.data).toHaveLength(1);
         expect(result.technical.featured).toHaveLength(1);
-        expect(result.technical.data[0].tags).not.toContain("DIY");
-        expect(result.technical.featured[0].tags).not.toContain("DIY");
+        expect(result.technical.data[0]?.tags).not.toContain("DIY");
+        expect(result.technical.featured[0]?.tags).not.toContain("DIY");
     });
 
     test("should separate sticky and non-sticky posts", () => {

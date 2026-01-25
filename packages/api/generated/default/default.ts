@@ -12,7 +12,6 @@ import type {
     PostsListPosts200,
     PostsListPostsParams,
 } from "../api.schemas";
-
 import { customInstance } from ".././mutator";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -34,7 +33,7 @@ export const getDefault = () => {
         params?: PortfoliosListPortfoliosParams,
         options?: SecondParameter<typeof customInstance<PortfoliosListPortfolios200>>,
     ) => {
-        return customInstance<PortfoliosListPortfolios200>({ url: `/api/portfolios`, method: "GET", params }, options);
+        return customInstance<PortfoliosListPortfolios200>({ url: "/api/portfolios", method: "GET", params }, options);
     };
     /**
      * @summary Get a post by slug
@@ -49,7 +48,12 @@ export const getDefault = () => {
         params?: PostsListPostsParams,
         options?: SecondParameter<typeof customInstance<PostsListPosts200>>,
     ) => {
-        return customInstance<PostsListPosts200>({ url: `/api/posts`, method: "GET", params }, options);
+        return customInstance<PostsListPosts200>({ url: "/api/posts", method: "GET", params }, options);
     };
-    return {};
+    return {
+        portfoliosGetPortfolioBySlug,
+        portfoliosListPortfolios,
+        postsGetPostBySlug,
+        postsListPosts,
+    };
 };

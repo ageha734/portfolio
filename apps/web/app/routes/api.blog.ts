@@ -1,21 +1,6 @@
+import type { Post } from "@portfolio/api";
 import type { LoaderFunction } from "@remix-run/cloudflare";
 import { createApiClient } from "~/shared/lib/api";
-
-export interface Post {
-    id: string;
-    title: string;
-    slug: string;
-    date: Date | string;
-    description?: string;
-    content: string;
-    contentRaw?: unknown;
-    imageTemp: string;
-    sticky: boolean;
-    intro?: string;
-    createdAt: Date | string;
-    updatedAt: Date | string;
-    tags: string[];
-}
 
 export type LoaderData = {
     posts: Post[];
@@ -23,11 +8,14 @@ export type LoaderData = {
 };
 
 export const loader: LoaderFunction = async (args) => {
-    const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
+    const apiUrl =
+        args.context.cloudflare && typeof args.context.cloudflare === "object" && "env" in args.context.cloudflare
+            ? (args.context.cloudflare.env as { VITE_API_URL?: string })?.VITE_API_URL
+            : undefined;
     const api = createApiClient(apiUrl);
 
     const response = await api.posts.listPosts();
-    const posts = response.data as Post[];
+    const posts = Array.isArray(response.data) ? response.data : response.data.data;
 
     // タグを抽出してソート
     const tagSet = new Set<string>();
@@ -40,5 +28,5 @@ export const loader: LoaderFunction = async (args) => {
         throw new Response("Blog posts not found", { status: 404 });
     }
 
-    return Response.json({ posts, tags } as LoaderData);
+    return Response.json({ posts, tags } satisfies LoaderData);
 };

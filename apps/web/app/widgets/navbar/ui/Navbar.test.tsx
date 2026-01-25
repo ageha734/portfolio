@@ -84,7 +84,6 @@ describe("Navbar Component", () => {
 
         fireEvent.click(toggleButton);
 
-        // モバイルメニューが開いたことをダイアログの存在で確認
         const mobileNav = document.querySelector('[role="dialog"]');
         expect(mobileNav).toBeInTheDocument();
     });
@@ -99,13 +98,11 @@ describe("Navbar Component", () => {
         const toggleButton = screen.getByLabelText("Menu");
         fireEvent.click(toggleButton);
 
-        // 複数要素がある場合は最初のものを取得
         const projectsLinks = screen.getAllByText("Projects");
-        fireEvent.click(projectsLinks[0]);
+        if (projectsLinks[0]) {
+            fireEvent.click(projectsLinks[0]);
+        }
 
-        // ダイアログが閉じたことを確認（アニメーション後に閉じる可能性があるためdata-stateをチェック）
-        const _mobileNav = document.querySelector('[role="dialog"]');
-        // Note: ダイアログはまだDOMにある場合があるため、テストを調整
         expect(projectsLinks.length).toBeGreaterThan(0);
     });
 
@@ -116,7 +113,6 @@ describe("Navbar Component", () => {
             </MemoryRouter>,
         );
 
-        // ナビゲーションリンクが存在することを確認
         const navLinks = container.querySelectorAll("nav a, header a");
         expect(navLinks.length).toBeGreaterThan(0);
     });
@@ -140,7 +136,6 @@ describe("Navbar Component", () => {
         );
 
         const projectsLink = screen.getByText("Projects").closest("a");
-        // リンクが存在してhrefを持つことを確認
         expect(projectsLink).toBeInTheDocument();
         expect(projectsLink).toHaveAttribute("href");
     });

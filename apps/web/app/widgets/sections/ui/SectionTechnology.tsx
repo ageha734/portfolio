@@ -46,7 +46,7 @@ export const SectionTechnology = () => {
 
             <blockquote
                 className="my-8 basis-3/5 font-light text-xl leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(description ?? "") }}
                 ref={refDescription}
             />
         </div>

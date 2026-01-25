@@ -119,8 +119,8 @@ describe("Blog Entity Types", () => {
 
             expect(blogData.data).toHaveLength(1);
             expect(blogData.featured).toHaveLength(1);
-            expect(blogData.data[0].title).toBe("Test Post 1");
-            expect(blogData.featured[0].title).toBe("Test Post 2");
+            expect(blogData.data[0]?.title).toBe("Test Post 1");
+            expect(blogData.featured[0]?.title).toBe("Test Post 2");
         });
     });
 });

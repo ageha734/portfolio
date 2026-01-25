@@ -30,8 +30,8 @@ describe("i18n config", () => {
         expect(resources).toBeDefined();
         expect(resources.en).toBeDefined();
         expect(resources.ja).toBeDefined();
-        expect(resources.en.translation).toBeDefined();
-        expect(resources.ja.translation).toBeDefined();
+        expect(resources.en?.translation).toBeDefined();
+        expect(resources.ja?.translation).toBeDefined();
     });
 
     test("should have welcome translation in English", () => {

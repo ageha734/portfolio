@@ -44,8 +44,8 @@ describe("NavData", () => {
             ];
 
             navLinks.forEach((link, index) => {
-                expect(link.label).toBe(expectedLinks[index].label);
-                expect(link.pathname).toBe(expectedLinks[index].pathname);
+                expect(link.label).toBe(expectedLinks[index]?.label);
+                expect(link.pathname).toBe(expectedLinks[index]?.pathname);
             });
         });
 
@@ -115,9 +115,9 @@ describe("NavData", () => {
 
             expect(socialLinks).toHaveLength(expectedSocialLinks.length);
             socialLinks.forEach((link, index) => {
-                expect(link.label).toBe(expectedSocialLinks[index].label);
-                expect(link.url).toBe(expectedSocialLinks[index].url);
-                expect(link.icon).toBe(expectedSocialLinks[index].icon);
+                expect(link.label).toBe(expectedSocialLinks[index]?.label);
+                expect(link.url).toBe(expectedSocialLinks[index]?.url);
+                expect(link.icon).toBe(expectedSocialLinks[index]?.icon);
             });
         });
     });

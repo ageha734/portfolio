@@ -11,18 +11,6 @@ export const PortfolioPreview = (props: PortfolioPreviewProps) => {
 
     const date = new Date(data.date);
 
-    const _renderImage = () => (
-        <div className="w-full">
-            <img
-                alt=""
-                className="w-full border transition-all hover:rotate-3 hover:scale-110"
-                height="auto"
-                src={Array.isArray(data.images) && data.images[0] ? data.images[0].url : ""}
-                width="auto"
-            />
-        </div>
-    );
-
     return (
         <Link className="work-preview text-color-copy" prefetch="intent" to={`/portfolio/${data.slug}`}>
             <h3 className="m-0 font-bold font-font-serif text-xl">{data.title}</h3>

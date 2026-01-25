@@ -137,13 +137,6 @@ export default function App() {
 
     const theme = (fetcher.formData?.get("theme") as string) || initialTheme;
 
-    function _toggleTheme(newTheme?: string) {
-        fetcher.submit(
-            { theme: newTheme || (theme === "dark" ? "light" : "dark") },
-            { action: "/api/set-theme", method: "post" },
-        );
-    }
-
     useIntro();
     usePageTracking();
 

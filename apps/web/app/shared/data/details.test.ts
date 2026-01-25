@@ -14,7 +14,7 @@ describe("details data", () => {
         });
 
         test("should have non-empty default description", () => {
-            expect(data.default.length).toBeGreaterThan(0);
+            expect(data.default?.length).toBeGreaterThan(0);
         });
 
         test("should have descriptions for common technologies", () => {

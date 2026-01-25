@@ -34,6 +34,7 @@ describe("GetPortfolioBySlugUseCase", () => {
             findAll: vi.fn(),
             findBySlug: vi.fn().mockResolvedValue(null),
             findById: vi.fn(),
+            addImage: vi.fn(),
         };
 
         const useCase = new GetPortfolioBySlugUseCase(mockRepository);

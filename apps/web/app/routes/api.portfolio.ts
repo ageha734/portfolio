@@ -20,11 +20,14 @@ export interface Portfolio {
 export type LoaderData = Portfolio[];
 
 export const loader: LoaderFunction = async (args) => {
-    const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
+    const apiUrl =
+        args.context.cloudflare && typeof args.context.cloudflare === "object" && "env" in args.context.cloudflare
+            ? (args.context.cloudflare.env as { VITE_API_URL?: string })?.VITE_API_URL
+            : undefined;
     const api = createApiClient(apiUrl);
 
     const response = await api.portfolios.listPortfolios();
-    const portfolios = response.data as Portfolio[];
+    const portfolios = Array.isArray(response.data) ? response.data : response.data.data;
 
     if (!portfolios.length) {
         throw new Response("Portfolio items not found", { status: 404 });

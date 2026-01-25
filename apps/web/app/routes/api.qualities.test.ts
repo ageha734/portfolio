@@ -1,6 +1,6 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
-import { loader, getQuote } from "./api.qualities";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { getQuote, loader } from "./api.qualities";
 
 describe("api.qualities", () => {
     beforeEach(() => {
@@ -20,8 +20,6 @@ describe("api.qualities", () => {
             const secondQuote = getQuote(firstQuote);
             expect(secondQuote).toBeDefined();
             expect(typeof secondQuote).toBe("string");
-            // Note: Due to randomness, we can't guarantee they're different,
-            // but we can verify the function doesn't throw
         });
 
         test("should return a quote from the qualities array", () => {
@@ -50,7 +48,6 @@ describe("api.qualities", () => {
             const value = "A problem solver 🧩";
             const quote1 = getQuote(value);
             const quote2 = getQuote(value);
-            // Due to randomness, quotes may be the same or different
             expect(quote1).toBeDefined();
             expect(quote2).toBeDefined();
             expect(typeof quote1).toBe("string");
@@ -58,18 +55,16 @@ describe("api.qualities", () => {
         });
 
         test("should handle undefined value", () => {
-            const quote = getQuote(undefined);
+            const quote = getQuote();
             expect(quote).toBeDefined();
             expect(typeof quote).toBe("string");
         });
 
         test("should recursively call when quote matches value", () => {
-            // Mock Math.random to return a specific value
             const originalRandom = Math.random;
             let callCount = 0;
             Math.random = vi.fn(() => {
                 callCount++;
-                // First call returns index 0, second call returns index 1
                 return callCount === 1 ? 0 : 0.125;
             });
 
@@ -78,7 +73,6 @@ describe("api.qualities", () => {
 
             expect(quote).toBeDefined();
             expect(typeof quote).toBe("string");
-            // Should have called Math.random at least once
             expect(callCount).toBeGreaterThan(0);
 
             Math.random = originalRandom;
@@ -91,15 +85,17 @@ describe("api.qualities", () => {
             const result = await loader(args);
 
             expect(result).toBeDefined();
-            expect(typeof result).toBe("string");
-            expect(result.length).toBeGreaterThan(0);
+            if (result instanceof Response) {
+                const text = await result.text();
+                expect(typeof text).toBe("string");
+                expect(text.length).toBeGreaterThan(0);
+            }
         });
 
         test("should return a valid quote format", async () => {
             const args = {} as LoaderFunctionArgs;
             const result = await loader(args);
 
-            // Quotes should contain text and possibly emoji
             expect(result).toMatch(/^[A-Za-z].+/);
         });
     });

@@ -1,5 +1,7 @@
 /// <reference path="./env.d.ts" />
+/// <reference types="./env.d.ts" />
 import { resolve } from "node:path";
+// @ts-expect-error - No type definitions available
 import rehypePrism from "@mapbox/rehype-prism";
 import mdx from "@mdx-js/rollup";
 import { createViteConfig } from "@portfolio/vite-config";

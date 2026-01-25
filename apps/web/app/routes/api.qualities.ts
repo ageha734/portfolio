@@ -17,9 +17,9 @@ export const loader: LoaderFunction = async (_args) => {
 
 export const getQuote = (value?: string): string => {
     const random = Math.floor(Math.random() * qualities.length);
-    const quote = qualities[random];
+    const quote = qualities[random]!;
 
     if (quote === value) return getQuote(value);
 
-    return qualities[random];
+    return quote;
 };

@@ -10,7 +10,7 @@ export const getDefault = () => {
      * @summary Get all portfolios
      */
     const portfoliosListPortfolios = (params, options) => {
-        return customInstance({ url: `/api/portfolios`, method: "GET", params }, options);
+        return customInstance({ url: "/api/portfolios", method: "GET", params }, options);
     };
     /**
      * @summary Get a post by slug
@@ -22,7 +22,12 @@ export const getDefault = () => {
      * @summary Get all posts
      */
     const postsListPosts = (params, options) => {
-        return customInstance({ url: `/api/posts`, method: "GET", params }, options);
+        return customInstance({ url: "/api/posts", method: "GET", params }, options);
     };
-    return {};
+    return {
+        portfoliosGetPortfolioBySlug,
+        portfoliosListPortfolios,
+        postsGetPostBySlug,
+        postsListPosts,
+    };
 };

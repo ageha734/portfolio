@@ -64,7 +64,6 @@ describe("useWebShareAPI", () => {
     test("hook should return stable references", () => {
         const { result, rerender } = renderHook(() => useWebShareAPI());
 
-        const _firstOnShare = result.current.onShare;
         const firstIsAvailable = result.current.isAvailable;
 
         rerender();

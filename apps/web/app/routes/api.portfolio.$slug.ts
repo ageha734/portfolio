@@ -35,7 +35,10 @@ export const loader: LoaderFunction = async (args) => {
     }
 
     const validatedSlug = slugResult.data;
-    const apiUrl = (args.context.cloudflare?.env as { VITE_API_URL?: string })?.VITE_API_URL;
+    const apiUrl =
+        args.context.cloudflare && typeof args.context.cloudflare === "object" && "env" in args.context.cloudflare
+            ? (args.context.cloudflare.env as { VITE_API_URL?: string })?.VITE_API_URL
+            : undefined;
     const api = createApiClient(apiUrl);
 
     try {
