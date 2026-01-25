@@ -10,7 +10,9 @@
   "main": "./src/index.ts",
   "scripts": {
     "build": "bun run with-env wrangler deploy --dry-run",
-    "clean": "git clean -xdf .cache .turbo node_modules dist .wrangler",
+    "clean:build": "git clean -xdf .wrangler",
+    "clean:cache": "git clean -xdf .cache .turbo",
+    "clean:pkg": "git clean -xdf node_modules dist",
     "coverage": "vitest run --coverage",
     "deploy": "wrangler deploy --name portfolio-infra-api",
     "dev": "bun run with-env wrangler dev",

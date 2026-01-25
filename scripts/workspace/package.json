@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "bun build cmd/main.ts --outdir dist/cmd --target bun --format esm --external bun --minify && chmod +x dist/cmd/main.js",
-    "clean": "git clean -xdf .cache .turbo node_modules dist",
+    "clean:cache": "git clean -xdf .cache .turbo",
+    "clean:pkg": "git clean -xdf node_modules dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",

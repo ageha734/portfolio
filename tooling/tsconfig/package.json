@@ -5,13 +5,6 @@
   "files": [
     "*.json"
   ],
-  "scripts": {
-    "clean": "git clean -xdf .cache .turbo node_modules dist",
-    "fmt": "biome format --write .",
-    "fmt:check": "biome format .",
-    "lint": "biome lint .",
-    "lint:fix": "biome lint --write ."
-  },
   "peerDependencies": {
     "typescript": "5.9.3"
   }

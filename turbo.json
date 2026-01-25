@@ -1,17 +1,10 @@
 {
     "$schema": "https://turbo.build/schema.json",
-    "globalDependencies": [
-        ".env"
-    ],
+    "globalDependencies": [".env"],
     "tasks": {
         "build": {
-            "dependsOn": [
-                "^build"
-            ],
-            "outputs": [
-                "build/**",
-                "dist/**"
-            ]
+            "dependsOn": ["^build"],
+            "outputs": ["build/**", "dist/**"]
         },
         "@portfolio/cms#build": {
             "outputs": []
@@ -20,42 +13,33 @@
             "cache": true
         },
         "clean": {
+            "dependsOn": ["clean:build", "clean:cache", "clean:pkg"]
+        },
+        "clean:build": {
+            "cache": false
+        },
+        "clean:cache": {
+            "cache": false
+        },
+        "clean:pkg": {
             "cache": false
         },
         "coverage": {
-            "dependsOn": [
-                "^build"
-            ],
-            "env": [
-                "NODE_ENV",
-                "CI"
-            ],
-            "outputs": [
-                ".coverage/**"
-            ]
+            "dependsOn": ["^build"],
+            "env": ["NODE_ENV", "CI"],
+            "outputs": [".coverage/**"]
         },
         "deploy": {
-            "dependsOn": [
-                "^build"
-            ]
+            "dependsOn": ["^build"]
         },
         "dev": {
             "cache": false,
             "persistent": true
         },
         "e2e": {
-            "dependsOn": [
-                "^build",
-                "^e2e"
-            ],
-            "env": [
-                "NODE_ENV",
-                "CI"
-            ],
-            "outputs": [
-                ".results/**",
-                ".reports/**"
-            ]
+            "dependsOn": ["^build", "^e2e"],
+            "env": ["NODE_ENV", "CI"],
+            "outputs": [".results/**", ".reports/**"]
         },
         "fmt": {
             "cache": true
@@ -77,19 +61,11 @@
             "persistent": true
         },
         "test": {
-            "dependsOn": [
-                "^build"
-            ],
-            "env": [
-                "NODE_ENV",
-                "CI"
-            ]
+            "dependsOn": ["^build"],
+            "env": ["NODE_ENV", "CI"]
         },
         "typecheck": {
-            "dependsOn": [
-                "^build",
-                "^typecheck"
-            ]
+            "dependsOn": ["^build", "^typecheck"]
         }
     }
 }

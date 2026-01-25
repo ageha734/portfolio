@@ -8,7 +8,8 @@
     "./theme": "./src/theme.css"
   },
   "scripts": {
-    "clean": "git clean -xdf .cache .turbo node_modules",
+    "clean:cache": "git clean -xdf .cache .turbo",
+    "clean:pkg": "git clean -xdf node_modules dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",
