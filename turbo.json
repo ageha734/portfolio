@@ -13,6 +13,9 @@
                 "dist/**"
             ]
         },
+        "@portfolio/cms#build": {
+            "outputs": []
+        },
         "build:ui": {
             "cache": true
         },
