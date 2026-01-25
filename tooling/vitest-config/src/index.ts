@@ -67,7 +67,7 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
                     "**/*.spec.{ts,tsx}",
                     "**/*.config.{ts,js}",
                 ],
-                reporter: ["html", "lcov", "json-summary"],
+                reporter: ["lcov", "json-summary"],
                 reportsDirectory: coverageDir,
                 thresholds: {
                     lines: 80,
@@ -88,7 +88,7 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
                       "default",
                       [
                           "@portfolio/vitest-reporter",
-                          { outputDir: "../wiki/reports/test", projectName: options.projectName, coverageDir },
+                          { outputDir: "../apps/wiki/reports/test", projectName: options.projectName, coverageDir },
                       ],
                   ]
                 : ["default"],
