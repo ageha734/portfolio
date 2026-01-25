@@ -2,9 +2,9 @@
 
 import { cac } from "cac";
 import { runCheck } from "~/check";
-import { runStaged } from "~/staged";
-import { checkSecrets } from "~/secrets";
 import { findRepoRoot, groupFilesByPackage, runPackageCommands } from "~/dispatch";
+import { checkSecrets } from "~/secrets";
+import { runStaged } from "~/staged";
 
 const cli = cac("check");
 
@@ -12,7 +12,12 @@ cli
     .command("staged", "ステージされたファイルをチェックします")
     .option("--files <files...>", "チェックするファイルのリスト")
     .action(async (options) => {
-        const files = options.files || [];
+        let files: string[] = [];
+        if (Array.isArray(options.files)) {
+            files = options.files;
+        } else if (options.files) {
+            files = [options.files];
+        }
         const success = await runStaged(files.length > 0 ? files : undefined);
         process.exit(success ? 0 : 1);
     });

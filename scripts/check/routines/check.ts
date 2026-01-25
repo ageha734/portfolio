@@ -261,14 +261,17 @@ async function runRootFilesCommand(
 
     if (isFormat) {
         if (isFix) {
-            await $`${biomePath} format --write ${rootFiles}`.cwd(rootDir);
+            // biome check --write はフォーマット、リント、import整理をすべて実行
+            // --only=formatter でフォーマットのみ、--organize-imports-enabled=true でimport整理も有効化
+            await $`${biomePath} check --write --only=formatter --organize-imports-enabled=true ${rootFiles}`.cwd(rootDir);
         } else {
-            await $`${biomePath} format ${rootFiles}`.cwd(rootDir);
+            await $`${biomePath} check --only=formatter --organize-imports-enabled=true ${rootFiles}`.cwd(rootDir);
         }
     } else if (isFix) {
-        await $`${biomePath} lint --write ${rootFiles}`.cwd(rootDir);
+        // biome check --write はフォーマット、リント、import整理をすべて実行
+        await $`${biomePath} check --write --only=linter --organize-imports-enabled=true ${rootFiles}`.cwd(rootDir);
     } else {
-        await $`${biomePath} lint ${rootFiles}`.cwd(rootDir);
+        await $`${biomePath} check --only=linter --organize-imports-enabled=true ${rootFiles}`.cwd(rootDir);
     }
 }
 

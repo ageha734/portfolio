@@ -1,30 +1,18 @@
 import { execSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { $ } from "bun";
 import pc from "picocolors";
-import { findRepoRoot } from "./dispatch";
+import { findNearestPackage, findRepoRoot } from "./dispatch";
 import { LoadingBar, logStep } from "./utils";
 
-function getWorkspaceDir(filePath: string): string | null {
-    const workspacePatterns = [
-        /^apps\/([^/]+)/,
-        /^packages\/([^/]+)/,
-        /^tooling\/([^/]+)/,
-        /^testing\/([^/]+)/,
-        /^scripts\/([^/]+)/,
-        /^generators\/([^/]+)/,
-        /^infra\/([^/]+)/,
-    ];
-
-    for (const pattern of workspacePatterns) {
-        const match = filePath.match(pattern);
-        if (match) {
-            return match[0];
-        }
+function getWorkspaceDir(filePath: string, rootDir: string): string | null {
+    const absolutePath = filePath.startsWith("/") ? filePath : resolve(rootDir, filePath);
+    const nearestPackage = findNearestPackage(absolutePath, rootDir);
+    if (!nearestPackage) {
+        return null;
     }
-
-    return null;
+    return nearestPackage.replace(`${rootDir}/`, "");
 }
 
 function filterFilenames(filenames: string[], rootDir: string): string[] {
@@ -67,7 +55,7 @@ function groupFilesByWorkspace(filteredFilenames: string[], rootDir: string): {
 
     for (const file of filteredFilenames) {
         const relativeFile = file.startsWith("/") ? file.replace(`${rootDir}/`, "") : file;
-        const workspaceDir = getWorkspaceDir(relativeFile);
+        const workspaceDir = getWorkspaceDir(relativeFile, rootDir);
         if (workspaceDir) {
             if (!workspaceGroups.has(workspaceDir)) {
                 workspaceGroups.set(workspaceDir, []);
@@ -79,6 +67,97 @@ function groupFilesByWorkspace(filteredFilenames: string[], rootDir: string): {
     }
 
     return { workspaceGroups, rootFiles };
+}
+
+function addWorkspaceCommands(
+    workspaceGroups: Map<string, string[]>,
+    rootDir: string,
+    commands: string[],
+): void {
+    for (const [workspaceDir] of workspaceGroups) {
+        commands.push(`cd ${join(rootDir, workspaceDir)} && bun run fmt:check && bun run lint`);
+    }
+}
+
+function addRootCommands(rootFiles: string[], rootDir: string, commands: string[]): void {
+    if (rootFiles.length === 0) {
+        return;
+    }
+    const rootWorkspaceFiles = rootFiles.filter(
+        (f) => f.endsWith(".ts") || f.endsWith(".tsx") || f.endsWith(".js") || f.endsWith(".jsx"),
+    );
+    if (rootWorkspaceFiles.length > 0) {
+        commands.push(`cd ${rootDir} && bunx turbo run fmt:check`, `cd ${rootDir} && bunx turbo run lint`);
+    }
+}
+
+function addTestCommands(
+    sourceFilesWithTests: string[],
+    rootDir: string,
+    commands: string[],
+): void {
+    for (const sourceFile of sourceFilesWithTests) {
+        const relativeSourceFile = sourceFile.startsWith("/")
+            ? sourceFile.replace(`${rootDir}/`, "")
+            : sourceFile;
+        const workspaceDir = getWorkspaceDir(relativeSourceFile, rootDir);
+        const testFile = relativeSourceFile.replace(/\.(ts|tsx)$/, ".test.$1");
+        if (workspaceDir) {
+            const workspacePath = join(rootDir, workspaceDir);
+            const workspaceRelativeTestFile = testFile.replace(`${workspaceDir}/`, "");
+            const workspaceRelativeSourceFile = relativeSourceFile.replace(`${workspaceDir}/`, "");
+            commands.push(
+                `cd ${workspacePath} && bun run test -- ${workspaceRelativeTestFile}`,
+                `cd ${workspacePath} && bun run coverage -- ${workspaceRelativeSourceFile}`,
+            );
+        }
+    }
+}
+
+function processTypeScriptFiles(filenames: string[], rootDir: string): string[] {
+    const filteredFilenames = filterFilenames(filenames, rootDir);
+    const sourceFiles = getSourceFiles(filteredFilenames);
+    const sourceFilesWithTests = getSourceFilesWithTests(sourceFiles, rootDir);
+    const hasTsFiles = filteredFilenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
+
+    const { workspaceGroups, rootFiles } = groupFilesByWorkspace(filteredFilenames, rootDir);
+
+    const commands: string[] = [];
+
+    addWorkspaceCommands(workspaceGroups, rootDir, commands);
+    addRootCommands(rootFiles, rootDir, commands);
+    addTestCommands(sourceFilesWithTests, rootDir, commands);
+
+    if (hasTsFiles) {
+        commands.push(`cd ${rootDir} && bunx turbo run typecheck`);
+    }
+
+    return commands;
+}
+
+function matchesPattern(file: string, pattern: string): boolean {
+    if (pattern === "*.{ts,tsx}") {
+        return file.endsWith(".ts") || file.endsWith(".tsx");
+    }
+    if (pattern === "*.config.js") {
+        return file.endsWith(".config.js");
+    }
+    if (pattern === "*.md") {
+        return file.endsWith(".md");
+    }
+    if (pattern === "*.sh") {
+        return file.endsWith(".sh");
+    }
+    if (pattern === "*.tsp") {
+        return file.endsWith(".tsp");
+    }
+    if (pattern === "**/*.test.{ts,tsx}") {
+        return file.includes(".test.ts") || file.includes(".test.tsx");
+    }
+    if (pattern.startsWith(".github/") && pattern.endsWith("/*.yml")) {
+        return file.startsWith(".github/") && file.endsWith(".yml");
+    }
+    return false;
 }
 
 
@@ -97,112 +176,26 @@ function getStagedFiles(): string[] {
 
 async function runCommand(command: string): Promise<boolean> {
     try {
-        await $`${command}`.quiet();
+        await $`sh -c ${command}`;
         return true;
     } catch {
         return false;
     }
 }
 
-async function processFiles(filenames: string[], rootDir: string): Promise<string[]> {
+function processFiles(filenames: string[], rootDir: string): string[] {
+    if (!Array.isArray(filenames) || filenames.length === 0) {
+        return [];
+    }
+
     const config: Record<string, (files: string[]) => string[]> = {
         ".github/**/*.yml": (filenames) =>
             filenames.flatMap((f) => [
                 `bun run fmt:actions:check -- ${f}`,
                 `bun run lint:actions:check -- ${f}`,
             ]),
-        "*.{ts,tsx}": (filenames) => {
-            const filteredFilenames = filterFilenames(filenames, rootDir);
-            const sourceFiles = getSourceFiles(filteredFilenames);
-            const sourceFilesWithTests = getSourceFilesWithTests(sourceFiles, rootDir);
-            const hasTsFiles = filteredFilenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
-
-            const { workspaceGroups, rootFiles } = groupFilesByWorkspace(filteredFilenames, rootDir);
-
-            const commands: string[] = [];
-
-            for (const [workspaceDir] of workspaceGroups) {
-                commands.push(`cd ${join(rootDir, workspaceDir)} && bun run fmt:check && bun run lint`);
-            }
-
-            if (rootFiles.length > 0) {
-                const rootWorkspaceFiles = rootFiles.filter(
-                    (f) => f.endsWith(".ts") || f.endsWith(".tsx") || f.endsWith(".js") || f.endsWith(".jsx"),
-                );
-                if (rootWorkspaceFiles.length > 0) {
-                    commands.push("turbo run fmt:check", "turbo run lint");
-                }
-            }
-
-            for (const sourceFile of sourceFilesWithTests) {
-                const relativeSourceFile = sourceFile.startsWith("/")
-                    ? sourceFile.replace(`${rootDir}/`, "")
-                    : sourceFile;
-                const workspaceDir = getWorkspaceDir(relativeSourceFile);
-                const testFile = relativeSourceFile.replace(/\.(ts|tsx)$/, ".test.$1");
-                if (workspaceDir) {
-                    const workspacePath = join(rootDir, workspaceDir);
-                    const workspaceRelativeTestFile = testFile.replace(`${workspaceDir}/`, "");
-                    const workspaceRelativeSourceFile = relativeSourceFile.replace(`${workspaceDir}/`, "");
-                    commands.push(
-                        `cd ${workspacePath} && bun run test -- ${workspaceRelativeTestFile}`,
-                        `cd ${workspacePath} && bun run coverage -- ${workspaceRelativeSourceFile}`,
-                    );
-                }
-            }
-
-            if (hasTsFiles) {
-                commands.push("turbo run typecheck");
-            }
-
-            return commands;
-        },
-        "*.config.js": (filenames) => {
-            const filteredFilenames = filterFilenames(filenames, rootDir);
-            const sourceFiles = getSourceFiles(filteredFilenames);
-            const sourceFilesWithTests = getSourceFilesWithTests(sourceFiles, rootDir);
-            const hasTsFiles = filteredFilenames.some((f) => f.endsWith(".ts") || f.endsWith(".tsx"));
-
-            const { workspaceGroups, rootFiles } = groupFilesByWorkspace(filteredFilenames, rootDir);
-
-            const commands: string[] = [];
-
-            for (const [workspaceDir] of workspaceGroups) {
-                commands.push(`cd ${join(rootDir, workspaceDir)} && bun run fmt:check && bun run lint`);
-            }
-
-            if (rootFiles.length > 0) {
-                const rootWorkspaceFiles = rootFiles.filter(
-                    (f) => f.endsWith(".ts") || f.endsWith(".tsx") || f.endsWith(".js") || f.endsWith(".jsx"),
-                );
-                if (rootWorkspaceFiles.length > 0) {
-                    commands.push("turbo run fmt:check", "turbo run lint");
-                }
-            }
-
-            for (const sourceFile of sourceFilesWithTests) {
-                const relativeSourceFile = sourceFile.startsWith("/")
-                    ? sourceFile.replace(`${rootDir}/`, "")
-                    : sourceFile;
-                const workspaceDir = getWorkspaceDir(relativeSourceFile);
-                const testFile = relativeSourceFile.replace(/\.(ts|tsx)$/, ".test.$1");
-                if (workspaceDir) {
-                    const workspacePath = join(rootDir, workspaceDir);
-                    const workspaceRelativeTestFile = testFile.replace(`${workspaceDir}/`, "");
-                    const workspaceRelativeSourceFile = relativeSourceFile.replace(`${workspaceDir}/`, "");
-                    commands.push(
-                        `cd ${workspacePath} && bun run test -- ${workspaceRelativeTestFile}`,
-                        `cd ${workspacePath} && bun run coverage -- ${workspaceRelativeSourceFile}`,
-                    );
-                }
-            }
-
-            if (hasTsFiles) {
-                commands.push("turbo run typecheck");
-            }
-
-            return commands;
-        },
+        "*.{ts,tsx}": (filenames) => processTypeScriptFiles(filenames, rootDir),
+        "*.config.js": (filenames) => processTypeScriptFiles(filenames, rootDir),
         "*.md": (filenames) => {
             const wikiFiles = filenames.filter((f) => f.includes("apps/wiki/"));
             const otherFiles = filenames.filter((f) => !f.includes("apps/wiki/"));
@@ -245,7 +238,7 @@ async function processFiles(filenames: string[], rootDir: string): Promise<strin
             const commands: string[] = [];
             for (const file of filenames) {
                 const relativeFile = file.startsWith("/") ? file.replace(`${rootDir}/`, "") : file;
-                const workspaceDir = getWorkspaceDir(relativeFile);
+                const workspaceDir = getWorkspaceDir(relativeFile, rootDir);
                 if (workspaceDir) {
                     const workspacePath = join(rootDir, workspaceDir);
                     const workspaceRelativeFile = relativeFile.replace(`${workspaceDir}/`, "");
@@ -265,30 +258,7 @@ async function processFiles(filenames: string[], rootDir: string): Promise<strin
     const allCommands: string[] = [];
 
     for (const [pattern, handler] of Object.entries(config)) {
-        const matchedFiles = filenames.filter((f) => {
-            if (pattern === "*.{ts,tsx}") {
-                return f.endsWith(".ts") || f.endsWith(".tsx");
-            }
-            if (pattern === "*.config.js") {
-                return f.endsWith(".config.js");
-            }
-            if (pattern === "*.md") {
-                return f.endsWith(".md");
-            }
-            if (pattern === "*.sh") {
-                return f.endsWith(".sh");
-            }
-            if (pattern === "*.tsp") {
-                return f.endsWith(".tsp");
-            }
-            if (pattern === "**/*.test.{ts,tsx}") {
-                return f.includes(".test.ts") || f.includes(".test.tsx");
-            }
-            if (pattern.startsWith(".github/") && pattern.endsWith("/*.yml")) {
-                return f.startsWith(".github/") && f.endsWith(".yml");
-            }
-            return false;
-        });
+        const matchedFiles = filenames.filter((f) => matchesPattern(f, pattern));
 
         if (matchedFiles.length > 0) {
             const commands = handler(matchedFiles);
@@ -308,7 +278,7 @@ export async function runStaged(files?: string[]): Promise<boolean> {
         return true;
     }
 
-    const commands = await processFiles(filesToProcess, rootDir);
+    const commands = processFiles(filesToProcess, rootDir);
 
     if (commands.length === 0) {
         logStep("ℹ️", "No commands to execute", "info");
