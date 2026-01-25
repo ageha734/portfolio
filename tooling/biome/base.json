@@ -17,9 +17,6 @@
             }
         }
     },
-    "organizeImports": {
-        "enabled": true
-    },
     "css": {
         "formatter": {
             "enabled": false
