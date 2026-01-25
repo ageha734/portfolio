@@ -1,15 +1,13 @@
 import { describe, expect, test, beforeEach, afterEach } from "vitest";
-import { createRedisClient } from "./redis";
+import { createRedisClient, resetRedisClient } from "./redis";
 describe("createRedisClient", () => {
     let client = null;
     beforeEach(() => {
         client = null;
     });
     afterEach(async () => {
-        if (client) {
-            await client.quit();
-            client = null;
-        }
+        resetRedisClient();
+        client = null;
     });
     test("should throw error when REDIS_URL is not provided", () => {
         const originalEnv = process.env.REDIS_URL;

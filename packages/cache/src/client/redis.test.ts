@@ -1,5 +1,5 @@
 import { describe, expect, test, beforeEach, afterEach } from "vitest";
-import { createRedisClient } from "./redis";
+import { createRedisClient, resetRedisClient } from "./redis";
 import type { Redis } from "ioredis";
 
 describe("createRedisClient", () => {
@@ -10,10 +10,8 @@ describe("createRedisClient", () => {
 	});
 
 	afterEach(async () => {
-		if (client) {
-			await client.quit();
-			client = null;
-		}
+		resetRedisClient();
+		client = null;
 	});
 
 	test("should throw error when REDIS_URL is not provided", () => {

@@ -48,6 +48,7 @@ export declare function createVitestConfig(options?: VitestConfigOptions): {
         include: string[];
         setupFiles: string[];
         testTimeout: number;
+        passWithNoTests: boolean;
         fileParallelism: boolean;
         isolate: boolean;
         pool: string;

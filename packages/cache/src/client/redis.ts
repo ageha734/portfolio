@@ -55,3 +55,10 @@ export function createRedisClient(
 }
 
 export type RedisClientType = ReturnType<typeof createRedisClient>;
+
+export function resetRedisClient(): void {
+	if (redisInstance) {
+		redisInstance.disconnect();
+		redisInstance = null;
+	}
+}

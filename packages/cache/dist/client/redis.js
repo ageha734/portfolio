@@ -29,3 +29,9 @@ export function createRedisClient(options = {}) {
     });
     return redisInstance;
 }
+export function resetRedisClient() {
+    if (redisInstance) {
+        redisInstance.disconnect();
+        redisInstance = null;
+    }
+}

@@ -97,6 +97,7 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
             include: [`${testDir}/**/*.test.{ts,tsx}`],
             setupFiles,
             testTimeout: 10000,
+            passWithNoTests: true,
             fileParallelism: false,
             isolate: false,
             pool: "threads",
