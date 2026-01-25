@@ -1,0 +1,28 @@
+---
+title: Test Reports
+description: E2E テストレポートの一覧
+---
+
+import { ReportList } from "../../../components/reports/ReportList";
+import { getAllProjects, getProjectReports } from "../../../lib/reports/parser";
+
+export const projects = getAllProjects();
+
+# Test Reports
+
+このページでは、各プロジェクトのE2Eテストレポートを確認できます。
+
+## プロジェクト一覧
+
+{projects.length === 0 ? (
+  <p>レポートがまだありません。</p>
+) : (
+  projects.map((project) => {
+    const reports = getProjectReports(project);
+    return (
+      <div key={project}>
+        <ReportList projectName={project} reports={reports} />
+      </div>
+    );
+  })
+)}

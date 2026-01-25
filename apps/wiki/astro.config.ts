@@ -108,6 +108,15 @@ export default defineConfig({
                         },
                     ],
                 },
+                {
+                    label: "Reports",
+                    items: [
+                        {
+                            label: "Test Reports",
+                            link: "/reports/",
+                        },
+                    ],
+                },
             ],
             customCss: ["./src/styles/custom.css"],
         }),
