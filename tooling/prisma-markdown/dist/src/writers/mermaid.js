@@ -1,5 +1,5 @@
-import { field } from "~/utils/field";
-import { prisma } from "~/utils/prisma";
+import { field } from "../utils/field.js";
+import { prisma } from "../utils/prisma.js";
 export var mermaid;
 (function (mermaid) {
     mermaid.write = (chapter) => [

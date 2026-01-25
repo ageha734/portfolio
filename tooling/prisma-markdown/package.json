@@ -31,6 +31,6 @@
     "typescript": "5.9.3"
   },
   "bin": {
-    "@portfolio/prisma-markdown": "./dist/cmd/main.js"
+    "prisma-markdown": "./dist/cmd/main.js"
   }
 }

@@ -1,4 +1,4 @@
-import { prisma } from "~/utils/prisma";
+import { prisma } from "../utils/prisma.js";
 export var description;
 (function (description_1) {
     description_1.table = (model) => {

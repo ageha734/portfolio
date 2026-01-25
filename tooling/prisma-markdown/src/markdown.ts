@@ -1,10 +1,10 @@
 import type { DMMF } from "@prisma/generator-helper";
-import type { Chapter } from "./chapter";
-import type { Config } from "./config";
-import { map } from "./utils/map";
-import { prisma } from "./utils/prisma";
-import { description } from "./writers/description";
-import { mermaid } from "./writers/mermaid";
+import type { Chapter } from "./chapter.js";
+import type { Config } from "./config.js";
+import { map } from "./utils/map.js";
+import { prisma } from "./utils/prisma.js";
+import { description } from "./writers/description.js";
+import { mermaid } from "./writers/mermaid.js";
 
 interface ChapterInternal {
     name: string;

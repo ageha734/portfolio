@@ -1,7 +1,7 @@
-import { map } from "./utils/map";
-import { prisma } from "./utils/prisma";
-import { description } from "./writers/description";
-import { mermaid } from "./writers/mermaid";
+import { map } from "./utils/map.js";
+import { prisma } from "./utils/prisma.js";
+import { description } from "./writers/description.js";
+import { mermaid } from "./writers/mermaid.js";
 export var PrismaMarkdown;
 (function (PrismaMarkdown) {
     PrismaMarkdown.write = (schema, configParam) => {

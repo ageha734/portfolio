@@ -1,5 +1,5 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { prisma } from "~/utils/prisma";
+import { prisma } from "../utils/prisma.js";
 
 export namespace description {
     export const table = (model: DMMF.Model): string => {

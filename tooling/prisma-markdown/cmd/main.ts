@@ -1,11 +1,15 @@
 #!/usr/bin/env node
+
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { generatorHandler } from "@prisma/generator-helper";
-import type { Config } from "~/config";
-import { PrismaMarkdown } from "~/markdown";
+import pkg from "@prisma/generator-helper";
+import type { Config } from "../src/config.js";
+import { PrismaMarkdown } from "../src/markdown.js";
 
-const { version } = await import("../package.json");
+const { generatorHandler } = pkg;
+
+const packageJson = await import("../package.json", { with: { type: "json" } });
+const { version } = packageJson.default;
 
 generatorHandler({
     onManifest: () => ({

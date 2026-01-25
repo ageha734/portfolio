@@ -1,5 +1,5 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { prisma } from "./prisma";
+import { prisma } from "./prisma.js";
 
 /**
  * supported function

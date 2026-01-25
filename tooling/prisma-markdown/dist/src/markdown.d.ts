@@ -1,6 +1,6 @@
 import type { DMMF } from "@prisma/generator-helper";
-import type { Chapter } from "./chapter";
-import type { Config } from "./config";
+import type { Chapter } from "./chapter.js";
+import type { Config } from "./config.js";
 export declare namespace PrismaMarkdown {
     const write: (schema: DMMF.Datamodel, configParam?: Config | undefined) => string;
     const writeChapter: (chapterParam: Chapter) => string;
