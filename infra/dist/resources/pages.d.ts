@@ -17,7 +17,7 @@ export interface PagesOutputs {
     domains: Record<string, cloudflare.PagesDomain>;
 }
 export declare function createPagesProjects(config: InfraConfig, projects: PagesProjectConfig[]): PagesOutputs;
-export declare function createPortfolioPagesProjects(config: InfraConfig, secrets: {
+export declare function createPortfolioPagesProjects(config: InfraConfig, _secrets: {
     databaseUrl: pulumi.Output<string>;
     redisUrl?: pulumi.Output<string>;
 }): PagesOutputs;

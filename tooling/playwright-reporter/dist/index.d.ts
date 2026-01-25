@@ -5,9 +5,9 @@ export interface MonorepoReporterOptions {
     htmlOutputDir?: string;
 }
 declare class MonorepoReporter implements Reporter {
-    private options;
+    private readonly options;
     private startTime;
-    private testResults;
+    private readonly testResults;
     private targetReportDir;
     private config;
     constructor(options?: MonorepoReporterOptions);

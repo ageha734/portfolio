@@ -41,6 +41,7 @@
         "@portfolio/ui": "packages/ui",
         "@portfolio/vite-config": "tooling/vite-config",
         "@portfolio/vitest-config": "tooling/vitest-config",
+        "@tailwindcss/vite": "4.1.18",
         "@tanstack/router-plugin": "1.147.3",
         "@tanstack/router-vite-plugin": "1.147.3",
         "@types/react": "18.3.12",
@@ -1575,7 +1576,7 @@
 
     "@poppinss/exception": ["@poppinss/exception@1.2.3", "", {}, "sha512-dCED+QRChTVatE9ibtoaxc+WkdzOSjYTKi/+uacHWIsfodVfpsueo3+DKpgU5Px8qXjgmXkSvhXvSCz3fnP9lw=="],
 
-    "@portfolio/admin": ["@portfolio/admin@workspace:apps/admin", { "dependencies": { "@portfolio/api": "packages/api", "@portfolio/cms": "apps/api", "@portfolio/log": "packages/log", "@portfolio/ui": "packages/ui", "@tanstack/react-router": "1.147.3", "axios": "1.7.9", "react": "18.3.1", "react-dom": "18.3.1" }, "devDependencies": { "@cloudflare/workers-types": "4.20260101.0", "@portfolio/biome-config": "tooling/biome-config", "@portfolio/playwright-config": "tooling/playwright-config", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/ui": "packages/ui", "@portfolio/vite-config": "tooling/vite-config", "@portfolio/vitest-config": "tooling/vitest-config", "@tanstack/router-plugin": "1.147.3", "@tanstack/router-vite-plugin": "1.147.3", "@types/react": "18.3.12", "@types/react-dom": "18.3.1", "@vitejs/plugin-react": "5.1.2", "dotenv": "17.2.3", "react-router": "7.11.0", "typescript": "5.9.3", "vite": "6.1.0", "vitest": "3.2.4", "wrangler": "4.54.0" }, "peerDependencies": { "wrangler": "4.54.0" } }],
+    "@portfolio/admin": ["@portfolio/admin@workspace:apps/admin", { "dependencies": { "@portfolio/api": "packages/api", "@portfolio/cms": "apps/api", "@portfolio/log": "packages/log", "@portfolio/ui": "packages/ui", "@tanstack/react-router": "1.147.3", "axios": "1.7.9", "react": "18.3.1", "react-dom": "18.3.1" }, "devDependencies": { "@cloudflare/workers-types": "4.20260101.0", "@portfolio/biome-config": "tooling/biome-config", "@portfolio/playwright-config": "tooling/playwright-config", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/ui": "packages/ui", "@portfolio/vite-config": "tooling/vite-config", "@portfolio/vitest-config": "tooling/vitest-config", "@tailwindcss/vite": "4.1.18", "@tanstack/router-plugin": "1.147.3", "@tanstack/router-vite-plugin": "1.147.3", "@types/react": "18.3.12", "@types/react-dom": "18.3.1", "@vitejs/plugin-react": "5.1.2", "dotenv": "17.2.3", "react-router": "7.11.0", "typescript": "5.9.3", "vite": "6.1.0", "vitest": "3.2.4", "wrangler": "4.54.0" }, "peerDependencies": { "wrangler": "4.54.0" } }],
 
     "@portfolio/api": ["@portfolio/api@workspace:packages/api", { "dependencies": { "axios": "1.7.9" }, "devDependencies": { "@portfolio/biome-config": "tooling/biome-config", "@portfolio/tsconfig": "tooling/tsconfig", "@portfolio/vitest-config": "tooling/vitest-config", "@redocly/cli": "1.20.0", "@typespec/compiler": "1.7.0", "@typespec/http": "1.7.0", "@typespec/openapi3": "1.7.0", "orval": "7.17.2", "redoc-cli": "0.13.21", "typescript": "5.9.3", "vitest": "3.2.4" } }],
 

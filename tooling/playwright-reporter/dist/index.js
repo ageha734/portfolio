@@ -14,7 +14,7 @@ class MonorepoReporter {
         this.startTime = Date.now();
         this.config = config;
         const baseOutputDir = this.options.outputDir || "./.reports/playwright";
-        const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+        const timestamp = new Date().toISOString().replaceAll(/[:.]/g, "-");
         const commitSha = this.getCommitSha().substring(0, 8);
         const runDir = join(baseOutputDir, `${timestamp}-${commitSha}`);
         this.targetReportDir = resolve(runDir);

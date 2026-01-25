@@ -51,7 +51,7 @@ export function createPagesProjects(config, projects) {
         domains: createdDomains,
     };
 }
-export function createPortfolioPagesProjects(config, secrets) {
+export function createPortfolioPagesProjects(config, _secrets) {
     const projectName = getProjectName();
     const projects = [
         {

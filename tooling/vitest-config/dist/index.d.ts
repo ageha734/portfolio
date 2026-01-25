@@ -30,6 +30,13 @@ export declare function createVitestConfig(options?: VitestConfigOptions): {
                 branches: number;
                 statements: number;
             };
+            poolOptions: {
+                threads: {
+                    maxThreads: number;
+                    minThreads: number;
+                };
+            };
+            isolate: boolean;
         };
         reporters: (string | (string | {
             outputDir: string;

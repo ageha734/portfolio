@@ -1,5 +1,12 @@
+import os from "node:os";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
+
+const cpuCount = os.cpus().length;
+const totalMem = os.totalmem() / 1024 ** 3;
+
+const isCI = !!process.env.CI;
+const safeConcurrency = isCI || totalMem <= 8 ? 2 : Math.max(1, Math.floor(cpuCount / 2));
 
 export interface VitestConfigOptions {
     root?: string;
@@ -26,8 +33,7 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
     } = options;
 
     const environment = testOverrides.environment ?? "jsdom";
-    const shouldIncludeReact =
-        explicitIncludeReact ?? (environment !== "node" && environment !== "miniflare");
+    const shouldIncludeReact = explicitIncludeReact ?? (environment !== "node" && environment !== "miniflare");
 
     const plugins = [];
     if (shouldIncludeReact) {
@@ -69,6 +75,13 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
                     branches: 80,
                     statements: 80,
                 },
+                poolOptions: {
+                    threads: {
+                        maxThreads: safeConcurrency,
+                        minThreads: 1,
+                    },
+                },
+                isolate: totalMem > 16,
             },
             reporters: options.projectName
                 ? [

@@ -2,7 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as grafana from "@pulumiverse/grafana";
 import * as sentry from "@pulumiverse/sentry";
 import { getProjectName } from "../config.js";
-export function createGrafanaResources(config, stackConfig, dashboards = []) {
+export function createGrafanaResources(_config, _stackConfig, dashboards = []) {
     const createdDashboards = {};
     const createdFolders = {};
     const projectName = getProjectName();

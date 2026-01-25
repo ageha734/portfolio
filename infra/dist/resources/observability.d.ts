@@ -29,7 +29,7 @@ export interface GrafanaOutputs {
     dashboards: Record<string, grafana.oss.Dashboard>;
     folders: Record<string, grafana.oss.Folder>;
 }
-export declare function createGrafanaResources(config: InfraConfig, stackConfig: GrafanaStackConfig, dashboards?: GrafanaDashboardConfig[]): GrafanaOutputs;
+export declare function createGrafanaResources(_config: InfraConfig, _stackConfig: GrafanaStackConfig, dashboards?: GrafanaDashboardConfig[]): GrafanaOutputs;
 export declare function createPortfolioGrafanaResources(config: InfraConfig): GrafanaOutputs;
 export interface SentryOutputs {
     team: sentry.SentryTeam;
