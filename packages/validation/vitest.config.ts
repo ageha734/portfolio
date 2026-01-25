@@ -1,27 +1,7 @@
-import { defineConfig } from "vitest/config";
+import { createVitestConfig } from "@portfolio/vitest-config";
 
-export default defineConfig({
+export default createVitestConfig({
     test: {
-        globals: true,
         environment: "node",
-        include: ["./**/*.test.{ts,tsx}"],
-        coverage: {
-            exclude: [
-                ".cache/**",
-                "node_modules/**",
-                "**/*.test.{ts,tsx}",
-                "**/*.spec.{ts,tsx}",
-                "**/*.config.{ts,js}",
-            ],
-            reporter: ["html", "lcov"],
-            reportsDirectory: "./coverage",
-            thresholds: {
-                lines: 80,
-                functions: 80,
-                branches: 80,
-                statements: 80,
-            },
-        },
-        testTimeout: 10000,
     },
 });
