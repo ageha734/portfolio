@@ -8,6 +8,19 @@ export default defineConfig(
     mergeConfig(
         createVitestConfig({
             setupFiles: ["./vitest.setup.ts"],
+            test: {
+                coverage: {
+                    include: ["src/**/*.ts", "src/**/*.tsx"],
+                    exclude: [
+                        "dist/**",
+                        "src/index.ts",
+                        "**/*.test.ts",
+                        "**/*.test.tsx",
+                        "**/*.d.ts",
+                        "**/*.stories.tsx",
+                    ],
+                },
+            },
         }),
         {
             resolve: {
