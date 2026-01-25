@@ -1,18 +1,43 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getDopplerSecrets, getConfig } from "./config";
+import { getDopplerSecrets, getConfig } from "./config.js";
 import {
 	TIDB_ALLOWED_REGIONS,
 	TIDB_SERVERLESS_RECOMMENDATIONS,
 	createPortfolioTiDBConfig,
-} from "./resources/databases";
-import { createPortfolioRedisConfig } from "./resources/cache";
-import { createPortfolioDnsRecords } from "./resources/dns";
-import { createObservability } from "./resources/observability";
-import { createPortfolioPagesProjects } from "./resources/pages";
-import { getCloudflareEnvVars } from "./resources/secrets";
-import { createPortfolioApiWorker } from "./resources/workers";
+} from "./resources/databases.js";
+import { createPortfolioRedisConfig } from "./resources/cache.js";
+import { createPortfolioDnsRecords } from "./resources/dns.js";
+import { createObservability } from "./resources/observability.js";
+import { createPortfolioPagesProjects } from "./resources/pages.js";
+import {
+	getCloudflareEnvVars,
+	createDopplerProject,
+} from "./resources/secrets.js";
+import { createPortfolioApiWorker } from "./resources/workers.js";
 
+const pulumiConfig = new pulumi.Config();
 const config = getConfig();
+
+// Dopplerプロジェクトと環境の作成（オプション）
+// 設定で `createDopplerProject: true` を設定すると、プロジェクトと環境が作成されます
+const shouldCreateDopplerProject = pulumiConfig.getBoolean("createDopplerProject") ?? false;
+
+let dopplerProjectResources: ReturnType<typeof createDopplerProject> | undefined;
+if (shouldCreateDopplerProject) {
+	dopplerProjectResources = createDopplerProject("portfolio", "Portfolio infrastructure project");
+}
+
+export const dopplerProjectId = dopplerProjectResources?.project.id;
+export const dopplerEnvironmentIds = dopplerProjectResources
+	? pulumi.output(
+			Object.fromEntries(
+				Object.entries(dopplerProjectResources.environments).map(([key, env]) => [
+					key,
+					env.id,
+				]),
+			),
+		)
+	: undefined;
 
 const dopplerSecrets = getDopplerSecrets();
 

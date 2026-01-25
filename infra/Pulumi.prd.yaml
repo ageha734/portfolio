@@ -2,5 +2,5 @@ config:
   portfolio-infra:environment: prd
   portfolio-infra:domain: ageha734.jp
   portfolio-infra:slug: portfolio
-  doppler:project: portfolio
-  doppler:config: prd
+  portfolio-infra:dopplerProject: portfolio
+  portfolio-infra:dopplerConfig: prd

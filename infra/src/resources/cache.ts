@@ -1,7 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as rediscloud from "@rediscloud/pulumi-rediscloud";
-import { getProjectName } from "../config";
-import type { SecretsOutputs } from "./secrets";
+import { getProjectName } from "../config.js";
+import type { SecretsOutputs } from "./secrets.js";
 
 export interface RedisOutputs {
 	subscription: rediscloud.Subscription;
@@ -30,6 +30,13 @@ export function createPortfolioRedisConfig(
 		},
 		paymentMethod: "credit-card",
 		memoryStorage: "ram",
+		creationPlan: {
+			memoryLimitInGb: 0.03,
+			quantity: 1,
+			replication: false,
+			throughputMeasurementBy: "operations-per-second",
+			throughputMeasurementValue: 1000,
+		},
 	});
 
 	const database = new rediscloud.SubscriptionDatabase(`${projectName}-redis-db`, {

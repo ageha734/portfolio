@@ -1,7 +1,7 @@
 import * as cloudflare from "@pulumi/cloudflare";
 import * as pulumi from "@pulumi/pulumi";
-import type { InfraConfig } from "../config";
-import { getProjectName } from "../config";
+import type { InfraConfig } from "../config.js";
+import { getProjectName } from "../config.js";
 
 export interface DnsRecordConfig {
 	name: string;

@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
-import { getProjectName } from "../config";
-import type { SecretsOutputs } from "./secrets";
+import { getProjectName } from "../config.js";
+import type { SecretsOutputs } from "./secrets.js";
 
 export const TIDB_ALLOWED_REGIONS = ["ap-northeast-1"] as const;
 

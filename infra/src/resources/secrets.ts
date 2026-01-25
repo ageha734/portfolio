@@ -133,3 +133,47 @@ export const DOPPLER_PROJECT_STRUCTURE = {
 		{ name: "GOOGLE_CLIENT_SECRET", description: "Google OAuth クライアントシークレット" },
 	],
 };
+
+export interface DopplerProjectOutputs {
+	project: doppler.Project;
+	environments: Record<string, doppler.Environment>;
+}
+
+/**
+ * Dopplerプロジェクトと環境（rc, stg, prd）を作成する
+ * @param projectName プロジェクト名（デフォルト: "portfolio"）
+ * @param description プロジェクトの説明
+ * @returns Dopplerプロジェクトと環境のリソース
+ */
+export function createDopplerProject(
+	projectName: string = "portfolio",
+	description: string = "Portfolio infrastructure project",
+): DopplerProjectOutputs {
+	const project = new doppler.Project(`${projectName}-doppler-project`, {
+		name: projectName,
+		description,
+	});
+
+	const environments: Record<string, doppler.Environment> = {
+		rc: new doppler.Environment(`${projectName}-doppler-env-rc`, {
+			project: project.name,
+			slug: "rc",
+			name: "開発環境",
+		}),
+		stg: new doppler.Environment(`${projectName}-doppler-env-stg`, {
+			project: project.name,
+			slug: "stg",
+			name: "検証環境",
+		}),
+		prd: new doppler.Environment(`${projectName}-doppler-env-prd`, {
+			project: project.name,
+			slug: "prd",
+			name: "本番環境",
+		}),
+	};
+
+	return {
+		project,
+		environments,
+	};
+}

@@ -2,7 +2,6 @@ import * as pulumi from "@pulumi/pulumi";
 import * as doppler from "@pulumiverse/doppler";
 
 const config = new pulumi.Config();
-const dopplerConfig = new pulumi.Config("doppler");
 
 export interface DopplerSettings {
 	project: string;
@@ -11,13 +10,13 @@ export interface DopplerSettings {
 
 export function getDopplerSettings(): DopplerSettings {
 	return {
-		project: dopplerConfig.require("project"),
-		config: dopplerConfig.require("config"),
+		project: config.require("dopplerProject"),
+		config: config.require("dopplerConfig"),
 	};
 }
 
 export function getProjectName(): string {
-	return dopplerConfig.require("project");
+	return config.require("dopplerProject");
 }
 
 export function getDopplerSecrets() {
@@ -135,7 +134,7 @@ export function getTags(resourceName: string): Record<string, string> {
 	const environment = config.require("environment");
 	return {
 		Environment: environment,
-		Project: dopplerConfig.require("project"),
+		Project: config.require("dopplerProject"),
 		ManagedBy: "pulumi",
 		Resource: resourceName,
 	};

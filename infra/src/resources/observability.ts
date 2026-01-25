@@ -1,8 +1,8 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as grafana from "@pulumiverse/grafana";
 import * as sentry from "@pulumiverse/sentry";
-import type { InfraConfig } from "../config";
-import { getProjectName } from "../config";
+import type { InfraConfig } from "../config.js";
+import { getProjectName } from "../config.js";
 
 export interface GrafanaStackConfig {
 	name: string;

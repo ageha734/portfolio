@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { getCompatibilityDate, getProjectName, generateWranglerToml } from "./wrangler";
-import { updateDeployScript } from "./packageScripts";
+import { getCompatibilityDate, getProjectName, generateWranglerToml } from "./wrangler.js";
+import { updateDeployScript } from "./packageScripts.js";
 
 interface AppConfig {
 	name: string;

@@ -2,8 +2,8 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import * as pulumi from "@pulumi/pulumi";
 import * as cloudflare from "@pulumi/cloudflare";
-import type { InfraConfig } from "../config";
-import { getProjectName } from "../config";
+import type { InfraConfig } from "../config.js";
+import { getProjectName } from "../config.js";
 
 export interface WorkerConfig {
 	name: string;
