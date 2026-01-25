@@ -54,6 +54,5 @@ public/build
 functions/[[path]].js
 functions/[[path]].js.map
 
-apps/**/.results
-apps/**/.reports
-apps/**/.coverage
+.results
+coverage
