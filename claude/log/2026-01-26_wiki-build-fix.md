@@ -23,6 +23,11 @@
 - **エラー**: `Could not resolve "../../apps/wiki/src/lib/reports/parser"`
 - **原因**: 実際のファイル名が`parser.ts`ではなく`e2e-parser.ts`だった
 
+### 4. TypeScript typecheckエラー
+- **ファイル**: `.astro/content-modules.mjs`
+- **エラー**: `Cannot find module 'astro:content-layer-deferred-module...'`
+- **原因**: `tsconfig.json`の`include`設定が`.astro/**/*`となっており、TypeScriptが解決できないAstro特有のモジュールを含む`.mjs`ファイルもチェック対象になっていた
+
 ## 変更したファイル
 
 ### 1. `docs/database/erd.md`
@@ -51,8 +56,16 @@ title: "データベース設計書"
 + import { getAllCoverageProjects, getProjectCoverageReports } from "../../apps/wiki/src/lib/reports/coverage-parser";
 ```
 
+### 4. `apps/wiki/tsconfig.json`
+- `include`設定を修正して`.d.ts`ファイルのみを対象にする
+```diff
+- "include": ["src/**/*", ".astro/**/*"]
++ "include": ["src/**/*", ".astro/*.d.ts"]
+```
+
 ## 検証した結果
 - `bun run build --filter=@portfolio/wiki` が成功
+- `bun run typecheck --filter=@portfolio/wiki` が成功
 - 38ページが正常にインデックス化された
 - 全ての静的ルートが正常にプリレンダリングされた
 
