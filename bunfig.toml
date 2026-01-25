@@ -13,7 +13,6 @@ disableManifest = false
 
 [install.lockfile]
 save = true
-print = "yarn"
 
 [install.security]
 scanner = "@acme/bun-security-scanner"
