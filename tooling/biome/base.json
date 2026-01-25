@@ -3,9 +3,22 @@
     "assist": {
         "actions": {
             "source": {
-                "organizeImports": "on"
+                "organizeImports": {
+                    "level": "on",
+                    "options": {
+                        "groups": [
+                            [":bun:", ":node:"],
+                            ":npm:",
+                            ":alias:",
+                            ":relative:"
+                        ]
+                    }
+                }
             }
         }
+    },
+    "organizeImports": {
+        "enabled": true
     },
     "css": {
         "formatter": {
