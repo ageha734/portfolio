@@ -1,8 +1,11 @@
 function getEnvironmentFromBaseUrl(baseUrl: string): string {
-    if (baseUrl.includes("ageha734.jp") && !baseUrl.includes("dev.")) {
+    if (baseUrl.includes("ageha734.jp") && !baseUrl.includes("stg.") && !baseUrl.includes("rc.")) {
         return "production";
     }
-    if (baseUrl.includes("dev.ageha734.jp")) {
+    if (baseUrl.includes("stg.ageha734.jp")) {
+        return "staging";
+    }
+    if (baseUrl.includes("rc.ageha734.jp")) {
         return "development";
     }
     if (baseUrl.includes("localhost")) {

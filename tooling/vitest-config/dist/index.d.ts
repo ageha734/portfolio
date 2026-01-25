@@ -7,6 +7,7 @@ export interface VitestConfigOptions {
     additionalAliases?: Record<string, string>;
     projectName?: string;
     test?: Record<string, any>;
+    includeReact?: boolean;
 }
 export declare function createVitestConfig(options?: VitestConfigOptions): {
     plugins: any[];
@@ -40,14 +41,16 @@ export declare function createVitestConfig(options?: VitestConfigOptions): {
         include: string[];
         setupFiles: string[];
         testTimeout: number;
+        fileParallelism: boolean;
+        isolate: boolean;
         pool: string;
         poolOptions: {
-            forks: {
-                singleFork: boolean;
+            threads: {
+                singleThread: boolean;
             };
         };
         deps: {
-            inline: boolean;
+            inline: string[];
             optimizer: {
                 web: {
                     enabled: boolean;
@@ -59,7 +62,7 @@ export declare function createVitestConfig(options?: VitestConfigOptions): {
         };
         server: {
             deps: {
-                inline: boolean;
+                inline: string[];
             };
         };
     };

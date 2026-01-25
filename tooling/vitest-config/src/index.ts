@@ -10,6 +10,7 @@ export interface VitestConfigOptions {
     additionalAliases?: Record<string, string>;
     projectName?: string;
     test?: Record<string, any>;
+    includeReact?: boolean;
 }
 
 export function createVitestConfig(options: VitestConfigOptions = {}) {
@@ -21,16 +22,26 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
         coverageDir = "./coverage",
         additionalAliases = {},
         test: testOverrides = {},
+        includeReact: explicitIncludeReact,
     } = options;
 
+    const environment = testOverrides.environment ?? "jsdom";
+    const shouldIncludeReact =
+        explicitIncludeReact ?? (environment !== "node" && environment !== "miniflare");
+
+    const plugins = [];
+    if (shouldIncludeReact) {
+        plugins.push(react() as any);
+    }
+    plugins.push(
+        tsconfigPaths({
+            root,
+            projects: tsconfigPath ? [tsconfigPath] : undefined,
+        }) as any,
+    );
+
     return {
-        plugins: [
-            react() as any,
-            tsconfigPaths({
-                root,
-                projects: tsconfigPath ? [tsconfigPath] : undefined,
-            }) as any,
-        ],
+        plugins,
         resolve: {
             alias: {
                 ...additionalAliases,
@@ -73,14 +84,16 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
             include: [`${testDir}/**/*.test.{ts,tsx}`],
             setupFiles,
             testTimeout: 10000,
-            pool: "forks",
+            fileParallelism: false,
+            isolate: false,
+            pool: "threads",
             poolOptions: {
-                forks: {
-                    singleFork: true,
+                threads: {
+                    singleThread: false,
                 },
             },
             deps: {
-                inline: true,
+                inline: ["@portfolio/**"],
                 optimizer: {
                     web: {
                         enabled: false,
@@ -92,7 +105,7 @@ export function createVitestConfig(options: VitestConfigOptions = {}) {
             },
             server: {
                 deps: {
-                    inline: true,
+                    inline: ["@portfolio/**"],
                 },
             },
             ...testOverrides,

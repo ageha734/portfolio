@@ -1,5 +1,5 @@
 import { type RenderOptions, render as rtlRender } from "@testing-library/react";
-import type { ReactElement, ReactNode } from "react";
+import { type ReactElement, type ReactNode } from "react";
 import { createMemoryRouter, RouterProvider } from "react-router";
 
 interface WrapperOptions {

@@ -3,6 +3,7 @@
     "extends": ["@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
         "baseUrl": ".",
+        "jsx": "react-jsx",
         "paths": {
             "~/*": ["./src/*"]
         },
@@ -11,5 +12,5 @@
         "types": ["node"],
         "lib": ["DOM", "ES2022"]
     },
-    "include": ["src/**/*.ts"]
+    "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
