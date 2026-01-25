@@ -1,0 +1,28 @@
+---
+title: Coverage Reports
+description: ユニットテストのカバレッジレポート一覧
+---
+
+import { CoverageList } from "../../../components/reports/CoverageList";
+import { getAllCoverageProjects, getProjectCoverageReports } from "../../../lib/reports/coverage-parser";
+
+export const projects = getAllCoverageProjects();
+
+# Coverage Reports
+
+このページでは、各プロジェクトのユニットテストのカバレッジレポートを確認できます。
+
+## プロジェクト一覧
+
+{projects.length === 0 ? (
+  <p>カバレッジレポートがまだありません。</p>
+) : (
+  projects.map((project) => {
+    const reports = getProjectCoverageReports(project);
+    return (
+      <div key={project}>
+        <CoverageList projectName={project} reports={reports} />
+      </div>
+    );
+  })
+)}

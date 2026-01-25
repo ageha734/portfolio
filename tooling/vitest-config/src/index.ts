@@ -1,6 +1,5 @@
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
-import { defineConfig } from "vitest/config";
 
 export interface VitestConfigOptions {
     root?: string;
@@ -9,9 +8,11 @@ export interface VitestConfigOptions {
     testDir?: string;
     coverageDir?: string;
     additionalAliases?: Record<string, string>;
+    projectName?: string;
+    test?: Record<string, any>;
 }
 
-export function createVitestConfig(options: VitestConfigOptions = {}): ReturnType<typeof defineConfig> {
+export function createVitestConfig(options: VitestConfigOptions = {}) {
     const {
         root = process.cwd(),
         tsconfigPath,
@@ -19,9 +20,10 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
         testDir = "./**",
         coverageDir = "./coverage",
         additionalAliases = {},
+        test: testOverrides = {},
     } = options;
 
-    return defineConfig({
+    return {
         plugins: [
             react() as any,
             tsconfigPaths({
@@ -48,7 +50,7 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
                     "**/*.spec.{ts,tsx}",
                     "**/*.config.{ts,js}",
                 ],
-                reporter: ["html", "lcov"],
+                reporter: ["html", "lcov", "json-summary"],
                 reportsDirectory: coverageDir,
                 thresholds: {
                     lines: 80,
@@ -57,6 +59,15 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
                     statements: 80,
                 },
             },
+            reporters: options.projectName
+                ? [
+                      "default",
+                      [
+                          "@portfolio/vitest-reporter",
+                          { outputDir: "../wiki/reports/test", projectName: options.projectName, coverageDir },
+                      ],
+                  ]
+                : ["default"],
             globals: true,
             environment: "jsdom",
             include: [`${testDir}/**/*.test.{ts,tsx}`],
@@ -84,6 +95,7 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
                     inline: true,
                 },
             },
+            ...testOverrides,
         },
-    });
+    };
 }

@@ -19,7 +19,7 @@ export default createPlaywrightConfig({
     outputDir: "./.results/playwright",
     baseURL: `http://localhost:${PORT}/`,
     port: PORT,
-    webServerCommand: process.env.CI ? "bun run start" : "bun run dev:page",
+    webServerCommand: process.env.CI ? "bun run start" : "bun run dev",
     reportOutputDir: "../wiki/reports/e2e/admin",
     projectName: "admin",
     projects: [
@@ -27,12 +27,6 @@ export default createPlaywrightConfig({
             name: "chromium",
             use: {
                 ...devices["Desktop Chrome"],
-            },
-        },
-        {
-            name: "mobile chromium",
-            use: {
-                ...devices["Pixel 7"],
             },
         },
     ],

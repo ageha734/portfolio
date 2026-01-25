@@ -1,14 +1,16 @@
+import { resolve } from "node:path";
 import { createVitestConfig } from "@portfolio/vitest-config";
-import { defineConfig } from "vitest/config";
 
-export default defineConfig({
-    ...createVitestConfig({
-        coverageDir: "../../wiki/reports/test/api",
-    }),
+export default createVitestConfig({
+    root: __dirname,
+    tsconfigPath: "./tsconfig.json",
+    testDir: "./src",
+    coverageDir: "../../wiki/reports/test/api",
+    projectName: "api",
+    additionalAliases: {
+        "~": resolve(__dirname, "./src"),
+    },
     test: {
-        ...createVitestConfig({
-            coverageDir: "../../wiki/reports/test/api",
-        }).test,
         environment: "miniflare",
         environmentOptions: {
             bindings: {

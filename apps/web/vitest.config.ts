@@ -4,16 +4,10 @@ import { createVitestConfig } from "@portfolio/vitest-config";
 export default createVitestConfig({
     root: __dirname,
     tsconfigPath: "./tsconfig.json",
-    // TODO:
-    setupFiles: ["./../../testing/vitest/setup.ts"],
     testDir: "./app",
     coverageDir: "../../wiki/reports/test/web",
+    projectName: "web",
     additionalAliases: {
         "~": resolve(__dirname, "./app"),
-        "~/shared": resolve(__dirname, "./app/shared"),
-        "~/entities": resolve(__dirname, "./app/entities"),
-        "~/features": resolve(__dirname, "./app/features"),
-        "~/widgets": resolve(__dirname, "./app/widgets"),
-        "~/routes": resolve(__dirname, "./app/routes"),
     },
 });

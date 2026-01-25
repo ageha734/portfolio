@@ -1,4 +1,4 @@
-import type { ReportEntry } from "../../lib/reports/parser";
+import type { ReportEntry } from "../../lib/reports/e2e-parser";
 
 interface ReportListProps {
     projectName: string;

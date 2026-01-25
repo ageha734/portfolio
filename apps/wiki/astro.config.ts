@@ -112,8 +112,12 @@ export default defineConfig({
                     label: "Reports",
                     items: [
                         {
-                            label: "Test Reports",
+                            label: "E2E Test Reports",
                             link: "/reports/",
+                        },
+                        {
+                            label: "Coverage Reports",
+                            link: "/reports/coverage/",
                         },
                     ],
                 },
