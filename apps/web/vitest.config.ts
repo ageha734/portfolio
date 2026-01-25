@@ -7,8 +7,7 @@ export default createVitestConfig({
     // TODO:
     setupFiles: ["./../../testing/vitest/setup.ts"],
     testDir: "./app",
-    // TODO:
-    coverageDir: "./../../docs/vitest/coverage",
+    coverageDir: "../../wiki/reports/test/web",
     additionalAliases: {
         "~": resolve(__dirname, "./app"),
         "~/shared": resolve(__dirname, "./app/shared"),

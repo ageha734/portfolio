@@ -2,9 +2,13 @@ import { createVitestConfig } from "@portfolio/vitest-config";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-    ...createVitestConfig(),
+    ...createVitestConfig({
+        coverageDir: "../../wiki/reports/test/api",
+    }),
     test: {
-        ...createVitestConfig().test,
+        ...createVitestConfig({
+            coverageDir: "../../wiki/reports/test/api",
+        }).test,
         environment: "miniflare",
         environmentOptions: {
             bindings: {

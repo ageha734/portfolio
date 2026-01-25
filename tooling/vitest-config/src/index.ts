@@ -34,6 +34,9 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
                 ...additionalAliases,
             },
         },
+        optimizeDeps: {
+            disabled: true,
+        },
         test: {
             coverage: {
                 exclude: [
@@ -65,9 +68,20 @@ export function createVitestConfig(options: VitestConfigOptions = {}): ReturnTyp
                     singleFork: true,
                 },
             },
+            deps: {
+                inline: true,
+                optimizer: {
+                    web: {
+                        enabled: false,
+                    },
+                    ssr: {
+                        enabled: false,
+                    },
+                },
+            },
             server: {
                 deps: {
-                    inline: ["@portfolio/**"],
+                    inline: true,
                 },
             },
         },

@@ -9,6 +9,8 @@ export interface PlaywrightConfigOptions {
     webServerCommand?: string;
     projects?: PlaywrightTestConfig["projects"];
     additionalConfig?: Partial<PlaywrightTestConfig>;
+    reportOutputDir?: string;
+    projectName?: string;
 }
 
 export function createPlaywrightConfig(options: PlaywrightConfigOptions = {}): PlaywrightTestConfig {
@@ -20,10 +22,23 @@ export function createPlaywrightConfig(options: PlaywrightConfigOptions = {}): P
         webServerCommand,
         projects,
         additionalConfig = {},
+        reportOutputDir,
+        projectName,
     } = options;
 
     const resolvedPort = typeof port === "string" ? Number(port) : port;
     const resolvedBaseURL = baseURL ?? `http://localhost:${resolvedPort}/`;
+
+    const baseReporter: PlaywrightTestConfig["reporter"] = [["html", { outputFolder: outputDir }]];
+    const monorepoReporter: PlaywrightTestConfig["reporter"] =
+        reportOutputDir && projectName
+            ? [
+                  [
+                      "@portfolio/playwright-reporter",
+                      { outputDir: reportOutputDir, projectName, htmlOutputDir: outputDir },
+                  ],
+              ]
+            : [];
 
     return {
         testDir,
@@ -36,7 +51,7 @@ export function createPlaywrightConfig(options: PlaywrightConfigOptions = {}): P
         forbidOnly: !!process.env.CI,
         retries: process.env.CI ? 2 : 0,
         workers: process.env.CI ? 1 : undefined,
-        reporter: [["html", { outputFolder: "./.reports/playwright" }]],
+        reporter: [...baseReporter, ...monorepoReporter],
         use: {
             actionTimeout: 0,
             baseURL: resolvedBaseURL,
@@ -59,6 +74,7 @@ export function createPlaywrightConfig(options: PlaywrightConfigOptions = {}): P
                 stderr: "pipe",
                 env: {
                     PORT: String(resolvedPort),
+                    ...(projectName && { PLAYWRIGHT_PROJECT_NAME: projectName }),
                 },
             },
         }),

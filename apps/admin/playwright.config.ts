@@ -20,6 +20,8 @@ export default createPlaywrightConfig({
     baseURL: `http://localhost:${PORT}/`,
     port: PORT,
     webServerCommand: process.env.CI ? "bun run start" : "bun run dev:page",
+    reportOutputDir: "../../wiki/reports/e2e/admin",
+    projectName: "admin",
     projects: [
         {
             name: "chromium",
