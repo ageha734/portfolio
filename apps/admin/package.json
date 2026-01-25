@@ -7,7 +7,7 @@
     "build": "bun run with-env vite build",
     "clean": "git clean -xdf .cache .turbo node_modules dist .tanstack .wrangler",
     "coverage": "vitest run --coverage",
-    "deploy": "wrangler pages deploy ./build --project-name portfolio-admin --branch master",
+    "deploy": "wrangler pages deploy ./dist --project-name portfolio-infra-admin --branch master",
     "dev": "bun run with-env vite",
     "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
     "fmt": "biome format --write .",

@@ -1,4 +1,4 @@
-name = "portfolio-api"
+name = "portfolio-infra-api"
 compatibility_date = "2025-11-17"
 compatibility_flags = ["nodejs_compat"]
 main = "src/index.ts"

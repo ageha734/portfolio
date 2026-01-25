@@ -9,7 +9,7 @@
     "build:ui": "storybook build -o ../wiki/design/web",
     "clean": "git clean -xdf .cache .turbo node_modules build dist .wrangler",
     "coverage": "vitest run --coverage",
-    "deploy": "wrangler pages deploy ./build --project-name portfolio-web --branch master",
+    "deploy": "wrangler pages deploy ./build --project-name portfolio-infra-web --branch master",
     "dev": "bun run with-env remix vite:dev",
     "e2e": "docker run --rm -e CI=true -v $(pwd):/work -w /work -v $(pwd)/node_modules:/work/node_modules -v $(pwd)/docs/playwright/report:/work/docs/playwright/report -v $(pwd)/docs/security/e2e:/work/docs/security/e2e e2e",
     "fmt": "biome format --write .",
