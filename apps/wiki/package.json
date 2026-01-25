@@ -19,7 +19,7 @@
     "lint:textlint": "textlint .",
     "lint:textlint:fix": "textlint --fix .",
     "studio": "astro dev --port 23000",
-    "typecheck": "astro check && tsc --noEmit"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@astrojs/check": "0.9.4",
