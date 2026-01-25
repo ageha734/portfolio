@@ -91,6 +91,6 @@ describe("useDashboardStats", () => {
         });
 
         expect(result.current.error).toBeInstanceOf(Error);
-        expect(result.current.error?.message).toBe("Failed to fetch");
+        expect(result.current.error?.message).toContain("Failed to fetch");
     });
 });

@@ -29,7 +29,11 @@ export class CachedPostRepository implements PostRepository {
 		const posts = await this.dbRepository.findAll();
 
 		this.cacheService.set(cacheKey, posts).catch((error) => {
-			console.warn("Redis書き込みエラー（findAll）:", error);
+			const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, "Redis書き込みエラー（findAll）", {
+				metadata: { method: "findAll", cacheKey },
+				originalError: error instanceof Error ? error : new Error(String(error)),
+			});
+			this.logger.warn(appError.message, { error: appError });
 		});
 
 		return posts;

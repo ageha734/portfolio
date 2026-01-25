@@ -1,15 +1,16 @@
 import "@testing-library/jest-dom/vitest";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { routeTree } from "~/routeTree.gen";
 
-const router = createRouter({ routeTree });
-
 describe("Index Route", () => {
-    test("should render admin dashboard", () => {
+    test("should render admin dashboard", async () => {
+        const router = createRouter({ routeTree });
         render(<RouterProvider router={router} />);
-        router.navigate({ to: "/" });
-        expect(screen.getByText("Dashboard")).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(screen.getAllByText("Dashboard").length).toBeGreaterThan(0);
+        });
     });
 });

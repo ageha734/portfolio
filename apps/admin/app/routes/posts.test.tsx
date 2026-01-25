@@ -1,15 +1,17 @@
 import "@testing-library/jest-dom/vitest";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 import { routeTree } from "~/routeTree.gen";
 
-const router = createRouter({ routeTree });
-
 describe("Posts Route", () => {
-    test("should render posts route", () => {
+    test("should render posts route", async () => {
+        const router = createRouter({ routeTree });
         render(<RouterProvider router={router} />);
-        router.navigate({ to: "/posts" });
-        expect(screen.getByText("Posts")).toBeInTheDocument();
+        await router.navigate({ to: "/posts" });
+
+        await waitFor(() => {
+            expect(screen.getAllByText("Posts").length).toBeGreaterThan(0);
+        });
     });
 });

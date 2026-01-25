@@ -31,7 +31,8 @@ export class UploadPortfolioImageUseCase {
         }
 
         const timestamp = Date.now();
-        const extension = imageFile.name.split(".").pop() || "jpg";
+        const nameParts = imageFile.name.split(".");
+        const extension = nameParts.length > 1 ? nameParts.pop() : "jpg";
         const key = `portfolios/${portfolioId}/${timestamp}.${extension}`;
 
         const arrayBuffer = await imageFile.arrayBuffer();

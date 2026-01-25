@@ -111,7 +111,6 @@ describe("CachedPostRepository", () => {
 			expect(result).toEqual(dbPosts);
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis書き込みエラー（findAll）"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -189,7 +188,6 @@ describe("CachedPostRepository", () => {
 			expect(result).toEqual(mockPost);
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis書き込みエラー（findBySlug）"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -251,7 +249,6 @@ describe("CachedPostRepository", () => {
 			expect(result).toEqual(mockPost);
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis書き込みエラー（findById）"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();

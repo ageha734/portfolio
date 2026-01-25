@@ -1,0 +1,1 @@
+export { restHandlers } from "./rest";

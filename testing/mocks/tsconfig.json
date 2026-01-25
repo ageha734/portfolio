@@ -3,6 +3,7 @@
     "extends": ["@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
         "baseUrl": ".",
+        "emitDeclarationOnly": false,
         "paths": {
             "~/*": ["./src/*"]
         },
@@ -10,5 +11,6 @@
         "typeRoots": ["../../node_modules/@types"],
         "types": ["node"]
     },
+    "exclude": ["node_modules", "dist"],
     "include": ["src/**/*.ts"]
 }

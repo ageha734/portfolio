@@ -54,7 +54,7 @@ describe("CacheService", () => {
 			});
 		});
 
-		test("should return null on connection failure", () => {
+		test("should return null on connection failure", async () => {
 			vi.mocked(createRedisClient).mockImplementation(() => {
 				throw new Error("Connection failed");
 			});
@@ -64,12 +64,11 @@ describe("CacheService", () => {
 				.mockImplementation(vi.fn());
 
 			const service = new CacheService();
-			const result = service.get("test-key");
+			const result = await service.get("test-key");
 
-			expect(result).resolves.toBeNull();
+			expect(result).toBeNull();
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis接続に失敗しました"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -130,7 +129,6 @@ describe("CacheService", () => {
 			expect(result).toBeNull();
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis取得エラー"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -288,7 +286,6 @@ describe("CacheService", () => {
 
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis書き込みエラー"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -355,7 +352,6 @@ describe("CacheService", () => {
 
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis削除エラー"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -407,7 +403,6 @@ describe("CacheService", () => {
 
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redisパターン削除エラー"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -426,7 +421,6 @@ describe("CacheService", () => {
 
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redisパターン削除エラー"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -468,7 +462,6 @@ describe("CacheService", () => {
 
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis切断エラー"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();

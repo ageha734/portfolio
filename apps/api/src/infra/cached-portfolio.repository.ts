@@ -51,7 +51,11 @@ export class CachedPortfolioRepository implements PortfolioRepository {
 
 		if (portfolio) {
 			this.cacheService.set(cacheKey, portfolio).catch((error) => {
-				console.warn("Redis書き込みエラー（findBySlug）:", error);
+				const appError = AppError.fromCode(ErrorCodes.CACHE_OPERATION_ERROR, "Redis書き込みエラー（findBySlug）", {
+					metadata: { method: "findBySlug", cacheKey, slug },
+					originalError: error instanceof Error ? error : new Error(String(error)),
+				});
+				this.logger.warn(appError.message, { error: appError });
 			});
 		}
 

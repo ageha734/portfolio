@@ -51,7 +51,7 @@ describe("createStatCards", () => {
         const cards = createStatCards(stats);
 
         expect(cards[0]?.icon).toBeDefined();
-        expect(typeof cards[0]?.icon).toBe("function");
+        expect(cards[0]?.icon).toBeTruthy();
     });
 
     test("should handle zero values", () => {

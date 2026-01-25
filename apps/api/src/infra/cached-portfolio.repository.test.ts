@@ -118,7 +118,6 @@ describe("CachedPortfolioRepository", () => {
 			expect(result).toEqual(dbPortfolios);
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis書き込みエラー（findAll）"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -198,7 +197,6 @@ describe("CachedPortfolioRepository", () => {
 			expect(result).toEqual(mockPortfolio);
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis書き込みエラー（findBySlug）"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
@@ -260,7 +258,6 @@ describe("CachedPortfolioRepository", () => {
 			expect(result).toEqual(mockPortfolio);
 			expect(consoleWarnSpy).toHaveBeenCalledWith(
 				expect.stringContaining("Redis書き込みエラー（findById）"),
-				expect.any(Error),
 			);
 
 			consoleWarnSpy.mockRestore();
