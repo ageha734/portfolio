@@ -1,0 +1,14 @@
+{
+    "extends": ["@portfolio/tsconfig/compiled-package.json"],
+    "compilerOptions": {
+        "baseUrl": ".",
+        "emitDeclarationOnly": false,
+        "paths": {
+            "~/*": ["./src/*"]
+        },
+        "rootDir": "./src",
+        "typeRoots": ["../../node_modules/@types"],
+        "types": ["node"]
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx"]
+}
