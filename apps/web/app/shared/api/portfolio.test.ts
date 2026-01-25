@@ -69,7 +69,16 @@ describe("portfolio api", () => {
             },
         } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow("Portfolio items not found");
+        try {
+            await loader(args);
+            expect.fail("Expected Response to be thrown");
+        } catch (error) {
+            expect(error).toBeInstanceOf(Response);
+            const response = error as Response;
+            expect(response.status).toBe(404);
+            const text = await response.text();
+            expect(text).toBe("Portfolio items not found");
+        }
     });
 
     test("should handle API error", async () => {

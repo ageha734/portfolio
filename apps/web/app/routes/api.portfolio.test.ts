@@ -1,7 +1,7 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
-import { loader } from "./api.portfolio";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { Portfolio } from "./api.portfolio";
+import { loader } from "./api.portfolio";
 
 vi.mock("~/shared/lib/api", () => ({
     createApiClient: vi.fn(),
@@ -71,7 +71,16 @@ describe("api.portfolio route", () => {
             },
         } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow("Portfolio items not found");
+        try {
+            await loader(args);
+            expect.fail("Expected Response to be thrown");
+        } catch (error) {
+            expect(error).toBeInstanceOf(Response);
+            const response = error as Response;
+            expect(response.status).toBe(404);
+            const text = await response.text();
+            expect(text).toBe("Portfolio items not found");
+        }
     });
 
     test("should handle API error", async () => {

@@ -1,7 +1,7 @@
-import { expect, test, describe, vi, beforeEach } from "vitest";
-import { loader } from "./api.blog.$slug";
 import type { LoaderFunctionArgs } from "@remix-run/cloudflare";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { Post } from "./api.blog.$slug";
+import { loader } from "./api.blog.$slug";
 
 vi.mock("~/shared/lib/api", () => ({
     createApiClient: vi.fn(),
@@ -70,7 +70,16 @@ describe("api.blog.$slug", () => {
             },
         } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow("Invalid slug parameter");
+        try {
+            await loader(args);
+            expect.fail("Expected Response to be thrown");
+        } catch (error) {
+            expect(error).toBeInstanceOf(Response);
+            const response = error as Response;
+            expect(response.status).toBe(400);
+            const text = await response.text();
+            expect(text).toBe("Invalid slug parameter");
+        }
     });
 
     test("should throw 404 when post is not found", async () => {
@@ -100,7 +109,16 @@ describe("api.blog.$slug", () => {
             },
         } as unknown as LoaderFunctionArgs;
 
-        await expect(loader(args)).rejects.toThrow("Invalid slug parameter");
+        try {
+            await loader(args);
+            expect.fail("Expected Response to be thrown");
+        } catch (error) {
+            expect(error).toBeInstanceOf(Response);
+            const response = error as Response;
+            expect(response.status).toBe(400);
+            const text = await response.text();
+            expect(text).toBe("Invalid slug parameter");
+        }
     });
 
     test("should handle API error", async () => {

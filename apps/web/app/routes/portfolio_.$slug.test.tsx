@@ -1,6 +1,7 @@
 import "@testing-library/jest-dom/vitest";
-import { createRouterWrapper } from "@portfolio/testing-vitest";
 import { render, screen } from "@testing-library/react";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import PortfolioSlug, { meta } from "./portfolio_.$slug";
 
@@ -12,6 +13,11 @@ vi.mock("@remix-run/react", async () => {
     const actual = await vi.importActual("@remix-run/react");
     return {
         ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
         useLoaderData: vi.fn(() => ({
             title: "Test Portfolio",
             company: "Test Company",
@@ -30,15 +36,21 @@ describe("portfolio_.$slug route", () => {
     });
 
     test("should render Portfolio_Slug component", () => {
-        const wrapper = createRouterWrapper({ route: "/portfolio/test-portfolio" });
-        render(<PortfolioSlug />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/portfolio/test-portfolio"]}>
+                <PortfolioSlug />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     });
 
     test("should render portfolio title", () => {
-        const wrapper = createRouterWrapper({ route: "/portfolio/test-portfolio" });
-        render(<PortfolioSlug />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/portfolio/test-portfolio"]}>
+                <PortfolioSlug />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByText("Test Portfolio")).toBeInTheDocument();
     });

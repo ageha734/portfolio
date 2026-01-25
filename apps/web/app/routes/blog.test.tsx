@@ -1,8 +1,7 @@
 import "@testing-library/jest-dom/vitest";
-import { createRouterWrapper } from "@portfolio/testing-vitest";
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { Link as RouterLink } from "react-router";
+import { MemoryRouter, Link as RouterLink } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { filterBlogPosts } from "~/entities/blog/lib/filter-posts";
 import Blog, { meta } from "./blog";
@@ -77,15 +76,21 @@ describe("blog route", () => {
     });
 
     test("should render Blog component", () => {
-        const wrapper = createRouterWrapper({ route: "/blog" });
-        render(<Blog />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/blog"]}>
+                <Blog />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     });
 
     test("should render hero section", () => {
-        const wrapper = createRouterWrapper({ route: "/blog" });
-        render(<Blog />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/blog"]}>
+                <Blog />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByText(/Yes, another blog/i)).toBeInTheDocument();
     });

@@ -1,8 +1,7 @@
 import "@testing-library/jest-dom/vitest";
-import { createRouterWrapper } from "@portfolio/testing-vitest";
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { Link as RouterLink } from "react-router";
+import { MemoryRouter, Link as RouterLink } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import Portfolio, { meta } from "./portfolio";
 
@@ -40,15 +39,21 @@ describe("portfolio route", () => {
     });
 
     test("should render Portfolio component", () => {
-        const wrapper = createRouterWrapper({ route: "/portfolio" });
-        render(<Portfolio />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/portfolio"]}>
+                <Portfolio />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     });
 
     test("should render hero section", () => {
-        const wrapper = createRouterWrapper({ route: "/portfolio" });
-        render(<Portfolio />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/portfolio"]}>
+                <Portfolio />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByText(/Right now/i)).toBeInTheDocument();
     });

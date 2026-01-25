@@ -1,9 +1,22 @@
 import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { beforeEach, describe, expect, test } from "vitest";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { PortfolioPreviewProps } from "../model/types.d";
 import { PortfolioPreview } from "./PortfolioPreview";
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+    };
+});
 
 describe("PortfolioPreview Component", () => {
     let props: PortfolioPreviewProps;

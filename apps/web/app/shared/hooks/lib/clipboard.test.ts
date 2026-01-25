@@ -1,18 +1,20 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { copyTextToClipboard } from "./clipboard";
 
+const mockLogger = {
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+};
+
+vi.mock("~/lib/logger", () => ({
+    getLogger: () => mockLogger,
+}));
+
 describe("clipboard", () => {
-    let consoleLogSpy: ReturnType<typeof vi.spyOn>;
-    let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
-
     beforeEach(() => {
-        consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {
-            // テスト用の空実装
-        });
-        consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {
-            // テスト用の空実装
-        });
-
+        vi.clearAllMocks();
         document.body.innerHTML = "";
     });
 
@@ -37,7 +39,7 @@ describe("clipboard", () => {
                 await new Promise((resolve) => setTimeout(resolve, 10));
 
                 expect(writeTextMock).toHaveBeenCalledWith(text);
-                expect(consoleLogSpy).toHaveBeenCalledWith("Copied to clipboard ✅");
+                expect(mockLogger.debug).toHaveBeenCalledWith("Copied to clipboard", { text });
             } finally {
                 Object.defineProperty(navigator, "clipboard", {
                     value: originalClipboard,
@@ -60,7 +62,7 @@ describe("clipboard", () => {
                 copyTextToClipboard("test");
                 await new Promise((resolve) => setTimeout(resolve, 10));
 
-                expect(consoleErrorSpy).toHaveBeenCalledWith("Could not copy text:", error);
+                expect(mockLogger.error).toHaveBeenCalled();
             } finally {
                 Object.defineProperty(navigator, "clipboard", {
                     value: originalClipboard,
@@ -69,7 +71,7 @@ describe("clipboard", () => {
             }
         });
 
-        test("should log error when navigator.clipboard is not available", () => {
+        test("should log warning when navigator.clipboard is not available", () => {
             const text = "test fallback";
 
             // clipboardを一時的に無効化
@@ -82,9 +84,7 @@ describe("clipboard", () => {
             try {
                 copyTextToClipboard(text);
 
-                expect(consoleErrorSpy).toHaveBeenCalledWith(
-                    "Clipboard API is not available. This feature requires a secure context (HTTPS or localhost).",
-                );
+                expect(mockLogger.warn).toHaveBeenCalled();
             } finally {
                 Object.defineProperty(navigator, "clipboard", {
                     value: originalClipboard,

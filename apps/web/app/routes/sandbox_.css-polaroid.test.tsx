@@ -1,8 +1,7 @@
 import "@testing-library/jest-dom/vitest";
-import { createRouterWrapper } from "@portfolio/testing-vitest";
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { Link as RouterLink } from "react-router";
+import { MemoryRouter, Link as RouterLink } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import SandboxCSSPolaroid, { meta } from "./sandbox_.css-polaroid";
 
@@ -20,15 +19,21 @@ vi.mock("@remix-run/react", async () => {
 
 describe("sandbox_.css-polaroid route", () => {
     test("should render Sandbox_CSSPolaroid component", () => {
-        const wrapper = createRouterWrapper({ route: "/sandbox/css-polaroid" });
-        render(<SandboxCSSPolaroid />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/sandbox/css-polaroid"]}>
+                <SandboxCSSPolaroid />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     });
 
     test("should render hero section", () => {
-        const wrapper = createRouterWrapper({ route: "/sandbox/css-polaroid" });
-        render(<SandboxCSSPolaroid />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/sandbox/css-polaroid"]}>
+                <SandboxCSSPolaroid />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByText(/CSS Polaroid Camera/i)).toBeInTheDocument();
     });

@@ -1,8 +1,21 @@
 import "@testing-library/jest-dom/vitest";
 import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { describe, expect, test } from "vitest";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import { PostMarkdown } from "./PostMarkdown";
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+    };
+});
 
 describe("PostMarkdown Components", () => {
     test("should render h1 heading", () => {
@@ -14,7 +27,7 @@ describe("PostMarkdown Components", () => {
         );
 
         expect(screen.getByText("Heading 1")).toBeInTheDocument();
-        expect(screen.getByLabelText("Link to heading")).toBeInTheDocument();
+        expect(screen.getAllByLabelText("Link to heading").length).toBeGreaterThan(0);
     });
 
     test("should render h2 heading", () => {

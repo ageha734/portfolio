@@ -1,20 +1,39 @@
 import "@testing-library/jest-dom/vitest";
-import { createRouterWrapper } from "@portfolio/testing-vitest";
 import { render, screen } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import type { ReactNode } from "react";
+import { MemoryRouter, Link as RouterLink } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import Sandbox, { meta } from "./sandbox";
+
+vi.mock("@remix-run/react", async () => {
+    const actual = await vi.importActual("@remix-run/react");
+    return {
+        ...actual,
+        Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+            <RouterLink to={to} {...props}>
+                {children}
+            </RouterLink>
+        ),
+    };
+});
 
 describe("sandbox route", () => {
     test("should render Sandbox component", () => {
-        const wrapper = createRouterWrapper({ route: "/sandbox" });
-        render(<Sandbox />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/sandbox"]}>
+                <Sandbox />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByRole("heading", { level: 1 })).toBeInTheDocument();
     });
 
     test("should render hero section", () => {
-        const wrapper = createRouterWrapper({ route: "/sandbox" });
-        render(<Sandbox />, { wrapper });
+        render(
+            <MemoryRouter initialEntries={["/sandbox"]}>
+                <Sandbox />
+            </MemoryRouter>,
+        );
 
         expect(screen.getByText(/Developer sandbox/i)).toBeInTheDocument();
     });
