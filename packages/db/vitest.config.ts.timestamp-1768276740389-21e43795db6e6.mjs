@@ -1,6 +1,8 @@
 // vitest.config.ts
-import { createVitestConfig } from "file:///Users/hibi-keita/Repository/github.com/ageha734/portfolio/tooling/vitest/src/index.ts";
-import { defineConfig } from "file:///Users/hibi-keita/Repository/github.com/ageha734/portfolio/node_modules/vitest/dist/config.js";
+
+import { defineConfig } from "file:///Users/hibi-keita/Repository/github.com/ageha734/portfolio/node_modules/vitest-config/dist/config.js";
+import { createVitestConfig } from "file:///Users/hibi-keita/Repository/github.com/ageha734/portfolio/tooling/vitest-config/src/index.ts";
+
 var vitest_config_default = defineConfig({
     ...createVitestConfig(),
     test: {
