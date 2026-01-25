@@ -56,6 +56,10 @@
     "json": {
         "formatter": {
             "trailingCommas": "none"
+        },
+        "parser": {
+            "allowComments": true,
+            "allowTrailingCommas": true
         }
     },
     "linter": {
