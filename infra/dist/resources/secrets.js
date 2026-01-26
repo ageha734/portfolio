@@ -23,6 +23,8 @@ export function getDopplerSecrets(dopplerConfig) {
         "BETTER_AUTH_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
+        "TIDBCLOUD_PUBLIC_KEY",
+        "TIDBCLOUD_PRIVATE_KEY",
     ];
     const secrets = {};
     const syncedSecrets = {};

@@ -28,6 +28,8 @@ export interface SecretKeys {
     BETTER_AUTH_SECRET?: string;
     GOOGLE_CLIENT_ID?: string;
     GOOGLE_CLIENT_SECRET?: string;
+    TIDBCLOUD_PUBLIC_KEY?: string;
+    TIDBCLOUD_PRIVATE_KEY?: string;
 }
 
 export interface SecretsOutputs {
@@ -54,6 +56,8 @@ export function getDopplerSecrets(dopplerConfig: DopplerConfig): SecretsOutputs 
         "BETTER_AUTH_SECRET",
         "GOOGLE_CLIENT_ID",
         "GOOGLE_CLIENT_SECRET",
+        "TIDBCLOUD_PUBLIC_KEY",
+        "TIDBCLOUD_PRIVATE_KEY",
     ];
 
     const secrets: Record<string, pulumi.Output<string>> = {};

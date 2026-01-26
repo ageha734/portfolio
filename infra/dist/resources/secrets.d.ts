@@ -22,6 +22,8 @@ export interface SecretKeys {
     BETTER_AUTH_SECRET?: string;
     GOOGLE_CLIENT_ID?: string;
     GOOGLE_CLIENT_SECRET?: string;
+    TIDBCLOUD_PUBLIC_KEY?: string;
+    TIDBCLOUD_PRIVATE_KEY?: string;
 }
 export interface SecretsOutputs {
     secrets: Record<keyof SecretKeys, pulumi.Output<string>>;

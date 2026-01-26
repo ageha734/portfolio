@@ -52,6 +52,8 @@ if (shouldCreateDopplerProject && dopplerProjectResources) {
         BETTER_AUTH_SECRET: createdSecrets.BETTER_AUTH_SECRET ?? pulumi.output(""),
         GOOGLE_CLIENT_ID: createdSecrets.GOOGLE_CLIENT_ID ?? pulumi.output(""),
         GOOGLE_CLIENT_SECRET: createdSecrets.GOOGLE_CLIENT_SECRET ?? pulumi.output(""),
+        TIDBCLOUD_PUBLIC_KEY: createdSecrets.TIDBCLOUD_PUBLIC_KEY ?? pulumi.output(""),
+        TIDBCLOUD_PRIVATE_KEY: createdSecrets.TIDBCLOUD_PRIVATE_KEY ?? pulumi.output(""),
         API_BASE_URL: createdSecrets.API_BASE_URL ?? pulumi.output(""),
         APP_VERSION: createdSecrets.APP_VERSION ?? pulumi.output(""),
         BETTER_AUTH_URL: createdSecrets.BETTER_AUTH_URL ?? pulumi.output(""),
@@ -88,6 +90,8 @@ else if (shouldSyncDopplerSecrets && dopplerSecretsResources) {
         BETTER_AUTH_SECRET: createdSecrets.BETTER_AUTH_SECRET ?? pulumi.output(""),
         GOOGLE_CLIENT_ID: createdSecrets.GOOGLE_CLIENT_ID ?? pulumi.output(""),
         GOOGLE_CLIENT_SECRET: createdSecrets.GOOGLE_CLIENT_SECRET ?? pulumi.output(""),
+        TIDBCLOUD_PUBLIC_KEY: createdSecrets.TIDBCLOUD_PUBLIC_KEY ?? pulumi.output(""),
+        TIDBCLOUD_PRIVATE_KEY: createdSecrets.TIDBCLOUD_PRIVATE_KEY ?? pulumi.output(""),
         API_BASE_URL: createdSecrets.API_BASE_URL ?? pulumi.output(""),
         APP_VERSION: createdSecrets.APP_VERSION ?? pulumi.output(""),
         BETTER_AUTH_URL: createdSecrets.BETTER_AUTH_URL ?? pulumi.output(""),
@@ -185,6 +189,8 @@ const secrets = {
     BETTER_AUTH_SECRET: dopplerSecrets.BETTER_AUTH_SECRET,
     GOOGLE_CLIENT_ID: dopplerSecrets.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: dopplerSecrets.GOOGLE_CLIENT_SECRET,
+    TIDBCLOUD_PUBLIC_KEY: dopplerSecrets.TIDBCLOUD_PUBLIC_KEY,
+    TIDBCLOUD_PRIVATE_KEY: dopplerSecrets.TIDBCLOUD_PRIVATE_KEY,
     API_BASE_URL: dopplerSecrets.API_BASE_URL,
     APP_VERSION: dopplerSecrets.APP_VERSION,
     BETTER_AUTH_URL: dopplerSecrets.BETTER_AUTH_URL,
@@ -198,7 +204,10 @@ const secrets = {
     VITE_SENTRY_TRACES_SAMPLE_RATE: dopplerSecrets.VITE_SENTRY_TRACES_SAMPLE_RATE,
     VITE_XSTATE_INSPECTOR_ENABLED: dopplerSecrets.VITE_XSTATE_INSPECTOR_ENABLED,
 };
-const tidb = createPortfolioTiDBConfig(secrets);
+const tidb = createPortfolioTiDBConfig(secrets, {
+    publicKey: dopplerSecrets.TIDBCLOUD_PUBLIC_KEY,
+    privateKey: dopplerSecrets.TIDBCLOUD_PRIVATE_KEY,
+});
 const pulumiConfigForRedis = new pulumi.Config();
 const skipRedisCloud = pulumiConfigForRedis.getBoolean("skipRedisCloud") ?? false;
 let redisCloudProvider;
@@ -231,7 +240,10 @@ new doppler.Secret("doppler-secret-auto-database-url", {
     project: dopplerProjectName,
     config: dopplerConfigName,
     name: "DATABASE_URL",
-    value: pulumi.all([tidb.connectionString, secrets.DATABASE_URL]).apply(([generatedUrl, existingUrl]) => {
+    value: pulumi.all([tidb.connectionString, tidb.cluster?.connectionString, secrets.DATABASE_URL]).apply(([generatedUrl, clusterConnectionString, existingUrl]) => {
+        if ((!existingUrl || existingUrl.trim() === "") && clusterConnectionString && clusterConnectionString.trim() !== "") {
+            return clusterConnectionString;
+        }
         if ((!existingUrl || existingUrl.trim() === "") && generatedUrl && generatedUrl.trim() !== "") {
             return generatedUrl;
         }

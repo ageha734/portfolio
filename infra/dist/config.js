@@ -108,6 +108,12 @@ export function getDopplerSecrets() {
                 throw new Error("REDISCLOUD_SECRET_KEY not found in Doppler");
             return s.map.REDISCLOUD_SECRET_KEY;
         }),
+        TIDBCLOUD_PUBLIC_KEY: secrets.apply((s) => {
+            return s.map.TIDBCLOUD_PUBLIC_KEY || "";
+        }),
+        TIDBCLOUD_PRIVATE_KEY: secrets.apply((s) => {
+            return s.map.TIDBCLOUD_PRIVATE_KEY || "";
+        }),
         API_BASE_URL: secrets.apply((s) => {
             return s.map.API_BASE_URL || "";
         }),

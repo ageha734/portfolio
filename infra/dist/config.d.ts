@@ -23,6 +23,8 @@ export declare function getDopplerSecrets(): {
     GOOGLE_CLIENT_SECRET: pulumi.Output<string>;
     REDISCLOUD_ACCESS_KEY: pulumi.Output<string>;
     REDISCLOUD_SECRET_KEY: pulumi.Output<string>;
+    TIDBCLOUD_PUBLIC_KEY: pulumi.Output<string>;
+    TIDBCLOUD_PRIVATE_KEY: pulumi.Output<string>;
     API_BASE_URL: pulumi.Output<string>;
     APP_VERSION: pulumi.Output<string>;
     BETTER_AUTH_URL: pulumi.Output<string>;
