@@ -76,6 +76,7 @@ export function createPortfolioDnsRecords(
     provider?: cloudflare.Provider,
     pagesSubdomains?: Record<string, pulumi.Output<string>>,
     workerSubdomains?: Record<string, pulumi.Output<string>>,
+    workerCustomDomains?: Record<string, cloudflare.WorkersCustomDomain>,
 ): DnsOutputs {
     const projectName = getProjectName();
 
@@ -129,14 +130,18 @@ export function createPortfolioDnsRecords(
             proxied: true,
             comment: "Documentation wiki",
         },
-        {
+    ];
+
+    const hasApiCustomDomain = workerCustomDomains && Object.keys(workerCustomDomains).length > 0;
+    if (!hasApiCustomDomain) {
+        records.push({
             name: "api",
             type: "CNAME",
             content: apiSubdomain,
             proxied: true,
             comment: "API worker",
-        },
-    ];
+        });
+    }
 
     return createDnsRecords(config, records, provider);
 }

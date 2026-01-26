@@ -35,6 +35,7 @@
      - **Zone** → **Zone** → **Read**
      - **Account** → **Cloudflare Pages** → **Edit**
      - **Account** → **Workers Scripts** → **Edit**
+     - **Account** → **Access: Apps and Policies** → **Edit** (Zero Trust Access用)
    - **Account Resources**: 対象のアカウントを選択
    - **Zone Resources**: 「Include」を選択し、対象のゾーンを選択
 5. 「Continue to summary」→「Create Token」をクリック
@@ -649,6 +650,7 @@ bun run scripts/verify.ts
 - **Zone: Zone:Read** - ゾーン情報の読み取り
 - **Account: Cloudflare Pages:Edit** - Pagesプロジェクトの作成・編集
 - **Account: Workers Scripts:Edit** - Workersスクリプトの作成・編集
+- **Account: Access: Apps and Policies:Edit** - Zero Trust Accessアプリケーションとポリシーの作成・編集（rc/stg環境でプレビューデプロイメントのアクセス制御に使用）
 
 トークンの作成方法：
 

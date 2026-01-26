@@ -33,7 +33,7 @@ export function createSubdomainRecords(config, subdomains, provider) {
     }));
     return createDnsRecords(config, records, provider);
 }
-export function createPortfolioDnsRecords(config, provider, pagesSubdomains, workerSubdomains) {
+export function createPortfolioDnsRecords(config, provider, pagesSubdomains, workerSubdomains, workerCustomDomains) {
     const projectName = getProjectName();
     const defaultWebSubdomain = `${projectName}-web.pages.dev`;
     const defaultAdminSubdomain = `${projectName}-admin.pages.dev`;
@@ -83,14 +83,17 @@ export function createPortfolioDnsRecords(config, provider, pagesSubdomains, wor
             proxied: true,
             comment: "Documentation wiki",
         },
-        {
+    ];
+    const hasApiCustomDomain = workerCustomDomains && Object.keys(workerCustomDomains).length > 0;
+    if (!hasApiCustomDomain) {
+        records.push({
             name: "api",
             type: "CNAME",
             content: apiSubdomain,
             proxied: true,
             comment: "API worker",
-        },
-    ];
+        });
+    }
     return createDnsRecords(config, records, provider);
 }
 //# sourceMappingURL=dns.js.map

@@ -19,5 +19,5 @@ export declare function createSubdomainRecords(config: InfraConfig, subdomains: 
     target: string | pulumi.Output<string>;
     proxied?: boolean;
 }>, provider?: cloudflare.Provider): DnsOutputs;
-export declare function createPortfolioDnsRecords(config: InfraConfig, provider?: cloudflare.Provider, pagesSubdomains?: Record<string, pulumi.Output<string>>, workerSubdomains?: Record<string, pulumi.Output<string>>): DnsOutputs;
+export declare function createPortfolioDnsRecords(config: InfraConfig, provider?: cloudflare.Provider, pagesSubdomains?: Record<string, pulumi.Output<string>>, workerSubdomains?: Record<string, pulumi.Output<string>>, workerCustomDomains?: Record<string, cloudflare.WorkersCustomDomain>): DnsOutputs;
 //# sourceMappingURL=dns.d.ts.map

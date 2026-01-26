@@ -330,7 +330,13 @@ const workers = createPortfolioApiWorker(
     cloudflareProvider,
 );
 
-const dnsRecords = createPortfolioDnsRecords(config, cloudflareProvider, pagesProjects.subdomains, workers.subdomains);
+const dnsRecords = createPortfolioDnsRecords(
+    config,
+    cloudflareProvider,
+    pagesProjects.subdomains,
+    workers.subdomains,
+    workers.domains,
+);
 
 export const dnsRecordIds = pulumi
     .output(dnsRecords.records)
