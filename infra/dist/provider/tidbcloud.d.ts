@@ -1,35 +1,20 @@
+import * as command from "@pulumi/command";
 import * as pulumi from "@pulumi/pulumi";
-export interface TiDBCloudApiKey {
-    publicKey: string;
-    privateKey: string;
+export interface TiDBCloudServerlessClusterOutputs {
+    createCommand: command.local.Command;
+    clusterId: pulumi.Output<string>;
+    connectionString: pulumi.Output<string>;
+    host: pulumi.Output<string>;
+    status: pulumi.Output<string>;
 }
-export interface TiDBCloudServerlessClusterInputs {
+/**
+ * TiDB Cloud Serverless クラスターを curl + Digest認証で作成
+ */
+export declare function createTiDBCloudServerlessCluster(name: string, args: {
     displayName: string;
     region: string;
     spendingLimitMonthly?: number;
-    projectId?: string;
-}
-export interface TiDBCloudServerlessClusterOutputs {
-    id: string;
-    displayName: string;
-    region: string;
-    status: string;
-    connectionString?: string;
-    host?: string;
-}
-export declare class TiDBCloudServerlessCluster extends pulumi.dynamic.Resource {
-    readonly displayName: pulumi.Output<string>;
-    readonly region: pulumi.Output<string>;
-    readonly status: pulumi.Output<string>;
-    readonly connectionString: pulumi.Output<string>;
-    readonly host: pulumi.Output<string>;
-    constructor(name: string, args: {
-        displayName: pulumi.Input<string>;
-        region: pulumi.Input<string>;
-        spendingLimitMonthly?: pulumi.Input<number>;
-        projectId?: pulumi.Input<string>;
-        publicKey: pulumi.Input<string>;
-        privateKey: pulumi.Input<string>;
-    }, opts?: pulumi.CustomResourceOptions);
-}
+    publicKey: pulumi.Input<string>;
+    privateKey: pulumi.Input<string>;
+}, opts?: pulumi.CustomResourceOptions): TiDBCloudServerlessClusterOutputs;
 //# sourceMappingURL=tidbcloud.d.ts.map

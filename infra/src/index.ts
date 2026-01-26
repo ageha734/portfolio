@@ -316,7 +316,7 @@ new doppler.Secret(
                 return "";
             }),
     },
-    tidb.cluster ? { dependsOn: [tidb.cluster] } : undefined,
+    tidb.cluster?.createCommand ? { dependsOn: [tidb.cluster.createCommand] } : undefined,
 );
 
 export const tidbConnectionString = tidb.connectionString;

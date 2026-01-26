@@ -1,5 +1,5 @@
 import * as pulumi from "@pulumi/pulumi";
-import { TiDBCloudServerlessCluster } from "../provider/tidbcloud.js";
+import { type TiDBCloudServerlessClusterOutputs } from "../provider/tidbcloud.js";
 import type { SecretsOutputs } from "./secrets.js";
 export declare const TIDB_ALLOWED_REGIONS: readonly ["ap-northeast-1"];
 export type TiDBAllowedRegion = (typeof TIDB_ALLOWED_REGIONS)[number];
@@ -14,7 +14,7 @@ export interface TiDBOutputs {
     clusterConfig: TiDBServerlessConfig;
     connectionString: pulumi.Output<string>;
     host: pulumi.Output<string>;
-    cluster?: TiDBCloudServerlessCluster;
+    cluster?: TiDBCloudServerlessClusterOutputs;
 }
 export declare function createTiDBServerlessConfig(clusterConfig: TiDBServerlessConfig, secrets?: {
     databaseUrl?: pulumi.Output<string>;

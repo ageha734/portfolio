@@ -259,7 +259,7 @@ new doppler.Secret("doppler-secret-auto-database-url", {
         pulumi.log.warn("[DEBUG_TRACE] >>> WARNING: No DATABASE_URL available, using empty string");
         return "";
     }),
-}, tidb.cluster ? { dependsOn: [tidb.cluster] } : undefined);
+}, tidb.cluster?.createCommand ? { dependsOn: [tidb.cluster.createCommand] } : undefined);
 export const tidbConnectionString = tidb.connectionString;
 export const tidbHost = tidb.host;
 export const redisConnectionString = redis.connectionString;

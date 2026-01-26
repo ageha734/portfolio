@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import { getProjectName } from "../config.js";
-import { TiDBCloudServerlessCluster } from "../provider/tidbcloud.js";
+import { createTiDBCloudServerlessCluster } from "../provider/tidbcloud.js";
 export const TIDB_ALLOWED_REGIONS = ["ap-northeast-1"];
 function validateTiDBRegion(region) {
     if (!TIDB_ALLOWED_REGIONS.includes(region)) {
@@ -54,7 +54,7 @@ export function createPortfolioTiDBConfig(secrets, apiKeys) {
     let host;
     if (shouldCreateCluster && apiKeys?.publicKey && apiKeys?.privateKey) {
         pulumi.log.info(`[DEBUG_TRACE] >>> ENTRY: createTiDBCluster(displayName=${clusterConfig.name}, region=${region})`);
-        cluster = new TiDBCloudServerlessCluster("tidb-cluster", {
+        cluster = createTiDBCloudServerlessCluster("tidb-cluster", {
             displayName: clusterConfig.name,
             region: clusterConfig.region,
             spendingLimitMonthly: clusterConfig.spendingLimitMonthly,
@@ -69,26 +69,26 @@ export function createPortfolioTiDBConfig(secrets, apiKeys) {
             `クラスター名: ${clusterConfig.name}, リージョン: ${clusterConfig.region}`);
     }
     else {
-        if (!secrets?.DATABASE_URL) {
+        if (secrets?.DATABASE_URL) {
+            secrets.DATABASE_URL.apply((url) => {
+                if (url && url.trim() !== "") {
+                    pulumi.log.info("[DEBUG_TRACE] >>> TiDBクラスター接続情報が設定されています。" +
+                        `クラスター名: ${clusterConfig.name}, リージョン: ${clusterConfig.region}, データベース名: ${clusterConfig.database}`);
+                }
+                else {
+                    pulumi.log.warn("[DEBUG_TRACE] >>> DATABASE_URLが空です。" +
+                        "TiDB Cloudダッシュボードでクラスターを作成し、DATABASE_URLをDopplerに設定してください。" +
+                        "詳細は infra/scripts/TIDB_CLOUD_MANUAL_SETUP.md を参照してください。");
+                }
+                return url;
+            });
+        }
+        else {
             pulumi.log.warn("[DEBUG_TRACE] >>> TiDBクラスターが設定されていません。" +
                 "TiDB Cloudダッシュボードでクラスターを作成し、DATABASE_URLをDopplerに設定してください。" +
                 "または、createTiDBCluster=true を設定し、TIDBCLOUD_PUBLIC_KEY と TIDBCLOUD_PRIVATE_KEY をDopplerに設定してください。" +
                 "詳細は infra/scripts/TIDB_CLOUD_MANUAL_SETUP.md を参照してください。" +
                 `クラスター名: ${clusterConfig.name}, リージョン: ${clusterConfig.region}, データベース名: ${clusterConfig.database}`);
-        }
-        else {
-            secrets.DATABASE_URL.apply((url) => {
-                if (!url || url.trim() === "") {
-                    pulumi.log.warn("[DEBUG_TRACE] >>> DATABASE_URLが空です。" +
-                        "TiDB Cloudダッシュボードでクラスターを作成し、DATABASE_URLをDopplerに設定してください。" +
-                        "詳細は infra/scripts/TIDB_CLOUD_MANUAL_SETUP.md を参照してください。");
-                }
-                else {
-                    pulumi.log.info("[DEBUG_TRACE] >>> TiDBクラスター接続情報が設定されています。" +
-                        `クラスター名: ${clusterConfig.name}, リージョン: ${clusterConfig.region}, データベース名: ${clusterConfig.database}`);
-                }
-                return url;
-            });
         }
         const configResult = createTiDBServerlessConfig(clusterConfig, secrets ? { databaseUrl: secrets.DATABASE_URL } : undefined);
         connectionString = configResult.connectionString;

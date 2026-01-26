@@ -92,8 +92,6 @@ export function createPagesProjects(
             project.secrets,
         );
 
-        // Pulumi Cloudflare Providerのバグを回避するため、servicesは設定しない
-        // 代わりにlocal.CommandでCloudflare APIを直接呼び出す
         const pagesProject = new cloudflare.PagesProject(
             resourceNameBase,
             {
@@ -125,7 +123,6 @@ export function createPagesProjects(
 
         createdProjects[resourceNameBase] = pagesProject;
 
-        // Service Bindingが設定されている場合、Cloudflare APIを直接呼び出して設定
         if (project.serviceBinding) {
             const serviceBindingOutput = pulumi.output(project.serviceBinding);
 
@@ -135,7 +132,7 @@ export function createPagesProjects(
                     create: pulumi
                         .all([pagesProject.name, serviceBindingOutput, accountId])
                         .apply(([projectName, binding, accId]) => {
-                            if (!binding || !binding.service) {
+                            if (!binding?.service) {
                                 return 'echo "No service binding configured"';
                             }
                             const serviceName = binding.service;
@@ -145,7 +142,6 @@ export function createPagesProjects(
                                 `[SERVICE_BINDING] Configuring service binding via API for "${projectName}" with service: ${serviceName}`,
                             );
 
-                            // Cloudflare API を呼び出してservice bindingを設定
                             const payload = JSON.stringify({
                                 deployment_configs: {
                                     production: {
