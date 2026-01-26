@@ -121,9 +121,6 @@ bunx prisma migrate dev --name migration_name
 # スキーマをデータベースにプッシュ（開発環境のみ）
 cd packages/db
 bun run push
-
-# または、直接実行
-bunx dotenv-cli -e ../../.env -- prisma db push
 ```
 
 ### 本番環境でのマイグレーション

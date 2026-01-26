@@ -28,7 +28,7 @@
     "studio": "bun run with-env prisma studio --browser none",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "doppler run --"
   },
   "dependencies": {
     "@prisma/client": "5.22.0"

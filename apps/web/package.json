@@ -26,7 +26,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "visual": "docker run --rm -e CI=true -e APP_DIR=apps/web -v $(git rev-parse --show-toplevel):/work -w /work/apps/web -v $(git rev-parse --show-toplevel)/node_modules:/work/node_modules -v $(git rev-parse --show-toplevel)/docs/visual/report:/work/docs/playwright/report e2e bun x playwright test --config=playwright.storybook.config.ts e2e/storybook/visual",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "doppler run --"
   },
   "dependencies": {
     "@fireworks-js/react": "2.10.8",

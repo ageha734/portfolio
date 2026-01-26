@@ -24,7 +24,7 @@
     "lint:fix": "biome lint --write .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "doppler run --"
   },
   "dependencies": {
     "@portfolio/db": "workspace:*",
