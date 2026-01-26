@@ -57,10 +57,8 @@ export function createTiDBCloudServerlessCluster(
     const clusterId: pulumi.Output<string> = createClusterCommand.stdout.apply((stdout): string => {
         try {
             const response = JSON.parse(stdout);
-            // v1beta1 format: clusterId
             return (response.clusterId as string) ?? "";
         } catch {
-            pulumi.log.warn(`[DEBUG_TRACE] >>> Failed to parse TiDB response for clusterId: ${stdout}`);
             return "";
         }
     });
@@ -68,14 +66,12 @@ export function createTiDBCloudServerlessCluster(
     const host: pulumi.Output<string> = createClusterCommand.stdout.apply((stdout): string => {
         try {
             const response = JSON.parse(stdout);
-            // v1beta1 format: endpoints.public.host
             const publicHost = response.endpoints?.public?.host as string | undefined;
             if (publicHost) {
                 return publicHost;
             }
             return `gateway01.${args.region}.prod.aws.tidbcloud.com`;
         } catch {
-            pulumi.log.warn(`[DEBUG_TRACE] >>> Failed to parse TiDB response for host: ${stdout}`);
             return `gateway01.${args.region}.prod.aws.tidbcloud.com`;
         }
     });
@@ -85,16 +81,13 @@ export function createTiDBCloudServerlessCluster(
         .apply(([stdout, hostValue]): string => {
             try {
                 const response = JSON.parse(stdout);
-                // v1beta1 format: userPrefix for constructing connection string
                 const userPrefix = response.userPrefix as string | undefined;
                 const port = response.endpoints?.public?.port ?? 4000;
                 if (userPrefix && hostValue) {
-                    // MySQL connection string format for TiDB Serverless
                     return `mysql://${userPrefix}:<password>@${hostValue}:${port}/?ssl-mode=VERIFY_IDENTITY`;
                 }
                 return "";
             } catch {
-                pulumi.log.warn(`[DEBUG_TRACE] >>> Failed to parse TiDB response for connectionString: ${stdout}`);
                 return "";
             }
         });
@@ -102,10 +95,8 @@ export function createTiDBCloudServerlessCluster(
     const status: pulumi.Output<string> = createClusterCommand.stdout.apply((stdout): string => {
         try {
             const response = JSON.parse(stdout);
-            // v1beta1 format: state (CREATING, ACTIVE, etc.)
             return (response.state as string) ?? "UNKNOWN";
         } catch {
-            pulumi.log.warn(`[DEBUG_TRACE] >>> Failed to parse TiDB response for status: ${stdout}`);
             return "UNKNOWN";
         }
     });

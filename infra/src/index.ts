@@ -293,26 +293,15 @@ new doppler.Secret(
         value: pulumi
             .all([tidb.cluster?.connectionString, tidb.connectionString, secrets.DATABASE_URL])
             .apply(([clusterConnectionString, generatedUrl, existingUrl]) => {
-                pulumi.log.info(
-                    `[DEBUG_TRACE] >>> STATE: DATABASE_URL selection - clusterConnectionString: ${clusterConnectionString ? "exists" : "none"}, generatedUrl: ${generatedUrl ? "exists" : "none"}, existingUrl: ${existingUrl ? "exists" : "none"}`,
-                );
-
                 if (clusterConnectionString && clusterConnectionString.trim() !== "") {
-                    pulumi.log.info("[DEBUG_TRACE] >>> STATE: Using cluster connection string for DATABASE_URL");
                     return clusterConnectionString;
                 }
-
                 if (existingUrl && existingUrl.trim() !== "") {
-                    pulumi.log.info("[DEBUG_TRACE] >>> STATE: Using existing DATABASE_URL from Doppler");
                     return existingUrl;
                 }
-
                 if (generatedUrl && generatedUrl.trim() !== "") {
-                    pulumi.log.info("[DEBUG_TRACE] >>> STATE: Using generated URL for DATABASE_URL");
                     return generatedUrl;
                 }
-
-                pulumi.log.warn("[DEBUG_TRACE] >>> WARNING: No DATABASE_URL available, using empty string");
                 return "";
             }),
     },
@@ -348,25 +337,20 @@ const workers = createPortfolioApiWorker(
 const apiWorkerScriptName = (() => {
     const apiWorkerKey = Object.keys(workers.scripts).find((key) => key.includes("api"));
     if (!apiWorkerKey) {
-        throw new Error(
-            "[DEBUG_TRACE] >>> ERROR: API Worker script not found. Service Binding requires an API Worker to be created first.",
-        );
+        throw new Error("API Worker script not found. Service Binding requires an API Worker to be created first.");
     }
     const workerScript = workers.scripts[apiWorkerKey];
     if (!workerScript) {
-        throw new Error(
-            `[DEBUG_TRACE] >>> ERROR: API Worker script not found for key "${apiWorkerKey}". Service Binding cannot be configured.`,
-        );
+        throw new Error(`API Worker script not found for key "${apiWorkerKey}". Service Binding cannot be configured.`);
     }
     const scriptName = workerScript.scriptName;
 
     return scriptName.apply((name) => {
         if (!name || name.trim() === "") {
             throw new Error(
-                `[DEBUG_TRACE] >>> ERROR: API Worker script name is empty for key "${apiWorkerKey}". Service Binding cannot be configured.`,
+                `API Worker script name is empty for key "${apiWorkerKey}". Service Binding cannot be configured.`,
             );
         }
-        pulumi.log.info(`[DEBUG_TRACE] >>> STATE: API Worker script name found: ${name}`);
         return name;
     });
 })();

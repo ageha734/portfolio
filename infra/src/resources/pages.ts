@@ -138,10 +138,6 @@ export function createPagesProjects(
                             const serviceName = binding.service;
                             const environment = binding.environment || "production";
 
-                            pulumi.log.info(
-                                `[SERVICE_BINDING] Configuring service binding via API for "${projectName}" with service: ${serviceName}`,
-                            );
-
                             const payload = JSON.stringify({
                                 deployment_configs: {
                                     production: {
@@ -229,17 +225,14 @@ export function createPortfolioPagesProjects(
 
     if (!apiWorkerScriptName) {
         throw new Error(
-            "[DEBUG_TRACE] >>> ERROR: apiWorkerScriptName is required for Service Binding. Service Binding must be configured for admin and web Pages projects.",
+            "apiWorkerScriptName is required for Service Binding. Service Binding must be configured for admin and web Pages projects.",
         );
     }
 
     const webServiceBinding: pulumi.Output<ServiceBindingConfig> = apiWorkerScriptName.apply((scriptName) => {
         if (!scriptName || scriptName.trim() === "") {
-            throw new Error(
-                "[DEBUG_TRACE] >>> ERROR: API Worker script name is empty. Service Binding cannot be configured.",
-            );
+            throw new Error("API Worker script name is empty. Service Binding cannot be configured.");
         }
-        pulumi.log.info(`[SERVICE_BINDING] Configuring Service Binding for web project with script: ${scriptName}`);
         return {
             service: scriptName,
             environment: "production",
@@ -248,11 +241,8 @@ export function createPortfolioPagesProjects(
 
     const adminServiceBinding: pulumi.Output<ServiceBindingConfig> = apiWorkerScriptName.apply((scriptName) => {
         if (!scriptName || scriptName.trim() === "") {
-            throw new Error(
-                "[DEBUG_TRACE] >>> ERROR: API Worker script name is empty. Service Binding cannot be configured.",
-            );
+            throw new Error("API Worker script name is empty. Service Binding cannot be configured.");
         }
-        pulumi.log.info(`[SERVICE_BINDING] Configuring Service Binding for admin project with script: ${scriptName}`);
         return {
             service: scriptName,
             environment: "production",
