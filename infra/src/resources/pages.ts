@@ -12,6 +12,8 @@ export interface ServiceBindingConfig {
     environment?: string;
 }
 
+export type ServiceBindingConfigOutput = pulumi.Output<ServiceBindingConfig | undefined>;
+
 export interface PagesProjectConfig {
     name: pulumi.Input<string>;
     productionBranch: string;
@@ -22,7 +24,7 @@ export interface PagesProjectConfig {
     secrets?: Record<string, pulumi.Output<string>>;
     compatibilityDate?: string;
     customDomain?: string;
-    serviceBinding?: ServiceBindingConfig;
+    serviceBinding?: ServiceBindingConfig | ServiceBindingConfigOutput;
 }
 
 export interface PagesOutputs {
@@ -87,28 +89,52 @@ export function createPagesProjects(
             project.secrets,
         );
 
-        const productionServices:
-            | Record<string, cloudflare.types.input.PagesProjectDeploymentConfigsProductionServices>
-            | undefined = project.serviceBinding
-            ? {
-                  API_SERVICE: {
-                      service: project.serviceBinding.service,
-                      entrypoint: project.serviceBinding.entrypoint,
-                      environment: project.serviceBinding.environment || "production",
-                  },
-              }
+        const productionServices = project.serviceBinding
+            ? pulumi.output(project.serviceBinding).apply((binding) => {
+                  if (!binding) {
+                      return null;
+                  }
+                  const service = "service" in binding ? binding.service : undefined;
+                  if (!service) {
+                      return null;
+                  }
+                  return pulumi.output(service).apply((serviceName) => {
+                      if (!serviceName || serviceName.trim() === "") {
+                          return null;
+                      }
+                      return {
+                          API_SERVICE: {
+                              service: binding.service,
+                              entrypoint: binding.entrypoint,
+                              environment: binding.environment || "production",
+                          },
+                      };
+                  });
+              })
             : undefined;
 
-        const previewServices:
-            | Record<string, cloudflare.types.input.PagesProjectDeploymentConfigsPreviewServices>
-            | undefined = project.serviceBinding
-            ? {
-                  API_SERVICE: {
-                      service: project.serviceBinding.service,
-                      entrypoint: project.serviceBinding.entrypoint,
-                      environment: project.serviceBinding.environment || "production",
-                  },
-              }
+        const previewServices = project.serviceBinding
+            ? pulumi.output(project.serviceBinding).apply((binding) => {
+                  if (!binding) {
+                      return null;
+                  }
+                  const service = "service" in binding ? binding.service : undefined;
+                  if (!service) {
+                      return null;
+                  }
+                  return pulumi.output(service).apply((serviceName) => {
+                      if (!serviceName || serviceName.trim() === "") {
+                          return null;
+                      }
+                      return {
+                          API_SERVICE: {
+                              service: binding.service,
+                              entrypoint: binding.entrypoint,
+                              environment: binding.environment || "production",
+                          },
+                      };
+                  });
+              })
             : undefined;
 
         const pagesProject = new cloudflare.PagesProject(
@@ -122,20 +148,34 @@ export function createPagesProjects(
                     destinationDir: project.destinationDir || "dist",
                     rootDir: project.rootDir,
                 },
-                deploymentConfigs: {
-                    production: {
-                        envVars: productionEnvVars,
-                        compatibilityDate: project.compatibilityDate || "2025-01-01",
-                        compatibilityFlags: ["nodejs_compat"],
-                        services: productionServices,
-                    },
-                    preview: {
-                        envVars: previewEnvVars,
-                        compatibilityDate: project.compatibilityDate || "2025-01-01",
-                        compatibilityFlags: ["nodejs_compat"],
-                        services: previewServices,
-                    },
-                },
+                deploymentConfigs: pulumi
+                    .all([productionServices, previewServices])
+                    .apply(([prodServices, prevServices]) => {
+                        const productionConfig: cloudflare.types.input.PagesProjectDeploymentConfigsProduction = {
+                            envVars: productionEnvVars,
+                            compatibilityDate: project.compatibilityDate || "2025-01-01",
+                            compatibilityFlags: ["nodejs_compat"],
+                        };
+
+                        if (prodServices) {
+                            productionConfig.services = prodServices;
+                        }
+
+                        const previewConfig: cloudflare.types.input.PagesProjectDeploymentConfigsPreview = {
+                            envVars: previewEnvVars,
+                            compatibilityDate: project.compatibilityDate || "2025-01-01",
+                            compatibilityFlags: ["nodejs_compat"],
+                        };
+
+                        if (prevServices) {
+                            previewConfig.services = prevServices;
+                        }
+
+                        return {
+                            production: productionConfig,
+                            preview: previewConfig,
+                        };
+                    }),
             },
             {
                 provider,
@@ -189,6 +229,30 @@ export function createPortfolioPagesProjects(
     const adminRandomSuffix = generateRandomSuffix(`${projectName}-admin-random`);
     const wikiRandomSuffix = generateRandomSuffix(`${projectName}-wiki-random`);
 
+    const webServiceBinding = apiWorkerScriptName
+        ? pulumi.all([apiWorkerScriptName]).apply(([scriptName]) => {
+              if (!scriptName || scriptName.trim() === "") {
+                  return undefined;
+              }
+              return {
+                  service: apiWorkerScriptName,
+                  environment: "production",
+              };
+          })
+        : undefined;
+
+    const adminServiceBinding = apiWorkerScriptName
+        ? pulumi.all([apiWorkerScriptName]).apply(([scriptName]) => {
+              if (!scriptName || scriptName.trim() === "") {
+                  return undefined;
+              }
+              return {
+                  service: apiWorkerScriptName,
+                  environment: "production",
+              };
+          })
+        : undefined;
+
     const projects: PagesProjectConfig[] = [
         {
             name: pulumi.all([projectName, webRandomSuffix.result]).apply(([name, suffix]) => `${name}-web-${suffix}`),
@@ -200,12 +264,7 @@ export function createPortfolioPagesProjects(
             environmentVariables: {
                 NODE_ENV: "production",
             },
-            serviceBinding: apiWorkerScriptName
-                ? {
-                      service: apiWorkerScriptName,
-                      environment: "production",
-                  }
-                : undefined,
+            serviceBinding: webServiceBinding,
         },
         {
             name: pulumi
@@ -219,12 +278,7 @@ export function createPortfolioPagesProjects(
             environmentVariables: {
                 NODE_ENV: "production",
             },
-            serviceBinding: apiWorkerScriptName
-                ? {
-                      service: apiWorkerScriptName,
-                      environment: "production",
-                  }
-                : undefined,
+            serviceBinding: adminServiceBinding,
         },
         {
             name: pulumi

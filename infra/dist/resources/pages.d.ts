@@ -6,6 +6,7 @@ export interface ServiceBindingConfig {
     entrypoint?: string;
     environment?: string;
 }
+export type ServiceBindingConfigOutput = pulumi.Output<ServiceBindingConfig | undefined>;
 export interface PagesProjectConfig {
     name: pulumi.Input<string>;
     productionBranch: string;
@@ -16,7 +17,7 @@ export interface PagesProjectConfig {
     secrets?: Record<string, pulumi.Output<string>>;
     compatibilityDate?: string;
     customDomain?: string;
-    serviceBinding?: ServiceBindingConfig;
+    serviceBinding?: ServiceBindingConfig | ServiceBindingConfigOutput;
 }
 export interface PagesOutputs {
     projects: Record<string, cloudflare.PagesProject>;

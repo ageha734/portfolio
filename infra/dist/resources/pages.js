@@ -41,22 +41,50 @@ export function createPagesProjects(config, projects, provider) {
         const productionEnvVars = buildEnvVars(project.environmentVariables, project.secrets);
         const previewEnvVars = buildEnvVars({ ...project.environmentVariables, NODE_ENV: "development" }, project.secrets);
         const productionServices = project.serviceBinding
-            ? {
-                API_SERVICE: {
-                    service: project.serviceBinding.service,
-                    entrypoint: project.serviceBinding.entrypoint,
-                    environment: project.serviceBinding.environment || "production",
-                },
-            }
+            ? pulumi.output(project.serviceBinding).apply((binding) => {
+                if (!binding) {
+                    return null;
+                }
+                const service = "service" in binding ? binding.service : undefined;
+                if (!service) {
+                    return null;
+                }
+                return pulumi.output(service).apply((serviceName) => {
+                    if (!serviceName || serviceName.trim() === "") {
+                        return null;
+                    }
+                    return {
+                        API_SERVICE: {
+                            service: binding.service,
+                            entrypoint: binding.entrypoint,
+                            environment: binding.environment || "production",
+                        },
+                    };
+                });
+            })
             : undefined;
         const previewServices = project.serviceBinding
-            ? {
-                API_SERVICE: {
-                    service: project.serviceBinding.service,
-                    entrypoint: project.serviceBinding.entrypoint,
-                    environment: project.serviceBinding.environment || "production",
-                },
-            }
+            ? pulumi.output(project.serviceBinding).apply((binding) => {
+                if (!binding) {
+                    return null;
+                }
+                const service = "service" in binding ? binding.service : undefined;
+                if (!service) {
+                    return null;
+                }
+                return pulumi.output(service).apply((serviceName) => {
+                    if (!serviceName || serviceName.trim() === "") {
+                        return null;
+                    }
+                    return {
+                        API_SERVICE: {
+                            service: binding.service,
+                            entrypoint: binding.entrypoint,
+                            environment: binding.environment || "production",
+                        },
+                    };
+                });
+            })
             : undefined;
         const pagesProject = new cloudflare.PagesProject(resourceNameBase, {
             accountId,
@@ -67,20 +95,30 @@ export function createPagesProjects(config, projects, provider) {
                 destinationDir: project.destinationDir || "dist",
                 rootDir: project.rootDir,
             },
-            deploymentConfigs: {
-                production: {
+            deploymentConfigs: pulumi
+                .all([productionServices, previewServices])
+                .apply(([prodServices, prevServices]) => {
+                const productionConfig = {
                     envVars: productionEnvVars,
                     compatibilityDate: project.compatibilityDate || "2025-01-01",
                     compatibilityFlags: ["nodejs_compat"],
-                    services: productionServices,
-                },
-                preview: {
+                };
+                if (prodServices) {
+                    productionConfig.services = prodServices;
+                }
+                const previewConfig = {
                     envVars: previewEnvVars,
                     compatibilityDate: project.compatibilityDate || "2025-01-01",
                     compatibilityFlags: ["nodejs_compat"],
-                    services: previewServices,
-                },
-            },
+                };
+                if (prevServices) {
+                    previewConfig.services = prevServices;
+                }
+                return {
+                    production: productionConfig,
+                    preview: previewConfig,
+                };
+            }),
         }, {
             provider,
         });
@@ -113,6 +151,28 @@ export function createPortfolioPagesProjects(config, _secrets, provider, apiWork
     const webRandomSuffix = generateRandomSuffix(`${projectName}-web-random`);
     const adminRandomSuffix = generateRandomSuffix(`${projectName}-admin-random`);
     const wikiRandomSuffix = generateRandomSuffix(`${projectName}-wiki-random`);
+    const webServiceBinding = apiWorkerScriptName
+        ? pulumi.all([apiWorkerScriptName]).apply(([scriptName]) => {
+            if (!scriptName || scriptName.trim() === "") {
+                return undefined;
+            }
+            return {
+                service: apiWorkerScriptName,
+                environment: "production",
+            };
+        })
+        : undefined;
+    const adminServiceBinding = apiWorkerScriptName
+        ? pulumi.all([apiWorkerScriptName]).apply(([scriptName]) => {
+            if (!scriptName || scriptName.trim() === "") {
+                return undefined;
+            }
+            return {
+                service: apiWorkerScriptName,
+                environment: "production",
+            };
+        })
+        : undefined;
     const projects = [
         {
             name: pulumi.all([projectName, webRandomSuffix.result]).apply(([name, suffix]) => `${name}-web-${suffix}`),
@@ -124,12 +184,7 @@ export function createPortfolioPagesProjects(config, _secrets, provider, apiWork
             environmentVariables: {
                 NODE_ENV: "production",
             },
-            serviceBinding: apiWorkerScriptName
-                ? {
-                    service: apiWorkerScriptName,
-                    environment: "production",
-                }
-                : undefined,
+            serviceBinding: webServiceBinding,
         },
         {
             name: pulumi
@@ -143,12 +198,7 @@ export function createPortfolioPagesProjects(config, _secrets, provider, apiWork
             environmentVariables: {
                 NODE_ENV: "production",
             },
-            serviceBinding: apiWorkerScriptName
-                ? {
-                    service: apiWorkerScriptName,
-                    environment: "production",
-                }
-                : undefined,
+            serviceBinding: adminServiceBinding,
         },
         {
             name: pulumi
