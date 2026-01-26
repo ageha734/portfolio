@@ -1,13 +1,46 @@
 import * as cloudflare from "@pulumi/cloudflare";
 import * as pulumi from "@pulumi/pulumi";
+import * as random from "@pulumi/random";
 import { getProjectName } from "../config.js";
-export function createPagesProjects(config, projects) {
+function generateRandomSuffix(resourceName) {
+    return new random.RandomString(`${resourceName}-random-suffix`, {
+        length: 6,
+        special: false,
+        upper: false,
+        lower: true,
+        numeric: true,
+    });
+}
+function buildEnvVars(environmentVariables, secrets) {
+    const envVars = {};
+    let hasEnvVars = false;
+    if (environmentVariables) {
+        for (const [key, value] of Object.entries(environmentVariables)) {
+            envVars[key] = { type: "plain_text", value };
+            hasEnvVars = true;
+        }
+    }
+    if (secrets) {
+        for (const [key, value] of Object.entries(secrets)) {
+            envVars[key] = { type: "secret_text", value };
+            hasEnvVars = true;
+        }
+    }
+    return hasEnvVars ? envVars : undefined;
+}
+export function createPagesProjects(config, projects, provider) {
     const { accountId, domain } = config.cloudflare;
     const createdProjects = {};
     const createdDomains = {};
-    for (const project of projects) {
-        const resourceName = `pages-${project.name}`;
-        const pagesProject = new cloudflare.PagesProject(resourceName, {
+    const createdSubdomains = {};
+    for (let i = 0; i < projects.length; i++) {
+        const project = projects[i];
+        if (!project)
+            continue;
+        const resourceNameBase = `pages-project-${i}`;
+        const productionEnvVars = buildEnvVars(project.environmentVariables, project.secrets);
+        const previewEnvVars = buildEnvVars({ ...project.environmentVariables, NODE_ENV: "development" }, project.secrets);
+        const pagesProject = new cloudflare.PagesProject(resourceNameBase, {
             accountId,
             name: project.name,
             productionBranch: project.productionBranch,
@@ -18,44 +51,53 @@ export function createPagesProjects(config, projects) {
             },
             deploymentConfigs: {
                 production: {
-                    environmentVariables: project.environmentVariables,
-                    secrets: project.secrets,
+                    envVars: productionEnvVars,
                     compatibilityDate: project.compatibilityDate || "2025-01-01",
                     compatibilityFlags: ["nodejs_compat"],
                 },
                 preview: {
-                    environmentVariables: {
-                        ...project.environmentVariables,
-                        NODE_ENV: "development",
-                    },
-                    secrets: project.secrets,
+                    envVars: previewEnvVars,
                     compatibilityDate: project.compatibilityDate || "2025-01-01",
                     compatibilityFlags: ["nodejs_compat"],
                 },
             },
+        }, {
+            provider,
         });
-        createdProjects[resourceName] = pagesProject;
+        createdProjects[resourceNameBase] = pagesProject;
+        // プロジェクト名からサブドメインを生成（実際のCloudflare Pagesのサブドメイン形式）
+        const subdomain = pagesProject.name.apply((name) => `${name}.pages.dev`);
+        // customDomainをキーとして使用（www, admin, wiki）
+        const subdomainKey = project.customDomain || `project-${i}`;
+        createdSubdomains[subdomainKey] = subdomain;
         if (project.customDomain) {
-            const domainResourceName = `pages-domain-${project.name}`;
+            const customDomainValue = project.customDomain;
+            const domainResourceName = `${resourceNameBase}-domain`;
             createdDomains[domainResourceName] = new cloudflare.PagesDomain(domainResourceName, {
                 accountId,
                 projectName: pagesProject.name,
-                domain: `${project.customDomain}.${domain}`,
+                name: `${customDomainValue}.${domain}`,
             }, {
                 dependsOn: [pagesProject],
+                provider,
+                deleteBeforeReplace: true,
             });
         }
     }
     return {
         projects: createdProjects,
         domains: createdDomains,
+        subdomains: createdSubdomains,
     };
 }
-export function createPortfolioPagesProjects(config, _secrets) {
+export function createPortfolioPagesProjects(config, _secrets, provider) {
     const projectName = getProjectName();
+    const webRandomSuffix = generateRandomSuffix(`${projectName}-web-random`);
+    const adminRandomSuffix = generateRandomSuffix(`${projectName}-admin-random`);
+    const wikiRandomSuffix = generateRandomSuffix(`${projectName}-wiki-random`);
     const projects = [
         {
-            name: `${projectName}-web`,
+            name: pulumi.all([projectName, webRandomSuffix.result]).apply(([name, suffix]) => `${name}-web-${suffix}`),
             productionBranch: "master",
             buildCommand: "bun run build",
             destinationDir: "dist",
@@ -66,7 +108,9 @@ export function createPortfolioPagesProjects(config, _secrets) {
             },
         },
         {
-            name: `${projectName}-admin`,
+            name: pulumi
+                .all([projectName, adminRandomSuffix.result])
+                .apply(([name, suffix]) => `${name}-admin-${suffix}`),
             productionBranch: "master",
             buildCommand: "bun run build",
             destinationDir: "dist",
@@ -77,7 +121,9 @@ export function createPortfolioPagesProjects(config, _secrets) {
             },
         },
         {
-            name: `${projectName}-wiki`,
+            name: pulumi
+                .all([projectName, wikiRandomSuffix.result])
+                .apply(([name, suffix]) => `${name}-wiki-${suffix}`),
             productionBranch: "master",
             buildCommand: "bun run build",
             destinationDir: "dist",
@@ -88,6 +134,6 @@ export function createPortfolioPagesProjects(config, _secrets) {
             },
         },
     ];
-    return createPagesProjects(config, projects);
+    return createPagesProjects(config, projects, provider);
 }
 //# sourceMappingURL=pages.js.map

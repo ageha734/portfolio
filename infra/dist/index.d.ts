@@ -34,15 +34,18 @@ export declare const tidbClusterInfo: {
         };
     };
 };
-export declare const dnsRecordIds: pulumi.Output<{
-    [k: string]: pulumi.Output<string>;
-}>;
 export declare const pagesProjectNames: pulumi.Output<{
     [k: string]: pulumi.Output<string>;
 }>;
 export declare const pagesDomainNames: pulumi.Output<{
     [k: string]: pulumi.Output<string>;
 }>;
+export declare const dnsRecordIds: pulumi.Output<{
+    [k: string]: pulumi.Output<string>;
+}>;
+export declare const accessApplicationIds: pulumi.Output<{
+    [k: string]: pulumi.Output<string>;
+}> | undefined;
 export declare const workerScriptNames: pulumi.Output<{
     [k: string]: pulumi.Output<string>;
 }>;
@@ -81,6 +84,9 @@ export declare const summary: {
         redis: {
             name: pulumi.Output<string>;
             subscription: pulumi.Output<string>;
+        } | {
+            name: string;
+            subscription: string;
         };
     };
     cloudflare: {

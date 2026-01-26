@@ -1,5 +1,5 @@
-import * as pulumi from "@pulumi/pulumi";
 import * as cloudflare from "@pulumi/cloudflare";
+import * as pulumi from "@pulumi/pulumi";
 import type { InfraConfig } from "../config.js";
 export interface WorkerConfig {
     name: string;
@@ -32,11 +32,12 @@ export interface WorkerConfig {
 export interface WorkersOutputs {
     scripts: Record<string, cloudflare.WorkersScript>;
     routes: Record<string, cloudflare.WorkersRoute>;
-    domains: Record<string, cloudflare.WorkersDomain>;
+    domains: Record<string, cloudflare.WorkersCustomDomain>;
+    subdomains: Record<string, pulumi.Output<string>>;
 }
-export declare function createWorkers(config: InfraConfig, workers: WorkerConfig[]): WorkersOutputs;
+export declare function createWorkers(config: InfraConfig, workers: WorkerConfig[], provider?: cloudflare.Provider): WorkersOutputs;
 export declare function createPortfolioApiWorker(config: InfraConfig, secrets: {
     databaseUrl: pulumi.Output<string>;
     redisUrl?: pulumi.Output<string>;
-}): WorkersOutputs;
+}, provider?: cloudflare.Provider): WorkersOutputs;
 //# sourceMappingURL=workers.d.ts.map

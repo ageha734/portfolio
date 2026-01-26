@@ -18,19 +18,30 @@ export function getDopplerSecrets() {
     });
     return {
         DATABASE_URL: secrets.apply((s) => {
-            if (!s.map.DATABASE_URL)
-                throw new Error("DATABASE_URL not found in Doppler");
-            return s.map.DATABASE_URL;
+            if (!s.map.DATABASE_URL) {
+                return "";
+            }
+            const value = s.map.DATABASE_URL;
+            if (value.toLowerCase().includes("localhost")) {
+                throw new Error("DATABASE_URLにlocalhostが含まれています。本番環境では使用できません。");
+            }
+            return value;
         }),
         REDIS_URL: secrets.apply((s) => {
-            if (!s.map.REDIS_URL)
-                throw new Error("REDIS_URL not found in Doppler");
-            return s.map.REDIS_URL;
+            if (!s.map.REDIS_URL) {
+                return "";
+            }
+            const value = s.map.REDIS_URL;
+            if (value.toLowerCase().includes("localhost")) {
+                throw new Error("REDIS_URLにlocalhostが含まれています。本番環境では使用できません。");
+            }
+            return value;
         }),
-        TIDB_HOST: secrets.apply((s) => {
-            if (!s.map.TIDB_HOST)
-                throw new Error("TIDB_HOST not found in Doppler");
-            return s.map.TIDB_HOST;
+        REDISCLOUD_SUBSCRIPTION_ID: secrets.apply((s) => {
+            return s.map.REDISCLOUD_SUBSCRIPTION_ID || "";
+        }),
+        REDISCLOUD_DATABASE_ID: secrets.apply((s) => {
+            return s.map.REDISCLOUD_DATABASE_ID || "";
         }),
         CLOUDFLARE_API_TOKEN: secrets.apply((s) => {
             if (!s.map.CLOUDFLARE_API_TOKEN)
@@ -87,11 +98,57 @@ export function getDopplerSecrets() {
                 throw new Error("GOOGLE_CLIENT_SECRET not found in Doppler");
             return s.map.GOOGLE_CLIENT_SECRET;
         }),
+        REDISCLOUD_ACCESS_KEY: secrets.apply((s) => {
+            if (!s.map.REDISCLOUD_ACCESS_KEY)
+                throw new Error("REDISCLOUD_ACCESS_KEY not found in Doppler");
+            return s.map.REDISCLOUD_ACCESS_KEY;
+        }),
+        REDISCLOUD_SECRET_KEY: secrets.apply((s) => {
+            if (!s.map.REDISCLOUD_SECRET_KEY)
+                throw new Error("REDISCLOUD_SECRET_KEY not found in Doppler");
+            return s.map.REDISCLOUD_SECRET_KEY;
+        }),
+        API_BASE_URL: secrets.apply((s) => {
+            return s.map.API_BASE_URL || "";
+        }),
+        APP_VERSION: secrets.apply((s) => {
+            return s.map.APP_VERSION || "";
+        }),
+        BETTER_AUTH_URL: secrets.apply((s) => {
+            return s.map.BETTER_AUTH_URL || "";
+        }),
+        VITE_BASE_URL: secrets.apply((s) => {
+            return s.map.VITE_BASE_URL || "";
+        }),
+        VITE_GOOGLE_ANALYTICS_ENABLED: secrets.apply((s) => {
+            return s.map.VITE_GOOGLE_ANALYTICS_ENABLED || "";
+        }),
+        VITE_GOOGLE_TAG_MANAGER_ENABLED: secrets.apply((s) => {
+            return s.map.VITE_GOOGLE_TAG_MANAGER_ENABLED || "";
+        }),
+        VITE_SENTRY_DSN: secrets.apply((s) => {
+            return s.map.VITE_SENTRY_DSN || "";
+        }),
+        VITE_SENTRY_ENVIRONMENT: secrets.apply((s) => {
+            return s.map.VITE_SENTRY_ENVIRONMENT || "";
+        }),
+        VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE: secrets.apply((s) => {
+            return s.map.VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE || "";
+        }),
+        VITE_SENTRY_REPLAY_SAMPLE_RATE: secrets.apply((s) => {
+            return s.map.VITE_SENTRY_REPLAY_SAMPLE_RATE || "";
+        }),
+        VITE_SENTRY_TRACES_SAMPLE_RATE: secrets.apply((s) => {
+            return s.map.VITE_SENTRY_TRACES_SAMPLE_RATE || "";
+        }),
+        VITE_XSTATE_INSPECTOR_ENABLED: secrets.apply((s) => {
+            return s.map.VITE_XSTATE_INSPECTOR_ENABLED || "";
+        }),
     };
 }
-export function getConfig() {
+export function getConfig(customSecrets) {
     const environment = config.require("environment");
-    const secrets = getDopplerSecrets();
+    const secrets = customSecrets ?? getDopplerSecrets();
     return {
         environment,
         cloudflare: {
@@ -99,6 +156,7 @@ export function getConfig() {
             accountId: secrets.CLOUDFLARE_ACCOUNT_ID,
             zoneId: secrets.CLOUDFLARE_ZONE_ID,
             domain: config.require("domain"),
+            protocol: config.get("protocol") || "https",
         },
         grafana: {
             apiKey: secrets.GRAFANA_API_KEY,

@@ -16,9 +16,6 @@ export interface TiDBOutputs {
 }
 export declare function createTiDBServerlessConfig(clusterConfig: TiDBServerlessConfig, secrets?: {
     databaseUrl?: pulumi.Output<string>;
-    user?: pulumi.Output<string>;
-    password?: pulumi.Output<string>;
-    host?: pulumi.Output<string>;
 }): TiDBOutputs;
 export declare function createPortfolioTiDBConfig(secrets?: SecretsOutputs["secrets"]): TiDBOutputs;
 export declare const TIDB_SERVERLESS_RECOMMENDATIONS: {

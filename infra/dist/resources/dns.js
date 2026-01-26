@@ -1,13 +1,13 @@
 import * as cloudflare from "@pulumi/cloudflare";
 import * as pulumi from "@pulumi/pulumi";
 import { getProjectName } from "../config.js";
-export function createDnsRecords(config, records) {
+export function createDnsRecords(config, records, provider) {
     const { zoneId, domain } = config.cloudflare;
     const createdRecords = {};
     for (const record of records) {
         const recordName = record.name === "@" ? domain : `${record.name}.${domain}`;
         const resourceName = `dns-${record.type.toLowerCase()}-${record.name.replaceAll(/[^a-z0-9]/gi, "-")}`;
-        createdRecords[resourceName] = new cloudflare.Record(resourceName, {
+        createdRecords[resourceName] = new cloudflare.DnsRecord(resourceName, {
             zoneId,
             name: recordName,
             type: record.type,
@@ -18,11 +18,12 @@ export function createDnsRecords(config, records) {
             comment: record.comment || `Managed by Pulumi - ${resourceName}`,
         }, {
             protect: true,
+            provider,
         });
     }
     return { records: createdRecords };
 }
-export function createSubdomainRecords(config, subdomains) {
+export function createSubdomainRecords(config, subdomains, provider) {
     const records = subdomains.map((sub) => ({
         name: sub.subdomain,
         type: "CNAME",
@@ -30,40 +31,66 @@ export function createSubdomainRecords(config, subdomains) {
         proxied: sub.proxied ?? true,
         comment: `Subdomain: ${sub.subdomain}`,
     }));
-    return createDnsRecords(config, records);
+    return createDnsRecords(config, records, provider);
 }
-export function createPortfolioDnsRecords(config) {
+export function createPortfolioDnsRecords(config, provider, pagesSubdomains, workerSubdomains) {
     const projectName = getProjectName();
+    const defaultWebSubdomain = `${projectName}-web.pages.dev`;
+    const defaultAdminSubdomain = `${projectName}-admin.pages.dev`;
+    const defaultWikiSubdomain = `${projectName}-wiki.pages.dev`;
+    const defaultApiSubdomain = `${projectName}-api.workers.dev`;
+    let webSubdomain;
+    let adminSubdomain;
+    let wikiSubdomain;
+    if (pagesSubdomains) {
+        webSubdomain = pagesSubdomains["www"] ?? pulumi.output(defaultWebSubdomain);
+        adminSubdomain = pagesSubdomains["admin"] ?? pulumi.output(defaultAdminSubdomain);
+        wikiSubdomain = pagesSubdomains["wiki"] ?? pulumi.output(defaultWikiSubdomain);
+    }
+    else {
+        webSubdomain = pulumi.output(defaultWebSubdomain);
+        adminSubdomain = pulumi.output(defaultAdminSubdomain);
+        wikiSubdomain = pulumi.output(defaultWikiSubdomain);
+    }
+    let apiSubdomain;
+    if (workerSubdomains) {
+        const apiKey = Object.keys(workerSubdomains)[0];
+        apiSubdomain =
+            apiKey && workerSubdomains[apiKey] ? workerSubdomains[apiKey] : pulumi.output(defaultApiSubdomain);
+    }
+    else {
+        apiSubdomain = pulumi.output(defaultApiSubdomain);
+    }
     const records = [
         {
             name: "www",
             type: "CNAME",
-            content: `${projectName}-web.pages.dev`,
+            content: webSubdomain,
             proxied: true,
             comment: "Main web application",
         },
         {
-            name: "api",
-            type: "CNAME",
-            content: `${projectName}-api.workers.dev`,
-            proxied: true,
-            comment: "API endpoint",
-        },
-        {
             name: "admin",
             type: "CNAME",
-            content: `${projectName}-admin.pages.dev`,
+            content: adminSubdomain,
             proxied: true,
             comment: "Admin dashboard",
         },
         {
             name: "wiki",
             type: "CNAME",
-            content: `${projectName}-wiki.pages.dev`,
+            content: wikiSubdomain,
             proxied: true,
             comment: "Documentation wiki",
         },
+        {
+            name: "api",
+            type: "CNAME",
+            content: apiSubdomain,
+            proxied: true,
+            comment: "API worker",
+        },
     ];
-    return createDnsRecords(config, records);
+    return createDnsRecords(config, records, provider);
 }
 //# sourceMappingURL=dns.js.map

@@ -9,14 +9,26 @@ function validateTiDBRegion(region) {
 export function createTiDBServerlessConfig(clusterConfig, secrets) {
     validateTiDBRegion(clusterConfig.region);
     if (secrets?.databaseUrl) {
+        const host = secrets.databaseUrl.apply((url) => {
+            if (!url || url.trim() === "") {
+                return `gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`;
+            }
+            try {
+                const urlObj = new URL(url.replace(/^mysql:\/\//, "http://"));
+                return urlObj.hostname;
+            }
+            catch {
+                return `gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`;
+            }
+        });
         return {
             clusterConfig,
             connectionString: secrets.databaseUrl,
-            host: secrets.host ?? pulumi.output(`gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`),
+            host,
         };
     }
-    const host = secrets?.host ?? pulumi.output(`gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`);
-    const connectionString = pulumi.interpolate `mysql://${secrets?.user ?? ""}:${secrets?.password ?? ""}@${host}:4000/${clusterConfig.database}?sslaccept=strict`;
+    const host = pulumi.output(`gateway01.${clusterConfig.region}.prod.aws.tidbcloud.com`);
+    const connectionString = pulumi.output("");
     return {
         clusterConfig,
         connectionString,
@@ -37,7 +49,6 @@ export function createPortfolioTiDBConfig(secrets) {
     }, secrets
         ? {
             databaseUrl: secrets.DATABASE_URL,
-            host: secrets.TIDB_HOST,
         }
         : undefined);
 }

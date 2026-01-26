@@ -2,13 +2,18 @@ import * as pulumi from "@pulumi/pulumi";
 import * as grafana from "@pulumiverse/grafana";
 import * as sentry from "@pulumiverse/sentry";
 import { getProjectName } from "../config.js";
-export function createGrafanaResources(_config, _stackConfig, dashboards = []) {
+export function createGrafanaResources(_config, _stackConfig, dashboards = [], provider) {
     const createdDashboards = {};
     const createdFolders = {};
     const projectName = getProjectName();
-    const folderTitle = projectName.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    const folderTitle = projectName
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
     const projectFolder = new grafana.oss.Folder(`grafana-folder-${projectName}`, {
         title: folderTitle,
+    }, {
+        provider,
     });
     createdFolders[projectName] = projectFolder;
     for (const dashboard of dashboards) {
@@ -16,6 +21,8 @@ export function createGrafanaResources(_config, _stackConfig, dashboards = []) {
         createdDashboards[resourceName] = new grafana.oss.Dashboard(resourceName, {
             folder: projectFolder.uid,
             configJson: dashboard.configJson,
+        }, {
+            provider,
         });
     }
     return {
@@ -23,9 +30,12 @@ export function createGrafanaResources(_config, _stackConfig, dashboards = []) {
         folders: createdFolders,
     };
 }
-export function createPortfolioGrafanaResources(config) {
+export function createPortfolioGrafanaResources(config, provider) {
     const projectName = getProjectName();
-    const projectDisplayName = projectName.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    const projectDisplayName = projectName
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
     const dashboards = [
         {
             title: "API Performance",
@@ -90,16 +100,19 @@ export function createPortfolioGrafanaResources(config) {
         name: projectName,
         slug: config.grafana.stackSlug,
         description: `${projectDisplayName} project monitoring`,
-    }, dashboards);
+    }, dashboards, provider);
 }
-export function createPortfolioSentryConfig(config) {
+export function createPortfolioSentryConfig(config, provider) {
     const projectName = getProjectName();
-    const projectDisplayName = projectName.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    const projectDisplayName = projectName
+        .split("-")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
     const team = new sentry.SentryTeam(`${projectName}-team`, {
         organization: config.sentry.org,
         slug: projectName,
         name: projectDisplayName,
-    });
+    }, provider ? { provider } : undefined);
     const projects = {};
     const webProject = new sentry.SentryProject(`${projectName}-web-project`, {
         organization: config.sentry.org,
@@ -107,7 +120,7 @@ export function createPortfolioSentryConfig(config) {
         name: `${projectDisplayName} Web`,
         slug: `${projectName}-web`,
         platform: "javascript-nextjs",
-    });
+    }, provider ? { provider } : undefined);
     projects["web"] = webProject;
     const apiProject = new sentry.SentryProject(`${projectName}-api-project`, {
         organization: config.sentry.org,
@@ -115,7 +128,7 @@ export function createPortfolioSentryConfig(config) {
         name: `${projectDisplayName} API`,
         slug: `${projectName}-api`,
         platform: "node",
-    });
+    }, provider ? { provider } : undefined);
     projects["api"] = apiProject;
     const adminProject = new sentry.SentryProject(`${projectName}-admin-project`, {
         organization: config.sentry.org,
@@ -123,7 +136,7 @@ export function createPortfolioSentryConfig(config) {
         name: `${projectDisplayName} Admin`,
         slug: `${projectName}-admin`,
         platform: "javascript-react",
-    });
+    }, provider ? { provider } : undefined);
     projects["admin"] = adminProject;
     const dsn = pulumi.interpolate `https://${config.sentry.authToken}@${config.sentry.org}.ingest.sentry.io/${webProject.id}`;
     return {
@@ -132,10 +145,10 @@ export function createPortfolioSentryConfig(config) {
         dsn,
     };
 }
-export function createObservability(config) {
+export function createObservability(config, grafanaProvider, sentryProvider) {
     return {
-        grafana: createPortfolioGrafanaResources(config),
-        sentry: createPortfolioSentryConfig(config),
+        grafana: createPortfolioGrafanaResources(config, grafanaProvider),
+        sentry: createPortfolioSentryConfig(config, sentryProvider),
     };
 }
 //# sourceMappingURL=observability.js.map

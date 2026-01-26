@@ -8,7 +8,8 @@ export declare function getProjectName(): string;
 export declare function getDopplerSecrets(): {
     DATABASE_URL: pulumi.Output<string>;
     REDIS_URL: pulumi.Output<string>;
-    TIDB_HOST: pulumi.Output<string>;
+    REDISCLOUD_SUBSCRIPTION_ID: pulumi.Output<string>;
+    REDISCLOUD_DATABASE_ID: pulumi.Output<string>;
     CLOUDFLARE_API_TOKEN: pulumi.Output<string>;
     CLOUDFLARE_ACCOUNT_ID: pulumi.Output<string>;
     CLOUDFLARE_ZONE_ID: pulumi.Output<string>;
@@ -20,6 +21,20 @@ export declare function getDopplerSecrets(): {
     BETTER_AUTH_SECRET: pulumi.Output<string>;
     GOOGLE_CLIENT_ID: pulumi.Output<string>;
     GOOGLE_CLIENT_SECRET: pulumi.Output<string>;
+    REDISCLOUD_ACCESS_KEY: pulumi.Output<string>;
+    REDISCLOUD_SECRET_KEY: pulumi.Output<string>;
+    API_BASE_URL: pulumi.Output<string>;
+    APP_VERSION: pulumi.Output<string>;
+    BETTER_AUTH_URL: pulumi.Output<string>;
+    VITE_BASE_URL: pulumi.Output<string>;
+    VITE_GOOGLE_ANALYTICS_ENABLED: pulumi.Output<string>;
+    VITE_GOOGLE_TAG_MANAGER_ENABLED: pulumi.Output<string>;
+    VITE_SENTRY_DSN: pulumi.Output<string>;
+    VITE_SENTRY_ENVIRONMENT: pulumi.Output<string>;
+    VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE: pulumi.Output<string>;
+    VITE_SENTRY_REPLAY_SAMPLE_RATE: pulumi.Output<string>;
+    VITE_SENTRY_TRACES_SAMPLE_RATE: pulumi.Output<string>;
+    VITE_XSTATE_INSPECTOR_ENABLED: pulumi.Output<string>;
 };
 export interface InfraConfig {
     environment: string;
@@ -28,6 +43,7 @@ export interface InfraConfig {
         accountId: pulumi.Output<string> | string;
         zoneId: pulumi.Output<string> | string;
         domain: string;
+        protocol?: string;
     };
     grafana: {
         apiKey: pulumi.Output<string>;
@@ -39,6 +55,6 @@ export interface InfraConfig {
         org: pulumi.Output<string> | string;
     };
 }
-export declare function getConfig(): InfraConfig;
+export declare function getConfig(customSecrets?: ReturnType<typeof getDopplerSecrets>): InfraConfig;
 export declare function getTags(resourceName: string): Record<string, string>;
 //# sourceMappingURL=config.d.ts.map

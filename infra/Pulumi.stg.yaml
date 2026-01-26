@@ -4,3 +4,5 @@ config:
   portfolio-infra:slug: portfolio
   portfolio-infra:dopplerProject: portfolio
   portfolio-infra:dopplerConfig: stg
+  portfolio-infra:createDopplerProject: "false"
+  portfolio-infra:syncDopplerSecrets: "true"

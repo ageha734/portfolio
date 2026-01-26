@@ -4,7 +4,7 @@ function generatePagesWrangler(config) {
     const lines = [];
     lines.push(`name = "${config.name}"`);
     if (config.watchDirs && config.watchDirs.length > 0) {
-        const watchDirsList = config.watchDirs.map(d => `"${d}"`).join(", ");
+        const watchDirsList = config.watchDirs.map((d) => `"${d}"`).join(", ");
         lines.push(`build.watch_dir = [${watchDirsList}]`);
     }
     lines.push(`compatibility_date = "${config.compatibilityDate}"`);
@@ -52,9 +52,7 @@ function generateWorkerWrangler(config) {
     return lines.join("\n");
 }
 export function generateWranglerToml(config, outputPath) {
-    const content = config.type === "pages"
-        ? generatePagesWrangler(config)
-        : generateWorkerWrangler(config);
+    const content = config.type === "pages" ? generatePagesWrangler(config) : generateWorkerWrangler(config);
     fs.writeFileSync(outputPath, content, "utf-8");
 }
 export function getProjectName() {

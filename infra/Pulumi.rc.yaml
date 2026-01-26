@@ -4,4 +4,6 @@ config:
   portfolio-infra:slug: portfolio
   portfolio-infra:dopplerProject: portfolio
   portfolio-infra:dopplerConfig: rc
-  portfolio-infra:createDopplerProject: "true"
+  portfolio-infra:createDopplerProject: "false"
+  portfolio-infra:syncDopplerSecrets: "true"
+  portfolio-infra:skipRedisCloud: "true"

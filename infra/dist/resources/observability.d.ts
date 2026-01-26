@@ -29,17 +29,17 @@ export interface GrafanaOutputs {
     dashboards: Record<string, grafana.oss.Dashboard>;
     folders: Record<string, grafana.oss.Folder>;
 }
-export declare function createGrafanaResources(_config: InfraConfig, _stackConfig: GrafanaStackConfig, dashboards?: GrafanaDashboardConfig[]): GrafanaOutputs;
-export declare function createPortfolioGrafanaResources(config: InfraConfig): GrafanaOutputs;
+export declare function createGrafanaResources(_config: InfraConfig, _stackConfig: GrafanaStackConfig, dashboards?: GrafanaDashboardConfig[], provider?: grafana.Provider): GrafanaOutputs;
+export declare function createPortfolioGrafanaResources(config: InfraConfig, provider?: grafana.Provider): GrafanaOutputs;
 export interface SentryOutputs {
     team: sentry.SentryTeam;
     projects: Record<string, sentry.SentryProject>;
     dsn: pulumi.Output<string>;
 }
-export declare function createPortfolioSentryConfig(config: InfraConfig): SentryOutputs;
+export declare function createPortfolioSentryConfig(config: InfraConfig, provider?: sentry.Provider): SentryOutputs;
 export interface ObservabilityOutputs {
     grafana: GrafanaOutputs;
     sentry: SentryOutputs;
 }
-export declare function createObservability(config: InfraConfig): ObservabilityOutputs;
+export declare function createObservability(config: InfraConfig, grafanaProvider?: grafana.Provider, sentryProvider?: sentry.Provider): ObservabilityOutputs;
 //# sourceMappingURL=observability.d.ts.map
