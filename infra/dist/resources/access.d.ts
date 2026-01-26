@@ -7,8 +7,9 @@ export interface AccessOutputs {
 export declare function createPreviewDeploymentAccess(config: InfraConfig, pagesProjects: {
     projects: Record<string, cloudflare.PagesProject>;
     subdomains: Record<string, pulumi.Output<string>>;
-}, workers: {
+}, _workers: {
     scripts: Record<string, cloudflare.WorkersScript>;
     subdomains: Record<string, pulumi.Output<string>>;
+    domains: Record<string, cloudflare.WorkersCustomDomain>;
 }, provider?: cloudflare.Provider): AccessOutputs | null;
 //# sourceMappingURL=access.d.ts.map

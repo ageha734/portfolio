@@ -14,7 +14,7 @@ function createAccessApplication(config, accountId, resourceName, provider) {
         provider,
     });
 }
-export function createPreviewDeploymentAccess(config, pagesProjects, workers, provider) {
+export function createPreviewDeploymentAccess(config, pagesProjects, _workers, provider) {
     const environment = config.environment;
     if (environment !== "rc" && environment !== "stg") {
         return null;
@@ -29,31 +29,33 @@ export function createPreviewDeploymentAccess(config, pagesProjects, workers, pr
         { key: "wiki", subdomainKey: "wiki", type: "pages" },
     ];
     for (const service of services) {
-        let domain;
+        let domainPattern;
         if (service.type === "pages") {
-            domain = pagesProjects.subdomains[service.subdomainKey];
+            const pagesDomain = pagesProjects.subdomains[service.subdomainKey];
+            if (!pagesDomain) {
+                continue;
+            }
+            domainPattern = pagesDomain.apply((d) => {
+                if (d.includes(".pages.dev")) {
+                    const projectSubdomain = d.replace(".pages.dev", "");
+                    return `*.${projectSubdomain}.pages.dev`;
+                }
+                return d;
+            });
         }
         else if (service.key === "api") {
-            const workerKey = Object.keys(workers.subdomains).find((key) => key.includes("api"));
-            domain = workerKey ? workers.subdomains[workerKey] : undefined;
+            // Workersのプレビューデプロイメント（*.workers.dev）はCloudflareのゾーンに属していないため、
+            // Access Applicationのドメインとして使用できません。
+            // Workersのカスタムドメインが使用されている場合でも、プレビューデプロイメントは*.workers.devになるため、
+            // APIサービスについてはプレビューデプロイメント用のAccess Applicationを作成しません。
+            continue;
         }
         else {
             continue;
         }
-        if (!domain) {
+        if (!domainPattern) {
             continue;
         }
-        const domainPattern = domain.apply((d) => {
-            if (d.includes(".pages.dev")) {
-                const projectSubdomain = d.replace(".pages.dev", "");
-                return `*.${projectSubdomain}.pages.dev`;
-            }
-            if (d.includes(".workers.dev")) {
-                const workerSubdomain = d.replace(".workers.dev", "");
-                return `*-${workerSubdomain}.workers.dev`;
-            }
-            return d;
-        });
         const applicationResourceName = `access-app-${service.key}-preview-${environment}`;
         const application = createAccessApplication({
             name: `${projectName}-${service.key}-preview-${environment}`,

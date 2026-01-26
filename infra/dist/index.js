@@ -270,7 +270,11 @@ const dnsRecords = createPortfolioDnsRecords(config, cloudflareProvider, pagesPr
 export const dnsRecordIds = pulumi
     .output(dnsRecords.records)
     .apply((records) => Object.fromEntries(Object.entries(records).map(([key, record]) => [key, record.id])));
-const previewAccess = createPreviewDeploymentAccess(config, pagesProjects, workers, cloudflareProvider);
+const previewAccess = createPreviewDeploymentAccess(config, pagesProjects, {
+    scripts: workers.scripts,
+    subdomains: workers.subdomains,
+    domains: workers.domains,
+}, cloudflareProvider);
 export const accessApplicationIds = previewAccess
     ? pulumi
         .output(previewAccess.applications)
