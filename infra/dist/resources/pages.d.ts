@@ -1,4 +1,5 @@
 import * as cloudflare from "@pulumi/cloudflare";
+import * as command from "@pulumi/command";
 import * as pulumi from "@pulumi/pulumi";
 import type { InfraConfig } from "../config.js";
 export interface ServiceBindingConfig {
@@ -23,6 +24,7 @@ export interface PagesOutputs {
     projects: Record<string, cloudflare.PagesProject>;
     domains: Record<string, cloudflare.PagesDomain>;
     subdomains: Record<string, pulumi.Output<string>>;
+    serviceBindingCommands?: Record<string, command.local.Command>;
 }
 export declare function createPagesProjects(config: InfraConfig, projects: PagesProjectConfig[], provider?: cloudflare.Provider): PagesOutputs;
 export declare function createPortfolioPagesProjects(config: InfraConfig, _secrets: {

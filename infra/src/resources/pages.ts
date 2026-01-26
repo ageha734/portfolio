@@ -1,4 +1,5 @@
 import * as cloudflare from "@pulumi/cloudflare";
+import * as command from "@pulumi/command";
 import * as pulumi from "@pulumi/pulumi";
 import * as random from "@pulumi/random";
 import type { InfraConfig } from "../config.js";
@@ -31,6 +32,7 @@ export interface PagesOutputs {
     projects: Record<string, cloudflare.PagesProject>;
     domains: Record<string, cloudflare.PagesDomain>;
     subdomains: Record<string, pulumi.Output<string>>;
+    serviceBindingCommands?: Record<string, command.local.Command>;
 }
 
 function generateRandomSuffix(resourceName: string): random.RandomString {
@@ -72,10 +74,11 @@ export function createPagesProjects(
     projects: PagesProjectConfig[],
     provider?: cloudflare.Provider,
 ): PagesOutputs {
-    const { accountId, domain } = config.cloudflare;
+    const { accountId, domain, apiToken } = config.cloudflare;
     const createdProjects: Record<string, cloudflare.PagesProject> = {};
     const createdDomains: Record<string, cloudflare.PagesDomain> = {};
     const createdSubdomains: Record<string, pulumi.Output<string>> = {};
+    const serviceBindingCommands: Record<string, command.local.Command> = {};
 
     for (let i = 0; i < projects.length; i++) {
         const project = projects[i];
@@ -89,66 +92,8 @@ export function createPagesProjects(
             project.secrets,
         );
 
-        const productionServices = project.serviceBinding
-            ? pulumi.output(project.serviceBinding).apply((binding) => {
-                  if (!binding) {
-                      throw new Error(
-                          `[DEBUG_TRACE] >>> ERROR: serviceBinding is null for project "${resourceNameBase}". Service Binding must be configured.`,
-                      );
-                  }
-                  const service = "service" in binding ? binding.service : undefined;
-                  if (!service) {
-                      throw new Error(
-                          `[DEBUG_TRACE] >>> ERROR: serviceBinding.service is undefined for project "${resourceNameBase}". Service Binding must be configured.`,
-                      );
-                  }
-                  return pulumi.output(service).apply((serviceName) => {
-                      if (!serviceName || serviceName.trim() === "") {
-                          throw new Error(
-                              `[DEBUG_TRACE] >>> ERROR: serviceBinding.service is empty for project "${resourceNameBase}". Service Binding must be configured.`,
-                          );
-                      }
-                      return {
-                          API_SERVICE: {
-                              service: binding.service,
-                              entrypoint: binding.entrypoint,
-                              environment: binding.environment || "production",
-                          },
-                      };
-                  });
-              })
-            : undefined;
-
-        const previewServices = project.serviceBinding
-            ? pulumi.output(project.serviceBinding).apply((binding) => {
-                  if (!binding) {
-                      throw new Error(
-                          `[DEBUG_TRACE] >>> ERROR: serviceBinding is null for project "${resourceNameBase}". Service Binding must be configured.`,
-                      );
-                  }
-                  const service = "service" in binding ? binding.service : undefined;
-                  if (!service) {
-                      throw new Error(
-                          `[DEBUG_TRACE] >>> ERROR: serviceBinding.service is undefined for project "${resourceNameBase}". Service Binding must be configured.`,
-                      );
-                  }
-                  return pulumi.output(service).apply((serviceName) => {
-                      if (!serviceName || serviceName.trim() === "") {
-                          throw new Error(
-                              `[DEBUG_TRACE] >>> ERROR: serviceBinding.service is empty for project "${resourceNameBase}". Service Binding must be configured.`,
-                          );
-                      }
-                      return {
-                          API_SERVICE: {
-                              service: binding.service,
-                              entrypoint: binding.entrypoint,
-                              environment: binding.environment || "production",
-                          },
-                      };
-                  });
-              })
-            : undefined;
-
+        // Pulumi Cloudflare Providerのバグを回避するため、servicesは設定しない
+        // 代わりにlocal.CommandでCloudflare APIを直接呼び出す
         const pagesProject = new cloudflare.PagesProject(
             resourceNameBase,
             {
@@ -160,34 +105,18 @@ export function createPagesProjects(
                     destinationDir: project.destinationDir || "dist",
                     rootDir: project.rootDir,
                 },
-                deploymentConfigs: pulumi
-                    .all([productionServices, previewServices])
-                    .apply(([prodServices, prevServices]) => {
-                        const productionConfig: cloudflare.types.input.PagesProjectDeploymentConfigsProduction = {
-                            envVars: productionEnvVars,
-                            compatibilityDate: project.compatibilityDate || "2025-01-01",
-                            compatibilityFlags: ["nodejs_compat"],
-                        };
-
-                        if (prodServices) {
-                            productionConfig.services = prodServices;
-                        }
-
-                        const previewConfig: cloudflare.types.input.PagesProjectDeploymentConfigsPreview = {
-                            envVars: previewEnvVars,
-                            compatibilityDate: project.compatibilityDate || "2025-01-01",
-                            compatibilityFlags: ["nodejs_compat"],
-                        };
-
-                        if (prevServices) {
-                            previewConfig.services = prevServices;
-                        }
-
-                        return {
-                            production: productionConfig,
-                            preview: previewConfig,
-                        };
-                    }),
+                deploymentConfigs: {
+                    production: {
+                        envVars: productionEnvVars,
+                        compatibilityDate: project.compatibilityDate || "2025-01-01",
+                        compatibilityFlags: ["nodejs_compat"],
+                    },
+                    preview: {
+                        envVars: previewEnvVars,
+                        compatibilityDate: project.compatibilityDate || "2025-01-01",
+                        compatibilityFlags: ["nodejs_compat"],
+                    },
+                },
             },
             {
                 provider,
@@ -195,6 +124,66 @@ export function createPagesProjects(
         );
 
         createdProjects[resourceNameBase] = pagesProject;
+
+        // Service Bindingが設定されている場合、Cloudflare APIを直接呼び出して設定
+        if (project.serviceBinding) {
+            const serviceBindingOutput = pulumi.output(project.serviceBinding);
+
+            const serviceBindingCommand = new command.local.Command(
+                `${resourceNameBase}-service-binding`,
+                {
+                    create: pulumi
+                        .all([pagesProject.name, serviceBindingOutput, accountId])
+                        .apply(([projectName, binding, accId]) => {
+                            if (!binding || !binding.service) {
+                                return 'echo "No service binding configured"';
+                            }
+                            const serviceName = binding.service;
+                            const environment = binding.environment || "production";
+
+                            pulumi.log.info(
+                                `[SERVICE_BINDING] Configuring service binding via API for "${projectName}" with service: ${serviceName}`,
+                            );
+
+                            // Cloudflare API を呼び出してservice bindingを設定
+                            const payload = JSON.stringify({
+                                deployment_configs: {
+                                    production: {
+                                        services: {
+                                            API_SERVICE: {
+                                                service: serviceName,
+                                                environment: environment,
+                                            },
+                                        },
+                                    },
+                                    preview: {
+                                        services: {
+                                            API_SERVICE: {
+                                                service: serviceName,
+                                                environment: environment,
+                                            },
+                                        },
+                                    },
+                                },
+                            });
+
+                            return `curl -s -X PATCH "https://api.cloudflare.com/client/v4/accounts/${accId}/pages/projects/${projectName}" \
+                                -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+                                -H "Content-Type: application/json" \
+                                -d '${payload}'`;
+                        }),
+                    environment: {
+                        CLOUDFLARE_API_TOKEN: apiToken,
+                    },
+                    triggers: [pagesProject.name, serviceBindingOutput],
+                },
+                {
+                    dependsOn: [pagesProject],
+                },
+            );
+
+            serviceBindingCommands[`${resourceNameBase}-service-binding`] = serviceBindingCommand;
+        }
 
         const subdomain = pagesProject.name.apply((name) => `${name}.pages.dev`);
         const subdomainKey = project.customDomain || `project-${i}`;
@@ -223,6 +212,7 @@ export function createPagesProjects(
         projects: createdProjects,
         domains: createdDomains,
         subdomains: createdSubdomains,
+        serviceBindingCommands,
     };
 }
 
@@ -247,26 +237,28 @@ export function createPortfolioPagesProjects(
         );
     }
 
-    const webServiceBinding = pulumi.all([apiWorkerScriptName]).apply(([scriptName]) => {
+    const webServiceBinding: pulumi.Output<ServiceBindingConfig> = apiWorkerScriptName.apply((scriptName) => {
         if (!scriptName || scriptName.trim() === "") {
             throw new Error(
                 "[DEBUG_TRACE] >>> ERROR: API Worker script name is empty. Service Binding cannot be configured.",
             );
         }
+        pulumi.log.info(`[SERVICE_BINDING] Configuring Service Binding for web project with script: ${scriptName}`);
         return {
-            service: apiWorkerScriptName,
+            service: scriptName,
             environment: "production",
         };
     });
 
-    const adminServiceBinding = pulumi.all([apiWorkerScriptName]).apply(([scriptName]) => {
+    const adminServiceBinding: pulumi.Output<ServiceBindingConfig> = apiWorkerScriptName.apply((scriptName) => {
         if (!scriptName || scriptName.trim() === "") {
             throw new Error(
                 "[DEBUG_TRACE] >>> ERROR: API Worker script name is empty. Service Binding cannot be configured.",
             );
         }
+        pulumi.log.info(`[SERVICE_BINDING] Configuring Service Binding for admin project with script: ${scriptName}`);
         return {
-            service: apiWorkerScriptName,
+            service: scriptName,
             environment: "production",
         };
     });

@@ -283,11 +283,18 @@ const apiWorkerScriptName = (() => {
     if (!apiWorkerKey) {
         throw new Error("[DEBUG_TRACE] >>> ERROR: API Worker script not found. Service Binding requires an API Worker to be created first.");
     }
-    const scriptName = workers.scripts[apiWorkerKey]?.scriptName;
-    if (!scriptName) {
-        throw new Error(`[DEBUG_TRACE] >>> ERROR: API Worker script name not found for key "${apiWorkerKey}". Service Binding cannot be configured.`);
+    const workerScript = workers.scripts[apiWorkerKey];
+    if (!workerScript) {
+        throw new Error(`[DEBUG_TRACE] >>> ERROR: API Worker script not found for key "${apiWorkerKey}". Service Binding cannot be configured.`);
     }
-    return scriptName;
+    const scriptName = workerScript.scriptName;
+    return scriptName.apply((name) => {
+        if (!name || name.trim() === "") {
+            throw new Error(`[DEBUG_TRACE] >>> ERROR: API Worker script name is empty for key "${apiWorkerKey}". Service Binding cannot be configured.`);
+        }
+        pulumi.log.info(`[DEBUG_TRACE] >>> STATE: API Worker script name found: ${name}`);
+        return name;
+    });
 })();
 const pagesProjects = createPortfolioPagesProjects(config, {
     databaseUrl: tidb.connectionString,
