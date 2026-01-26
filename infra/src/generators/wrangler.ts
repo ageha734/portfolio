@@ -17,6 +17,7 @@ function generatePagesWrangler(config: WranglerConfig): string {
 
     lines.push(`name = "${config.name}"`);
     lines.push(`compatibility_date = "${config.compatibilityDate}"`);
+    lines.push('compatibility_flags = ["nodejs_compat"]');
 
     if (config.outputDir) {
         lines.push(`pages_build_output_dir = "${config.outputDir}"`);

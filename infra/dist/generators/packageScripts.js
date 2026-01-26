@@ -4,9 +4,7 @@ export function updateDeployScript(packageJsonPath, appType, projectName) {
     const pkg = JSON.parse(content);
     pkg.scripts ??= {};
     if (appType === "pages") {
-        const isWebApp = projectName.includes("-web");
-        const buildDir = isWebApp ? "./build" : "./dist";
-        pkg.scripts.deploy = `doppler run -- wrangler pages deploy ${buildDir} --project-name ${projectName} --branch master`;
+        pkg.scripts.deploy = `doppler run -- wrangler pages deploy --project-name ${projectName} --branch master`;
     }
     else {
         pkg.scripts.deploy = `doppler run -- wrangler deploy --name ${projectName}`;
