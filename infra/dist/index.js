@@ -240,16 +240,26 @@ new doppler.Secret("doppler-secret-auto-database-url", {
     project: dopplerProjectName,
     config: dopplerConfigName,
     name: "DATABASE_URL",
-    value: pulumi.all([tidb.connectionString, tidb.cluster?.connectionString, secrets.DATABASE_URL]).apply(([generatedUrl, clusterConnectionString, existingUrl]) => {
-        if ((!existingUrl || existingUrl.trim() === "") && clusterConnectionString && clusterConnectionString.trim() !== "") {
+    value: pulumi
+        .all([tidb.cluster?.connectionString, tidb.connectionString, secrets.DATABASE_URL])
+        .apply(([clusterConnectionString, generatedUrl, existingUrl]) => {
+        pulumi.log.info(`[DEBUG_TRACE] >>> STATE: DATABASE_URL selection - clusterConnectionString: ${clusterConnectionString ? "exists" : "none"}, generatedUrl: ${generatedUrl ? "exists" : "none"}, existingUrl: ${existingUrl ? "exists" : "none"}`);
+        if (clusterConnectionString && clusterConnectionString.trim() !== "") {
+            pulumi.log.info("[DEBUG_TRACE] >>> STATE: Using cluster connection string for DATABASE_URL");
             return clusterConnectionString;
         }
-        if ((!existingUrl || existingUrl.trim() === "") && generatedUrl && generatedUrl.trim() !== "") {
+        if (existingUrl && existingUrl.trim() !== "") {
+            pulumi.log.info("[DEBUG_TRACE] >>> STATE: Using existing DATABASE_URL from Doppler");
+            return existingUrl;
+        }
+        if (generatedUrl && generatedUrl.trim() !== "") {
+            pulumi.log.info("[DEBUG_TRACE] >>> STATE: Using generated URL for DATABASE_URL");
             return generatedUrl;
         }
-        return existingUrl || "";
+        pulumi.log.warn("[DEBUG_TRACE] >>> WARNING: No DATABASE_URL available, using empty string");
+        return "";
     }),
-});
+}, tidb.cluster ? { dependsOn: [tidb.cluster] } : undefined);
 export const tidbConnectionString = tidb.connectionString;
 export const tidbHost = tidb.host;
 export const redisConnectionString = redis.connectionString;
@@ -270,7 +280,14 @@ const workers = createPortfolioApiWorker(config, {
 }, cloudflareProvider);
 const apiWorkerScriptName = (() => {
     const apiWorkerKey = Object.keys(workers.scripts).find((key) => key.includes("api"));
-    return apiWorkerKey ? workers.scripts[apiWorkerKey]?.scriptName : undefined;
+    if (!apiWorkerKey) {
+        throw new Error("[DEBUG_TRACE] >>> ERROR: API Worker script not found. Service Binding requires an API Worker to be created first.");
+    }
+    const scriptName = workers.scripts[apiWorkerKey]?.scriptName;
+    if (!scriptName) {
+        throw new Error(`[DEBUG_TRACE] >>> ERROR: API Worker script name not found for key "${apiWorkerKey}". Service Binding cannot be configured.`);
+    }
+    return scriptName;
 })();
 const pagesProjects = createPortfolioPagesProjects(config, {
     databaseUrl: tidb.connectionString,
