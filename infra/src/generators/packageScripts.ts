@@ -18,9 +18,9 @@ export function updateDeployScript(
     if (appType === "pages") {
         const isWebApp = projectName.includes("-web");
         const buildDir = isWebApp ? "./build" : "./dist";
-        pkg.scripts.deploy = `wrangler pages deploy ${buildDir} --project-name ${projectName} --branch master`;
+        pkg.scripts.deploy = `doppler run -- wrangler pages deploy ${buildDir} --project-name ${projectName} --branch master`;
     } else {
-        pkg.scripts.deploy = `wrangler deploy --name ${projectName}`;
+        pkg.scripts.deploy = `doppler run -- wrangler deploy --name ${projectName}`;
     }
 
     fs.writeFileSync(packageJsonPath, `${JSON.stringify(pkg, null, 2)}\n`, "utf-8");
