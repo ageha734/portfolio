@@ -304,6 +304,20 @@ export const tidbClusterInfo = {
 const domain = config.cloudflare.domain;
 const protocol = config.cloudflare.protocol || "https";
 
+const workers = createPortfolioApiWorker(
+    config,
+    {
+        databaseUrl: tidb.connectionString,
+        redisUrl: redis.connectionString,
+    },
+    cloudflareProvider,
+);
+
+const apiWorkerScriptName = (() => {
+    const apiWorkerKey = Object.keys(workers.scripts).find((key) => key.includes("api"));
+    return apiWorkerKey ? workers.scripts[apiWorkerKey]?.scriptName : undefined;
+})();
+
 const pagesProjects = createPortfolioPagesProjects(
     config,
     {
@@ -311,6 +325,7 @@ const pagesProjects = createPortfolioPagesProjects(
         redisUrl: redis.connectionString,
     },
     cloudflareProvider,
+    apiWorkerScriptName,
 );
 
 export const pagesProjectNames = pulumi
@@ -320,15 +335,6 @@ export const pagesProjectNames = pulumi
 export const pagesDomainNames = pulumi
     .output(pagesProjects.domains)
     .apply((domains) => Object.fromEntries(Object.entries(domains).map(([key, domain]) => [key, domain.name])));
-
-const workers = createPortfolioApiWorker(
-    config,
-    {
-        databaseUrl: tidb.connectionString,
-        redisUrl: redis.connectionString,
-    },
-    cloudflareProvider,
-);
 
 const dnsRecords = createPortfolioDnsRecords(
     config,

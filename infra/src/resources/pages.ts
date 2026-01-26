@@ -6,6 +6,12 @@ import { getProjectName } from "../config.js";
 
 type EnvVarConfig = cloudflare.types.input.PagesProjectDeploymentConfigsProductionEnvVars;
 
+export interface ServiceBindingConfig {
+    service: pulumi.Input<string>;
+    entrypoint?: string;
+    environment?: string;
+}
+
 export interface PagesProjectConfig {
     name: pulumi.Input<string>;
     productionBranch: string;
@@ -16,6 +22,7 @@ export interface PagesProjectConfig {
     secrets?: Record<string, pulumi.Output<string>>;
     compatibilityDate?: string;
     customDomain?: string;
+    serviceBinding?: ServiceBindingConfig;
 }
 
 export interface PagesOutputs {
@@ -80,6 +87,30 @@ export function createPagesProjects(
             project.secrets,
         );
 
+        const productionServices:
+            | Record<string, cloudflare.types.input.PagesProjectDeploymentConfigsProductionServices>
+            | undefined = project.serviceBinding
+            ? {
+                  API_SERVICE: {
+                      service: project.serviceBinding.service,
+                      entrypoint: project.serviceBinding.entrypoint,
+                      environment: project.serviceBinding.environment || "production",
+                  },
+              }
+            : undefined;
+
+        const previewServices:
+            | Record<string, cloudflare.types.input.PagesProjectDeploymentConfigsPreviewServices>
+            | undefined = project.serviceBinding
+            ? {
+                  API_SERVICE: {
+                      service: project.serviceBinding.service,
+                      entrypoint: project.serviceBinding.entrypoint,
+                      environment: project.serviceBinding.environment || "production",
+                  },
+              }
+            : undefined;
+
         const pagesProject = new cloudflare.PagesProject(
             resourceNameBase,
             {
@@ -96,11 +127,13 @@ export function createPagesProjects(
                         envVars: productionEnvVars,
                         compatibilityDate: project.compatibilityDate || "2025-01-01",
                         compatibilityFlags: ["nodejs_compat"],
+                        services: productionServices,
                     },
                     preview: {
                         envVars: previewEnvVars,
                         compatibilityDate: project.compatibilityDate || "2025-01-01",
                         compatibilityFlags: ["nodejs_compat"],
+                        services: previewServices,
                     },
                 },
             },
@@ -111,9 +144,7 @@ export function createPagesProjects(
 
         createdProjects[resourceNameBase] = pagesProject;
 
-        // プロジェクト名からサブドメインを生成（実際のCloudflare Pagesのサブドメイン形式）
         const subdomain = pagesProject.name.apply((name) => `${name}.pages.dev`);
-        // customDomainをキーとして使用（www, admin, wiki）
         const subdomainKey = project.customDomain || `project-${i}`;
         createdSubdomains[subdomainKey] = subdomain;
 
@@ -150,6 +181,7 @@ export function createPortfolioPagesProjects(
         redisUrl?: pulumi.Output<string>;
     },
     provider?: cloudflare.Provider,
+    apiWorkerScriptName?: pulumi.Output<string>,
 ): PagesOutputs {
     const projectName = getProjectName();
 
@@ -168,6 +200,12 @@ export function createPortfolioPagesProjects(
             environmentVariables: {
                 NODE_ENV: "production",
             },
+            serviceBinding: apiWorkerScriptName
+                ? {
+                      service: apiWorkerScriptName,
+                      environment: "production",
+                  }
+                : undefined,
         },
         {
             name: pulumi
@@ -181,6 +219,12 @@ export function createPortfolioPagesProjects(
             environmentVariables: {
                 NODE_ENV: "production",
             },
+            serviceBinding: apiWorkerScriptName
+                ? {
+                      service: apiWorkerScriptName,
+                      environment: "production",
+                  }
+                : undefined,
         },
         {
             name: pulumi

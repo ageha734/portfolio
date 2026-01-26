@@ -1,6 +1,11 @@
 import * as cloudflare from "@pulumi/cloudflare";
 import * as pulumi from "@pulumi/pulumi";
 import type { InfraConfig } from "../config.js";
+export interface ServiceBindingConfig {
+    service: pulumi.Input<string>;
+    entrypoint?: string;
+    environment?: string;
+}
 export interface PagesProjectConfig {
     name: pulumi.Input<string>;
     productionBranch: string;
@@ -11,6 +16,7 @@ export interface PagesProjectConfig {
     secrets?: Record<string, pulumi.Output<string>>;
     compatibilityDate?: string;
     customDomain?: string;
+    serviceBinding?: ServiceBindingConfig;
 }
 export interface PagesOutputs {
     projects: Record<string, cloudflare.PagesProject>;
@@ -21,5 +27,5 @@ export declare function createPagesProjects(config: InfraConfig, projects: Pages
 export declare function createPortfolioPagesProjects(config: InfraConfig, _secrets: {
     databaseUrl: pulumi.Output<string>;
     redisUrl?: pulumi.Output<string>;
-}, provider?: cloudflare.Provider): PagesOutputs;
+}, provider?: cloudflare.Provider, apiWorkerScriptName?: pulumi.Output<string>): PagesOutputs;
 //# sourceMappingURL=pages.d.ts.map
