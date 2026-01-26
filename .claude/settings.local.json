@@ -1,0 +1,5 @@
+{
+    "permissions": {
+        "allow": ["Bash(curl:*)", "Bash(wrangle:*)", "Bash(doppler:*)", "Bash(pulumi:*)"]
+    }
+}
