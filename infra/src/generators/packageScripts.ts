@@ -9,7 +9,6 @@ export function updateDeployScript(
     packageJsonPath: string,
     appType: "pages" | "worker",
     projectName: string,
-    appSuffix: string,
 ): void {
     const content = fs.readFileSync(packageJsonPath, "utf-8");
     const pkg: PackageJson = JSON.parse(content);
@@ -17,10 +16,11 @@ export function updateDeployScript(
     pkg.scripts ??= {};
 
     if (appType === "pages") {
-        const buildDir = appSuffix === "web" ? "./build" : "./dist";
-        pkg.scripts.deploy = `wrangler pages deploy ${buildDir} --project-name ${projectName}-${appSuffix} --branch master`;
+        const isWebApp = projectName.includes("-web");
+        const buildDir = isWebApp ? "./build" : "./dist";
+        pkg.scripts.deploy = `wrangler pages deploy ${buildDir} --project-name ${projectName} --branch master`;
     } else {
-        pkg.scripts.deploy = `wrangler deploy --name ${projectName}-${appSuffix}`;
+        pkg.scripts.deploy = `wrangler deploy --name ${projectName}`;
     }
 
     fs.writeFileSync(packageJsonPath, `${JSON.stringify(pkg, null, 2)}\n`, "utf-8");

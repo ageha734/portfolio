@@ -13,7 +13,7 @@
     "clean:pkg": "git clean -xdf node_modules dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
-    "generate": "bun run src/generators/index.ts",
+    "generate": "bun run dist/generators/index.js",
     "graph": "pulumi stack graph graph.dot && bun run -e 'import { readFileSync, writeFileSync } from \"fs\"; const dot = readFileSync(\"graph.dot\", \"utf-8\"); const mermaid = `\\`\\`\\`mermaid\\n${dot}\\n\\`\\`\\``; writeFileSync(\"architecture.md\", `# Architecture Graph\\n\\n${mermaid}\\n`);'",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",

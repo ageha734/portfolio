@@ -1,1 +1,1 @@
-{"version":3,"file":"packageScripts.d.ts","sourceRoot":"","sources":["../../src/generators/packageScripts.ts"],"names":[],"mappings":"AAOA,wBAAgB,kBAAkB,CAC9B,eAAe,EAAE,MAAM,EACvB,OAAO,EAAE,OAAO,GAAG,QAAQ,EAC3B,WAAW,EAAE,MAAM,EACnB,SAAS,EAAE,MAAM,GAClB,IAAI,CAcN"}
+{"version":3,"file":"packageScripts.d.ts","sourceRoot":"","sources":["../../src/generators/packageScripts.ts"],"names":[],"mappings":"AAOA,wBAAgB,kBAAkB,CAC9B,eAAe,EAAE,MAAM,EACvB,OAAO,EAAE,OAAO,GAAG,QAAQ,EAC3B,WAAW,EAAE,MAAM,GACpB,IAAI,CAeN"}

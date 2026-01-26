@@ -16,17 +16,7 @@ function generatePagesWrangler(config: WranglerConfig): string {
     const lines: string[] = [];
 
     lines.push(`name = "${config.name}"`);
-
-    if (config.watchDirs && config.watchDirs.length > 0) {
-        const watchDirsList = config.watchDirs.map((d) => `"${d}"`).join(", ");
-        lines.push(`build.watch_dir = [${watchDirsList}]`);
-    }
-
     lines.push(`compatibility_date = "${config.compatibilityDate}"`);
-
-    if (config.buildCommand) {
-        lines.push(`build.command = "${config.buildCommand}"`);
-    }
 
     if (config.outputDir) {
         lines.push(`pages_build_output_dir = "${config.outputDir}"`);
@@ -80,18 +70,18 @@ export function generateWranglerToml(config: WranglerConfig, outputPath: string)
 }
 
 export function getProjectName(): string {
-    const pulumiYamlPath = path.join(process.cwd(), "Pulumi.yaml");
+    const stackConfigPath = path.join(process.cwd(), "Pulumi.rc.yaml");
 
-    if (!fs.existsSync(pulumiYamlPath)) {
-        throw new Error(`Pulumi.yaml not found at ${pulumiYamlPath}`);
+    if (!fs.existsSync(stackConfigPath)) {
+        throw new Error(`Pulumi stack config not found at ${stackConfigPath}`);
     }
 
-    const content = fs.readFileSync(pulumiYamlPath, "utf-8");
-    const regex = /^name:\s*(.+)$/m;
+    const content = fs.readFileSync(stackConfigPath, "utf-8");
+    const regex = /portfolio-infra:dopplerProject:\s*(.+)$/m;
     const projectMatch = regex.exec(content);
 
     if (!projectMatch?.[1]) {
-        throw new Error("Project name not found in Pulumi.yaml");
+        throw new Error("dopplerProject not found in Pulumi.rc.yaml");
     }
 
     return projectMatch[1].trim();
