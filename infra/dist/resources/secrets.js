@@ -81,6 +81,8 @@ export function getDopplerProjectStructure() {
         },
         secrets: [
             { name: "DATABASE_URL", description: "TiDB Cloud接続文字列" },
+            { name: "TIDBCLOUD_PUBLIC_KEY", description: "TiDB Cloud APIパブリックキー" },
+            { name: "TIDBCLOUD_PRIVATE_KEY", description: "TiDB Cloud APIプライベートキー" },
             { name: "REDIS_URL", description: "Redis Cloud接続文字列" },
             { name: "CLOUDFLARE_API_TOKEN", description: "Cloudflare APIトークン" },
             { name: "CLOUDFLARE_ACCOUNT_ID", description: "CloudflareアカウントID" },
