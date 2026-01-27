@@ -39,7 +39,7 @@
     "nuke": "bun run clean && git clean -xdf bun.lock yarn.lock && bun install && bun run setup",
     "prepare": "workspace setup",
     "release": "changeset publish",
-    "setup": "concurrently -m 1 --kill-others-on-fail -n generate,build,setup -c \"green,yellow,blue\" \"bun run generate\" \"bun run build\" \"bun run prepare\"",
+    "setup": "bun run build && bun run generate --filter='!@portfolio/infra' && bun run prepare",
     "studio": "turbo run studio",
     "test": "turbo run test --concurrency=50%",
     "typecheck": "turbo run typecheck",

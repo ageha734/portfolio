@@ -48,6 +48,10 @@
             "cache": true
         },
         "generate": {
+            "dependsOn": ["^build"],
+            "cache": false
+        },
+        "@portfolio/infra#generate": {
             "cache": false
         },
         "lint": {

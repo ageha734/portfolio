@@ -4,365 +4,148 @@ title: "CI/CDツール"
 
 このプロジェクトでは、コード品質と依存関係管理のために次のツールを使用しています。
 
-## GitHub Actions ワークフロー
+## CircleCI ワークフロー
 
-このプロジェクトでは、CI/CDパイプラインとして2つの主要なワークフローを使用しています。
+このプロジェクトでは、CI/CDパイプラインとしてCircleCIを使用しています。
 
-- **CIワークフロー** (`.github/workflows/ci.yml`): コード品質チェックとテスト
-- **CDワークフロー** (`.github/workflows/cd.yml`): デプロイメント
+- **CIワークフロー**: コード品質チェック、テスト、ビルド
+- **CDワークフロー**: 環境別デプロイメント（RC/STG/PRD）
 
-### CIワークフロー (`[CI] Validation and Checks`)
+### 設定ファイル
+
+設定ファイルは `.circleci/config.yml` にあります。
+
+### CIワークフロー
 
 #### トリガー条件
 
-- **pull\_request**: 次のパスが変更された場合
-  - `.github/**`
-  - `docs/**`
-  - `scripts/**`
-  - `app/**`
-  - `apps/web/e2e/**`
-  - `package.json`
-- **push**: 上記と同じパスが変更された場合
-- **除外条件**: `copilot/` で始まるブランチは除外
+- **push**: 全ブランチへのpush時（`copilot/`で始まるブランチを除く）
 
 #### ジョブ一覧
 
-1. **detect-changes**
-   - 変更されたファイルを検出し、次のカテゴリに分類
-   - 出力: `web` / `e2e` / `docs` / `shell` / `actions` / `tsp`
-   - タイムアウト: 5分
+1. **setup**
+   - 環境セットアップ（Bun、依存関係のインストール）
+   - コマンド: `bun install --frozen-lockfile && bun run setup`
+   - キャッシュ: `bun.lock`ハッシュベース
 
-2. **run-format-ts** (web変更時)
+2. **format**
    - TypeScriptファイルのフォーマットチェック
    - コマンド: `bun run fmt:ts:check`
-   - タイムアウト: 10分
-   - 依存: `detect-changes`
+   - 依存: `setup`
 
-3. **run-lint-ts** (web変更時)
+3. **lint**
    - TypeScriptファイルのリントチェック
    - コマンド: `bun run lint:ts:check`
-   - タイムアウト: 10分
-   - 依存: `detect-changes`, `run-format-ts`
+   - 依存: `setup`
 
-4. **run-typecheck** (web変更時)
+4. **typecheck**
    - TypeScriptの型チェック
    - コマンド: `bun run typecheck`
-   - タイムアウト: 10分
-   - 依存: `detect-changes`, `run-format-ts`
+   - 依存: `setup`
 
-5. **run-knip** (web変更時)
-   - 未使用コードの検出
-   - コマンド: `bun run knip`
-   - タイムアウト: 10分
-   - 依存: `detect-changes`, `run-lint-ts`, `run-typecheck`
-
-6. **run-test-ts** (web変更時)
+5. **test**
    - ユニットテストの実行
    - コマンド: `bun run test`
-   - タイムアウト: 15分
-   - 依存: `detect-changes`, `run-lint-ts`, `run-typecheck`, `run-knip`
+   - 依存: `format`, `lint`, `typecheck`
+   - 失敗時: GitHub Issueを自動作成
 
-7. **run-coverage-ts** (web変更時)
-   - テストカバレッジの生成
-   - コマンド: `bun run coverage`
-   - アーティファクト: `vitest-coverage` (`docs/vitest/coverage/`)
-   - 保持期間: 7日
-   - タイムアウト: 15分
-   - 依存: `detect-changes`, `run-test-ts`
-
-8. **run-sonarcloud** (web変更時)
-   - SonarCloudによるコード品質分析
-   - カバレッジレポートを使用
-   - 権限: `contents: read`, `pull-requests: write`, `security-events: write`
-   - エラーハンドリング: `continue-on-error: true`
-   - タイムアウト: 15分
-   - 依存: `detect-changes`, `run-coverage-ts`
-
-9. **run-e2e-ts** (webまたはe2e変更時)
+6. **e2e**
    - E2Eテストの実行（Playwright）
-   - Docker Buildxを使用
    - コマンド: `bun run e2e`
-   - アーティファクト: `playwright-report` (`docs/playwright/report/`)
-   - 保持期間: 7日
-   - タイムアウト: 30分
-   - 依存: `detect-changes`, `run-test-ts`, `run-coverage-ts`
+   - リソース: `large`（4 vCPU, 8GB RAM）
+   - アーティファクト: `playwright-report`
+   - 依存: `test`
+   - 失敗時: GitHub Issueを自動作成
 
-10. **run-build** (web変更時)
-    - アプリケーションのビルド
-    - コマンド: `bun run build:remix`
-    - タイムアウト: 15分
-    - 依存: `detect-changes`, `run-e2e-ts`
+7. **build**
+   - アプリケーションのビルド
+   - コマンド: `bun run build`
+   - 依存: `e2e`
+   - 失敗時: GitHub Issueを自動作成
 
-11. **run-lighthouse** (web変更時)
-    - Lighthouse CIによるパフォーマンス分析
-    - コマンド: `bun run lighthouse`
-    - アーティファクト: `lighthouse-report` (`docs/lighthouse/report/`)
-    - 保持期間: 7日
-    - タイムアウト: 20分
-    - 依存: `detect-changes`, `run-build`
+8. **upload-artifacts**
+   - ビルド成果物をBackblaze B2にアップロード
+   - 保存先: `artifacts/{commit-sha}/{app}/`
+   - 依存: `build`
+   - 実行条件: `master`/`main`ブランチのみ
 
-12. **run-format-actions** (actions変更時)
-    - GitHub Actionsワークフローのフォーマットチェック
-    - コマンド: `bun run fmt:actions:check`
-    - タイムアウト: 5分
-    - 依存: `detect-changes`
+### CDワークフロー
 
-13. **run-lint-actions** (actions変更時)
-    - GitHub Actionsワークフローのリントチェック
-    - コマンド: `bun run lint:actions:check`
-    - タイムアウト: 10分
-    - 依存: `detect-changes`, `run-format-actions`
+#### deploy-rc（RC環境）
 
-14. **run-format-shell** (shell変更時)
-    - Shellスクリプトのフォーマットチェック
-    - コマンド: `bun run fmt:shell:check`
-    - タイムアウト: 5分
-    - 依存: `detect-changes`
+- **トリガー**: `master`ブランチ
+- **実行条件**: 承認後
+- **フロー**:
+  1. Backblaze B2からArtifactをダウンロード
+  2. 承認待ち（approval）
+  3. RC環境へデプロイ
 
-15. **run-lint-shell** (shell変更時)
-    - Shellスクリプトのリントチェック
-    - コマンド: `bun run lint:shell:check`
-    - タイムアウト: 10分
-    - 依存: `detect-changes`, `run-format-shell`
+#### deploy-stg（STG環境）
 
-16. **run-format-md** (docs変更時)
-    - Markdownファイルのフォーマットチェック
-    - コマンド: `bun run fmt:md:check`
-    - タイムアウト: 5分
-    - 依存: `detect-changes`
+- **トリガー**: スケジュール（毎日0:00 UTC）
+- **実行条件**: `master`ブランチ、テスト成功後
+- **フロー**:
+  1. セットアップ
+  2. テスト実行
+  3. E2Eテスト実行
+  4. Backblaze B2からArtifactをダウンロード
+  5. STG環境へデプロイ
 
-17. **run-lint-md** (docs変更時)
-    - Markdownファイルのリントチェック
-    - コマンド: `bun run lint:md:check`
-    - タイムアウト: 10分
-    - 依存: `detect-changes`, `run-format-md`
+#### deploy-prd（PRD環境）
 
-18. **run-format-tsp** (tsp変更時)
-    - TypeSpecファイルのフォーマットチェック
-    - コマンド: `bun run fmt:tsp:check`
-    - タイムアウト: 10分
-    - 依存: `detect-changes`
+- **トリガー**: スケジュール（毎日12:00 UTC）
+- **実行条件**: `master`ブランチ、テスト成功後
+- **フロー**: deploy-stgと同様
 
-19. **run-lint-tsp** (tsp変更時)
-    - TypeSpecファイルのリントチェック
-    - コマンド: `bun run lint:tsp:check`
-    - タイムアウト: 10分
-    - 依存: `detect-changes`, `run-format-tsp`
+### CI/CDフロー図
 
-### CDワークフロー (`[CD] Deploy`)
+```text
+CIフロー:
+  push → setup → [format, lint, typecheck] → test → e2e → build → upload(B2)
+                                                              ↓
+                                                        [失敗時]
+                                                         Issue作成
 
-#### CDワークフローのトリガー条件
-
-- **push** (masterブランチ): 次のパスが変更された場合
-  - `docs/**`
-  - `app/**`
-  - `.storybook/**`
-  - `vite.config.ts`
-  - `docs/swagger/**`
-  - `.github/workflows/deploy.yml`
-- **pull\_request** (masterブランチ): 次のパスが変更された場合
-  - `docs/**`
-  - `.github/workflows/deploy.yml`
-- **workflow\_run**: CIワークフロー完了時
-- **workflow\_dispatch**: 手動実行
-
-#### CDワークフローのジョブ一覧
-
-1. **detect-changes** (workflow\_run以外)
-   - 変更されたファイルを検出し、次のカテゴリに分類
-   - 出力: `docs`, `storybook`, `swagger`
-   - タイムアウト: 5分
-
-2. **run-deploy-docs**
-   - Astro + Starlightドキュメントのビルドとデプロイ
-   - 環境: `github-pages`
-   - ステップ:
-     - Astroのビルド (`bun run build`)
-     - Cloudflare Pagesへのデプロイ
-   - タイムアウト: 15分
-   - 依存: `detect-changes`
-   - 実行条件:
-     - `workflow_run`以外で`docs`変更時、または`workflow_dispatch`時
-
-3. **run-deploy-storybook**
-   - Storybookのビルドとデプロイ
-   - 環境: `github-pages-storybook`
-   - ステップ:
-     - Storybookのビルド (`bun run build:ui`)
-     - GitHub Pagesへのデプロイ
-   - タイムアウト: 15分
-   - 依存: `detect-changes`
-   - 実行条件: `workflow_run`以外で`storybook`変更時
-
-4. **deploy-swagger**
-   - Swaggerドキュメントのデプロイ
-   - 環境: `github-pages-swagger`
-   - ステップ:
-     - Swaggerファイルのアップロード
-     - GitHub Pagesへのデプロイ
-   - タイムアウト: 5分
-   - 依存: `detect-changes`
-   - 実行条件:
-     - `workflow_run`以外で`swagger`変更時、または`workflow_dispatch`時
-
-5. **deploy-test-results**
-   - CIワークフローのテスト結果をGitHub Pagesにデプロイ
-   - 環境: `github-pages-test-results`
-   - 実行条件:
-     - `workflow_run`イベント時
-     - CIワークフローが成功時
-     - `copilot/`で始まらないブランチ
-   - ステップ:
-     - UUID生成 (`run_id-run_number`)
-     - CIワークフローからアーティファクトをダウンロード
-       - `vitest-coverage` (カバレッジレポート)
-       - `playwright-report` (E2Eテストレポート)
-       - `lighthouse-report` (Lighthouseレポート)
-     - レポートの準備と履歴保存
-     - `gh-pages`ブランチにコミット
-     - GitHub Pagesへのデプロイ
-   - タイムアウト: 30分
-   - 権限: `contents: write`, `pages: write`, `id-token: write`
-
-#### 同時実行制御
-
-- **concurrency**: `pages-deploy`
-- **cancel-in-progress**: `false` (進行中のジョブをキャンセルしない)
-
-### CIワークフロー シーケンス図
-
-```mermaid
-sequenceDiagram
-    participant Trigger as トリガー<br/>(PR/Push)
-    participant Detect as detect-changes
-    participant FormatTS as run-format-ts
-    participant LintTS as run-lint-ts
-    participant TypeCheck as run-typecheck
-    participant Knip as run-knip
-    participant Test as run-test-ts
-    participant Coverage as run-coverage-ts
-    participant SonarCloud as run-sonarcloud
-    participant E2E as run-e2e-ts
-    participant Build as run-build
-    participant Lighthouse as run-lighthouse
-    participant FormatActions as run-format-actions
-    participant LintActions as run-lint-actions
-    participant FormatShell as run-format-shell
-    participant LintShell as run-lint-shell
-    participant FormatMD as run-format-md
-    participant LintMD as run-lint-md
-    participant FormatTSP as run-format-tsp
-    participant LintTSP as run-lint-tsp
-
-    Trigger->>Detect: 変更検出
-    Detect->>Detect: パスフィルタリング<br/>(web/e2e/docs/shell/actions/tsp)
-
-    alt web変更時
-        Detect->>FormatTS: フォーマットチェック
-        FormatTS->>LintTS: リントチェック
-        FormatTS->>TypeCheck: 型チェック
-        LintTS->>Knip: 未使用コード検出
-        TypeCheck->>Knip: 未使用コード検出
-        Knip->>Test: ユニットテスト
-        Test->>Coverage: カバレッジ生成
-        Coverage->>SonarCloud: SonarCloud分析
-        Test->>E2E: E2Eテスト
-        Coverage->>E2E: E2Eテスト
-        E2E->>Build: ビルド
-        Build->>Lighthouse: Lighthouse CI
-    end
-
-    alt actions変更時
-        Detect->>FormatActions: フォーマットチェック
-        FormatActions->>LintActions: リントチェック
-    end
-
-    alt shell変更時
-        Detect->>FormatShell: フォーマットチェック
-        FormatShell->>LintShell: リントチェック
-    end
-
-    alt docs変更時
-        Detect->>FormatMD: フォーマットチェック
-        FormatMD->>LintMD: リントチェック
-    end
-
-    alt tsp変更時
-        Detect->>FormatTSP: フォーマットチェック
-        FormatTSP->>LintTSP: リントチェック
-    end
+CDフロー:
+  [RC] 承認 → download(B2) → deploy(rc)
+                              ↓
+  [STG] 毎日0:00 → test → [成功] → deploy(stg)
+                   ↓
+                 [失敗] → Issue作成
+                              ↓
+  [PRD] 毎日12:00 → test → [成功] → deploy(prd)
+                   ↓
+                 [失敗] → Issue作成
 ```
 
-### CDワークフロー シーケンス図
+### 環境変数
 
-```mermaid
-sequenceDiagram
-    participant Trigger as トリガー<br/>(Push/PR/WorkflowRun/Dispatch)
-    participant Detect as detect-changes
-    participant DeployDocs as run-deploy-docs
-    participant DeployStorybook as run-deploy-storybook
-    participant DeploySwagger as deploy-swagger
-    participant DeployTestResults as deploy-test-results
-    participant CI as CIワークフロー
+CircleCIのContextsで管理:
 
-    alt workflow_run以外
-        Trigger->>Detect: 変更検出
-        Detect->>Detect: パスフィルタリング<br/>(docs/storybook/swagger)
+| Context | 変数 | 説明 |
+|---------|------|------|
+| backblaze-b2 | `B2_APPLICATION_KEY_ID` | B2認証ID |
+| backblaze-b2 | `B2_APPLICATION_KEY` | B2認証キー |
+| backblaze-b2 | `B2_BUCKET_NAME` | バケット名 |
+| cloudflare | `CLOUDFLARE_API_TOKEN` | Cloudflare APIトークン |
+| doppler | `DOPPLER_TOKEN` | Dopplerトークン |
 
-        alt docs変更時 or workflow_dispatch
-            Detect->>DeployDocs: Astro + Starlightビルド&デプロイ
-        end
+Project Settingsで管理:
 
-        alt storybook変更時
-            Detect->>DeployStorybook: Storybookビルド&デプロイ
-        end
+| 変数 | 説明 |
+|------|------|
+| `GITHUB_TOKEN` | GitHub Issue作成用 |
 
-        alt swagger変更時 or workflow_dispatch
-            Detect->>DeploySwagger: Swaggerデプロイ
-        end
-    end
+### テスト失敗時のIssue自動作成
 
-    alt workflow_run (CI完了時)
-        CI->>Trigger: ワークフロー完了通知
-        Trigger->>DeployTestResults: テスト結果デプロイ
-        DeployTestResults->>DeployTestResults: UUID生成
-        DeployTestResults->>DeployTestResults: アーティファクトダウンロード<br/>(coverage/e2e/lighthouse)
-        DeployTestResults->>DeployTestResults: レポート準備&履歴保存
-        DeployTestResults->>DeployTestResults: gh-pagesにコミット
-        DeployTestResults->>DeployTestResults: GitHub Pagesデプロイ
-    end
-```
+テスト、E2E、ビルドジョブが失敗した場合、GitHub Issueが自動作成されます。
 
-### CI/CD統合フロー
-
-```mermaid
-sequenceDiagram
-    participant Dev as 開発者
-    participant PR as Pull Request
-    participant CI as CIワークフロー
-    participant CD as CDワークフロー
-    participant Pages as GitHub Pages
-
-    Dev->>PR: コード変更をプッシュ
-    PR->>CI: CIワークフロー開始
-    CI->>CI: フォーマット/リント/型チェック
-    CI->>CI: テスト実行
-    CI->>CI: カバレッジ生成
-    CI->>CI: SonarCloud分析
-    CI->>CI: E2Eテスト
-    CI->>CI: ビルド
-    CI->>CI: Lighthouse CI
-    CI->>CD: ワークフロー完了通知
-    CD->>CD: テスト結果をダウンロード
-    CD->>CD: レポートを準備
-    CD->>Pages: テスト結果をデプロイ
-
-    alt masterブランチへのマージ
-        PR->>CD: masterブランチへのpush
-        CD->>CD: ドキュメント/Storybook/Swaggerをビルド
-        CD->>Pages: デプロイ
-    end
-```
+**Issue内容**:
+- 失敗したジョブ名
+- ブランチ名
+- コミットSHA
+- CircleCIビルドログへのリンク
+- ラベル: `ci-failure`, `automated`
 
 ## Renovate
 
@@ -370,90 +153,30 @@ Renovateは依存関係の自動更新を管理するツールです。
 
 ### 設定
 
-設定ファイルは `.github/renovate.json` にあります。
+設定ファイルは `renovate.json` にあります。
 
 ### 主な機能
 
 - **自動依存関係検出**: `package.json` の依存関係を自動的に検出
 - **スケジュール実行**: 毎週月曜日の午前10時（JST）にPRを作成
 - **グループ化**: 関連するパッケージをまとめて更新
-  - Remix関連パッケージ
-  - Radix UIパッケージ
-  - Astro/Starlightパッケージ
-  - TypeScript関連パッケージ
-  - 開発依存関係
 - **自動マージ**: マイナー・パッチバージョンの更新は自動マージ可能
 - **セキュリティ更新**: 脆弱性が検出された場合は即座にPRを作成
-
-### 使用方法
-
-1. **Renovate Appのインストール**:
-   - GitHub MarketplaceからRenovate Appをリポジトリにインストール
-   - 初回実行時に設定ファイルを自動検出
-
-2. **PRの確認**:
-   - Renovateが作成したPRをレビュー
-   - マイナー・パッチバージョンは自動マージ可能
-   - メジャーバージョンは手動レビューが必要
-
-3. **設定のカスタマイズ**:
-   - `.github/renovate.json` を編集して設定を変更
-   - 変更後、次回のスケジュール実行時に反映
-
-### 設定例
-
-```json
-{
-  "schedule": ["before 10am on monday"],
-  "timezone": "Asia/Tokyo",
-  "packageRules": [
-    {
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true
-    }
-  ]
-}
-```
 
 ## SonarCloud
 
 SonarCloudはコード品質・セキュリティ分析をするクラウドサービスです。
 
-### SonarCloudの設定
+### 設定
 
 設定ファイルは `sonar-project.properties` にあります。
 
-### SonarCloudの主な機能
+### 主な機能
 
 - **コード品質分析**: TypeScript/JavaScriptコードの品質を分析
 - **セキュリティ脆弱性検出**: 既知の脆弱性パターンを検出
 - **コードカバレッジ統合**: テストカバレッジレポートを統合
 - **PRコメント**: プルリクエストに品質ゲート結果をコメント
-
-### 初期設定
-
-1. **SonarCloudでプロジェクト作成**:
-   - [SonarCloud](https://sonarcloud.io/) にアクセス
-   - GitHubアカウントでログイン
-   - 組織を作成（初回のみ）
-   - プロジェクトをインポート
-
-2. **トークンの生成**:
-   - SonarCloudの「My Account」→「Security」からトークンを生成
-   - GitHubリポジトリの「Settings」→「Secrets and variables」→「Actions」に追加
-   - シークレット名: `SONAR_TOKEN`
-
-3. **プロジェクトキーの確認**:
-   - SonarCloudのプロジェクトページでプロジェクトキーを確認
-   - `sonar-project.properties` の `sonar.projectKey` と `sonar.organization` を更新
-
-### CI統合
-
-CIワークフロー（`.github/workflows/ci.yml`）に `run-sonarcloud` ジョブが含まれています。
-
-- **実行タイミング**: カバレッジレポート生成後
-- **権限**: `security-events: write` が必要
-- **エラーハンドリング**: `continue-on-error: true` により、失敗しても他のジョブに影響しない
 
 ### カバレッジレポート
 
@@ -463,45 +186,45 @@ SonarCloudは次のカバレッジレポートを使用します：
 - **形式**: LCOV形式
 - **生成**: `bun run coverage` コマンドで生成
 
-### 品質ゲート
+## Backblaze B2（Artifact Storage）
 
-SonarCloudの品質ゲートは次の条件で評価されます：
+ビルド成果物の長期保存にBackblaze B2を使用しています。
 
-- コードカバレッジ
-- コードスメル（コードの臭い）
-- セキュリティ脆弱性
-- バグ
+### バケット構成
 
-品質ゲートが失敗した場合、PRにコメントが追加されます。
+- **バケット名**: `portfolio-artifacts`
+- **構造**: `artifacts/{commit-sha}/{app}/{dist|build}/`
 
-### 除外設定
+### 料金
 
-次のパスは分析から除外されています：
-
-- `node_modules/`
-- `build/`, `dist/`
-- `docs/`
-- テストファイル（`*.test.ts`, `*.spec.ts` など）
-- 設定ファイル（`*.config.ts`, `*.json` など）
-
-詳細は `sonar-project.properties` の `sonar.exclusions` を参照してください。
+- ストレージ: $0.006/GB/月（最初の10GB無料）
+- ダウンロード: $0.01/GB（最初の1GB/日無料）
 
 ## トラブルシューティング
+
+### CircleCIジョブが失敗する
+
+- CircleCIのビルドログを確認
+- 環境変数（Contexts）が正しく設定されているか確認
+- キャッシュをクリアして再実行
+
+### Artifactがアップロードされない
+
+- `B2_APPLICATION_KEY_ID`、`B2_APPLICATION_KEY`、`B2_BUCKET_NAME`が設定されているか確認
+- `master`または`main`ブランチでビルドしているか確認
+
+### デプロイが実行されない
+
+- RC: 承認が必要（CircleCI UIで承認）
+- STG/PRD: スケジュール実行のため、指定時刻まで待機
+- テストが失敗している場合はデプロイがスキップされる
 
 ### RenovateがPRを作成しない
 
 - Renovate Appがリポジトリにインストールされているか確認
-- `.github/renovate.json` がまさしく配置されているか確認
-- Renovate Appのログを確認
+- `renovate.json` が正しく配置されているか確認
 
 ### SonarCloudが実行されない
 
 - `SONAR_TOKEN` シークレットが設定されているか確認
 - `sonar-project.properties` のプロジェクトキーが正しいか確認
-- CIワークフローのログを確認
-
-### カバレッジレポートが見つからない
-
-- `bun run coverage` が正常に実行されているか確認
-- `docs/vitest/coverage/lcov.info` が生成されているか確認
-- カバレッジレポートのパスが正しいか確認
