@@ -50,6 +50,9 @@ node_modules
 .tanstack
 build
 apps/**/dist
+infra/dist
+packages/**/dist
+tooling/**/dist
 public/build
 functions/[[path]].js
 functions/[[path]].js.map
