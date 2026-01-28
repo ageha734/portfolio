@@ -4,7 +4,8 @@
   "name": "@portfolio/scripts-workspace",
   "type": "module",
   "scripts": {
-    "build": "bun build cmd/main.ts --outdir dist/cmd --target bun --format esm --external bun --minify && chmod +x dist/cmd/main.js",
+    "build": "bun run build:js",
+    "build:js": "bun build cmd/main.ts --outdir dist/cmd --target bun --format esm --external bun --minify && chmod +x dist/cmd/main.js",
     "clean:cache": "git clean -xdf .cache .turbo",
     "clean:pkg": "git clean -xdf node_modules dist",
     "fmt": "biome format --write .",
