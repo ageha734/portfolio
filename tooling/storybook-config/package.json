@@ -24,7 +24,7 @@
   "scripts": {
     "build": "bun run build:js && bun run build:types",
     "build:js": "bun build ./src/main.preset.ts ./src/preview.preset.tsx ./src/theme.ts --outdir dist --target node --format esm --splitting --external react --external react-dom --external storybook --external @storybook/* --external vite --external lightningcss",
-    "build:types": "tsc --emitDeclarationOnly --declaration --outDir dist",
+    "build:types": "git clean -xdf .cache/tsbuildinfo.json && tsc --emitDeclarationOnly --declaration --outDir dist",
     "clean:cache": "git clean -xdf .cache .turbo",
     "clean:pkg": "git clean -xdf node_modules dist",
     "dev": "bun run build:js --watch",
