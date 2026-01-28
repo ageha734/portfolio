@@ -5,14 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "bun run build:js",
-    "build:js": "bun build cmd/main.ts --outdir dist/cmd --target bun --format esm --external bun --minify && chmod +x dist/cmd/main.js",
+    "build:js": "bun build cmd/main.ts --outfile bin/main.js --target bun --format esm --external bun --minify && chmod +x bin/main.js",
     "clean:cache": "git clean -xdf .cache .turbo",
     "clean:pkg": "git clean -xdf node_modules dist",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
-    "start": "node ./dist/cmd/main.js",
+    "start": "node ./bin/main.js",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -25,6 +25,6 @@
     "typescript": "5.9.3"
   },
   "bin": {
-    "check": "./dist/cmd/main.js"
+    "check": "./bin/main.js"
   }
 }

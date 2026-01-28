@@ -37,7 +37,7 @@
     "lint:ts:fix": "turbo run lint:fix",
     "lint:ws:check": "sherif",
     "nuke": "bun run clean && git clean -xdf bun.lock yarn.lock && bun install && bun run setup",
-    "prepare": "workspace setup",
+    "prepare": "workspace setup && bun run build",
     "release": "changeset publish",
     "setup": "bun run build && bun run generate --filter='!@portfolio/infra' && bun run prepare",
     "studio": "turbo run studio",
