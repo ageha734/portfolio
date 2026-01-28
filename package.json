@@ -51,7 +51,6 @@
     "@commitlint/config-conventional": "20.3.0",
     "@portfolio/changelog-config": "workspace:*",
     "@portfolio/scripts-check": "workspace:*",
-    "@portfolio/scripts-env": "workspace:*",
     "@portfolio/scripts-workspace": "workspace:*",
     "concurrently": "9.2.1",
     "knip": "5.79.0",
