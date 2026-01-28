@@ -7,16 +7,19 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     }
   },
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "bun run build:js && bun run build:types",
+    "build:js": "bun build ./src/index.ts --outdir dist --target node --format esm",
+    "build:types": "tsc --emitDeclarationOnly --declaration --outDir dist",
     "clean:cache": "git clean -xdf .cache .turbo",
     "clean:pkg": "git clean -xdf node_modules dist",
     "coverage": "vitest run --coverage",
-    "dev": "tsc --watch --outDir dist",
+    "dev": "bun run build:js --watch",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",

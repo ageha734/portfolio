@@ -1,1 +1,0 @@
-{"version":3,"file":"UserCard.d.ts","sourceRoot":"","sources":["../../src/components/UserCard.tsx"],"names":[],"mappings":"AAGA,MAAM,WAAW,aAAa;IAC1B,GAAG,CAAC,EAAE,MAAM,CAAC;IACb,MAAM,CAAC,EAAE,MAAM,CAAC;IAChB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,IAAI,EAAE,MAAM,CAAC;IACb,KAAK,EAAE,MAAM,CAAC;CACjB;AAED,eAAO,MAAM,QAAQ,GAAI,OAAO,aAAa,4CAc5C,CAAC"}

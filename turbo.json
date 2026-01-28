@@ -4,9 +4,21 @@
     "tasks": {
         "build": {
             "dependsOn": ["^build"],
-            "outputs": ["build/**", "dist/**"]
+            "outputs": ["dist/**"],
+            "inputs": ["src/**", "cmd/**", "generated/**", "generators/**", "tsconfig.json", "package.json"]
+        },
+        "build:js": {
+            "dependsOn": ["^build:js"],
+            "outputs": ["dist/**/*.js"],
+            "inputs": ["src/**", "cmd/**", "generated/**", "generators/**"]
+        },
+        "build:types": {
+            "dependsOn": ["^build:types"],
+            "outputs": ["dist/**/*.d.ts", "dist/**/*.d.ts.map"],
+            "inputs": ["src/**", "tsconfig.json"]
         },
         "@portfolio/cms#build": {
+            "dependsOn": ["^build"],
             "outputs": []
         },
         "build:ui": {

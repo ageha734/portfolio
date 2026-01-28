@@ -1,6 +1,7 @@
-import "@testing-library/jest-dom/vitest";
+// src/setup.ts
+import"@testing-library/jest-dom/vitest";
 import { afterEach, vi } from "vitest";
 afterEach(() => {
-    vi.resetModules();
-    vi.restoreAllMocks();
+  vi.resetModules();
+  vi.restoreAllMocks();
 });

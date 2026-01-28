@@ -4,7 +4,6 @@
     "compilerOptions": {
         "baseUrl": ".",
         "declaration": true,
-        "emitDeclarationOnly": false,
         "paths": {
             "~/*": ["./src/*"],
             "@generated/*": ["./generated/*"]

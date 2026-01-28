@@ -3,7 +3,6 @@
     "extends": ["@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
         "baseUrl": ".",
-        "emitDeclarationOnly": false,
         "paths": {
             "~/*": ["./src/*"]
         },

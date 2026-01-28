@@ -7,35 +7,43 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     },
     "./env": {
       "types": "./dist/env.d.ts",
-      "default": "./src/env.ts"
+      "import": "./dist/env.js",
+      "require": "./dist/env.js"
     },
     "./mocks": {
       "types": "./dist/mocks.d.ts",
-      "default": "./src/mocks.ts"
+      "import": "./dist/mocks.js",
+      "require": "./dist/mocks.js"
     },
     "./msw": {
       "types": "./dist/msw.d.ts",
-      "default": "./src/msw.ts"
+      "import": "./dist/msw.js",
+      "require": "./dist/msw.js"
     },
     "./render": {
       "types": "./dist/render.d.ts",
-      "default": "./src/render.tsx"
+      "import": "./dist/render.js",
+      "require": "./dist/render.js"
     },
     "./setup": {
       "types": "./dist/setup.d.ts",
-      "default": "./src/setup.ts"
+      "import": "./dist/setup.js",
+      "require": "./dist/setup.js"
     }
   },
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "bun run build:js && bun run build:types",
+    "build:js": "bun build ./src/index.ts ./src/env.ts ./src/mocks.ts ./src/msw.ts ./src/render.tsx ./src/setup.ts --outdir dist --target node --format esm --splitting --external react --external react-dom --external vite --external vitest --external lightningcss --external @vitejs/* --external @portfolio/testing-mocks --external @testing-library/* --external msw --external jsdom --external vite-tsconfig-paths --external react-router --external dotenv --external regenerator-runtime",
+    "build:types": "tsc --emitDeclarationOnly --declaration --outDir dist",
     "clean:cache": "git clean -xdf .cache .turbo",
     "clean:pkg": "git clean -xdf node_modules dist",
-    "dev": "tsc --watch --outDir dist",
+    "dev": "bun run build:js --watch",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",

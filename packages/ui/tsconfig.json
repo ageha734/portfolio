@@ -3,7 +3,6 @@
     "extends": ["@portfolio/tsconfig/compiled-package.json"],
     "compilerOptions": {
         "baseUrl": ".",
-        "emitDeclarationOnly": false,
         "jsx": "react-jsx",
         "lib": ["DOM", "DOM.Iterable", "ES2022"],
         "paths": {

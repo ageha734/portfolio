@@ -7,22 +7,27 @@
   "exports": {
     "./main": {
       "types": "./dist/main.preset.d.ts",
-      "default": "./dist/main.preset.js"
+      "import": "./dist/main.preset.js",
+      "require": "./dist/main.preset.js"
     },
     "./preview": {
       "types": "./dist/preview.preset.d.ts",
-      "default": "./dist/preview.preset.js"
+      "import": "./dist/preview.preset.js",
+      "require": "./dist/preview.preset.js"
     },
     "./theme": {
       "types": "./dist/theme.d.ts",
-      "default": "./dist/theme.js"
+      "import": "./dist/theme.js",
+      "require": "./dist/theme.js"
     }
   },
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "bun run build:js && bun run build:types",
+    "build:js": "bun build ./src/main.preset.ts ./src/preview.preset.tsx ./src/theme.ts --outdir dist --target node --format esm --splitting --external react --external react-dom --external storybook --external @storybook/* --external vite --external lightningcss",
+    "build:types": "tsc --emitDeclarationOnly --declaration --outDir dist",
     "clean:cache": "git clean -xdf .cache .turbo",
     "clean:pkg": "git clean -xdf node_modules dist",
-    "dev": "tsc --watch --outDir dist",
+    "dev": "bun run build:js --watch",
     "fmt": "biome format --write .",
     "fmt:check": "biome format .",
     "lint": "biome lint .",
