@@ -105,7 +105,7 @@ jobs:
       - install-bun
       - run:
           name: Format check TypeScript
-          command: bun run fmt:ts:check
+          command: bun run fmt:check
 
   lint:
     executor: default
@@ -115,7 +115,7 @@ jobs:
       - install-bun
       - run:
           name: Lint TypeScript
-          command: bun run lint:ts:check
+          command: bun run lint
 
   typecheck:
     executor: default
@@ -165,7 +165,7 @@ jobs:
       - run:
           name: Install Playwright browsers
           command: |
-            cd apps/web
+            bun add -g @playwright/test
             bunx playwright install --with-deps chromium
       - run:
           name: Run E2E tests
@@ -234,13 +234,10 @@ jobs:
       - run:
           name: Upload artifacts to Backblaze B2
           command: |
-            # Authorize B2
             b2 authorize-account "${B2_APPLICATION_KEY_ID}" "${B2_APPLICATION_KEY}"
 
-            # Create artifact directory structure
             ARTIFACT_PATH="artifacts/${CIRCLE_SHA1}"
 
-            # Upload built artifacts for each app
             for app in web api admin; do
               APP_DIST="apps/${app}/dist"
               APP_BUILD="apps/${app}/build"
@@ -256,7 +253,6 @@ jobs:
               fi
             done
 
-            # Create manifest
             echo "{\"sha\": \"${CIRCLE_SHA1}\", \"branch\": \"${CIRCLE_BRANCH}\", \"build_num\": ${CIRCLE_BUILD_NUM}, \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > manifest.json
             b2 upload-file "${B2_BUCKET_NAME}" manifest.json "${ARTIFACT_PATH}/manifest.json"
 
@@ -272,10 +268,8 @@ jobs:
       - run:
           name: Download artifacts from Backblaze B2
           command: |
-            # Authorize B2
             b2 authorize-account "${B2_APPLICATION_KEY_ID}" "${B2_APPLICATION_KEY}"
 
-            # Determine which SHA to download
             SHA="${<< parameters.commit_sha >>}"
             if [ -z "${SHA}" ]; then
               SHA="${CIRCLE_SHA1}"
@@ -283,7 +277,6 @@ jobs:
 
             ARTIFACT_PATH="artifacts/${SHA}"
 
-            # Download artifacts
             mkdir -p artifacts
             b2 sync "b2://${B2_BUCKET_NAME}/${ARTIFACT_PATH}/" "./artifacts/${SHA}/" --skipNewer
       - persist_to_workspace:
@@ -446,4 +439,3 @@ workflows:
             - backblaze-b2
             - cloudflare
             - doppler
-
