@@ -39,7 +39,7 @@ if [[ "${BACKUP_FILE}" == *.gz ]]; then
 	TEMP_FILE=$(mktemp)
 	gunzip -c "${BACKUP_FILE}" >"${TEMP_FILE}"
 	BACKUP_FILE="${TEMP_FILE}"
-	trap 'rm -f "${TEMP_FILE}"' EXIT
+	trap 'git clean -xdf "${TEMP_FILE}"' EXIT
 fi
 
 docker exec -i "${CONTAINER_NAME}" mysql \
